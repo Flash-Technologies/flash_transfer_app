@@ -1,73 +1,97 @@
+// lib/presentation/common/social_login_buttons.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../../providers/auth_provider.dart';
 
-class SocialLoginButtons extends StatelessWidget {
-  const SocialLoginButtons({Key? key}) : super(key: key);
+class SocialLoginButtons extends ConsumerWidget {
+  final Function()? onGoogleLogin;
+  final Function()? onFacebookLogin;
+  final Function()? onAppleLogin;
+  final Function()? onWalletLogin;
+
+  const SocialLoginButtons({
+    Key? key,
+    this.onGoogleLogin,
+    this.onFacebookLogin,
+    this.onAppleLogin,
+    this.onWalletLogin,
+  }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
+        // const Text(
+        //   'OR',
+        //   style: TextStyle(
+        //     fontSize: 14,
+        //     color: Color(0xFF6E757D),
+        //   ),
+        // ),
+        // const SizedBox(height: 16),
         Wrap(
-          spacing: 16.0,
-          runSpacing: 16.0,
+          spacing: 16,
+          runSpacing: 16,
           alignment: WrapAlignment.center,
           children: [
             _buildSocialButton(
               icon: Image.asset(
-                'assets/icons/google.png',
+                'assets/images/google.png',
                 width: 24,
                 height: 24,
-                errorBuilder:
-                    (context, error, stackTrace) => const Icon(
-                      Icons.g_mobiledata,
-                      size: 24,
-                      color: Color(0xFF4285F4),
-                    ),
+                errorBuilder: (_, __, ___) => const Icon(
+                  Icons.g_mobiledata,
+                  size: 24,
+                  color: Color(0xFF4285F4),
+                ),
               ),
               label: 'Google',
-              onPressed: () => _handleSocialLogin('google'),
+              onPressed: onGoogleLogin ?? () => _handleGoogleLogin(context, ref),
             ),
             _buildSocialButton(
               icon: Image.asset(
-                'assets/icons/facebook.png',
+                'assets/images/facebook.png',
                 width: 24,
                 height: 24,
-                errorBuilder:
-                    (context, error, stackTrace) => const Icon(
-                      Icons.facebook,
-                      size: 24,
-                      color: Color(0xFF1877F2),
-                    ),
+                errorBuilder: (_, __, ___) => const Icon(
+                  Icons.facebook,
+                  size: 24,
+                  color: Color(0xFF1877F2),
+                ),
               ),
               label: 'Facebook',
-              onPressed: () => _handleSocialLogin('facebook'),
+              onPressed: onFacebookLogin ?? () => _handleFacebookLogin(context),
             ),
             _buildSocialButton(
               icon: Image.asset(
-                'assets/icons/apple.png',
+                'assets/images/apple.png',
                 width: 24,
                 height: 24,
-                errorBuilder:
-                    (context, error, stackTrace) =>
-                        const Icon(Icons.apple, size: 24, color: Colors.black),
+                errorBuilder: (_, __, ___) => const Icon(
+                  Icons.apple,
+                  size: 24,
+                  color: Colors.black,
+                ),
               ),
               label: 'Apple',
-              onPressed: () => _handleSocialLogin('apple'),
+              onPressed: onAppleLogin ?? () => _handleAppleLogin(context),
             ),
             _buildSocialButton(
               icon: Image.asset(
-                'assets/icons/wallet.png',
+                'assets/images/wallet.png',
                 width: 24,
                 height: 24,
-                errorBuilder:
-                    (context, error, stackTrace) => const Icon(
-                      Icons.account_balance_wallet,
-                      size: 24,
-                      color: Colors.black,
-                    ),
+                errorBuilder: (_, __, ___) => const Icon(
+                  Icons.account_balance_wallet,
+                  size: 24,
+                  color: Colors.black,
+                ),
               ),
               label: 'Wallet',
-              onPressed: () => _handleSocialLogin('wallet'),
+              onPressed: onWalletLogin ?? () => _handleWalletLogin(context),
             ),
           ],
         ),
@@ -112,8 +136,71 @@ class SocialLoginButtons extends StatelessWidget {
     );
   }
 
-  void _handleSocialLogin(String provider) {
-    // This would be connected to auth provider in a real app
-    print('Login with $provider');
+  Future<void> _handleGoogleLogin(BuildContext context, WidgetRef ref) async {
+    try {
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      final result = await googleSignIn.signIn();
+      
+      if (result == null) {
+        return;
+      }
+      
+      final googleAuth = await result.authentication;
+      final token = googleAuth.idToken!;
+      
+      // Get user country
+      String countryName = 'Unknown';
+      try {
+        final response = await http.get(Uri.parse('https://ipapi.co/json/'));
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          countryName = data['country_name'] ?? 'Unknown';
+        }
+      } catch (e) {
+        debugPrint('Failed to fetch user country: $e');
+      }
+      
+      final success = await ref.read(authProvider.notifier).loginWithGoogle(
+        token,
+        countryName,
+      );
+      
+      if (success) {
+        // Use GoRouter to navigate, but we're in a static method
+        // So we need to get navigator
+        Navigator.of(context).pushReplacementNamed('/home');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(ref.read(authProvider).message ?? 'Google login failed'),
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to sign in with Google: $e')),
+      );
+    }
+  }
+
+  void _handleFacebookLogin(BuildContext context) {
+    // This would be implemented with a Facebook SDK
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Facebook login not implemented yet')),
+    );
+  }
+
+  void _handleAppleLogin(BuildContext context) {
+    // This would be implemented with Apple Sign-In
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Apple login not implemented yet')),
+    );
+  }
+
+  void _handleWalletLogin(BuildContext context) {
+    // This would be implemented with Wallet connection
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Wallet login not implemented yet')),
+    );
   }
 }

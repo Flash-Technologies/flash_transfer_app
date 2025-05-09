@@ -1,26 +1,36 @@
+// lib/presentation/auth/sign_up_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../presentation/common/social_login_buttons.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../../core/models/auth_models.dart';
+import '../../providers/auth_provider.dart';
+import '../common/social_login_buttons.dart';
 
-class SignUpScreen extends StatefulWidget {
+class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
 
   @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
+  ConsumerState<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+class _SignUpScreenState extends ConsumerState<SignUpScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
   bool _isLoading = false;
-  String _selectedCountryCode = 'US';
-  Map<String, dynamic> _selectedCountry = {
-    'cca2': 'US', 
-    'name': {'common': 'United States'},
-    'flag': 'https://flagcdn.com/us.svg',
-  };
-
+  
+  CountryModel? _selectedCountry;
+  List<CountryModel> _countries = [];
+  bool _loadingCountries = true;
+  
+  @override
+  void initState() {
+    super.initState();
+    _fetchCountries();
+  }
+  
   @override
   void dispose() {
     _emailController.dispose();
@@ -28,18 +38,59 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _confirmPasswordController.dispose();
     super.dispose();
   }
-
-  bool _validateEmail(String email) {
-    final regex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
-    return regex.hasMatch(email);
+  
+  Future<void> _fetchCountries() async {
+    try {
+      final response = await http.get(Uri.parse('https://restcountries.com/v3.1/all'));
+      
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        
+        final countries = data
+          .map((country) => CountryModel(
+            name: country['name']['common'],
+            flag: country['flags']['svg'] ?? country['flags']['png'] ?? '',
+          ))
+          .toList()
+          ..sort((a, b) => a.name.compareTo(b.name));
+        
+        if (mounted) {
+          setState(() {
+            _countries = countries;
+            _loadingCountries = false;
+            
+            // Set default country to United States
+            _selectedCountry = countries.firstWhere(
+              (c) => c.name == 'United States',
+              orElse: () => countries.first,
+            );
+          });
+        }
+      } else {
+        throw Exception('Failed to load countries');
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _loadingCountries = false;
+        });
+        
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to load countries: $e')),
+        );
+      }
+    }
   }
-
+  
+  bool _validateEmail(String email) {
+    return RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(email);
+  }
+  
   bool _validatePassword(String password) {
     return password.length >= 6;
   }
-
+  
   void _handleContinue() {
-    // Form validation
     if (_emailController.text.isEmpty || 
         _passwordController.text.isEmpty || 
         _confirmPasswordController.text.isEmpty) {
@@ -69,58 +120,71 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
       return;
     }
-
+    
+    if (_selectedCountry == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a country')),
+      );
+      return;
+    }
+    
     // Navigate to identity screen with parameters
-    context.push('/set-identity?email=${_emailController.text}&countryName=${_selectedCountry['name']['common']}&password=${_passwordController.text}');
+    context.push('/set-identity', extra: {
+      'email': _emailController.text,
+      'countryName': _selectedCountry!.name,
+      'password': _passwordController.text,
+    });
   }
-
+  
   void _showCountryPicker() {
-    // For now, we'll use a simple dialog
-    // In a real app, you'd use a proper country picker package
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Select Country'),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView(
-            shrinkWrap: true,
-            children: [
-              _buildCountryTile('US', 'United States', 'https://flagcdn.com/us.svg'),
-              _buildCountryTile('GB', 'United Kingdom', 'https://flagcdn.com/gb.svg'),
-              _buildCountryTile('FR', 'France', 'https://flagcdn.com/fr.svg'),
-              _buildCountryTile('DE', 'Germany', 'https://flagcdn.com/de.svg'),
-              _buildCountryTile('IN', 'India', 'https://flagcdn.com/in.svg'),
-            ],
-          ),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.6,
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            const Text(
+              'Select Country',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _countries.length,
+                itemBuilder: (context, index) {
+                  final country = _countries[index];
+                  return ListTile(
+                    leading: Image.network(
+                      country.flag,
+                      width: 32,
+                      height: 20,
+                      errorBuilder: (context, error, stackTrace) => 
+                          const Icon(Icons.flag),
+                    ),
+                    title: Text(country.name),
+                    onTap: () {
+                      setState(() {
+                        _selectedCountry = country;
+                      });
+                      Navigator.pop(context);
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
-
-  Widget _buildCountryTile(String code, String name, String flag) {
-    return ListTile(
-      leading: Image.network(
-        flag,
-        width: 30,
-        height: 20,
-        errorBuilder: (context, error, stackTrace) => const Icon(Icons.flag),
-      ),
-      title: Text(name),
-      onTap: () {
-        setState(() {
-          _selectedCountryCode = code;
-          _selectedCountry = {
-            'cca2': code,
-            'name': {'common': name},
-            'flag': flag,
-          };
-        });
-        Navigator.pop(context);
-      },
-    );
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,7 +197,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 24),
-                // Logo and app name
+                
                 Center(
                   child: Column(
                     children: [
@@ -165,7 +229,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 32),
                 
-                // Country selector
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -177,8 +240,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    GestureDetector(
-                      onTap: _showCountryPicker,
+                    InkWell(
+                      onTap: _loadingCountries ? null : _showCountryPicker,
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
@@ -191,167 +254,81 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(2),
-                              child: Image.network(
-                                _selectedCountry['flag'],
-                                width: 24,
-                                height: 16,
-                                errorBuilder: (context, error, stackTrace) => 
-                                    const Icon(Icons.flag, size: 24),
+                        child: _loadingCountries
+                            ? const Row(
+                                children: [
+                                  SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text('Loading countries...'),
+                                ],
+                              )
+                            : Row(
+                                children: [
+                                  if (_selectedCountry != null)
+                                    Image.network(
+                                      _selectedCountry!.flag,
+                                      width: 24,
+                                      height: 16,
+                                      errorBuilder: (context, error, stackTrace) => 
+                                          const Icon(Icons.flag, size: 24),
+                                    ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    _selectedCountry?.name ?? 'Select Country',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Color(0xFF181F30),
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  const Icon(
+                                    Icons.keyboard_arrow_down,
+                                    size: 16,
+                                  ),
+                                ],
                               ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              _selectedCountry['name']['common'],
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Color(0xFF181F30),
-                              ),
-                            ),
-                            const Spacer(),
-                            Image.asset(
-                              'assets/icons/navigation_icons/arrow_down.png',
-                              width: 12,
-                              height: 6,
-                              // If asset not available yet, use Icon instead
-                              errorBuilder: (context, error, stackTrace) => 
-                                  const Icon(Icons.keyboard_arrow_down, size: 16),
-                            ),
-                          ],
-                        ),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 
-                // Email field
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Enter Your Mail',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        hintText: 'Enter your email',
-                        hintStyle: const TextStyle(
-                          color: Color(0xFF6E757D),
-                          fontSize: 14,
-                        ),
-                        filled: false,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFEBECED),
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFEBECED),
-                          ),
-                        ),
-                        contentPadding: const EdgeInsets.all(16),
-                      ),
-                    ),
-                  ],
+                TextFormField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    labelText: 'Enter Your Mail',
+                    hintText: 'Enter your email',
+                  ),
                 ),
                 const SizedBox(height: 16),
                 
-                // Password field
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Set Password',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: _passwordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        hintText: 'Set your Password',
-                        hintStyle: const TextStyle(
-                          color: Color(0xFF6E757D),
-                          fontSize: 14,
-                        ),
-                        filled: false,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFEBECED),
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFEBECED),
-                          ),
-                        ),
-                        contentPadding: const EdgeInsets.all(16),
-                      ),
-                    ),
-                  ],
+                TextFormField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Set Password',
+                    hintText: 'Set your Password',
+                  ),
                 ),
                 const SizedBox(height: 16),
                 
-                // Confirm Password field
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Confirm Password',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: _confirmPasswordController,
-                      obscureText: true,
-                      decoration: InputDecoration(
-                        hintText: 'Re-enter Password',
-                        hintStyle: const TextStyle(
-                          color: Color(0xFF6E757D),
-                          fontSize: 14,
-                        ),
-                        filled: false,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFEBECED),
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: const BorderSide(
-                            color: Color(0xFFEBECED),
-                          ),
-                        ),
-                        contentPadding: const EdgeInsets.all(16),
-                      ),
-                    ),
-                  ],
+                TextFormField(
+                  controller: _confirmPasswordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Confirm Password',
+                    hintText: 'Re-enter Password',
+                  ),
                 ),
                 const SizedBox(height: 32),
                 
-                // Continue button
                 SizedBox(
                   width: double.infinity,
                   height: 56,
@@ -381,12 +358,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 
                 const SizedBox(height: 24),
                 
-                // Social login buttons
                 const SocialLoginButtons(),
                 
                 const SizedBox(height: 48),
                 
-                // Login link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

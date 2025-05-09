@@ -1,18 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../presentation/common/social_login_buttons.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import '../../core/models/auth_models.dart';
+import '../../providers/auth_provider.dart';
+import '../common/social_login_buttons.dart';
 
-class SignInScreen extends StatefulWidget {
+class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  ConsumerState<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+class _SignInScreenState extends ConsumerState<SignInScreen> {
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
   bool _isLoading = false;
+  String? _userCountry;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserCountry();
+  }
 
   @override
   void dispose() {
@@ -21,27 +35,158 @@ class _SignInScreenState extends State<SignInScreen> {
     super.dispose();
   }
 
-  void _handleLogin() {
-    // Client-side validation
+  Future<void> _fetchUserCountry() async {
+    try {
+      final response = await http.get(Uri.parse('https://ipapi.co/json/'));
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          _userCountry = data['country_name'] ?? 'Unknown';
+        });
+      }
+    } catch (e) {
+      debugPrint('Failed to fetch user country: $e');
+    }
+  }
+
+  Future<void> _handleLogin() async {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all fields')),
+        const SnackBar(
+          content: Text('Please fill in all fields'),
+          backgroundColor: Colors.red,
+        ),
       );
       return;
     }
+
+    final loginRequest = LoginRequest(
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
 
     setState(() {
       _isLoading = true;
     });
 
-    // Simulate API call delay
-    Future.delayed(const Duration(seconds: 1), () {
+    final success = await ref.read(authProvider.notifier).login(loginRequest);
+
+    setState(() {
+      _isLoading = false;
+    });
+
+    if (!mounted) return;
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Login successful! Redirecting...'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      // Add a small delay to ensure the snackbar is visible
+      await Future.delayed(const Duration(milliseconds: 500));
+      if (mounted) {
+        context.go('/home');
+      }
+    } else {
+      final errorMessage = ref.read(authProvider).message ?? 'Login failed';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 3),
+          action: SnackBarAction(
+            label: 'Dismiss',
+            textColor: Colors.white,
+            onPressed: () {
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+            },
+          ),
+        ),
+      );
+    }
+  }
+
+  Future<void> _handleGoogleLogin() async {
+    try {
+      final result = await _googleSignIn.signIn();
+
+      if (result == null) {
+        return;
+      }
+
+      final googleAuth = await result.authentication;
+
+      setState(() {
+        _isLoading = true;
+      });
+
+      if (_userCountry == null) {
+        await _fetchUserCountry();
+      }
+
+      final success = await ref
+          .read(authProvider.notifier)
+          .loginWithGoogle(googleAuth.idToken!, _userCountry ?? 'Unknown');
+
       setState(() {
         _isLoading = false;
       });
-      // Navigate to home screen
-      context.go('/home');
-    });
+
+      if (success) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Google login successful! Redirecting...'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          context.go('/home');
+        }
+      } else {
+        if (mounted) {
+          final errorMessage =
+              ref.read(authProvider).message ?? 'Google login failed';
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(errorMessage),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 3),
+              action: SnackBarAction(
+                label: 'Dismiss',
+                textColor: Colors.white,
+                onPressed: () {
+                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                },
+              ),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to sign in with Google: $e'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+            action: SnackBarAction(
+              label: 'Dismiss',
+              textColor: Colors.white,
+              onPressed: () {
+                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              },
+            ),
+          ),
+        );
+      }
+    }
   }
 
   void _handleForgotPassword() {
@@ -68,6 +213,8 @@ class _SignInScreenState extends State<SignInScreen> {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
+
+                  // In a real app, you would call an API to send a reset link
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                       content: Text('Reset link sent to your email'),
@@ -83,6 +230,9 @@ class _SignInScreenState extends State<SignInScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authProvider);
+    final isLoading = authState.isLoading || _isLoading;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -93,7 +243,7 @@ class _SignInScreenState extends State<SignInScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 48),
-                // Logo and app name
+
                 Center(
                   child: Column(
                     children: [
@@ -125,7 +275,6 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 const SizedBox(height: 48),
 
-                // Email field
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -166,7 +315,6 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Password field
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -206,7 +354,6 @@ class _SignInScreenState extends State<SignInScreen> {
                   ],
                 ),
 
-                // Forgot password link
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
@@ -224,12 +371,11 @@ class _SignInScreenState extends State<SignInScreen> {
 
                 const SizedBox(height: 16),
 
-                // Login button
                 SizedBox(
                   width: double.infinity,
                   height: 56,
                   child: ElevatedButton(
-                    onPressed: _isLoading ? null : _handleLogin,
+                    onPressed: isLoading ? null : _handleLogin,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFFFC000),
                       foregroundColor: const Color(0xFF181F30),
@@ -239,7 +385,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       disabledBackgroundColor: Colors.grey.shade400,
                     ),
                     child:
-                        _isLoading
+                        isLoading
                             ? Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -273,7 +419,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
                 const SizedBox(height: 24),
 
-                // OR divider
                 const Row(
                   children: [
                     Expanded(
@@ -297,12 +442,10 @@ class _SignInScreenState extends State<SignInScreen> {
 
                 const SizedBox(height: 24),
 
-                // Social login buttons
-                const SocialLoginButtons(),
+                SocialLoginButtons(onGoogleLogin: _handleGoogleLogin),
 
                 const SizedBox(height: 48),
 
-                // Register link
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
