@@ -36,6 +36,7 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
   String? _dob;
   bool _sameAddress = false;
   bool _isAgreed = false;
+  bool _isSubmitting = false;
 
   @override
   void dispose() {
@@ -68,6 +69,10 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
       return;
     }
 
+    setState(() {
+      _isSubmitting = true; // Add this state variable
+    });
+
     final registerRequest = RegisterRequest(
       email: widget.email,
       password: widget.password,
@@ -90,42 +95,71 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
         .read(authProvider.notifier)
         .register(registerRequest);
 
+    setState(() {
+      _isSubmitting = false;
+    });
+
     if (success) {
       _showRegistrationSuccessDialog();
     } else {
       if (mounted) {
         final errorMessage =
             ref.read(authProvider).message ?? 'Registration failed';
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(errorMessage)));
+        _showRegistrationErrorDialog(errorMessage);
       }
     }
   }
 
   void _showRegistrationSuccessDialog() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Registration Successful'),
-            content: const Text(
-              'A verification link has been sent to your email address. Please check your inbox and verify your account.',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  context.go('/verification', extra: {'email': widget.email});
-                },
-                child: const Text('OK'),
-              ),
-            ],
-          ),
-    );
-  }
-
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => AlertDialog(
+      title: const Text('Registration Successful'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+              'A verification link has been sent to your email address.'),
+          const SizedBox(height: 8),
+          const Text(
+              'Please check your inbox and click on the verification link to activate your account.'),
+          const SizedBox(height: 16),
+          const Text(
+              'After verifying your email, you can log in to your account.'),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context); // Close the dialog
+            // Navigate directly to sign-in, bypassing splash screen
+            context.go('/sign-in');
+          },
+          child: const Text('Go to Login'),
+        ),
+      ],
+    ),
+  );
+}
+void _showRegistrationErrorDialog(String errorMessage) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Registration Failed'),
+      content: Text(errorMessage),
+      actions: [
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('OK'),
+        ),
+      ],
+    ),
+  );
+}
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);

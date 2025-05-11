@@ -21,10 +21,11 @@ final routerProvider = Provider<GoRouter>((ref) {
     navigatorKey: _rootNavigatorKey,
     initialLocation: '/',
     redirect: (context, state) {
-      // Don't redirect during login attempts to allow error messages to show
-      final isLoginInProgress = authState.isLoading && 
-                               (state.matchedLocation == '/sign-in' || 
-                                state.matchedLocation == '/sign-up');
+      // Don't redirect during auth processes to allow error messages to show
+      final isAuthInProgress = authState.isLoading && 
+                              (state.matchedLocation == '/sign-in' || 
+                               state.matchedLocation == '/sign-up' ||
+                               state.matchedLocation == '/set-identity');
 
       // Auth guard
       final isLoggedIn = authState.status == AuthStatus.authenticated;
@@ -37,8 +38,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           state.matchedLocation == '/success';
 
       // If initial app load is still loading auth state, show splash screen
-      // But don't redirect during login attempt
-      if (authState.isLoading && !isLoginInProgress) {
+      // But don't redirect during auth operations
+      if (authState.isLoading && !isAuthInProgress) {
         return '/';
       }
 

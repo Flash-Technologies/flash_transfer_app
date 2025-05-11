@@ -78,26 +78,28 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<bool> register(RegisterRequest request) async {
-    state = state.copyWith(isLoading: true);
-
-    final response = await _authService.register(request);
-
-    if (response.success) {
-      state = state.copyWith(
-        status: AuthStatus.verifying,
-        message: response.message,
-        isLoading: false,
-      );
-      return true;
-    } else {
-      state = state.copyWith(
-        status: AuthStatus.unauthenticated,
-        message: response.message,
-        isLoading: false,
-      );
-      return false;
-    }
+  state = state.copyWith(isLoading: true);
+  
+  final response = await _authService.register(request);
+  
+  if (response.success) {
+    // Don't change status to verifying - keep it as unauthenticated
+    // Just set the message and isLoading flag
+    state = state.copyWith(
+      status: AuthStatus.unauthenticated, // Keep as unauthenticated
+      message: response.message,
+      isLoading: false,
+    );
+    return true;
+  } else {
+    state = state.copyWith(
+      status: AuthStatus.unauthenticated,
+      message: response.message,
+      isLoading: false,
+    );
+    return false;
   }
+}
 
   Future<bool> login(LoginRequest request) async {
     state = state.copyWith(isLoading: true, message: null);
