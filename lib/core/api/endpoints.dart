@@ -9,6 +9,13 @@ class Endpoints {
   static const String googleAuth = '/api/user/authenticate-google';
   static const String facebookAuth = '/api/user/authenticate-facebook';
 
+
+  // currency endpoints
+    static const String exchangeRates = '$baseUrl/api/exchange/rates';
+  static const String exchangeCalculate = '$baseUrl/api/exchange/calculate';
+  static const String exchangePairs = '$baseUrl/api/exchange/pairs';
+  static const String currencies = '$baseUrl/api/exchange/currencies';
+
   // External API
   static const String countries = 'https://restcountries.com/v3.1/all';
 }
