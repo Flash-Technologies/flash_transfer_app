@@ -1,4 +1,3 @@
-// lib/presentation/common/social_login_buttons.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -42,25 +41,28 @@ class SocialLoginButtons extends ConsumerWidget {
                 'assets/images/google.png',
                 width: 24,
                 height: 24,
-                errorBuilder: (_, __, ___) => const Icon(
-                  Icons.g_mobiledata,
-                  size: 24,
-                  color: Color(0xFF4285F4),
-                ),
+                errorBuilder:
+                    (_, __, ___) => const Icon(
+                      Icons.g_mobiledata,
+                      size: 24,
+                      color: Color(0xFF4285F4),
+                    ),
               ),
               label: 'Google',
-              onPressed: onGoogleLogin ?? () => _handleGoogleLogin(context, ref),
+              onPressed:
+                  onGoogleLogin ?? () => _handleGoogleLogin(context, ref),
             ),
             _buildSocialButton(
               icon: Image.asset(
                 'assets/images/facebook.png',
                 width: 24,
                 height: 24,
-                errorBuilder: (_, __, ___) => const Icon(
-                  Icons.facebook,
-                  size: 24,
-                  color: Color(0xFF1877F2),
-                ),
+                errorBuilder:
+                    (_, __, ___) => const Icon(
+                      Icons.facebook,
+                      size: 24,
+                      color: Color(0xFF1877F2),
+                    ),
               ),
               label: 'Facebook',
               onPressed: onFacebookLogin ?? () => _handleFacebookLogin(context),
@@ -70,11 +72,9 @@ class SocialLoginButtons extends ConsumerWidget {
                 'assets/images/apple.png',
                 width: 24,
                 height: 24,
-                errorBuilder: (_, __, ___) => const Icon(
-                  Icons.apple,
-                  size: 24,
-                  color: Colors.black,
-                ),
+                errorBuilder:
+                    (_, __, ___) =>
+                        const Icon(Icons.apple, size: 24, color: Colors.black),
               ),
               label: 'Apple',
               onPressed: onAppleLogin ?? () => _handleAppleLogin(context),
@@ -84,11 +84,12 @@ class SocialLoginButtons extends ConsumerWidget {
                 'assets/images/wallet.png',
                 width: 24,
                 height: 24,
-                errorBuilder: (_, __, ___) => const Icon(
-                  Icons.account_balance_wallet,
-                  size: 24,
-                  color: Colors.black,
-                ),
+                errorBuilder:
+                    (_, __, ___) => const Icon(
+                      Icons.account_balance_wallet,
+                      size: 24,
+                      color: Colors.black,
+                    ),
               ),
               label: 'Wallet',
               onPressed: onWalletLogin ?? () => _handleWalletLogin(context),
@@ -140,14 +141,14 @@ class SocialLoginButtons extends ConsumerWidget {
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn();
       final result = await googleSignIn.signIn();
-      
+
       if (result == null) {
         return;
       }
-      
+
       final googleAuth = await result.authentication;
       final token = googleAuth.idToken!;
-      
+
       // Get user country
       String countryName = 'Unknown';
       try {
@@ -159,12 +160,11 @@ class SocialLoginButtons extends ConsumerWidget {
       } catch (e) {
         debugPrint('Failed to fetch user country: $e');
       }
-      
-      final success = await ref.read(authProvider.notifier).loginWithGoogle(
-        token,
-        countryName,
-      );
-      
+
+      final success = await ref
+          .read(authProvider.notifier)
+          .loginWithGoogle(token, countryName);
+
       if (success) {
         // Use GoRouter to navigate, but we're in a static method
         // So we need to get navigator
@@ -172,7 +172,9 @@ class SocialLoginButtons extends ConsumerWidget {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(ref.read(authProvider).message ?? 'Google login failed'),
+            content: Text(
+              ref.read(authProvider).message ?? 'Google login failed',
+            ),
           ),
         );
       }
