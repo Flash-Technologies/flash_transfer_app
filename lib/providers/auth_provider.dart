@@ -5,6 +5,7 @@ import '../core/models/api_response.dart';
 import '../core/models/auth_models.dart';
 import '../core/models/user.dart';
 import '../core/services/auth_service.dart';
+import 'dart:convert';
 
 // API Client provider
 final apiClientProvider = Provider<ApiClient>((ref) {
@@ -78,28 +79,28 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<bool> register(RegisterRequest request) async {
-  state = state.copyWith(isLoading: true);
-  
-  final response = await _authService.register(request);
-  
-  if (response.success) {
-    // Don't change status to verifying - keep it as unauthenticated
-    // Just set the message and isLoading flag
-    state = state.copyWith(
-      status: AuthStatus.unauthenticated, // Keep as unauthenticated
-      message: response.message,
-      isLoading: false,
-    );
-    return true;
-  } else {
-    state = state.copyWith(
-      status: AuthStatus.unauthenticated,
-      message: response.message,
-      isLoading: false,
-    );
-    return false;
+    state = state.copyWith(isLoading: true);
+
+    final response = await _authService.register(request);
+
+    if (response.success) {
+      // Don't change status to verifying - keep it as unauthenticated
+      // Just set the message and isLoading flag
+      state = state.copyWith(
+        status: AuthStatus.unauthenticated, // Keep as unauthenticated
+        message: response.message,
+        isLoading: false,
+      );
+      return true;
+    } else {
+      state = state.copyWith(
+        status: AuthStatus.unauthenticated,
+        message: response.message,
+        isLoading: false,
+      );
+      return false;
+    }
   }
-}
 
   Future<bool> login(LoginRequest request) async {
     state = state.copyWith(isLoading: true, message: null);
@@ -132,60 +133,144 @@ class AuthNotifier extends StateNotifier<AuthState> {
       }
 
       state = state.copyWith(
-      status: AuthStatus.unauthenticated,
-      message: response.message ?? "Authentication failed",
-      isLoading: false,
-    );
-    return false;
-  }
-  }
-
-  Future<bool> loginWithGoogle(String token, String countryName) async {
-    state = state.copyWith(isLoading: true);
-
-    final response = await _authService.authenticateWithGoogle(
-      SocialAuthRequest(token: token, countryName: countryName),
-    );
-
-    if (response.success && response.data != null) {
-      await _authService.saveUserData(response.data!);
-      state = state.copyWith(
-        status: AuthStatus.authenticated,
-        user: response.data,
-        message: response.message,
-        isLoading: false,
-      );
-      return true;
-    } else {
-      state = state.copyWith(
         status: AuthStatus.unauthenticated,
-        message: response.message,
+        message: response.message ?? "Authentication failed",
         isLoading: false,
       );
       return false;
     }
   }
 
-  Future<bool> loginWithFacebook(String token, String countryName) async {
+  Future<bool> loginWithGoogle(String idToken, String countryName) async {
     state = state.copyWith(isLoading: true);
-
-    final response = await _authService.authenticateWithFacebook(
-      SocialAuthRequest(token: token, countryName: countryName),
-    );
-
-    if (response.success && response.data != null) {
-      await _authService.saveUserData(response.data!);
-      state = state.copyWith(
-        status: AuthStatus.authenticated,
-        user: response.data,
-        message: response.message,
-        isLoading: false,
+    try {
+      final response = await _authService.authenticateWithGoogle(
+        SocialAuthRequest(token: idToken, countryName: countryName),
       );
-      return true;
-    } else {
+
+      if (response.success && response.data != null) {
+        await _authService.saveUserData(response.data!);
+        state = state.copyWith(
+          status: AuthStatus.authenticated,
+          user: response.data,
+          message: response.message,
+          isLoading: false,
+        );
+        return true;
+      } else {
+        state = state.copyWith(
+          status: AuthStatus.unauthenticated,
+          message: response.message,
+          isLoading: false,
+        );
+        return false;
+      }
+    } catch (e) {
       state = state.copyWith(
         status: AuthStatus.unauthenticated,
-        message: response.message,
+        message: 'Error: ${e.toString()}',
+        isLoading: false,
+      );
+      return false;
+    }
+  }
+
+  Future<bool> loginWithFacebook(String accessToken, String countryName) async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final response = await _authService.authenticateWithFacebook(
+        SocialAuthRequest(token: accessToken, countryName: countryName),
+      );
+
+      if (response.success && response.data != null) {
+        await _authService.saveUserData(response.data!);
+        state = state.copyWith(
+          status: AuthStatus.authenticated,
+          user: response.data,
+          message: response.message,
+          isLoading: false,
+        );
+        return true;
+      } else {
+        state = state.copyWith(
+          status: AuthStatus.unauthenticated,
+          message: response.message,
+          isLoading: false,
+        );
+        return false;
+      }
+    } catch (e) {
+      state = state.copyWith(
+        status: AuthStatus.unauthenticated,
+        message: 'Error: ${e.toString()}',
+        isLoading: false,
+      );
+      return false;
+    }
+  }
+
+  Future<bool> loginWithApple(String idToken, String countryName) async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final response = await _authService.authenticateWithApple(
+        SocialAuthRequest(token: idToken, countryName: countryName),
+      );
+
+      if (response.success && response.data != null) {
+        await _authService.saveUserData(response.data!);
+        state = state.copyWith(
+          status: AuthStatus.authenticated,
+          user: response.data,
+          message: response.message,
+          isLoading: false,
+        );
+        return true;
+      } else {
+        state = state.copyWith(
+          status: AuthStatus.unauthenticated,
+          message: response.message,
+          isLoading: false,
+        );
+        return false;
+      }
+    } catch (e) {
+      state = state.copyWith(
+        status: AuthStatus.unauthenticated,
+        message: 'Error: ${e.toString()}',
+        isLoading: false,
+      );
+      return false;
+    }
+  }
+
+  Future<bool> loginWithWallet(String walletAddress, String signature) async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final response = await _authService.authenticateWithWallet(
+        WalletAuthRequest(walletAddress: walletAddress, signature: signature),
+      );
+
+      if (response.success && response.data != null) {
+        await _authService.saveUserData(response.data!);
+        state = state.copyWith(
+          status: AuthStatus.authenticated,
+          user: response.data,
+          message: response.message,
+          isLoading: false,
+        );
+        return true;
+      } else {
+        state = state.copyWith(
+          status: AuthStatus.unauthenticated,
+          message: response.message,
+          isLoading: false,
+        );
+        return false;
+      }
+    } catch (e) {
+      state = state.copyWith(
+        status: AuthStatus.unauthenticated,
+        message: 'Error: ${e.toString()}',
         isLoading: false,
       );
       return false;

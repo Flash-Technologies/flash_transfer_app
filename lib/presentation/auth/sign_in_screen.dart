@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../core/models/auth_models.dart';
 import '../../providers/auth_provider.dart';
 import '../common/social_login_buttons.dart';
+import '../../main.dart' show googleSignIn;
 
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({Key? key}) : super(key: key);
@@ -18,7 +21,7 @@ class SignInScreen extends ConsumerStatefulWidget {
 class _SignInScreenState extends ConsumerState<SignInScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  final _googleSignIn = googleSignIn;
   bool _isLoading = false;
   String? _userCountry;
 
@@ -110,14 +113,30 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   }
 
   Future<void> _handleGoogleLogin() async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
     try {
+      // Sign out first to ensure we get the account selection dialog
+      await _googleSignIn.signOut();
+
       final result = await _googleSignIn.signIn();
 
       if (result == null) {
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(content: Text('Google sign in was cancelled')),
+        );
         return;
       }
 
       final googleAuth = await result.authentication;
+      final token = googleAuth.idToken;
+
+      if (token == null) {
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(content: Text('Could not get Google auth token')),
+        );
+        return;
+      }
 
       setState(() {
         _isLoading = true;
@@ -127,9 +146,14 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         await _fetchUserCountry();
       }
 
+      // Show loading indicator
+      scaffoldMessenger.showSnackBar(
+        const SnackBar(content: Text('Signing in with Google...')),
+      );
+
       final success = await ref
           .read(authProvider.notifier)
-          .loginWithGoogle(googleAuth.idToken!, _userCountry ?? 'Unknown');
+          .loginWithGoogle(token, _userCountry ?? 'Unknown');
 
       setState(() {
         _isLoading = false;
@@ -137,7 +161,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
       if (success) {
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
+          scaffoldMessenger.showSnackBar(
             const SnackBar(
               content: Text('Google login successful! Redirecting...'),
               backgroundColor: Colors.green,
@@ -149,7 +173,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         if (mounted) {
           final errorMessage =
               ref.read(authProvider).message ?? 'Google login failed';
-          ScaffoldMessenger.of(context).showSnackBar(
+          scaffoldMessenger.showSnackBar(
             SnackBar(
               content: Text(errorMessage),
               backgroundColor: Colors.red,
@@ -158,7 +182,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 label: 'Dismiss',
                 textColor: Colors.white,
                 onPressed: () {
-                  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  scaffoldMessenger.hideCurrentSnackBar();
                 },
               ),
             ),
@@ -171,7 +195,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       });
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        debugPrint('Google sign in error: $e');
+        scaffoldMessenger.showSnackBar(
           SnackBar(
             content: Text('Failed to sign in with Google: $e'),
             backgroundColor: Colors.red,
@@ -180,10 +205,210 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               label: 'Dismiss',
               textColor: Colors.white,
               onPressed: () {
-                ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                scaffoldMessenger.hideCurrentSnackBar();
               },
             ),
           ),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleFacebookLogin(BuildContext context, WidgetRef ref) async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+
+      // Trigger Facebook login with required permissions
+      final result = await FacebookAuth.instance.login(
+        permissions: ['email', 'public_profile'],
+      );
+
+      if (result.status != LoginStatus.success) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        if (result.status == LoginStatus.cancelled) {
+          scaffoldMessenger.showSnackBar(
+            const SnackBar(content: Text('Facebook login cancelled')),
+          );
+          return;
+        } else {
+          scaffoldMessenger.showSnackBar(
+            SnackBar(content: Text('Facebook login failed: ${result.message}')),
+          );
+          return;
+        }
+      }
+
+      // Get the Facebook access token
+      final accessToken = result.accessToken?.token;
+
+      if (accessToken == null) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(content: Text('Failed to get Facebook access token')),
+        );
+        return;
+      }
+
+      if (_userCountry == null) {
+        await _fetchUserCountry();
+      }
+
+      // Show loading indicator
+      scaffoldMessenger.showSnackBar(
+        const SnackBar(content: Text('Signing in with Facebook...')),
+      );
+
+      // Call the auth provider to authenticate with the backend
+      final success = await ref
+          .read(authProvider.notifier)
+          .loginWithFacebook(accessToken, _userCountry ?? 'Unknown');
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (success) {
+        if (mounted) {
+          scaffoldMessenger.showSnackBar(
+            const SnackBar(
+              content: Text('Facebook login successful! Redirecting...'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          context.go('/home');
+        }
+      } else {
+        if (mounted) {
+          final errorMessage =
+              ref.read(authProvider).message ?? 'Facebook login failed';
+          scaffoldMessenger.showSnackBar(
+            SnackBar(
+              content: Text(errorMessage),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (mounted) {
+        debugPrint('Facebook sign in error: $e');
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text('Failed to sign in with Facebook: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleAppleLogin(BuildContext context, WidgetRef ref) async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+
+      // Request Apple sign in with the correct credentials
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+
+      // Get the ID token from the credential
+      final idToken = credential.identityToken;
+
+      if (idToken == null) {
+        setState(() {
+          _isLoading = false;
+        });
+
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(content: Text('Failed to get Apple ID token')),
+        );
+        return;
+      }
+
+      if (_userCountry == null) {
+        await _fetchUserCountry();
+      }
+
+      // Show loading indicator
+      scaffoldMessenger.showSnackBar(
+        const SnackBar(content: Text('Signing in with Apple...')),
+      );
+
+      // Call the auth provider to authenticate with the backend
+      final success = await ref
+          .read(authProvider.notifier)
+          .loginWithApple(idToken, _userCountry ?? 'Unknown');
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (success) {
+        if (mounted) {
+          scaffoldMessenger.showSnackBar(
+            const SnackBar(
+              content: Text('Apple login successful! Redirecting...'),
+              backgroundColor: Colors.green,
+            ),
+          );
+          context.go('/home');
+        }
+      } else {
+        if (mounted) {
+          final errorMessage =
+              ref.read(authProvider).message ?? 'Apple login failed';
+          scaffoldMessenger.showSnackBar(
+            SnackBar(
+              content: Text(errorMessage),
+              backgroundColor: Colors.red,
+              duration: const Duration(seconds: 3),
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (mounted) {
+        debugPrint('Apple sign in error: $e');
+
+        // Special handling for Apple Sign In errors
+        String errorMessage = 'Failed to sign in with Apple';
+
+        if (e.toString().contains('canceled')) {
+          errorMessage = 'Apple sign in was cancelled';
+        } else if (e.toString().contains('AuthorizationErrorCode.unknown')) {
+          errorMessage = 'Apple sign in failed: Unknown error';
+        } else if (e.toString().contains('AuthorizationErrorCode.failed')) {
+          errorMessage = 'Apple sign in failed: Authentication failed';
+        }
+
+        scaffoldMessenger.showSnackBar(
+          SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
         );
       }
     }
@@ -442,7 +667,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
                 const SizedBox(height: 24),
 
-                SocialLoginButtons(onGoogleLogin: _handleGoogleLogin),
+                SocialLoginButtons(
+                  onGoogleLogin: _handleGoogleLogin,
+                  onFacebookLogin: () => _handleFacebookLogin(context, ref),
+                  onAppleLogin: () => _handleAppleLogin(context, ref),
+                ),
 
                 const SizedBox(height: 48),
 

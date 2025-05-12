@@ -104,6 +104,44 @@ class AuthService {
     }
   }
 
+  // Authenticate with Apple
+  Future<ApiResponse<User>> authenticateWithApple(
+    SocialAuthRequest request,
+  ) async {
+    try {
+      final response = await _apiClient.post(
+        Endpoints.appleAuth,
+        data: request.toJson(),
+      );
+
+      return ApiResponse<User>.fromJson(
+        response.data,
+        (json) => User.fromJson(json),
+      );
+    } catch (e) {
+      return ApiResponse<User>(success: false, message: e.toString());
+    }
+  }
+
+  // Authenticate with Wallet
+  Future<ApiResponse<User>> authenticateWithWallet(
+    WalletAuthRequest request,
+  ) async {
+    try {
+      final response = await _apiClient.post(
+        Endpoints.walletAuth,
+        data: request.toJson(),
+      );
+
+      return ApiResponse<User>.fromJson(
+        response.data,
+        (json) => User.fromJson(json),
+      );
+    } catch (e) {
+      return ApiResponse<User>(success: false, message: e.toString());
+    }
+  }
+
   // Fetch countries list
   Future<List<CountryModel>> fetchCountries() async {
     try {

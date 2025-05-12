@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../providers/auth_provider.dart';
+import '../../main.dart' show googleSignIn;
 
 class SocialLoginButtons extends ConsumerWidget {
   final Function()? onGoogleLogin;
@@ -65,7 +69,8 @@ class SocialLoginButtons extends ConsumerWidget {
                     ),
               ),
               label: 'Facebook',
-              onPressed: onFacebookLogin ?? () => _handleFacebookLogin(context),
+              onPressed:
+                  onFacebookLogin ?? () => _handleFacebookLogin(context, ref),
             ),
             _buildSocialButton(
               icon: Image.asset(
@@ -77,7 +82,7 @@ class SocialLoginButtons extends ConsumerWidget {
                         const Icon(Icons.apple, size: 24, color: Colors.black),
               ),
               label: 'Apple',
-              onPressed: onAppleLogin ?? () => _handleAppleLogin(context),
+              onPressed: onAppleLogin ?? () => _handleAppleLogin(context, ref),
             ),
             _buildSocialButton(
               icon: Image.asset(
@@ -92,7 +97,8 @@ class SocialLoginButtons extends ConsumerWidget {
                     ),
               ),
               label: 'Wallet',
-              onPressed: onWalletLogin ?? () => _handleWalletLogin(context),
+              onPressed:
+                  onWalletLogin ?? () => _handleWalletLogin(context, ref),
             ),
           ],
         ),
@@ -138,16 +144,32 @@ class SocialLoginButtons extends ConsumerWidget {
   }
 
   Future<void> _handleGoogleLogin(BuildContext context, WidgetRef ref) async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
     try {
-      final GoogleSignIn googleSignIn = GoogleSignIn();
+      // Sign out first to ensure we get the account selection dialog
+      await googleSignIn.signOut();
+
+      // Trigger sign in process
       final result = await googleSignIn.signIn();
 
       if (result == null) {
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(content: Text('Google sign in was cancelled')),
+        );
         return;
       }
 
+      // Get authentication
       final googleAuth = await result.authentication;
-      final token = googleAuth.idToken!;
+      final token = googleAuth.idToken;
+
+      if (token == null) {
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(content: Text('Could not get Google auth token')),
+        );
+        return;
+      }
 
       // Get user country
       String countryName = 'Unknown';
@@ -161,46 +183,176 @@ class SocialLoginButtons extends ConsumerWidget {
         debugPrint('Failed to fetch user country: $e');
       }
 
+      // Show loading indicator
+      scaffoldMessenger.showSnackBar(
+        const SnackBar(content: Text('Signing in with Google...')),
+      );
+
       final success = await ref
           .read(authProvider.notifier)
           .loginWithGoogle(token, countryName);
 
       if (success) {
-        // Use GoRouter to navigate, but we're in a static method
-        // So we need to get navigator
-        Navigator.of(context).pushReplacementNamed('/home');
+        context.go('/home');
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              ref.read(authProvider).message ?? 'Google login failed',
-            ),
-          ),
-        );
+        final errorMessage =
+            ref.read(authProvider).message ?? 'Google login failed';
+        scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
+      debugPrint('Google sign in error: $e');
+      scaffoldMessenger.showSnackBar(
         SnackBar(content: Text('Failed to sign in with Google: $e')),
       );
     }
   }
 
-  void _handleFacebookLogin(BuildContext context) {
-    // This would be implemented with a Facebook SDK
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Facebook login not implemented yet')),
-    );
+  Future<void> _handleFacebookLogin(BuildContext context, WidgetRef ref) async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    try {
+      // Trigger Facebook login with required permissions
+      final result = await FacebookAuth.instance.login(
+        permissions: ['email', 'public_profile'],
+      );
+
+      if (result.status != LoginStatus.success) {
+        if (result.status == LoginStatus.cancelled) {
+          scaffoldMessenger.showSnackBar(
+            const SnackBar(content: Text('Facebook login cancelled')),
+          );
+        } else {
+          scaffoldMessenger.showSnackBar(
+            SnackBar(content: Text('Facebook login failed: ${result.message}')),
+          );
+        }
+        return;
+      }
+
+      // Get the access token from the result
+      final accessToken = result.accessToken?.token;
+
+      if (accessToken == null) {
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(content: Text('Failed to get Facebook access token')),
+        );
+        return;
+      }
+
+      // Show loading indicator
+      scaffoldMessenger.showSnackBar(
+        const SnackBar(content: Text('Signing in with Facebook...')),
+      );
+
+      // Get user country
+      String countryName = 'Unknown';
+      try {
+        final response = await http.get(Uri.parse('https://ipapi.co/json/'));
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          countryName = data['country_name'] ?? 'Unknown';
+        }
+      } catch (e) {
+        debugPrint('Failed to fetch user country: $e');
+      }
+
+      // Call the auth provider to authenticate with the backend
+      final success = await ref
+          .read(authProvider.notifier)
+          .loginWithFacebook(accessToken, countryName);
+
+      if (success) {
+        context.go('/home');
+      } else {
+        final errorMessage =
+            ref.read(authProvider).message ?? 'Facebook login failed';
+        scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
+      }
+    } catch (e) {
+      debugPrint('Facebook sign in error: $e');
+      scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Failed to sign in with Facebook: $e')),
+      );
+    }
   }
 
-  void _handleAppleLogin(BuildContext context) {
-    // This would be implemented with Apple Sign-In
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Apple login not implemented yet')),
-    );
+  Future<void> _handleAppleLogin(BuildContext context, WidgetRef ref) async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    try {
+      // Request Apple sign in with the correct credentials
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+        // Use the credentials provided by the user
+        webAuthenticationOptions: WebAuthenticationOptions(
+          clientId: 'com.flashTransfer.new.auth',
+          redirectUri: Uri.parse('https://flash.closedsource.in/signin'),
+        ),
+      );
+
+      // Get the ID token from the credential
+      final idToken = credential.identityToken;
+
+      if (idToken == null) {
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(content: Text('Failed to get Apple ID token')),
+        );
+        return;
+      }
+
+      // Show loading indicator
+      scaffoldMessenger.showSnackBar(
+        const SnackBar(content: Text('Signing in with Apple...')),
+      );
+
+      // Get user country
+      String countryName = 'Unknown';
+      try {
+        final response = await http.get(Uri.parse('https://ipapi.co/json/'));
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          countryName = data['country_name'] ?? 'Unknown';
+        }
+      } catch (e) {
+        debugPrint('Failed to fetch user country: $e');
+      }
+
+      // Call the auth provider to authenticate with the backend
+      final success = await ref
+          .read(authProvider.notifier)
+          .loginWithApple(idToken, countryName);
+
+      if (success) {
+        context.go('/home');
+      } else {
+        final errorMessage =
+            ref.read(authProvider).message ?? 'Apple login failed';
+        scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
+      }
+    } catch (e) {
+      debugPrint('Apple sign in error: $e');
+
+      // Special handling for Apple Sign In errors
+      String errorMessage = 'Failed to sign in with Apple';
+
+      if (e.toString().contains('canceled')) {
+        errorMessage = 'Apple sign in was cancelled';
+      } else if (e.toString().contains('AuthorizationErrorCode.unknown')) {
+        errorMessage = 'Apple sign in failed: Unknown error';
+      } else if (e.toString().contains('AuthorizationErrorCode.failed')) {
+        errorMessage = 'Apple sign in failed: Authentication failed';
+      }
+
+      scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
+    }
   }
 
-  void _handleWalletLogin(BuildContext context) {
-    // This would be implemented with Wallet connection
+  void _handleWalletLogin(BuildContext context, WidgetRef ref) {
+    // This feature requires integration with a web3 wallet.
+    // Implementation would depend on specific requirements.
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Wallet login not implemented yet')),
     );

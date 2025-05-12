@@ -54,16 +54,10 @@ class LoginRequest {
   final String email;
   final String password;
 
-  LoginRequest({
-    required this.email,
-    required this.password,
-  });
+  LoginRequest({required this.email, required this.password});
 
   Map<String, dynamic> toJson() {
-    return {
-      'email': email,
-      'password': password,
-    };
+    return {'email': email, 'password': password};
   }
 }
 
@@ -88,10 +82,7 @@ class CountryModel {
   final String name;
   final String flag;
 
-  CountryModel({
-    required this.name,
-    required this.flag,
-  });
+  CountryModel({required this.name, required this.flag});
 
   factory CountryModel.fromJson(Map<String, dynamic> json) {
     return CountryModel(
@@ -105,13 +96,19 @@ class SocialAuthRequest {
   final String token;
   final String countryName;
 
-  SocialAuthRequest({
-    required this.token,
-    required this.countryName,
-  });
+  SocialAuthRequest({required this.token, required this.countryName});
+
+  Map<String, dynamic> toJson() => {'token': token, 'countryName': countryName};
+}
+
+class WalletAuthRequest {
+  final String walletAddress;
+  final String signature;
+
+  WalletAuthRequest({required this.walletAddress, required this.signature});
 
   Map<String, dynamic> toJson() => {
-    'token': token,
-    'countryName': countryName,
+    'walletAddress': walletAddress,
+    'signature': signature,
   };
 }

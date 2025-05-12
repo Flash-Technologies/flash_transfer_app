@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id">850808265877-916lji3l3vt73cc6r99d48hhtid53fb1.apps.googleusercontent.com</string>
+    <string name="firebase_database_url">https://flashtransaction.firebaseio.com</string>
+    <string name="gcm_defaultSenderId">850808265877</string>
+    <string name="google_api_key">YOUR_API_KEY</string>
+    <string name="google_app_id">1:850808265877:android:1234567890abcdef</string>
+    <string name="google_crash_reporting_api_key">YOUR_API_KEY</string>
+    <string name="google_storage_bucket">flashtransaction.appspot.com</string>
+    <string name="project_id">flashtransaction</string>
+</resources> 

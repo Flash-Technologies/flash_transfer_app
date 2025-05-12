@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Flash Transfer App</string>
+	<string>Flash Transfer</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -45,5 +45,42 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	
+	<!-- Social login configurations -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<!-- Google Sign In -->
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.850808265877-916lji3l3vt73cc6r99d48hhtid53fb1</string>
+			</array>
+		</dict>
+		<!-- Facebook Sign In -->
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb967460942254022</string>
+			</array>
+		</dict>
+	</array>
+	
+	<!-- Facebook Sign In -->
+	<key>FacebookAppID</key>
+	<string>967460942254022</string>
+	<key>FacebookClientToken</key>
+	<string>967460942254022abcdef0123456789</string>
+	<key>FacebookDisplayName</key>
+	<string>Flash Transfer</string>
+	
+	<!-- Apple Sign In -->
+	<key>com.apple.developer.applesignin</key>
+	<array>
+		<string>Default</string>
+	</array>
 </dict>
 </plist>
