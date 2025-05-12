@@ -277,6 +277,49 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  // For wallet login without signature (simplified version)
+  Future<bool> loginWithWalletAddress(
+    String walletAddress,
+    String countryName,
+  ) async {
+    state = state.copyWith(isLoading: true);
+    try {
+      // For this implementation, since we're just sending the wallet address
+      // We'll use a placeholder for signature requirement
+      final response = await _authService.authenticateWithWallet(
+        WalletAuthRequest(
+          walletAddress: walletAddress,
+          signature: "wallet_auth", // Placeholder signature as per requirements
+        ),
+      );
+
+      if (response.success && response.data != null) {
+        await _authService.saveUserData(response.data!);
+        state = state.copyWith(
+          status: AuthStatus.authenticated,
+          user: response.data,
+          message: response.message,
+          isLoading: false,
+        );
+        return true;
+      } else {
+        state = state.copyWith(
+          status: AuthStatus.unauthenticated,
+          message: response.message,
+          isLoading: false,
+        );
+        return false;
+      }
+    } catch (e) {
+      state = state.copyWith(
+        status: AuthStatus.unauthenticated,
+        message: 'Error: ${e.toString()}',
+        isLoading: false,
+      );
+      return false;
+    }
+  }
+
   Future<bool> resendVerification(String email) async {
     state = state.copyWith(isLoading: true);
 
