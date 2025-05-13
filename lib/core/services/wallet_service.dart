@@ -45,7 +45,7 @@ class WalletService {
       icon: Icons.wallet,
       androidPackage: 'app.phantom',
       iOSAppId: 'id1598432977',
-      universalLink: 'https://phantom.app',
+      universalLink: 'https://phantom.app/ul', // Fixed universal link
       scheme: 'phantom://',
       storeUrlAndroid:
           'https://play.google.com/store/apps/details?id=app.phantom',
@@ -57,7 +57,8 @@ class WalletService {
       icon: Icons.monetization_on,
       androidPackage: 'com.binance.dev',
       iOSAppId: 'id1436799971',
-      universalLink: 'https://binance.com',
+      universalLink:
+          'https://www.binance.com/en/wallet-direct', // Fixed universal link
       scheme: 'bnc://',
       storeUrlAndroid:
           'https://play.google.com/store/apps/details?id=com.binance.dev',
@@ -69,8 +70,8 @@ class WalletService {
       icon: Icons.account_balance_wallet,
       androidPackage: 'org.toshi',
       iOSAppId: 'id1278383455',
-      universalLink: 'https://wallet.coinbase.com',
-      scheme: 'coinbase://',
+      universalLink: 'https://go.cb-w.com', // Fixed universal link
+      scheme: 'cbwallet://', // Fixed scheme
       storeUrlAndroid:
           'https://play.google.com/store/apps/details?id=org.toshi',
       storeUrlIOS: 'https://apps.apple.com/app/coinbase-wallet/id1278383455',
@@ -88,42 +89,69 @@ class WalletService {
 
   void _initWalletConnect() {
     try {
-      // Create a connector
+      final bridgeServers = [
+        'https://bridge.walletconnect.org',
+        'https://safe-walletconnect.gnosis.io/',
+        'https://bridge.myhostedserver.com',
+        'https://w.bridge.walletconnect.org',
+      ];
+
+      // Try the first bridge server
       _connector = WalletConnect(
-        bridge: 'https://bridge.walletconnect.org',
+        bridge: bridgeServers[0],
         clientMeta: const PeerMeta(
           name: 'Flash Transfer',
           description: 'Flash Transfer Mobile App - Send and Receive Money',
-          url: 'https://flash-transfer.com',
+          url: 'https://flash.closedsource.in',
           icons: ['https://flash-transfer.com/logo.png'],
         ),
       );
 
-      // Subscribe to session status changes
       _connector?.registerListeners(
         onConnect: (session) {
           debugPrint("✅ WALLET CONNECTED! Session: $session");
+
+          // Enhanced logging for session data
+          debugPrint(
+            "✅ SESSION DATA: ${jsonEncode({'accounts': session.accounts, 'chainId': session.chainId, 'connected': _connector?.connected})}",
+          );
           debugPrint("✅ ACCOUNTS: ${session.accounts}");
+          debugPrint("✅ CHAIN ID: ${session.chainId}");
+
           _session = session;
           _isConnectionInProgress = false;
           _cancelTimeoutTimer();
+
+          // Validate session and accounts
+          if (session.accounts.isEmpty) {
+            debugPrint("⚠️ WARNING: Connected but no accounts returned");
+            if (_connectCompleter != null && !_connectCompleter!.isCompleted) {
+              _connectCompleter!.complete(
+                ConnectResponse(
+                  connected: false,
+                  walletAddress: null,
+                  error: 'No accounts returned from wallet',
+                ),
+              );
+            }
+            return;
+          }
+
+          final walletAddress = session.accounts[0].toLowerCase();
+          debugPrint("✅ EXTRACTED WALLET ADDRESS: $walletAddress");
 
           if (_connectCompleter != null && !_connectCompleter!.isCompleted) {
             _connectCompleter!.complete(
               ConnectResponse(
                 connected: true,
-                walletAddress: _getWalletAddress(),
+                walletAddress: walletAddress,
                 error: null,
               ),
             );
           }
         },
-        onSessionUpdate: (response) {
-          debugPrint("🔄 WalletConnect session updated: ${response.accounts}");
-          // Just log session updates - we'll handle address through the existing session
-        },
         onDisconnect: () {
-          debugPrint("❌ WalletConnect session disconnected");
+          debugPrint("❌ WALLET DISCONNECTED!");
           _session = null;
           _isConnectionInProgress = false;
           _cancelTimeoutTimer();
@@ -148,11 +176,59 @@ class WalletService {
   }
 
   void _listenForDeepLinks() {
-    _appLinksSubscription = _appLinks.uriLinkStream.listen((uri) {
-      debugPrint('🔗 App link received: $uri');
-      // Handle when app is opened via deep link
-      // This can happen when returning from a wallet app
-    });
+    _appLinksSubscription?.cancel(); // Cancel existing subscription
+    _appLinksSubscription = _appLinks.uriLinkStream.listen(
+      (uri) {
+        debugPrint('🔗 App link received: $uri');
+        debugPrint('🔗 URI components: ${uri.queryParameters}');
+        debugPrint('🔗 URI path: ${uri.path}');
+        try {
+          // Check if this is a WalletConnect response URI
+          if (uri.toString().contains('wc')) {
+            debugPrint('🔄 Processing WalletConnect deeplink: $uri');
+
+            // Important: Re-check connection status after a short delay
+            // This gives WalletConnect internal handlers time to process the URI
+            Future.delayed(const Duration(seconds: 2), () {
+              if (_connector != null && _connector!.connected) {
+                debugPrint("✅ Connection established after deeplink");
+                debugPrint("✅ Session: $_session");
+                debugPrint("✅ Accounts: ${_session?.accounts}");
+
+                // If we're connected but completer is still not resolved, complete it
+                if (_connectCompleter != null &&
+                    !_connectCompleter!.isCompleted) {
+                  final walletAddress = _getWalletAddress();
+                  if (walletAddress != null) {
+                    _connectCompleter!.complete(
+                      ConnectResponse(
+                        connected: true,
+                        walletAddress: walletAddress,
+                        error: null,
+                      ),
+                    );
+                  }
+                }
+              } else {
+                debugPrint(
+                  "⚠️ Not connected after deeplink, trying to reconnect",
+                );
+
+                // If still in connection progress, try to reinitialize
+                if (_isConnectionInProgress) {
+                  _initWalletConnect();
+                }
+              }
+            });
+          }
+        } catch (e) {
+          debugPrint('❌ Error handling deep link: $e');
+        }
+      },
+      onError: (e) {
+        debugPrint('❌ Deep link stream error: $e');
+      },
+    );
   }
 
   void _startConnectionTimeoutTimer() {
@@ -219,8 +295,108 @@ class WalletService {
         }
       }
 
-      // Recreate connector to avoid stale state
-      _initWalletConnect();
+      // Try with first bridge
+      bool connectionAttempted = false;
+      try {
+        // Reinitialize WalletConnect
+        _initWalletConnect();
+        await Future.delayed(
+          const Duration(milliseconds: 500),
+        ); // Give time for initialization
+        connectionAttempted = true;
+      } catch (e) {
+        debugPrint("❌ Error initializing with primary bridge: $e");
+
+        // Try alternative bridge servers
+        final bridgeServers = [
+          'https://bridge.walletconnect.org',
+          'https://safe-walletconnect.gnosis.io/',
+          'https://bridge.myhostedserver.com',
+          'https://w.bridge.walletconnect.org',
+        ];
+
+        for (int i = 1; i < bridgeServers.length; i++) {
+          try {
+            debugPrint(
+              "🔄 Trying alternative bridge server: ${bridgeServers[i]}",
+            );
+            _connector = WalletConnect(
+              bridge: bridgeServers[i],
+              clientMeta: const PeerMeta(
+                name: 'Flash Transfer',
+                description:
+                    'Flash Transfer Mobile App - Send and Receive Money',
+                url: 'https://flash.closedsource.in',
+                icons: ['https://flash-transfer.com/logo.png'],
+              ),
+            );
+            connectionAttempted = true;
+            break;
+          } catch (e) {
+            debugPrint("❌ Error with bridge server ${i + 1}: $e");
+          }
+        }
+      }
+
+      // If all bridge servers fail, try direct connection mode
+      if (!connectionAttempted || _connector == null) {
+        debugPrint("⚠️ All bridge servers failed, trying direct mode");
+
+        // Show dialog to select wallet directly
+        final installedWallets = await getInstalledWallets();
+
+        if (installedWallets.isEmpty) {
+          return ConnectResponse(
+            connected: false,
+            walletAddress: null,
+            error:
+                'No wallet apps found on device. Please install a wallet app first.',
+          );
+        }
+
+        final selectedWallet = await _showWalletSelectionDialog(
+          context,
+          "direct://connect", // Dummy URI for direct mode
+          installedWallets,
+        );
+
+        if (selectedWallet != null) {
+          final walletApp = _walletApps[selectedWallet];
+          if (walletApp != null) {
+            final launched = await _launchWalletAppDirectly(walletApp);
+            if (launched) {
+              // In direct mode, we just launch the wallet and show instructions to the user
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      '${walletApp.name} opened. Please connect your wallet manually.',
+                    ),
+                    duration: const Duration(seconds: 10),
+                  ),
+                );
+
+                // Since we can't get the address automatically in direct mode,
+                // we'll ask the user to input it manually
+                final address = await _showAddressInputDialog(context);
+                if (address != null && address.isNotEmpty) {
+                  return ConnectResponse(
+                    connected: true,
+                    walletAddress: address.toLowerCase(),
+                    error: null,
+                  );
+                }
+              }
+            }
+          }
+        }
+
+        return ConnectResponse(
+          connected: false,
+          walletAddress: null,
+          error: 'Failed to connect wallet in direct mode.',
+        );
+      }
 
       // Mark connection as in progress
       _isConnectionInProgress = true;
@@ -240,83 +416,164 @@ class WalletService {
           debugPrint("🔄 Creating WalletConnect session...");
           _startConnectionTimeoutTimer();
 
-          // Use a standard Ethereum chain ID (1 = Ethereum Mainnet)
-          await _connector!.createSession(
-            chainId: 1,
-            onDisplayUri: (uri) async {
-              debugPrint("🔗 WalletConnect URI: $uri");
+          try {
+            // Use a standard Ethereum chain ID (1 = Ethereum Mainnet)
+            await _connector!.createSession(
+              chainId: 1,
+              onDisplayUri: (uri) async {
+                debugPrint("🔗 WalletConnect URI: $uri");
+                // Copy the URI to clipboard automatically as a fallback
+                await Clipboard.setData(ClipboardData(text: uri));
 
-              // Show dialog to select wallet
-              final selectedWallet = await _showWalletSelectionDialog(
-                context,
-                uri,
-                installedWallets,
-              );
+                // Also show a fallback dialog if the user needs to paste manually
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'WalletConnect link copied to clipboard. You can paste it manually in your wallet if needed.',
+                      ),
+                      duration: Duration(seconds: 8),
+                    ),
+                  );
+                }
 
-              if (selectedWallet != null) {
-                debugPrint("🔄 Selected wallet: $selectedWallet");
-                final walletApp = _walletApps[selectedWallet];
+                // Show dialog to select wallet
+                final selectedWallet = await _showWalletSelectionDialog(
+                  context,
+                  uri,
+                  installedWallets,
+                );
 
-                if (walletApp != null) {
-                  final launched = await _launchWalletWithUri(walletApp, uri);
-                  if (launched) {
-                    debugPrint("✓ Launched wallet: ${walletApp.name}");
-                    // Show loading indicator - don't complete here, wait for onConnect callback
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            'Waiting for approval in ${walletApp.name}...',
+                if (selectedWallet != null) {
+                  debugPrint("🔄 Selected wallet: $selectedWallet");
+                  final walletApp = _walletApps[selectedWallet];
+
+                  if (walletApp != null) {
+                    final launched = await _launchWalletWithUri(walletApp, uri);
+                    if (launched) {
+                      debugPrint("✓ Launched wallet: ${walletApp.name}");
+                      // Show loading indicator - don't complete here, wait for onConnect callback
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Waiting for approval in ${walletApp.name}...',
+                            ),
+                            duration: const Duration(seconds: 5),
                           ),
-                          duration: const Duration(seconds: 5),
-                        ),
+                        );
+                      }
+                    } else {
+                      debugPrint("❌ Failed to launch wallet, trying clipboard");
+                      final clipboardResult = await _copyToClipboardAndNotify(
+                        context,
+                        uri,
                       );
+                      if (!clipboardResult) {
+                        _isConnectionInProgress = false;
+                        _cancelTimeoutTimer();
+                        _connectCompleter?.complete(
+                          ConnectResponse(
+                            connected: false,
+                            walletAddress: null,
+                            error: 'Failed to launch wallet app',
+                          ),
+                        );
+                      }
                     }
                   } else {
-                    debugPrint("❌ Failed to launch wallet, trying clipboard");
-                    final clipboardResult = await _copyToClipboardAndNotify(
-                      context,
-                      uri,
+                    debugPrint("❌ Wallet app configuration not found");
+                    _isConnectionInProgress = false;
+                    _cancelTimeoutTimer();
+                    _connectCompleter?.complete(
+                      ConnectResponse(
+                        connected: false,
+                        walletAddress: null,
+                        error: 'Wallet configuration not found',
+                      ),
                     );
-                    if (!clipboardResult) {
-                      _isConnectionInProgress = false;
-                      _cancelTimeoutTimer();
-                      _connectCompleter?.complete(
-                        ConnectResponse(
-                          connected: false,
-                          walletAddress: null,
-                          error: 'Failed to launch wallet app',
-                        ),
-                      );
-                    }
                   }
                 } else {
-                  debugPrint("❌ Wallet app configuration not found");
+                  // No wallet selected, cancel connection
+                  debugPrint("❌ No wallet selected, cancelling connection");
                   _isConnectionInProgress = false;
                   _cancelTimeoutTimer();
                   _connectCompleter?.complete(
                     ConnectResponse(
                       connected: false,
                       walletAddress: null,
-                      error: 'Wallet configuration not found',
+                      error: 'No wallet selected',
                     ),
                   );
                 }
-              } else {
-                // No wallet selected, cancel connection
-                debugPrint("❌ No wallet selected, cancelling connection");
-                _isConnectionInProgress = false;
-                _cancelTimeoutTimer();
-                _connectCompleter?.complete(
-                  ConnectResponse(
-                    connected: false,
-                    walletAddress: null,
-                    error: 'No wallet selected',
+              },
+            );
+          } catch (sessionError) {
+            // Handle network errors specifically
+            if (sessionError.toString().contains('SocketException') ||
+                sessionError.toString().contains('Failed host lookup')) {
+              debugPrint("❌ Network error creating session: $sessionError");
+
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'Network error connecting to WalletConnect bridge. Trying direct mode.',
+                    ),
+                    duration: Duration(seconds: 5),
                   ),
                 );
               }
-            },
-          );
+
+              // Try direct mode as a fallback for network errors
+              final address = await _tryDirectWalletConnection(
+                context,
+                installedWallets,
+              );
+              if (address != null) {
+                _isConnectionInProgress = false;
+                _cancelTimeoutTimer();
+                if (_connectCompleter != null &&
+                    !_connectCompleter!.isCompleted) {
+                  _connectCompleter!.complete(
+                    ConnectResponse(
+                      connected: true,
+                      walletAddress: address,
+                      error: null,
+                    ),
+                  );
+                }
+                return ConnectResponse(
+                  connected: true,
+                  walletAddress: address,
+                  error: null,
+                );
+              }
+
+              _isConnectionInProgress = false;
+              _cancelTimeoutTimer();
+              if (_connectCompleter != null &&
+                  !_connectCompleter!.isCompleted) {
+                _connectCompleter!.complete(
+                  ConnectResponse(
+                    connected: false,
+                    walletAddress: null,
+                    error:
+                        'Network error: Cannot connect to WalletConnect bridge server',
+                  ),
+                );
+              }
+              return ConnectResponse(
+                connected: false,
+                walletAddress: null,
+                error:
+                    'Network error: Cannot connect to WalletConnect bridge server',
+              );
+            } else {
+              // Re-throw for other errors
+              rethrow;
+            }
+          }
         } catch (e) {
           debugPrint("❌ Error creating session: $e");
           _isConnectionInProgress = false;
@@ -333,8 +590,19 @@ class WalletService {
         }
       }
 
-      // Wait for connection to complete
-      return await _connectCompleter!.future;
+      // Wait for connection to complete with a timeout
+      return await _connectCompleter!.future.timeout(
+        const Duration(minutes: 3),
+        onTimeout: () {
+          debugPrint("⏰ Connection future timed out");
+          _isConnectionInProgress = false;
+          return ConnectResponse(
+            connected: false,
+            walletAddress: null,
+            error: 'Connection timed out. Please try again.',
+          );
+        },
+      );
     } catch (e) {
       debugPrint("❌ Error in connectWallet: $e");
       _isConnectionInProgress = false;
@@ -347,17 +615,199 @@ class WalletService {
     }
   }
 
-  /// Get wallet address from session
-  String? _getWalletAddress() {
-    if (_session?.accounts != null && _session!.accounts.isNotEmpty) {
-      final address = _session!.accounts[0].toLowerCase();
-      debugPrint("📋 Wallet address: $address");
-      return address;
+  /// Try direct wallet connection without WalletConnect bridge
+  Future<String?> _tryDirectWalletConnection(
+    BuildContext context,
+    List<String> installedWallets,
+  ) async {
+    try {
+      final selectedWallet = await _showWalletSelectionDialog(
+        context,
+        "direct://connect", // Dummy URI for direct mode
+        installedWallets,
+      );
+
+      if (selectedWallet != null) {
+        final walletApp = _walletApps[selectedWallet];
+        if (walletApp != null) {
+          final launched = await _launchWalletAppDirectly(walletApp);
+          if (launched) {
+            // In direct mode, we just launch the wallet and show instructions to the user
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    '${walletApp.name} opened. Please connect your wallet manually.',
+                  ),
+                  duration: const Duration(seconds: 10),
+                ),
+              );
+
+              // Since we can't get the address automatically in direct mode,
+              // we'll ask the user to input it manually
+              final address = await _showAddressInputDialog(context);
+              if (address != null && address.isNotEmpty) {
+                return address.toLowerCase();
+              }
+            }
+          }
+        }
+      }
+
+      return null;
+    } catch (e) {
+      debugPrint("❌ Error in direct wallet connection: $e");
+      return null;
     }
-    return null;
   }
 
-  /// Check if a wallet app is installed - more robust implementation
+  /// Launch wallet app directly without a WalletConnect URI
+  Future<bool> _launchWalletAppDirectly(WalletApp wallet) async {
+    try {
+      if (Platform.isAndroid) {
+        // Try direct app launch
+        try {
+          final appUri = Uri.parse('android-app://${wallet.androidPackage}');
+          debugPrint("🔄 Trying to launch app directly: ${appUri.toString()}");
+
+          if (await launchUrl(appUri, mode: LaunchMode.externalApplication)) {
+            debugPrint("🚀 Launched app directly");
+            return true;
+          }
+        } catch (e) {
+          debugPrint("⚠️ Failed to launch app directly: $e");
+        }
+
+        // Try scheme
+        try {
+          final schemeUri = Uri.parse(wallet.scheme);
+          debugPrint(
+            "🔄 Trying to launch with scheme: ${schemeUri.toString()}",
+          );
+
+          if (await launchUrl(
+            schemeUri,
+            mode: LaunchMode.externalApplication,
+          )) {
+            debugPrint("🚀 Launched using scheme");
+            return true;
+          }
+        } catch (e) {
+          debugPrint("⚠️ Failed to launch using scheme: $e");
+        }
+      } else if (Platform.isIOS) {
+        // Try scheme for iOS
+        try {
+          final schemeUri = Uri.parse(wallet.scheme);
+          debugPrint("🔄 Trying iOS scheme: ${schemeUri.toString()}");
+
+          if (await launchUrl(
+            schemeUri,
+            mode: LaunchMode.externalApplication,
+          )) {
+            debugPrint("🚀 Launched using iOS scheme");
+            return true;
+          }
+        } catch (e) {
+          debugPrint("⚠️ Failed to launch iOS scheme: $e");
+        }
+
+        // Try universal link
+        if (wallet.universalLink.isNotEmpty) {
+          try {
+            final universalUri = Uri.parse(wallet.universalLink);
+            debugPrint("🔄 Trying universal link: ${universalUri.toString()}");
+
+            if (await launchUrl(
+              universalUri,
+              mode: LaunchMode.externalApplication,
+            )) {
+              debugPrint("🚀 Launched using universal link");
+              return true;
+            }
+          } catch (e) {
+            debugPrint("⚠️ Failed to launch iOS universal link: $e");
+          }
+        }
+      }
+
+      return false;
+    } catch (e) {
+      debugPrint("❌ Error launching wallet directly: $e");
+      return false;
+    }
+  }
+
+  /// Show dialog to manually input wallet address
+  Future<String?> _showAddressInputDialog(BuildContext context) async {
+    String address = '';
+    return showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Enter Wallet Address'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Please enter your wallet address manually:',
+                  style: TextStyle(fontSize: 14),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  decoration: const InputDecoration(
+                    hintText: '0x...',
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (value) {
+                    address = value;
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(address);
+              },
+              child: const Text('Connect'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  /// Get wallet address from session
+  String? _getWalletAddress() {
+    debugPrint("📋 Getting wallet address from session");
+    debugPrint("📋 Session: $_session");
+
+    if (_session?.accounts == null) {
+      debugPrint("⚠️ Session accounts is null");
+      return null;
+    }
+
+    if (_session!.accounts.isEmpty) {
+      debugPrint("⚠️ Session accounts is empty");
+      return null;
+    }
+
+    final address = _session!.accounts[0].toLowerCase();
+    debugPrint("📋 Wallet address extracted: $address");
+    return address;
+  }
+
+  /// Check if wallet apps are installed - improved implementation
   Future<List<String>> getInstalledWallets() async {
     List<String> installedWallets = [];
 
@@ -368,6 +818,15 @@ class WalletService {
           final walletApp = entry.value;
 
           try {
+            // Check if the wallet app is installed by trying to launch its scheme
+            if (await canLaunchUrl(Uri.parse(walletApp.scheme))) {
+              installedWallets.add(walletId);
+              debugPrint(
+                "📱 Found installed wallet via scheme: ${walletApp.name}",
+              );
+              continue;
+            }
+
             // Try to launch the app with package manager query
             final androidIntent = Uri.parse(
               'android-app://${walletApp.androidPackage}',
@@ -375,14 +834,6 @@ class WalletService {
             if (await canLaunchUrl(androidIntent)) {
               installedWallets.add(walletId);
               debugPrint("📱 Found installed wallet: ${walletApp.name}");
-            } else {
-              // Try scheme detection as fallback
-              if (await canLaunchUrl(Uri.parse(walletApp.scheme))) {
-                installedWallets.add(walletId);
-                debugPrint(
-                  "📱 Found installed wallet via scheme: ${walletApp.name}",
-                );
-              }
             }
           } catch (e) {
             debugPrint(
@@ -408,6 +859,12 @@ class WalletService {
           }
         }
       }
+
+      // If no wallets found, add them all so the user can choose to install
+      if (installedWallets.isEmpty) {
+        debugPrint("📱 No installed wallets found, showing all options");
+        installedWallets = _walletApps.keys.toList();
+      }
     } catch (e) {
       debugPrint("❌ Error detecting installed wallets: $e");
     }
@@ -415,16 +872,59 @@ class WalletService {
     return installedWallets;
   }
 
-  /// Launch wallet app with WalletConnect URI
+  /// Launch wallet app with WalletConnect URI - improved implementation
   Future<bool> _launchWalletWithUri(WalletApp wallet, String uri) async {
     try {
-      // Encode the URI
+      // Encode the URI properly
       final encodedUri = Uri.encodeComponent(uri);
+      debugPrint("🔄 Original URI: $uri");
+      debugPrint("🔄 Encoded URI: $encodedUri");
+
+      bool launched = false;
 
       if (Platform.isAndroid) {
-        // First try direct intent with wc: scheme
+        // Try direct wc URI first - most direct method
         try {
-          final wcUri = Uri.parse('wc:${uri.split('wc:')[1]}');
+          debugPrint("🔄 Trying to launch WalletConnect URI directly");
+          if (await launchUrl(
+            Uri.parse(uri),
+            mode: LaunchMode.externalApplication,
+          )) {
+            debugPrint("🚀 Launched using direct WalletConnect URI");
+            return true;
+          }
+        } catch (e) {
+          debugPrint("⚠️ Failed to launch direct WalletConnect URI: $e");
+        }
+
+        // Try wallet-specific scheme which is most reliable on Android
+        try {
+          final schemeUri = Uri.parse('${wallet.scheme}wc?uri=$encodedUri');
+          debugPrint(
+            "🔄 Trying to launch with scheme: ${schemeUri.toString()}",
+          );
+
+          if (await launchUrl(
+            schemeUri,
+            mode: LaunchMode.externalApplication,
+          )) {
+            debugPrint("🚀 Launched using wallet scheme");
+            return true;
+          }
+        } catch (e) {
+          debugPrint("⚠️ Failed to launch using wallet scheme: $e");
+        }
+
+        // Try direct intent with wc: uri
+        try {
+          // Extract and use the wc: part of the URI
+          final wcPart =
+              uri.contains('wc:') ? uri.substring(uri.indexOf('wc:')) : uri;
+          final wcUri = Uri.parse(wcPart);
+          debugPrint(
+            "🔄 Trying to launch with wc: scheme: ${wcUri.toString()}",
+          );
+
           if (await launchUrl(wcUri, mode: LaunchMode.externalApplication)) {
             debugPrint("🚀 Launched using wc: scheme");
             return true;
@@ -438,6 +938,10 @@ class WalletService {
           final intentUri = Uri.parse(
             'intent://wc?uri=$encodedUri#Intent;package=${wallet.androidPackage};scheme=wc;end;',
           );
+          debugPrint(
+            "🔄 Trying to launch with intent: ${intentUri.toString()}",
+          );
+
           if (await launchUrl(
             intentUri,
             mode: LaunchMode.externalApplication,
@@ -449,53 +953,61 @@ class WalletService {
           debugPrint("⚠️ Failed to launch Android intent: $e");
         }
 
-        // Try wallet-specific scheme
-        try {
-          final schemeUri = Uri.parse('${wallet.scheme}wc?uri=$encodedUri');
-          if (await launchUrl(
-            schemeUri,
-            mode: LaunchMode.externalApplication,
-          )) {
-            debugPrint("🚀 Launched using wallet scheme");
-            return true;
-          }
-        } catch (e) {
-          debugPrint("⚠️ Failed to launch using wallet scheme: $e");
-        }
-
         // Try direct app launch as last resort
         try {
           final appUri = Uri.parse('android-app://${wallet.androidPackage}');
+          debugPrint("🔄 Trying to launch app directly: ${appUri.toString()}");
+
           if (await launchUrl(appUri, mode: LaunchMode.externalApplication)) {
             debugPrint(
               "🚀 Launched app directly - you'll need to paste the code",
             );
-            await _copyToClipboardAndNotify(null, uri);
+            await Clipboard.setData(ClipboardData(text: uri));
             return true;
           }
         } catch (e) {
           debugPrint("⚠️ Failed to launch app directly: $e");
         }
       } else if (Platform.isIOS) {
-        // Try universal link first
+        // Try direct WalletConnect URI first for iOS
         try {
-          final universalUri = Uri.parse(
-            '${wallet.universalLink}/wc?uri=$encodedUri',
-          );
+          debugPrint("🔄 Trying to launch WalletConnect URI directly on iOS");
           if (await launchUrl(
-            universalUri,
+            Uri.parse(uri),
             mode: LaunchMode.externalApplication,
           )) {
-            debugPrint("🚀 Launched using universal link");
+            debugPrint("🚀 Launched using direct WalletConnect URI on iOS");
             return true;
           }
         } catch (e) {
-          debugPrint("⚠️ Failed to launch iOS universal link: $e");
+          debugPrint("⚠️ Failed to launch direct WalletConnect URI on iOS: $e");
         }
 
-        // Fallback to scheme
+        // Try universal link first for iOS
+        if (wallet.universalLink.isNotEmpty) {
+          try {
+            final universalUri = Uri.parse(
+              '${wallet.universalLink}/wc?uri=$encodedUri',
+            );
+            debugPrint("🔄 Trying universal link: ${universalUri.toString()}");
+
+            if (await launchUrl(
+              universalUri,
+              mode: LaunchMode.externalApplication,
+            )) {
+              debugPrint("🚀 Launched using universal link");
+              return true;
+            }
+          } catch (e) {
+            debugPrint("⚠️ Failed to launch iOS universal link: $e");
+          }
+        }
+
+        // Fallback to scheme for iOS
         try {
           final schemeUri = Uri.parse('${wallet.scheme}wc?uri=$encodedUri');
+          debugPrint("🔄 Trying iOS scheme: ${schemeUri.toString()}");
+
           if (await launchUrl(
             schemeUri,
             mode: LaunchMode.externalApplication,
@@ -508,20 +1020,10 @@ class WalletService {
         }
       }
 
-      // If all methods failed, just try to launch the URI directly
-      try {
-        if (await launchUrl(
-          Uri.parse(uri),
-          mode: LaunchMode.externalApplication,
-        )) {
-          debugPrint("🚀 Launched using direct URI");
-          return true;
-        }
-      } catch (e) {
-        debugPrint("⚠️ Failed to launch direct URI: $e");
-      }
-
-      return false;
+      // As a final resort, copy to clipboard for manual pasting
+      await Clipboard.setData(ClipboardData(text: uri));
+      debugPrint("📋 WalletConnect URI copied to clipboard as fallback");
+      return launched;
     } catch (e) {
       debugPrint("❌ Error launching wallet: $e");
       return false;

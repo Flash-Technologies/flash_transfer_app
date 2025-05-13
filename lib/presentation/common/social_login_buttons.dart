@@ -352,69 +352,74 @@ class SocialLoginButtons extends ConsumerWidget {
   }
 
   Future<void> _handleWalletLogin(BuildContext context, WidgetRef ref) async {
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
 
+  try {
+    // Show loading indicator
+    scaffoldMessenger.showSnackBar(
+      const SnackBar(content: Text('Connecting to wallet...'), duration: Duration(seconds: 2)),
+    );
+
+    // Connect to wallet
+    final walletNotifier = ref.read(walletProvider.notifier);
+    final connected = await walletNotifier.connectWallet(context);
+
+    if (!connected) {
+      final errorMessage =
+          ref.read(walletProvider).errorMessage ?? 'Wallet connection failed';
+      scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
+      return;
+    }
+
+    // Get wallet address
+    final walletAddress = ref.read(walletProvider).walletAddress;
+
+    if (walletAddress == null || walletAddress.isEmpty) {
+      scaffoldMessenger.showSnackBar(
+        const SnackBar(content: Text('Failed to get wallet address')),
+      );
+      return;
+    }
+
+    // Show address in snackbar for testing
+    scaffoldMessenger.showSnackBar(
+      SnackBar(content: Text('Connected with address: $walletAddress')),
+    );
+
+    // Now proceed with authentication
+    scaffoldMessenger.showSnackBar(
+      const SnackBar(content: Text('Signing in with wallet...')),
+    );
+
+    // Get user country
+    String countryName = 'Unknown';
     try {
-      // Show loading indicator
-      scaffoldMessenger.showSnackBar(
-        const SnackBar(content: Text('Connecting to wallet...')),
-      );
-
-      // Connect to wallet
-      final walletNotifier = ref.read(walletProvider.notifier);
-      final connected = await walletNotifier.connectWallet(context);
-
-      if (!connected) {
-        final errorMessage =
-            ref.read(walletProvider).errorMessage ?? 'Wallet connection failed';
-        scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
-        return;
-      }
-
-      // Get wallet address
-      final walletAddress = ref.read(walletProvider).walletAddress;
-
-      if (walletAddress == null || walletAddress.isEmpty) {
-        scaffoldMessenger.showSnackBar(
-          const SnackBar(content: Text('Failed to get wallet address')),
-        );
-        return;
-      }
-
-      // Show loading indicator for authentication
-      scaffoldMessenger.showSnackBar(
-        const SnackBar(content: Text('Signing in with wallet...')),
-      );
-
-      // Get user country
-      String countryName = 'Unknown';
-      try {
-        final response = await http.get(Uri.parse('https://ipapi.co/json/'));
-        if (response.statusCode == 200) {
-          final data = json.decode(response.body);
-          countryName = data['country_name'] ?? 'Unknown';
-        }
-      } catch (e) {
-        debugPrint('Failed to fetch user country: $e');
-      }
-
-      // Authenticate with the backend
-      final success = await ref
-          .read(authProvider.notifier)
-          .loginWithWalletAddress(walletAddress, countryName);
-
-      if (success) {
-        context.go('/home');
-      } else {
-        final errorMessage =
-            ref.read(authProvider).message ?? 'Wallet login failed';
-        scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
+      final response = await http.get(Uri.parse('https://ipapi.co/json/'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        countryName = data['country_name'] ?? 'Unknown';
       }
     } catch (e) {
-      debugPrint('Wallet sign in error: $e');
-      scaffoldMessenger.showSnackBar(
-        SnackBar(content: Text('Failed to sign in with wallet: $e')),
-      );
+      debugPrint('Failed to fetch user country: $e');
     }
+
+    // Authenticate with the backend
+    final success = await ref
+        .read(authProvider.notifier)
+        .loginWithWalletAddress(walletAddress, countryName);
+
+    if (success) {
+      context.go('/home');
+    } else {
+      final errorMessage =
+          ref.read(authProvider).message ?? 'Wallet login failed';
+      scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
+    }
+  } catch (e) {
+    debugPrint('Wallet sign in error: $e');
+    scaffoldMessenger.showSnackBar(
+      SnackBar(content: Text('Failed to sign in with wallet: $e')),
+    );
   }
+}
 }
