@@ -5,7 +5,6 @@ import '../api/endpoints.dart';
 import '../models/api_response.dart';
 import '../models/auth_models.dart';
 import '../models/user.dart';
-import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService {

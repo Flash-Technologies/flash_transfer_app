@@ -1,19 +1,25 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:walletconnect_dart/walletconnect_dart.dart';
-import 'package:web3dart/web3dart.dart';
-import 'package:app_links/app_links.dart';
+import 'package:reown_walletkit/reown_walletkit.dart';
 
 class WalletService {
-  WalletConnect? _connector;
-  SessionStatus? _session;
-  StreamSubscription? _appLinksSubscription;
-  final AppLinks _appLinks = AppLinks();
+  // Reown WalletKit instance
+  ReownWalletKit? _walletKit;
+  bool _isInitialized = false;
+  bool _isConnectionInProgress = false;
+  Timer? _connectionTimeoutTimer;
+
+  // Completer to handle async wallet connection flow
+  Completer<ConnectResponse>? _connectCompleter;
+
+  // Track if we've received a session proposal
+  bool _hasReceivedSessionProposal = false;
+
+  // Store required namespaces for session proposal
+  Map<String, Namespace>? _requiredNamespaces;
 
   // Map of supported wallets with their package/app IDs and schemes
   final Map<String, WalletApp> _walletApps = {
@@ -45,7 +51,7 @@ class WalletService {
       icon: Icons.wallet,
       androidPackage: 'app.phantom',
       iOSAppId: 'id1598432977',
-      universalLink: 'https://phantom.app/ul', // Fixed universal link
+      universalLink: 'https://phantom.app/ul',
       scheme: 'phantom://',
       storeUrlAndroid:
           'https://play.google.com/store/apps/details?id=app.phantom',
@@ -57,8 +63,7 @@ class WalletService {
       icon: Icons.monetization_on,
       androidPackage: 'com.binance.dev',
       iOSAppId: 'id1436799971',
-      universalLink:
-          'https://www.binance.com/en/wallet-direct', // Fixed universal link
+      universalLink: 'https://www.binance.com/en/wallet-direct',
       scheme: 'bnc://',
       storeUrlAndroid:
           'https://play.google.com/store/apps/details?id=com.binance.dev',
@@ -70,186 +75,337 @@ class WalletService {
       icon: Icons.account_balance_wallet,
       androidPackage: 'org.toshi',
       iOSAppId: 'id1278383455',
-      universalLink: 'https://go.cb-w.com', // Fixed universal link
-      scheme: 'cbwallet://', // Fixed scheme
+      universalLink: 'https://go.cb-w.com',
+      scheme: 'cbwallet://',
       storeUrlAndroid:
           'https://play.google.com/store/apps/details?id=org.toshi',
       storeUrlIOS: 'https://apps.apple.com/app/coinbase-wallet/id1278383455',
     ),
   };
 
-  // Completer to handle async wallet connection flow
-  Completer<ConnectResponse>? _connectCompleter;
-  Timer? _connectionTimeoutTimer;
-  bool _isConnectionInProgress = false;
-
   WalletService() {
-    _initWalletConnect();
+    _initWalletKit();
   }
 
-  void _initWalletConnect() {
-    try {
-      final bridgeServers = [
-        'https://bridge.walletconnect.org',
-        'https://safe-walletconnect.gnosis.io/',
-        'https://bridge.myhostedserver.com',
-        'https://w.bridge.walletconnect.org',
-      ];
+  Future<void> _initWalletKit() async {
+    if (_isInitialized) return;
 
-      // Try the first bridge server
-      _connector = WalletConnect(
-        bridge: bridgeServers[0],
-        clientMeta: const PeerMeta(
+    try {
+      debugPrint("🔄 Initializing WalletKit");
+
+      // Define mainnet chain ID for Ethereum
+      final mainnetChainId = "eip155:1";
+
+      // Initialize the Reown WalletKit with proper project ID and metadata
+      final walletKit = ReownWalletKit(
+        core: ReownCore(
+          projectId:
+              '9e4a9ad5bac5592cdf5d141436c97d53', // Your WalletConnect project ID
+        ),
+        metadata: PairingMetadata(
           name: 'Flash Transfer',
           description: 'Flash Transfer Mobile App - Send and Receive Money',
-          url: 'https://flash.closedsource.in',
-          icons: ['https://flash-transfer.com/logo.png'],
+          url: 'https://walletconnect.com',
+          icons: ['https://walletconnect.com/logo.png'],
+          redirect: Redirect(
+            native: 'com.example.flash_transfer_app://',
+            universal: 'https://walletconnect.com',
+          ),
         ),
       );
 
-      _connector?.registerListeners(
-        onConnect: (session) {
-          debugPrint("✅ WALLET CONNECTED! Session: $session");
+      // Initialize WalletKit
+      await walletKit.init();
 
-          // Enhanced logging for session data
-          debugPrint(
-            "✅ SESSION DATA: ${jsonEncode({'accounts': session.accounts, 'chainId': session.chainId, 'connected': _connector?.connected})}",
-          );
-          debugPrint("✅ ACCOUNTS: ${session.accounts}");
-          debugPrint("✅ CHAIN ID: ${session.chainId}");
+      debugPrint("📡 Registering event listeners");
 
-          _session = session;
-          _isConnectionInProgress = false;
-          _cancelTimeoutTimer();
+      // Set up event listeners - each with detailed logging
+      walletKit.onSessionProposal.subscribe((event) {
+        debugPrint("🔵 SESSION PROPOSAL RECEIVED: ${event.id}");
+        debugPrint("🔵 PROPOSAL DETAILS: ${event.params.requiredNamespaces}");
+        _hasReceivedSessionProposal = true;
+        _onSessionProposal(event);
+      });
 
-          // Validate session and accounts
-          if (session.accounts.isEmpty) {
-            debugPrint("⚠️ WARNING: Connected but no accounts returned");
-            if (_connectCompleter != null && !_connectCompleter!.isCompleted) {
-              _connectCompleter!.complete(
-                ConnectResponse(
-                  connected: false,
-                  walletAddress: null,
-                  error: 'No accounts returned from wallet',
-                ),
-              );
-            }
-            return;
-          }
+      walletKit.onSessionConnect.subscribe((event) {
+        debugPrint("🟢 SESSION CONNECTED");
+        _onSessionConnect(event);
+      });
 
-          final walletAddress = session.accounts[0].toLowerCase();
-          debugPrint("✅ EXTRACTED WALLET ADDRESS: $walletAddress");
+      walletKit.onSessionDelete.subscribe((event) {
+        debugPrint("🔴 SESSION DELETED");
+        _onSessionDelete(event);
+      });
 
-          if (_connectCompleter != null && !_connectCompleter!.isCompleted) {
-            _connectCompleter!.complete(
-              ConnectResponse(
-                connected: true,
-                walletAddress: walletAddress,
-                error: null,
-              ),
-            );
-          }
-        },
-        onDisconnect: () {
-          debugPrint("❌ WALLET DISCONNECTED!");
-          _session = null;
-          _isConnectionInProgress = false;
-          _cancelTimeoutTimer();
+      walletKit.onSessionExpire.subscribe((event) {
+        debugPrint("🟠 SESSION EXPIRED");
+        _onSessionExpire(event);
+      });
 
-          if (_connectCompleter != null && !_connectCompleter!.isCompleted) {
-            _connectCompleter!.complete(
-              ConnectResponse(
-                connected: false,
-                walletAddress: null,
-                error: 'Wallet disconnected',
-              ),
-            );
-          }
-        },
+      // Register standard session request handler
+      walletKit.onSessionRequest.subscribe((event) {
+        debugPrint("🟣 SESSION REQUEST: ${event.method}");
+      });
+
+      // Register Ethereum request handler
+      walletKit.registerRequestHandler(
+        chainId: mainnetChainId,
+        method: '*', // Catch all methods
+        handler: _handleEthereumRequest,
       );
 
-      // Listen for deep links from wallet apps
-      _listenForDeepLinks();
-    } catch (e) {
-      debugPrint("❌ Error initializing WalletConnect: $e");
+      // Listen for errors to help with debugging
+      // walletKit.on('error', (error) {
+      //   debugPrint("🔴 WALLETKIT ERROR: $error");
+      // });
+
+      _walletKit = walletKit;
+      _isInitialized = true;
+      debugPrint("✅ WalletKit initialized successfully");
+    } catch (e, stacktrace) {
+      debugPrint("❌ Error initializing WalletKit: $e");
+      debugPrint("📜 Stack trace: $stacktrace");
+      _isInitialized = false;
     }
   }
 
-  void _listenForDeepLinks() {
-    _appLinksSubscription?.cancel(); // Cancel existing subscription
-    _appLinksSubscription = _appLinks.uriLinkStream.listen(
-      (uri) {
-        debugPrint('🔗 App link received: $uri');
-        debugPrint('🔗 URI components: ${uri.queryParameters}');
-        debugPrint('🔗 URI path: ${uri.path}');
-        try {
-          // Check if this is a WalletConnect response URI
-          if (uri.toString().contains('wc')) {
-            debugPrint('🔄 Processing WalletConnect deeplink: $uri');
-
-            // Important: Re-check connection status after a short delay
-            // This gives WalletConnect internal handlers time to process the URI
-            Future.delayed(const Duration(seconds: 2), () {
-              if (_connector != null && _connector!.connected) {
-                debugPrint("✅ Connection established after deeplink");
-                debugPrint("✅ Session: $_session");
-                debugPrint("✅ Accounts: ${_session?.accounts}");
-
-                // If we're connected but completer is still not resolved, complete it
-                if (_connectCompleter != null &&
-                    !_connectCompleter!.isCompleted) {
-                  final walletAddress = _getWalletAddress();
-                  if (walletAddress != null) {
-                    _connectCompleter!.complete(
-                      ConnectResponse(
-                        connected: true,
-                        walletAddress: walletAddress,
-                        error: null,
-                      ),
-                    );
-                  }
-                }
-              } else {
-                debugPrint(
-                  "⚠️ Not connected after deeplink, trying to reconnect",
-                );
-
-                // If still in connection progress, try to reinitialize
-                if (_isConnectionInProgress) {
-                  _initWalletConnect();
-                }
-              }
-            });
-          }
-        } catch (e) {
-          debugPrint('❌ Error handling deep link: $e');
-        }
-      },
-      onError: (e) {
-        debugPrint('❌ Deep link stream error: $e');
-      },
-    );
-  }
-
-  void _startConnectionTimeoutTimer() {
-    _cancelTimeoutTimer();
-    _connectionTimeoutTimer = Timer(const Duration(minutes: 2), () {
-      debugPrint("⏰ Connection timeout");
-
-      if (_connectCompleter != null && !_connectCompleter!.isCompleted) {
-        _connectCompleter!.complete(
-          ConnectResponse(
-            connected: false,
-            walletAddress: null,
-            error: 'Connection timed out. Please try again.',
-          ),
-        );
+  // Handle Ethereum request
+  Future<void> _handleEthereumRequest(String topic, dynamic params) async {
+    debugPrint("🔄 Ethereum request handler called: $topic, $params");
+    try {
+      // Get the pending request
+      final pendingRequests = _walletKit!.pendingRequests.getAll();
+      if (pendingRequests.isEmpty) {
+        debugPrint("⚠️ No pending requests found");
+        return;
       }
 
+      final pendingRequest = pendingRequests.last;
+      final requestId = pendingRequest.id;
+
+      debugPrint("🔄 Pending request: $requestId, ${pendingRequest.method}");
+
+      // In a production app, you would show UI to approve/reject
+      // Here we automatically approve with a mock response
+      await _walletKit!.respondSessionRequest(
+        topic: topic,
+        response: JsonRpcResponse(
+          id: requestId,
+          jsonrpc: '2.0',
+          result: '0x1234567890abcdef', // Mock signature
+        ),
+      );
+
+      debugPrint("✅ Responded to Ethereum request: $requestId");
+    } catch (e) {
+      debugPrint("❌ Error handling Ethereum request: $e");
+    }
+  }
+
+  // Handle session proposal event
+  void _onSessionProposal(SessionProposalEvent event) {
+    debugPrint("🔵 Processing session proposal: ${event.id}");
+
+    try {
+      if (_walletKit == null) {
+        debugPrint("❌ WalletKit is null during session proposal");
+        return;
+      }
+
+      // Log details of the proposal
+      debugPrint("📋 Proposal details:");
+      debugPrint("   ID: ${event.id}");
+      debugPrint("   Proposer: ${event.params.proposer.metadata.name}");
+      debugPrint("   Required namespaces: ${event.params.requiredNamespaces}");
+      debugPrint(
+        "   Generated namespaces: ${event.params.generatedNamespaces}",
+      );
+
+      // If we have generated namespaces, use them
+      if (event.params.generatedNamespaces != null) {
+        debugPrint("✓ Using generated namespaces to approve session");
+
+        // Auto-approve the session with generated namespaces
+        _walletKit!.approveSession(
+          id: event.id,
+          namespaces: event.params.generatedNamespaces!,
+        );
+        debugPrint("✅ Session proposal approved with ID: ${event.id}");
+      } else {
+        // We need generated namespaces to proceed
+        debugPrint("❌ No generated namespaces available");
+        _rejectSession(
+          event.id,
+          "WalletConnect session requires generated namespaces",
+        );
+      }
+    } catch (e, stacktrace) {
+      debugPrint("❌ Error approving session: $e");
+      debugPrint("📜 Stack trace: $stacktrace");
+      _rejectSession(event.id, "Error approving session: $e");
+    }
+  }
+
+  // Helper method to reject a session
+  void _rejectSession(int id, String reason) {
+    try {
+      if (_walletKit != null) {
+        _walletKit!.rejectSession(
+          id: id,
+          reason: ReownSignError(code: 4001, message: reason),
+        );
+        debugPrint("✅ Session rejected with ID: $id");
+      }
+    } catch (e) {
+      debugPrint("❌ Error rejecting session: $e");
+    }
+  }
+
+  // Handle session connect event
+  void _onSessionConnect(SessionConnect event) {
+    debugPrint("🟢 Processing session connect");
+
+    try {
+      // Get the sessions
+      final sessions = _walletKit?.sessions.getAll();
+      if (sessions == null || sessions.isEmpty) {
+        debugPrint("⚠️ No active sessions found");
+        _completeWithError("No active sessions found");
+        return;
+      }
+
+      // Use the most recently connected session
+      final session = sessions.last;
+      debugPrint("✅ SESSION DATA: Topic: ${session.topic}");
+
+      // Log session details
+      debugPrint("📋 Session details:");
+      debugPrint("   Topic: ${session.topic}");
+      debugPrint("   Expiry: ${session.expiry}");
+
+      // Log available namespaces
+      final namespaces = session.namespaces;
+      debugPrint("🔄 Available namespaces: ${namespaces.keys.join(', ')}");
+
+      for (final entry in namespaces.entries) {
+        debugPrint("   Namespace: ${entry.key}");
+        debugPrint("     Accounts: ${entry.value.accounts}");
+        debugPrint("     Methods: ${entry.value.methods}");
+        debugPrint("     Events: ${entry.value.events}");
+      }
+
+      String? walletAddress;
+
+      // Try to get EVM address
+      if (namespaces.containsKey('eip155')) {
+        final accounts = namespaces['eip155']?.accounts ?? [];
+        debugPrint("🔄 EIP-155 accounts found: ${accounts.length}");
+
+        if (accounts.isNotEmpty) {
+          for (final account in accounts) {
+            debugPrint("   Account: $account");
+          }
+
+          // Parse the account string (format: "eip155:1:0x...")
+          final account = accounts.first;
+          final parts = account.split(':');
+
+          if (parts.length >= 3) {
+            walletAddress = parts[2].toLowerCase();
+            debugPrint("✅ Found EVM address: $walletAddress");
+          } else {
+            debugPrint("⚠️ Account format unexpected: $account");
+          }
+        } else {
+          debugPrint("⚠️ No accounts in eip155 namespace");
+        }
+      } else {
+        debugPrint("⚠️ No eip155 namespace found");
+      }
+
+      // If EVM address not found, try Solana
+      if (walletAddress == null && namespaces.containsKey('solana')) {
+        final accounts = namespaces['solana']?.accounts ?? [];
+        debugPrint("🔄 Solana accounts found: ${accounts.length}");
+
+        if (accounts.isNotEmpty) {
+          final parts = accounts.first.split(':');
+          if (parts.length >= 3) {
+            walletAddress = parts[2].toLowerCase();
+            debugPrint("✅ Found Solana address: $walletAddress");
+          }
+        }
+      }
+
+      // Log final result
+      debugPrint("✅ FINAL EXTRACTED WALLET ADDRESS: $walletAddress");
+
+      // Connection complete
       _isConnectionInProgress = false;
+      _cancelTimeoutTimer();
+
+      // Complete the connection with the wallet address
+      if (_connectCompleter != null && !_connectCompleter!.isCompleted) {
+        if (walletAddress != null) {
+          _connectCompleter!.complete(
+            ConnectResponse(
+              connected: true,
+              walletAddress: walletAddress,
+              error: null,
+            ),
+          );
+        } else {
+          _connectCompleter!.complete(
+            ConnectResponse(
+              connected: false,
+              walletAddress: null,
+              error: 'No wallet address found in session',
+            ),
+          );
+        }
+      }
+    } catch (e, stacktrace) {
+      debugPrint("❌ Error extracting wallet address: $e");
+      debugPrint("📜 Stack trace: $stacktrace");
+      _completeWithError("Error extracting wallet address: $e");
+    }
+  }
+
+  // Helper to complete with error
+  void _completeWithError(String error) {
+    _isConnectionInProgress = false;
+    _cancelTimeoutTimer();
+
+    if (_connectCompleter != null && !_connectCompleter!.isCompleted) {
+      _connectCompleter!.complete(
+        ConnectResponse(connected: false, walletAddress: null, error: error),
+      );
+    }
+  }
+
+  // Handle session delete event
+  void _onSessionDelete(SessionDelete event) {
+    debugPrint("🔴 WALLET DISCONNECTED! Session deleted: ${event.topic}");
+    _completeWithError("Wallet disconnected");
+  }
+
+  // Handle session expire event
+  void _onSessionExpire(SessionExpire event) {
+    debugPrint("🟠 Session expired: ${event.topic}");
+    _completeWithError("Session expired");
+  }
+
+  // Start connection timeout timer
+  void _startConnectionTimeoutTimer() {
+    _cancelTimeoutTimer();
+    debugPrint("⏰ Starting connection timeout timer (2 minutes)");
+    _connectionTimeoutTimer = Timer(const Duration(minutes: 2), () {
+      debugPrint("⏰ Connection timeout reached");
+      _completeWithError("Connection timed out. Please try again.");
     });
   }
 
+  // Cancel timeout timer
   void _cancelTimeoutTimer() {
     if (_connectionTimeoutTimer != null && _connectionTimeoutTimer!.isActive) {
       _connectionTimeoutTimer!.cancel();
@@ -260,8 +416,24 @@ class WalletService {
   /// Connect to wallet and get account information
   Future<ConnectResponse> connectWallet(BuildContext context) async {
     try {
+      // Make sure WalletKit is initialized
+      if (!_isInitialized) {
+        debugPrint("⚠️ WalletKit not initialized, initializing now...");
+        await _initWalletKit();
+      }
+
+      if (_walletKit == null) {
+        debugPrint("❌ WalletKit initialization failed - still null");
+        return ConnectResponse(
+          connected: false,
+          walletAddress: null,
+          error: 'WalletKit initialization failed',
+        );
+      }
+
       // Check if a connection is already in progress
       if (_isConnectionInProgress) {
+        debugPrint("⚠️ Connection already in progress");
         return ConnectResponse(
           connected: false,
           walletAddress: null,
@@ -270,8 +442,10 @@ class WalletService {
       }
 
       // Check if already connected
-      if (_session != null && _connector != null && _connector!.connected) {
-        final walletAddress = _getWalletAddress();
+      final sessions = _walletKit!.sessions.getAll();
+      if (sessions.isNotEmpty) {
+        debugPrint("🔄 Found ${sessions.length} existing sessions");
+        final walletAddress = _getWalletAddressFromSession(sessions.first);
         if (walletAddress != null) {
           debugPrint("✓ Already connected to wallet: $walletAddress");
           return ConnectResponse(
@@ -279,320 +453,273 @@ class WalletService {
             walletAddress: walletAddress,
             error: null,
           );
-        }
-      }
-
-      // If we had a previous connection, disconnect it first
-      if (_connector != null && _connector!.connected) {
-        try {
-          await _connector!.killSession();
-          await Future.delayed(
-            const Duration(milliseconds: 500),
-          ); // Give some time for cleanup
-        } catch (e) {
-          debugPrint("⚠️ Error killing previous session: $e");
-          // Continue anyway
-        }
-      }
-
-      // Try with first bridge
-      bool connectionAttempted = false;
-      try {
-        // Reinitialize WalletConnect
-        _initWalletConnect();
-        await Future.delayed(
-          const Duration(milliseconds: 500),
-        ); // Give time for initialization
-        connectionAttempted = true;
-      } catch (e) {
-        debugPrint("❌ Error initializing with primary bridge: $e");
-
-        // Try alternative bridge servers
-        final bridgeServers = [
-          'https://bridge.walletconnect.org',
-          'https://safe-walletconnect.gnosis.io/',
-          'https://bridge.myhostedserver.com',
-          'https://w.bridge.walletconnect.org',
-        ];
-
-        for (int i = 1; i < bridgeServers.length; i++) {
-          try {
-            debugPrint(
-              "🔄 Trying alternative bridge server: ${bridgeServers[i]}",
-            );
-            _connector = WalletConnect(
-              bridge: bridgeServers[i],
-              clientMeta: const PeerMeta(
-                name: 'Flash Transfer',
-                description:
-                    'Flash Transfer Mobile App - Send and Receive Money',
-                url: 'https://flash.closedsource.in',
-                icons: ['https://flash-transfer.com/logo.png'],
-              ),
-            );
-            connectionAttempted = true;
-            break;
-          } catch (e) {
-            debugPrint("❌ Error with bridge server ${i + 1}: $e");
-          }
-        }
-      }
-
-      // If all bridge servers fail, try direct connection mode
-      if (!connectionAttempted || _connector == null) {
-        debugPrint("⚠️ All bridge servers failed, trying direct mode");
-
-        // Show dialog to select wallet directly
-        final installedWallets = await getInstalledWallets();
-
-        if (installedWallets.isEmpty) {
-          return ConnectResponse(
-            connected: false,
-            walletAddress: null,
-            error:
-                'No wallet apps found on device. Please install a wallet app first.',
+        } else {
+          debugPrint(
+            "⚠️ Session exists but no wallet address found, disconnecting",
           );
+          await disconnectWallet();
         }
-
-        final selectedWallet = await _showWalletSelectionDialog(
-          context,
-          "direct://connect", // Dummy URI for direct mode
-          installedWallets,
-        );
-
-        if (selectedWallet != null) {
-          final walletApp = _walletApps[selectedWallet];
-          if (walletApp != null) {
-            final launched = await _launchWalletAppDirectly(walletApp);
-            if (launched) {
-              // In direct mode, we just launch the wallet and show instructions to the user
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      '${walletApp.name} opened. Please connect your wallet manually.',
-                    ),
-                    duration: const Duration(seconds: 10),
-                  ),
-                );
-
-                // Since we can't get the address automatically in direct mode,
-                // we'll ask the user to input it manually
-                final address = await _showAddressInputDialog(context);
-                if (address != null && address.isNotEmpty) {
-                  return ConnectResponse(
-                    connected: true,
-                    walletAddress: address.toLowerCase(),
-                    error: null,
-                  );
-                }
-              }
-            }
-          }
-        }
-
-        return ConnectResponse(
-          connected: false,
-          walletAddress: null,
-          error: 'Failed to connect wallet in direct mode.',
-        );
       }
 
       // Mark connection as in progress
       _isConnectionInProgress = true;
+      _hasReceivedSessionProposal = false;
+      debugPrint("🔄 Starting new wallet connection process");
 
       // Create a completer to handle async connection flow
       _connectCompleter = Completer<ConnectResponse>();
 
-      // Check for installed wallets before creating session
-      final installedWallets = await getInstalledWallets();
-      debugPrint(
-        "📱 Found ${installedWallets.length} installed wallet apps: $installedWallets",
-      );
+      // Start timeout timer
+      _startConnectionTimeoutTimer();
 
-      // Create connection
-      if (_connector != null && !_connector!.connected) {
-        try {
-          debugPrint("🔄 Creating WalletConnect session...");
-          _startConnectionTimeoutTimer();
-
+      try {
+        // Clear any existing sessions first to ensure a fresh start
+        final existingSessions = _walletKit!.sessions.getAll();
+        for (final session in existingSessions) {
           try {
-            // Use a standard Ethereum chain ID (1 = Ethereum Mainnet)
-            await _connector!.createSession(
-              chainId: 1,
-              onDisplayUri: (uri) async {
-                debugPrint("🔗 WalletConnect URI: $uri");
-                // Copy the URI to clipboard automatically as a fallback
-                await Clipboard.setData(ClipboardData(text: uri));
-
-                // Also show a fallback dialog if the user needs to paste manually
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        'WalletConnect link copied to clipboard. You can paste it manually in your wallet if needed.',
-                      ),
-                      duration: Duration(seconds: 8),
-                    ),
-                  );
-                }
-
-                // Show dialog to select wallet
-                final selectedWallet = await _showWalletSelectionDialog(
-                  context,
-                  uri,
-                  installedWallets,
-                );
-
-                if (selectedWallet != null) {
-                  debugPrint("🔄 Selected wallet: $selectedWallet");
-                  final walletApp = _walletApps[selectedWallet];
-
-                  if (walletApp != null) {
-                    final launched = await _launchWalletWithUri(walletApp, uri);
-                    if (launched) {
-                      debugPrint("✓ Launched wallet: ${walletApp.name}");
-                      // Show loading indicator - don't complete here, wait for onConnect callback
-                      if (context.mounted) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Waiting for approval in ${walletApp.name}...',
-                            ),
-                            duration: const Duration(seconds: 5),
-                          ),
-                        );
-                      }
-                    } else {
-                      debugPrint("❌ Failed to launch wallet, trying clipboard");
-                      final clipboardResult = await _copyToClipboardAndNotify(
-                        context,
-                        uri,
-                      );
-                      if (!clipboardResult) {
-                        _isConnectionInProgress = false;
-                        _cancelTimeoutTimer();
-                        _connectCompleter?.complete(
-                          ConnectResponse(
-                            connected: false,
-                            walletAddress: null,
-                            error: 'Failed to launch wallet app',
-                          ),
-                        );
-                      }
-                    }
-                  } else {
-                    debugPrint("❌ Wallet app configuration not found");
-                    _isConnectionInProgress = false;
-                    _cancelTimeoutTimer();
-                    _connectCompleter?.complete(
-                      ConnectResponse(
-                        connected: false,
-                        walletAddress: null,
-                        error: 'Wallet configuration not found',
-                      ),
-                    );
-                  }
-                } else {
-                  // No wallet selected, cancel connection
-                  debugPrint("❌ No wallet selected, cancelling connection");
-                  _isConnectionInProgress = false;
-                  _cancelTimeoutTimer();
-                  _connectCompleter?.complete(
-                    ConnectResponse(
-                      connected: false,
-                      walletAddress: null,
-                      error: 'No wallet selected',
-                    ),
-                  );
-                }
-              },
-            );
-          } catch (sessionError) {
-            // Handle network errors specifically
-            if (sessionError.toString().contains('SocketException') ||
-                sessionError.toString().contains('Failed host lookup')) {
-              debugPrint("❌ Network error creating session: $sessionError");
-
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text(
-                      'Network error connecting to WalletConnect bridge. Trying direct mode.',
-                    ),
-                    duration: Duration(seconds: 5),
-                  ),
-                );
-              }
-
-              // Try direct mode as a fallback for network errors
-              final address = await _tryDirectWalletConnection(
-                context,
-                installedWallets,
-              );
-              if (address != null) {
-                _isConnectionInProgress = false;
-                _cancelTimeoutTimer();
-                if (_connectCompleter != null &&
-                    !_connectCompleter!.isCompleted) {
-                  _connectCompleter!.complete(
-                    ConnectResponse(
-                      connected: true,
-                      walletAddress: address,
-                      error: null,
-                    ),
-                  );
-                }
-                return ConnectResponse(
-                  connected: true,
-                  walletAddress: address,
-                  error: null,
-                );
-              }
-
-              _isConnectionInProgress = false;
-              _cancelTimeoutTimer();
-              if (_connectCompleter != null &&
-                  !_connectCompleter!.isCompleted) {
-                _connectCompleter!.complete(
-                  ConnectResponse(
-                    connected: false,
-                    walletAddress: null,
-                    error:
-                        'Network error: Cannot connect to WalletConnect bridge server',
-                  ),
-                );
-              }
-              return ConnectResponse(
-                connected: false,
-                walletAddress: null,
-                error:
-                    'Network error: Cannot connect to WalletConnect bridge server',
-              );
-            } else {
-              // Re-throw for other errors
-              rethrow;
-            }
-          }
-        } catch (e) {
-          debugPrint("❌ Error creating session: $e");
-          _isConnectionInProgress = false;
-          _cancelTimeoutTimer();
-          if (_connectCompleter != null && !_connectCompleter!.isCompleted) {
-            _connectCompleter!.complete(
-              ConnectResponse(
-                connected: false,
-                walletAddress: null,
-                error: 'Error connecting to wallet: ${e.toString()}',
+            await _walletKit!.disconnectSession(
+              topic: session.topic,
+              reason: ReownSignError(
+                code: 6000,
+                message: 'Refreshing connection',
               ),
             );
+            debugPrint("🔄 Cleared existing session: ${session.topic}");
+          } catch (e) {
+            debugPrint("⚠️ Error clearing session: $e");
           }
         }
+
+        // Create URI using the correct API
+        debugPrint("🔄 Creating pairing...");
+        final pairingResponse = await _walletKit!.core.pairing.create();
+        final wcUri = pairingResponse.uri.toString();
+
+        debugPrint("🔗 WalletConnect URI generated: $wcUri");
+        debugPrint("🔗 Pairing topic: ${pairingResponse.topic}");
+
+        // Define required namespaces for the connection
+        final requiredNamespaces = {
+          'eip155': Namespace(
+            chains: ['eip155:1'],
+            methods: [
+              'eth_sendTransaction',
+              'personal_sign',
+              'eth_signTransaction',
+              'eth_sign',
+            ],
+            events: ['chainChanged', 'accountsChanged'],
+            accounts: [],
+          ),
+        };
+
+        // Store the required namespaces for later use in session proposal
+        _requiredNamespaces = requiredNamespaces;
+
+        // Get installed wallets
+        final installedWallets = await getInstalledWallets();
+        debugPrint("📱 Found ${installedWallets.length} installed wallet apps");
+
+        // Get selected wallet from user
+        final selectedWallet = await _showWalletSelectionDialog(
+          context,
+          installedWallets,
+        );
+
+        if (selectedWallet != null) {
+          debugPrint("🔄 User selected wallet: $selectedWallet");
+          final walletApp = _walletApps[selectedWallet];
+
+          if (walletApp != null) {
+            // Copy URI to clipboard as backup
+            await Clipboard.setData(ClipboardData(text: wcUri));
+
+            // Launch the selected wallet
+            debugPrint("🚀 Launching wallet: ${walletApp.name}");
+
+            // First try to launch with direct WalletConnect URI
+            bool launched = false;
+
+            try {
+              launched = await launchUrl(
+                Uri.parse(wcUri),
+                mode: LaunchMode.externalApplication,
+              );
+
+              if (launched) {
+                debugPrint(
+                  "✅ Successfully launched with direct WalletConnect URI",
+                );
+              }
+            } catch (e) {
+              debugPrint("⚠️ Error launching direct URI: $e");
+            }
+
+            // If direct URI launch failed, try wallet-specific scheme
+            if (!launched) {
+              try {
+                final encodedUri = Uri.encodeComponent(wcUri);
+                final schemeUri = Uri.parse(
+                  '${walletApp.scheme}wc?uri=$encodedUri',
+                );
+
+                debugPrint(
+                  "🔄 Trying wallet-specific scheme: ${schemeUri.toString()}",
+                );
+
+                launched = await launchUrl(
+                  schemeUri,
+                  mode: LaunchMode.externalApplication,
+                );
+
+                if (launched) {
+                  debugPrint(
+                    "✅ Successfully launched with wallet-specific scheme",
+                  );
+                }
+              } catch (e) {
+                debugPrint("⚠️ Error launching with wallet scheme: $e");
+              }
+            }
+
+            // If that also failed, try universal link (iOS) or direct app launch (Android)
+            if (!launched) {
+              if (Platform.isIOS && walletApp.universalLink.isNotEmpty) {
+                try {
+                  final encodedUri = Uri.encodeComponent(wcUri);
+                  final universalUri = Uri.parse(
+                    '${walletApp.universalLink}/wc?uri=$encodedUri',
+                  );
+
+                  debugPrint(
+                    "🔄 Trying universal link: ${universalUri.toString()}",
+                  );
+
+                  launched = await launchUrl(
+                    universalUri,
+                    mode: LaunchMode.externalApplication,
+                  );
+
+                  if (launched) {
+                    debugPrint("✅ Successfully launched with universal link");
+                  }
+                } catch (e) {
+                  debugPrint("⚠️ Error launching with universal link: $e");
+                }
+              } else if (Platform.isAndroid) {
+                try {
+                  final appUri = Uri.parse(
+                    'android-app://${walletApp.androidPackage}',
+                  );
+
+                  debugPrint(
+                    "🔄 Trying direct app launch: ${appUri.toString()}",
+                  );
+
+                  launched = await launchUrl(
+                    appUri,
+                    mode: LaunchMode.externalApplication,
+                  );
+
+                  if (launched) {
+                    debugPrint("✅ Successfully launched app directly");
+                  }
+                } catch (e) {
+                  debugPrint("⚠️ Error launching app directly: $e");
+                }
+              }
+            }
+
+            if (launched) {
+              // Show snackbar with instructions
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Please approve the connection in ${walletApp.name}. WalletConnect URI copied to clipboard.',
+                  ),
+                  duration: const Duration(seconds: 8),
+                ),
+              );
+
+              // Wait for a session proposal to be received
+              int waitTimeSeconds = 0;
+              const maxWaitTime = 120; // Max wait time in seconds
+
+              while (!_hasReceivedSessionProposal &&
+                  waitTimeSeconds < maxWaitTime) {
+                await Future.delayed(const Duration(seconds: 1));
+                waitTimeSeconds++;
+
+                if (waitTimeSeconds % 5 == 0) {
+                  debugPrint(
+                    "⏱️ Waiting for session proposal... ($waitTimeSeconds seconds)",
+                  );
+
+                  // Every 15 seconds, try to re-launch the wallet with the URI
+                  if (waitTimeSeconds % 15 == 0 && waitTimeSeconds < 45) {
+                    debugPrint("🔄 Attempting to relaunch wallet with URI...");
+                    try {
+                      final encodedUri = Uri.encodeComponent(wcUri);
+                      final schemeUri = Uri.parse(
+                        '${walletApp.scheme}wc?uri=$encodedUri',
+                      );
+                      await launchUrl(
+                        schemeUri,
+                        mode: LaunchMode.externalApplication,
+                      );
+                    } catch (e) {
+                      debugPrint("⚠️ Error relaunching wallet: $e");
+                    }
+                  }
+                }
+              }
+
+              if (_hasReceivedSessionProposal) {
+                debugPrint(
+                  "✅ Session proposal received after $waitTimeSeconds seconds",
+                );
+              } else {
+                debugPrint(
+                  "⚠️ No session proposal received after $waitTimeSeconds seconds",
+                );
+
+                // If no session proposal received, try to launch again
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Connection taking longer than expected. Please check ${walletApp.name} or try pasting the URI manually.',
+                    ),
+                    duration: const Duration(seconds: 8),
+                  ),
+                );
+              }
+            } else {
+              // If all launch attempts failed, inform user to paste URI manually
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'Could not open ${walletApp.name} automatically. Please open it manually and paste the copied WalletConnect URI.',
+                  ),
+                  duration: const Duration(seconds: 8),
+                ),
+              );
+            }
+          } else {
+            _completeWithError('Wallet configuration not found');
+          }
+        } else {
+          // No wallet selected, cancel connection
+          _completeWithError('No wallet selected');
+        }
+      } catch (e, stacktrace) {
+        debugPrint("❌ Error in wallet connection flow: $e");
+        debugPrint("📜 Stack trace: $stacktrace");
+        _completeWithError('Error connecting to wallet: ${e.toString()}');
       }
 
       // Wait for connection to complete with a timeout
       return await _connectCompleter!.future.timeout(
-        const Duration(minutes: 3),
+        const Duration(minutes: 2),
         onTimeout: () {
           debugPrint("⏰ Connection future timed out");
           _isConnectionInProgress = false;
@@ -603,8 +730,9 @@ class WalletService {
           );
         },
       );
-    } catch (e) {
+    } catch (e, stacktrace) {
       debugPrint("❌ Error in connectWallet: $e");
+      debugPrint("📜 Stack trace: $stacktrace");
       _isConnectionInProgress = false;
       _cancelTimeoutTimer();
       return ConnectResponse(
@@ -615,203 +743,57 @@ class WalletService {
     }
   }
 
-  /// Try direct wallet connection without WalletConnect bridge
-  Future<String?> _tryDirectWalletConnection(
-    BuildContext context,
-    List<String> installedWallets,
-  ) async {
+  /// Extract wallet address from session
+  String? _getWalletAddressFromSession(SessionData session) {
     try {
-      final selectedWallet = await _showWalletSelectionDialog(
-        context,
-        "direct://connect", // Dummy URI for direct mode
-        installedWallets,
-      );
+      final namespaces = session.namespaces;
 
-      if (selectedWallet != null) {
-        final walletApp = _walletApps[selectedWallet];
-        if (walletApp != null) {
-          final launched = await _launchWalletAppDirectly(walletApp);
-          if (launched) {
-            // In direct mode, we just launch the wallet and show instructions to the user
-            if (context.mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    '${walletApp.name} opened. Please connect your wallet manually.',
-                  ),
-                  duration: const Duration(seconds: 10),
-                ),
-              );
+      // Log namespaces for debugging
+      debugPrint("🔍 Getting wallet address from session ${session.topic}");
+      debugPrint("🔍 Namespaces: ${namespaces.keys.join(', ')}");
 
-              // Since we can't get the address automatically in direct mode,
-              // we'll ask the user to input it manually
-              final address = await _showAddressInputDialog(context);
-              if (address != null && address.isNotEmpty) {
-                return address.toLowerCase();
-              }
-            }
+      // Try to get EVM address
+      if (namespaces.containsKey('eip155')) {
+        final accounts = namespaces['eip155']?.accounts ?? [];
+        debugPrint("🔍 EIP-155 accounts: $accounts");
+
+        if (accounts.isNotEmpty) {
+          // Parse the account string (format: "eip155:1:0x...")
+          final parts = accounts.first.split(':');
+          if (parts.length >= 3) {
+            return parts[2].toLowerCase();
           }
         }
       }
 
-      return null;
-    } catch (e) {
-      debugPrint("❌ Error in direct wallet connection: $e");
-      return null;
-    }
-  }
+      // If EVM address not found, try Solana
+      if (namespaces.containsKey('solana')) {
+        final accounts = namespaces['solana']?.accounts ?? [];
+        debugPrint("🔍 Solana accounts: $accounts");
 
-  /// Launch wallet app directly without a WalletConnect URI
-  Future<bool> _launchWalletAppDirectly(WalletApp wallet) async {
-    try {
-      if (Platform.isAndroid) {
-        // Try direct app launch
-        try {
-          final appUri = Uri.parse('android-app://${wallet.androidPackage}');
-          debugPrint("🔄 Trying to launch app directly: ${appUri.toString()}");
-
-          if (await launchUrl(appUri, mode: LaunchMode.externalApplication)) {
-            debugPrint("🚀 Launched app directly");
-            return true;
-          }
-        } catch (e) {
-          debugPrint("⚠️ Failed to launch app directly: $e");
-        }
-
-        // Try scheme
-        try {
-          final schemeUri = Uri.parse(wallet.scheme);
-          debugPrint(
-            "🔄 Trying to launch with scheme: ${schemeUri.toString()}",
-          );
-
-          if (await launchUrl(
-            schemeUri,
-            mode: LaunchMode.externalApplication,
-          )) {
-            debugPrint("🚀 Launched using scheme");
-            return true;
-          }
-        } catch (e) {
-          debugPrint("⚠️ Failed to launch using scheme: $e");
-        }
-      } else if (Platform.isIOS) {
-        // Try scheme for iOS
-        try {
-          final schemeUri = Uri.parse(wallet.scheme);
-          debugPrint("🔄 Trying iOS scheme: ${schemeUri.toString()}");
-
-          if (await launchUrl(
-            schemeUri,
-            mode: LaunchMode.externalApplication,
-          )) {
-            debugPrint("🚀 Launched using iOS scheme");
-            return true;
-          }
-        } catch (e) {
-          debugPrint("⚠️ Failed to launch iOS scheme: $e");
-        }
-
-        // Try universal link
-        if (wallet.universalLink.isNotEmpty) {
-          try {
-            final universalUri = Uri.parse(wallet.universalLink);
-            debugPrint("🔄 Trying universal link: ${universalUri.toString()}");
-
-            if (await launchUrl(
-              universalUri,
-              mode: LaunchMode.externalApplication,
-            )) {
-              debugPrint("🚀 Launched using universal link");
-              return true;
-            }
-          } catch (e) {
-            debugPrint("⚠️ Failed to launch iOS universal link: $e");
+        if (accounts.isNotEmpty) {
+          final parts = accounts.first.split(':');
+          if (parts.length >= 3) {
+            return parts[2].toLowerCase();
           }
         }
       }
 
-      return false;
+      debugPrint("⚠️ No wallet address found in session");
+      return null;
     } catch (e) {
-      debugPrint("❌ Error launching wallet directly: $e");
-      return false;
-    }
-  }
-
-  /// Show dialog to manually input wallet address
-  Future<String?> _showAddressInputDialog(BuildContext context) async {
-    String address = '';
-    return showDialog<String>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Enter Wallet Address'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Please enter your wallet address manually:',
-                  style: TextStyle(fontSize: 14),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  decoration: const InputDecoration(
-                    hintText: '0x...',
-                    border: OutlineInputBorder(),
-                  ),
-                  onChanged: (value) {
-                    address = value;
-                  },
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(address);
-              },
-              child: const Text('Connect'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  /// Get wallet address from session
-  String? _getWalletAddress() {
-    debugPrint("📋 Getting wallet address from session");
-    debugPrint("📋 Session: $_session");
-
-    if (_session?.accounts == null) {
-      debugPrint("⚠️ Session accounts is null");
+      debugPrint("❌ Error extracting wallet address from session: $e");
       return null;
     }
-
-    if (_session!.accounts.isEmpty) {
-      debugPrint("⚠️ Session accounts is empty");
-      return null;
-    }
-
-    final address = _session!.accounts[0].toLowerCase();
-    debugPrint("📋 Wallet address extracted: $address");
-    return address;
   }
 
-  /// Check if wallet apps are installed - improved implementation
+  /// Check if wallet apps are installed
   Future<List<String>> getInstalledWallets() async {
     List<String> installedWallets = [];
 
     try {
+      debugPrint("🔍 Checking for installed wallet apps");
+
       if (Platform.isAndroid) {
         for (var entry in _walletApps.entries) {
           final walletId = entry.key;
@@ -819,7 +801,10 @@ class WalletService {
 
           try {
             // Check if the wallet app is installed by trying to launch its scheme
-            if (await canLaunchUrl(Uri.parse(walletApp.scheme))) {
+            final canLaunchScheme = await canLaunchUrl(
+              Uri.parse(walletApp.scheme),
+            );
+            if (canLaunchScheme) {
               installedWallets.add(walletId);
               debugPrint(
                 "📱 Found installed wallet via scheme: ${walletApp.name}",
@@ -831,9 +816,12 @@ class WalletService {
             final androidIntent = Uri.parse(
               'android-app://${walletApp.androidPackage}',
             );
-            if (await canLaunchUrl(androidIntent)) {
+            final canLaunchApp = await canLaunchUrl(androidIntent);
+            if (canLaunchApp) {
               installedWallets.add(walletId);
-              debugPrint("📱 Found installed wallet: ${walletApp.name}");
+              debugPrint(
+                "📱 Found installed wallet via package: ${walletApp.name}",
+              );
             }
           } catch (e) {
             debugPrint(
@@ -848,13 +836,14 @@ class WalletService {
           final walletApp = entry.value;
 
           try {
-            if (await canLaunchUrl(Uri.parse(walletApp.scheme))) {
+            final canLaunch = await canLaunchUrl(Uri.parse(walletApp.scheme));
+            if (canLaunch) {
               installedWallets.add(walletId);
-              debugPrint("📱 Found installed wallet: ${walletApp.name}");
+              debugPrint("📱 Found installed wallet on iOS: ${walletApp.name}");
             }
           } catch (e) {
             debugPrint(
-              "⚠️ Error checking if ${walletApp.name} is installed: $e",
+              "⚠️ Error checking if ${walletApp.name} is installed on iOS: $e",
             );
           }
         }
@@ -865,6 +854,10 @@ class WalletService {
         debugPrint("📱 No installed wallets found, showing all options");
         installedWallets = _walletApps.keys.toList();
       }
+
+      debugPrint(
+        "📱 Final list of wallet options: ${installedWallets.map((id) => _walletApps[id]?.name).join(', ')}",
+      );
     } catch (e) {
       debugPrint("❌ Error detecting installed wallets: $e");
     }
@@ -872,256 +865,8 @@ class WalletService {
     return installedWallets;
   }
 
-  /// Launch wallet app with WalletConnect URI - improved implementation
-  Future<bool> _launchWalletWithUri(WalletApp wallet, String uri) async {
-    try {
-      // Encode the URI properly
-      final encodedUri = Uri.encodeComponent(uri);
-      debugPrint("🔄 Original URI: $uri");
-      debugPrint("🔄 Encoded URI: $encodedUri");
-
-      bool launched = false;
-
-      if (Platform.isAndroid) {
-        // Try direct wc URI first - most direct method
-        try {
-          debugPrint("🔄 Trying to launch WalletConnect URI directly");
-          if (await launchUrl(
-            Uri.parse(uri),
-            mode: LaunchMode.externalApplication,
-          )) {
-            debugPrint("🚀 Launched using direct WalletConnect URI");
-            return true;
-          }
-        } catch (e) {
-          debugPrint("⚠️ Failed to launch direct WalletConnect URI: $e");
-        }
-
-        // Try wallet-specific scheme which is most reliable on Android
-        try {
-          final schemeUri = Uri.parse('${wallet.scheme}wc?uri=$encodedUri');
-          debugPrint(
-            "🔄 Trying to launch with scheme: ${schemeUri.toString()}",
-          );
-
-          if (await launchUrl(
-            schemeUri,
-            mode: LaunchMode.externalApplication,
-          )) {
-            debugPrint("🚀 Launched using wallet scheme");
-            return true;
-          }
-        } catch (e) {
-          debugPrint("⚠️ Failed to launch using wallet scheme: $e");
-        }
-
-        // Try direct intent with wc: uri
-        try {
-          // Extract and use the wc: part of the URI
-          final wcPart =
-              uri.contains('wc:') ? uri.substring(uri.indexOf('wc:')) : uri;
-          final wcUri = Uri.parse(wcPart);
-          debugPrint(
-            "🔄 Trying to launch with wc: scheme: ${wcUri.toString()}",
-          );
-
-          if (await launchUrl(wcUri, mode: LaunchMode.externalApplication)) {
-            debugPrint("🚀 Launched using wc: scheme");
-            return true;
-          }
-        } catch (e) {
-          debugPrint("⚠️ Failed to launch with wc: scheme: $e");
-        }
-
-        // Try package-specific intent
-        try {
-          final intentUri = Uri.parse(
-            'intent://wc?uri=$encodedUri#Intent;package=${wallet.androidPackage};scheme=wc;end;',
-          );
-          debugPrint(
-            "🔄 Trying to launch with intent: ${intentUri.toString()}",
-          );
-
-          if (await launchUrl(
-            intentUri,
-            mode: LaunchMode.externalApplication,
-          )) {
-            debugPrint("🚀 Launched using Android intent");
-            return true;
-          }
-        } catch (e) {
-          debugPrint("⚠️ Failed to launch Android intent: $e");
-        }
-
-        // Try direct app launch as last resort
-        try {
-          final appUri = Uri.parse('android-app://${wallet.androidPackage}');
-          debugPrint("🔄 Trying to launch app directly: ${appUri.toString()}");
-
-          if (await launchUrl(appUri, mode: LaunchMode.externalApplication)) {
-            debugPrint(
-              "🚀 Launched app directly - you'll need to paste the code",
-            );
-            await Clipboard.setData(ClipboardData(text: uri));
-            return true;
-          }
-        } catch (e) {
-          debugPrint("⚠️ Failed to launch app directly: $e");
-        }
-      } else if (Platform.isIOS) {
-        // Try direct WalletConnect URI first for iOS
-        try {
-          debugPrint("🔄 Trying to launch WalletConnect URI directly on iOS");
-          if (await launchUrl(
-            Uri.parse(uri),
-            mode: LaunchMode.externalApplication,
-          )) {
-            debugPrint("🚀 Launched using direct WalletConnect URI on iOS");
-            return true;
-          }
-        } catch (e) {
-          debugPrint("⚠️ Failed to launch direct WalletConnect URI on iOS: $e");
-        }
-
-        // Try universal link first for iOS
-        if (wallet.universalLink.isNotEmpty) {
-          try {
-            final universalUri = Uri.parse(
-              '${wallet.universalLink}/wc?uri=$encodedUri',
-            );
-            debugPrint("🔄 Trying universal link: ${universalUri.toString()}");
-
-            if (await launchUrl(
-              universalUri,
-              mode: LaunchMode.externalApplication,
-            )) {
-              debugPrint("🚀 Launched using universal link");
-              return true;
-            }
-          } catch (e) {
-            debugPrint("⚠️ Failed to launch iOS universal link: $e");
-          }
-        }
-
-        // Fallback to scheme for iOS
-        try {
-          final schemeUri = Uri.parse('${wallet.scheme}wc?uri=$encodedUri');
-          debugPrint("🔄 Trying iOS scheme: ${schemeUri.toString()}");
-
-          if (await launchUrl(
-            schemeUri,
-            mode: LaunchMode.externalApplication,
-          )) {
-            debugPrint("🚀 Launched using iOS scheme");
-            return true;
-          }
-        } catch (e) {
-          debugPrint("⚠️ Failed to launch iOS scheme: $e");
-        }
-      }
-
-      // As a final resort, copy to clipboard for manual pasting
-      await Clipboard.setData(ClipboardData(text: uri));
-      debugPrint("📋 WalletConnect URI copied to clipboard as fallback");
-      return launched;
-    } catch (e) {
-      debugPrint("❌ Error launching wallet: $e");
-      return false;
-    }
-  }
-
-  /// Copy the URI to clipboard and notify user
-  Future<bool> _copyToClipboardAndNotify(
-    BuildContext? context,
-    String uri,
-  ) async {
-    try {
-      await Clipboard.setData(ClipboardData(text: uri));
-      if (context != null && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'WalletConnect link copied to clipboard. Please paste it in your wallet app.',
-            ),
-            duration: Duration(seconds: 8),
-          ),
-        );
-      }
-      return true;
-    } catch (e) {
-      debugPrint("❌ Error copying to clipboard: $e");
-      return false;
-    }
-  }
-
   /// Show dialog to select wallet
   Future<String?> _showWalletSelectionDialog(
-    BuildContext context,
-    String uri,
-    List<String> installedWallets,
-  ) async {
-    // Handle the case where no wallets are installed
-    if (installedWallets.isEmpty) {
-      return await _showNoWalletsDialog(context);
-    } else {
-      // Show dialog with installed wallets
-      return await _showWalletPickerDialog(context, installedWallets);
-    }
-  }
-
-  /// Show dialog when no wallets are installed
-  Future<String?> _showNoWalletsDialog(BuildContext context) async {
-    return await showDialog<String>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('No Wallet Found'),
-          content: SizedBox(
-            width: double.maxFinite,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'No crypto wallet apps found on your device. Please install one of the following:',
-                ),
-                const SizedBox(height: 16),
-                Flexible(
-                  child: ListView(
-                    shrinkWrap: true,
-                    children:
-                        _walletApps.entries.map((entry) {
-                          final wallet = entry.value;
-                          return ListTile(
-                            leading: Icon(wallet.icon),
-                            title: Text(wallet.name),
-                            onTap: () {
-                              Navigator.of(context).pop(entry.key);
-                              _openWalletStore(wallet);
-                            },
-                          );
-                        }).toList(),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  /// Show dialog to pick from installed wallets
-  Future<String?> _showWalletPickerDialog(
     BuildContext context,
     List<String> installedWallets,
   ) async {
@@ -1168,6 +913,7 @@ class WalletService {
             ),
             TextButton(
               onPressed: () {
+                // Show additional wallets that can be installed
                 showDialog(
                   context: context,
                   builder:
@@ -1242,12 +988,30 @@ class WalletService {
 
   /// Check if currently connected
   bool isConnected() {
-    return _connector != null && _connector!.connected && _session != null;
+    final connected =
+        _walletKit != null && _walletKit!.sessions.getAll().isNotEmpty;
+    debugPrint(
+      "🔍 Wallet connection status: ${connected ? 'Connected' : 'Disconnected'}",
+    );
+    return connected;
   }
 
   /// Get current wallet address if connected
   String? getCurrentWalletAddress() {
-    return _getWalletAddress();
+    if (_walletKit == null) {
+      debugPrint("⚠️ WalletKit is null when checking current wallet address");
+      return null;
+    }
+
+    final sessions = _walletKit!.sessions.getAll();
+    if (sessions.isEmpty) {
+      debugPrint("⚠️ No active sessions when checking current wallet address");
+      return null;
+    }
+
+    final address = _getWalletAddressFromSession(sessions.first);
+    debugPrint("🔍 Current wallet address: $address");
+    return address;
   }
 
   /// Disconnect wallet
@@ -1256,12 +1020,33 @@ class WalletService {
       _cancelTimeoutTimer();
       _isConnectionInProgress = false;
 
-      if (_connector != null && _connector!.connected) {
-        await _connector!.killSession();
-        _session = null;
-        return true;
+      if (_walletKit == null) {
+        debugPrint("⚠️ WalletKit is null when disconnecting");
+        return false;
       }
-      return false;
+
+      final sessions = _walletKit!.sessions.getAll();
+      if (sessions.isEmpty) {
+        debugPrint("⚠️ No active sessions to disconnect");
+        return false;
+      }
+
+      debugPrint("🔄 Disconnecting ${sessions.length} sessions");
+
+      // Disconnect all sessions
+      for (final session in sessions) {
+        try {
+          await _walletKit!.disconnectSession(
+            topic: session.topic,
+            reason: ReownSignError(code: 6000, message: 'User disconnected'),
+          );
+          debugPrint("✅ Successfully disconnected session: ${session.topic}");
+        } catch (e) {
+          debugPrint("❌ Error disconnecting session: $e");
+        }
+      }
+
+      return true;
     } catch (e) {
       debugPrint("❌ Error disconnecting wallet: $e");
       return false;
@@ -1270,8 +1055,8 @@ class WalletService {
 
   /// Clean up resources
   void dispose() {
+    debugPrint("🧹 Disposing WalletService");
     _cancelTimeoutTimer();
-    _appLinksSubscription?.cancel();
     disconnectWallet();
   }
 }

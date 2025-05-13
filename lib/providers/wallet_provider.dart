@@ -58,9 +58,13 @@ class WalletNotifier extends StateNotifier<WalletState> {
     );
 
     try {
+      debugPrint("🔄 WalletProvider: Initiating wallet connection");
       final response = await _walletService.connectWallet(context);
 
       if (response.connected && response.walletAddress != null) {
+        debugPrint(
+          "✅ WalletProvider: Successfully connected with address: ${response.walletAddress}",
+        );
         state = state.copyWith(
           status: WalletConnectionStatus.connected,
           walletAddress: response.walletAddress,
@@ -68,6 +72,7 @@ class WalletNotifier extends StateNotifier<WalletState> {
         );
         return true;
       } else {
+        debugPrint("❌ WalletProvider: Connection failed - ${response.error}");
         state = state.copyWith(
           status: WalletConnectionStatus.error,
           errorMessage: response.error ?? 'Failed to connect wallet',
@@ -76,6 +81,7 @@ class WalletNotifier extends StateNotifier<WalletState> {
         return false;
       }
     } catch (e) {
+      debugPrint("❌ WalletProvider: Exception during connection - $e");
       state = state.copyWith(
         status: WalletConnectionStatus.error,
         errorMessage: 'Error: ${e.toString()}',

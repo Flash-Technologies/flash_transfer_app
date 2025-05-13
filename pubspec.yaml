@@ -44,8 +44,7 @@ dependencies:
   flutter_facebook_auth: ^6.0.4
   sign_in_with_apple: ^7.0.0
   crypto: ^3.0.3
-  walletconnect_dart: ^0.0.11
-  web3dart: ^2.7.1
+  reown_walletkit: ^1.1.5+1
   url_launcher: ^6.2.3
   app_links: ^3.5.0
 
