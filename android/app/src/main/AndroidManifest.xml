@@ -54,6 +54,15 @@
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="com.example.flash_transfer_app" />
             </intent-filter>
+
+              <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" 
+                      android:host="flashtransferapp"
+                      android:pathPrefix="/connect" />
+            </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
@@ -71,5 +80,10 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+         <package android:name="io.metamask" />
+    <package android:name="com.wallet.crypto.trustapp" />
+    <package android:name="app.phantom" />
+    <package android:name="com.binance.dev" />
+    <package android:name="org.toshi" />
     </queries>
 </manifest>

@@ -7,7 +7,7 @@ import 'dart:convert';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../providers/auth_provider.dart';
-import '../../providers/wallet_provider.dart';
+import '../../providers/direct_wallet_provider.dart';
 import '../../main.dart' show googleSignIn;
 
 class SocialLoginButtons extends ConsumerWidget {
@@ -26,16 +26,13 @@ class SocialLoginButtons extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final walletState = ref.watch(directWalletProvider);
+    
+    // Add loading indicator for wallet button when connecting
+    final isWalletConnecting = walletState.status == WalletConnectionStatus.connecting;
+
     return Column(
       children: [
-        // const Text(
-        //   'OR',
-        //   style: TextStyle(
-        //     fontSize: 14,
-        //     color: Color(0xFF6E757D),
-        //   ),
-        // ),
-        // const SizedBox(height: 16),
         Wrap(
           spacing: 16,
           runSpacing: 16,
@@ -86,20 +83,30 @@ class SocialLoginButtons extends ConsumerWidget {
               onPressed: onAppleLogin ?? () => _handleAppleLogin(context, ref),
             ),
             _buildSocialButton(
-              icon: Image.asset(
-                'assets/images/wallet.png',
-                width: 24,
-                height: 24,
-                errorBuilder:
-                    (_, __, ___) => const Icon(
-                      Icons.account_balance_wallet,
-                      size: 24,
-                      color: Colors.black,
+              icon: isWalletConnecting 
+                  ? const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF6E757D)),
+                      ),
+                    )
+                  : Image.asset(
+                      'assets/images/wallet.png',
+                      width: 24,
+                      height: 24,
+                      errorBuilder:
+                          (_, __, ___) => const Icon(
+                            Icons.account_balance_wallet,
+                            size: 24,
+                            color: Colors.black,
+                          ),
                     ),
-              ),
-              label: 'Wallet',
-              onPressed:
-                  onWalletLogin ?? () => _handleWalletLogin(context, ref),
+              label: isWalletConnecting ? 'Connecting...' : 'Wallet',
+              onPressed: isWalletConnecting 
+                  ? null 
+                  : (onWalletLogin ?? () => _handleDirectWalletLogin(context, ref)),
             ),
           ],
         ),
@@ -110,7 +117,7 @@ class SocialLoginButtons extends ConsumerWidget {
   Widget _buildSocialButton({
     required Widget icon,
     required String label,
-    required VoidCallback onPressed,
+    required VoidCallback? onPressed,
   }) {
     return SizedBox(
       width: 160,
@@ -351,75 +358,65 @@ class SocialLoginButtons extends ConsumerWidget {
     }
   }
 
-  Future<void> _handleWalletLogin(BuildContext context, WidgetRef ref) async {
-  final scaffoldMessenger = ScaffoldMessenger.of(context);
+  Future<void> _handleDirectWalletLogin(BuildContext context, WidgetRef ref) async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
 
-  try {
-    // Show loading indicator
-    scaffoldMessenger.showSnackBar(
-      const SnackBar(content: Text('Connecting to wallet...'), duration: Duration(seconds: 2)),
-    );
-
-    // Connect to wallet
-    final walletNotifier = ref.read(walletProvider.notifier);
-    final connected = await walletNotifier.connectWallet(context);
-
-    if (!connected) {
-      final errorMessage =
-          ref.read(walletProvider).errorMessage ?? 'Wallet connection failed';
-      scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
-      return;
-    }
-
-    // Get wallet address
-    final walletAddress = ref.read(walletProvider).walletAddress;
-
-    if (walletAddress == null || walletAddress.isEmpty) {
-      scaffoldMessenger.showSnackBar(
-        const SnackBar(content: Text('Failed to get wallet address')),
-      );
-      return;
-    }
-
-    // Show address in snackbar for testing
-    scaffoldMessenger.showSnackBar(
-      SnackBar(content: Text('Connected with address: $walletAddress')),
-    );
-
-    // Now proceed with authentication
-    scaffoldMessenger.showSnackBar(
-      const SnackBar(content: Text('Signing in with wallet...')),
-    );
-
-    // Get user country
-    String countryName = 'Unknown';
     try {
-      final response = await http.get(Uri.parse('https://ipapi.co/json/'));
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        countryName = data['country_name'] ?? 'Unknown';
+      // Connect to wallet using direct integration
+      final walletNotifier = ref.read(directWalletProvider.notifier);
+      final connected = await walletNotifier.connectWallet(context);
+
+      if (!connected) {
+        final errorMessage = ref.read(directWalletProvider).errorMessage ?? 
+                             'Wallet connection failed';
+        scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
+        return;
+      }
+
+      // Get wallet address
+      final walletAddress = ref.read(directWalletProvider).walletAddress;
+
+      if (walletAddress == null || walletAddress.isEmpty) {
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(content: Text('Failed to get wallet address')),
+        );
+        return;
+      }
+
+      // Show address in snackbar for testing
+      scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Connected with address: $walletAddress')),
+      );
+
+      // Get user country
+      String countryName = 'Unknown';
+      try {
+        final response = await http.get(Uri.parse('https://ipapi.co/json/'));
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          countryName = data['country_name'] ?? 'Unknown';
+        }
+      } catch (e) {
+        debugPrint('Failed to fetch user country: $e');
+      }
+
+      // Authenticate with the backend
+      final success = await ref
+          .read(authProvider.notifier)
+          .loginWithWalletAddress(walletAddress, countryName);
+
+      if (success) {
+        context.go('/home');
+      } else {
+        final errorMessage =
+            ref.read(authProvider).message ?? 'Wallet login failed';
+        scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
       }
     } catch (e) {
-      debugPrint('Failed to fetch user country: $e');
+      debugPrint('Wallet sign in error: $e');
+      scaffoldMessenger.showSnackBar(
+        SnackBar(content: Text('Failed to sign in with wallet: $e')),
+      );
     }
-
-    // Authenticate with the backend
-    final success = await ref
-        .read(authProvider.notifier)
-        .loginWithWalletAddress(walletAddress, countryName);
-
-    if (success) {
-      context.go('/home');
-    } else {
-      final errorMessage =
-          ref.read(authProvider).message ?? 'Wallet login failed';
-      scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
-    }
-  } catch (e) {
-    debugPrint('Wallet sign in error: $e');
-    scaffoldMessenger.showSnackBar(
-      SnackBar(content: Text('Failed to sign in with wallet: $e')),
-    );
   }
-}
 }
