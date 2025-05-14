@@ -22,13 +22,24 @@ const MethodChannel walletChannel = MethodChannel(
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  final navigatorObserver = NavigatorObserver();
   // Initialize deep link handling
   initDeepLinkHandling();
 
   await initApp();
-  runApp(const ProviderScope(child: FlashTransferApp()));
+  runApp(
+    ProviderScope(
+      overrides: [
+        // Provide the observer to the app
+        navigatorObserverProvider.overrideWithValue(navigatorObserver),
+      ],
+      child: const FlashTransferApp(),
+    ),
+  );
 }
+final navigatorObserverProvider = Provider<NavigatorObserver>((ref) {
+  return NavigatorObserver();
+});
 
 void initDeepLinkHandling() {
   // Set up method channel handler for deep links coming from native code

@@ -92,48 +92,64 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     }
   }
 
-  Future<void> _handleLogin() async {
-    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-      _showAnimatedSnackBar('Please fill in all fields', false);
-      return;
-    }
+ Future<void> _handleLogin() async {
+  // Validate inputs first
+  if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+    _showAnimatedSnackBar('Please fill in all fields', false);
+    return;
+  }
 
-    final loginRequest = LoginRequest(
-      email: _emailController.text,
-      password: _passwordController.text,
-    );
+  final loginRequest = LoginRequest(
+    email: _emailController.text,
+    password: _passwordController.text,
+  );
 
-    _safeSetState(() {
-      _isLoading = true;
-    });
+  setState(() {
+    _isLoading = true;
+  });
 
+  try {
+    // Log for debugging
+    debugPrint('Attempting login with email: ${_emailController.text}');
+    
     final success = await ref.read(authProvider.notifier).login(loginRequest);
 
-    // Check if widget is still mounted before updating state or UI
     if (!mounted) return;
 
-    _safeSetState(() {
+    setState(() {
       _isLoading = false;
     });
 
     if (success) {
-      // Show success message and navigate after a delay
       _showAnimatedSnackBar('Login successful! Redirecting...', true);
-
-      // Give the snackbar time to display
-      await Future.delayed(const Duration(milliseconds: 1200));
-
-      // Check again if still mounted before navigation
+      
+      // Short delay to let the snackbar be visible
+      await Future.delayed(const Duration(milliseconds: 500));
+      
       if (!mounted) return;
-
-      // Direct navigation to home without triggering splash screen
-      context.go('/home');
+      
+      // No need to navigate explicitly - router will handle this
+      // based on authenticated state
     } else {
-      // Show error message (will stay visible)
+      // Get error message from auth state
       final errorMessage = ref.read(authProvider).message ?? 'Login failed';
+      debugPrint('Login failed with error: $errorMessage');
+      
+      // Show error message
       _showAnimatedSnackBar(errorMessage, false);
     }
+  } catch (e) {
+    debugPrint('Login exception: $e');
+    
+    if (!mounted) return;
+    
+    setState(() {
+      _isLoading = false;
+    });
+    
+    _showAnimatedSnackBar('Error: ${e.toString()}', false);
   }
+}
 
   Future<void> _handleGoogleLogin() async {
     try {

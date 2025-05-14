@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'dart:async';
 import '../presentation/auth/splash_screen.dart';
 import '../presentation/auth/sign_in_screen.dart';
 import '../presentation/auth/sign_up_screen.dart';
@@ -8,22 +8,61 @@ import '../presentation/auth/set_identity_screen.dart';
 import '../presentation/auth/verification_screen.dart';
 import '../presentation/auth/success_screen.dart';
 import '../presentation/home/home_screen.dart';
-import '../presentation/screens/metamask_demo_screen.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/auth_provider.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+final _initialNavigationDoneProvider = StateProvider<bool>((ref) => false);
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authProvider);
+  final initialNavigationDone = ref.watch(_initialNavigationDoneProvider);
 
   return GoRouter(
-    // Always start with splash screen
+    navigatorKey: navigatorKey,
+    debugLogDiagnostics: true,
     initialLocation: '/',
+    redirect: (context, state) {
+      final isLoggedIn = authState.status == AuthStatus.authenticated;
 
+      if (state.matchedLocation == '/' && !initialNavigationDone) {
+        return null;
+      }
+
+      if (state.matchedLocation == '/' && initialNavigationDone) {
+        return isLoggedIn ? '/home' : '/sign-in';
+      }
+
+      final isAuthRoute = [
+        '/sign-in',
+        '/sign-up',
+        '/set-identity',
+        '/verification',
+        '/registration-success',
+        '/success',
+      ].contains(state.matchedLocation);
+      
+      if (isLoggedIn && isAuthRoute) {
+        return '/home';
+      }
+      
+      if (!isLoggedIn && !isAuthRoute && state.matchedLocation != '/') {
+        return '/sign-in';
+      }
+      
+      return null;
+    },
     routes: [
-      // Splash screen route that always appears when the app starts
-      GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
-
-      // Authentication routes
+      GoRoute(
+        path: '/',
+        builder: (context, state) {
+          return SplashScreen(
+            onInitialized: () {
+              ref.read(_initialNavigationDoneProvider.notifier).state = true;
+            },
+          );
+        },
+      ),
       GoRoute(
         path: '/sign-in',
         builder: (context, state) => const SignInScreen(),
@@ -51,58 +90,26 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
+        path: '/registration-success',
+        builder: (context, state) {
+          final params = state.extra as Map<String, dynamic>?;
+          return RegistrationSuccessScreen(email: params?['email'] ?? '');
+        },
+      ),
+      GoRoute(
         path: '/success',
         builder: (context, state) {
           final params = state.extra as Map<String, dynamic>?;
-          return SuccessScreen(
-            message:
-                params?['message'] ?? 'You Have Successfully top up the wallet',
-            buttonText: params?['buttonText'] ?? 'Get Started',
+          return RegistrationSuccessScreen(
+            email: params?['email'],
           );
         },
       ),
-
-      // Main app routes (protected by auth state)
+      // Main app routes
       GoRoute(
         path: '/home',
-        builder: (context, state) {
-          // If not authenticated, redirect to sign-in
-          if (authState.status != AuthStatus.authenticated) {
-            return const SignInScreen();
-          }
-          return const HomeScreen();
-        },
-      ),
-
-      // Wallet integration demo routes
-      GoRoute(
-        path: '/metamask',
-        builder: (context, state) {
-          // If not authenticated, redirect to sign-in
-          if (authState.status != AuthStatus.authenticated) {
-            return const SignInScreen();
-          }
-          return const MetaMaskDemoScreen();
-        },
+        builder: (context, state) => const HomeScreen(),
       ),
     ],
   );
 });
-
-// Helper class to refresh router on auth state changes
-class GoRouterRefreshStream extends ChangeNotifier {
-  GoRouterRefreshStream(Stream<dynamic> stream) {
-    notifyListeners();
-    _subscription = stream.asBroadcastStream().listen(
-      (dynamic _) => notifyListeners(),
-    );
-  }
-
-  late final StreamSubscription<dynamic> _subscription;
-
-  @override
-  void dispose() {
-    _subscription.cancel();
-    super.dispose();
-  }
-}

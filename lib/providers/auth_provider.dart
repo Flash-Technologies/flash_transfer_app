@@ -81,49 +81,53 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> _initialize() async {
+  // Set to initial state with loading flag
+  state = AuthState(status: AuthStatus.initial, isLoading: true);
+  
+  try {
     final isLoggedIn = await _authService.isLoggedIn();
     if (isLoggedIn) {
       final user = await _authService.getSavedUser();
-      _updateState(
-        AuthState(
-          status: AuthStatus.authenticated,
-          user: user,
-          isLoading: false,
-        ),
+      state = AuthState(
+        status: AuthStatus.authenticated,
+        user: user,
+        isLoading: false,
       );
     } else {
-      _updateState(
-        AuthState(status: AuthStatus.unauthenticated, isLoading: false),
-      );
+      state = AuthState(status: AuthStatus.unauthenticated, isLoading: false);
     }
+  } catch (e) {
+    // Handle initialization errors
+    state = AuthState(
+      status: AuthStatus.unauthenticated, 
+      isLoading: false,
+      message: "Failed to initialize: ${e.toString()}"
+    );
   }
+}
+
 
   Future<bool> register(RegisterRequest request) async {
-    _updateState(state.copyWith(isLoading: true));
+    state = state.copyWith(isLoading: true);
 
     final response = await _authService.register(request);
 
     if (response.success) {
-      // Don't change status to verifying - keep it as unauthenticated
-      // Just set the message and isLoading flag
-      _updateState(
-        state.copyWith(
-          status: AuthStatus.unauthenticated, // Keep as unauthenticated
-          message: response.message,
-          isLoading: false,
-        ),
+      // CRITICAL FIX: Don't change auth status on successful registration
+      // Just update message and loading state
+      state = state.copyWith(
+        // DON'T set status here - leave it unchanged
+        message: response.message,
+        isLoading: false,
       );
       return true;
     } else {
-      // Extract most useful error message
       final errorMessage = _extractErrorMessage(response);
-
-      _updateState(
-        state.copyWith(
-          status: AuthStatus.unauthenticated,
-          message: errorMessage,
-          isLoading: false,
-        ),
+      
+      state = state.copyWith(
+        status: AuthStatus.unauthenticated,
+        message: errorMessage,
+        isLoading: false,
       );
       return false;
     }
@@ -189,36 +193,54 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<bool> login(LoginRequest request) async {
-    _updateState(state.copyWith(isLoading: true, message: null));
+  // Set loading state
+  state = state.copyWith(isLoading: true, message: null);
 
+  try {
     final response = await _authService.login(request);
 
     if (response.success && response.data != null) {
       await _authService.saveUserData(response.data!);
-      _updateState(
-        state.copyWith(
-          status: AuthStatus.authenticated,
-          user: response.data,
-          message: response.message,
-          isLoading: false,
-        ),
+      state = state.copyWith(
+        status: AuthStatus.authenticated,
+        user: response.data,
+        message: response.message,
+        isLoading: false,
       );
       return true;
     } else {
-      // Extract most useful error message
-      final errorMessage = _extractErrorMessage(response);
+      // Extract error message from the response
+      String errorMessage = response.message ?? 'Login failed';
+      if (response.data != null &&
+          response.data is Map<String, dynamic> &&
+          (response.data as Map<String, dynamic>)['errors']
+              is Map<String, dynamic>) {
+        final errors =
+            (response.data as Map<String, dynamic>)['errors']
+                as Map<String, dynamic>;
+        if (errors['CD'] is Map<String, dynamic>) {
+          final cdErrors = errors['CD'] as Map<String, dynamic>;
+          errorMessage = cdErrors['CD02']?.toString() ?? errorMessage;
+        }
+      }
 
-      _updateState(
-        state.copyWith(
-          status: AuthStatus.unauthenticated,
-          message: errorMessage,
-          isLoading: false,
-        ),
+      state = state.copyWith(
+        status: AuthStatus.unauthenticated,
+        message: errorMessage,
+        isLoading: false,
       );
       return false;
     }
+  } catch (e) {
+    // Handle exceptions
+    state = state.copyWith(
+      status: AuthStatus.unauthenticated,
+      message: "Authentication error: ${e.toString()}",
+      isLoading: false,
+    );
+    return false;
   }
-
+}
   Future<bool> loginWithGoogle(String idToken, String countryName) async {
     _updateState(state.copyWith(isLoading: true));
     try {

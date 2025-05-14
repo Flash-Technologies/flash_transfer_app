@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  final VoidCallback? onInitialized;
+  
+  const SplashScreen({Key? key, this.onInitialized}) : super(key: key);
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -12,7 +14,12 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    // Navigate to sign in screen after 3 seconds
     Future.delayed(const Duration(seconds: 3), () {
+      // Call the onInitialized callback if provided
+      widget.onInitialized?.call();
+      
+      // Only navigate if the widget is still mounted
       if (mounted) {
         context.go('/sign-in');
       }
