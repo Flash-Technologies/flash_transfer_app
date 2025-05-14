@@ -8,6 +8,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/direct_wallet_provider.dart';
+import '../../config/router.dart';
 import '../../main.dart' show googleSignIn;
 
 class SocialLoginButtons extends ConsumerWidget {
@@ -27,9 +28,10 @@ class SocialLoginButtons extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final walletState = ref.watch(directWalletProvider);
-    
+
     // Add loading indicator for wallet button when connecting
-    final isWalletConnecting = walletState.status == WalletConnectionStatus.connecting;
+    final isWalletConnecting =
+        walletState.status == WalletConnectionStatus.connecting;
 
     return Column(
       children: [
@@ -83,30 +85,35 @@ class SocialLoginButtons extends ConsumerWidget {
               onPressed: onAppleLogin ?? () => _handleAppleLogin(context, ref),
             ),
             _buildSocialButton(
-              icon: isWalletConnecting 
-                  ? const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF6E757D)),
-                      ),
-                    )
-                  : Image.asset(
-                      'assets/images/wallet.png',
-                      width: 24,
-                      height: 24,
-                      errorBuilder:
-                          (_, __, ___) => const Icon(
-                            Icons.account_balance_wallet,
-                            size: 24,
-                            color: Colors.black,
+              icon:
+                  isWalletConnecting
+                      ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Color(0xFF6E757D),
                           ),
-                    ),
+                        ),
+                      )
+                      : Image.asset(
+                        'assets/images/wallet.png',
+                        width: 24,
+                        height: 24,
+                        errorBuilder:
+                            (_, __, ___) => const Icon(
+                              Icons.account_balance_wallet,
+                              size: 24,
+                              color: Colors.black,
+                            ),
+                      ),
               label: isWalletConnecting ? 'Connecting...' : 'Wallet',
-              onPressed: isWalletConnecting 
-                  ? null 
-                  : (onWalletLogin ?? () => _handleDirectWalletLogin(context, ref)),
+              onPressed:
+                  isWalletConnecting
+                      ? null
+                      : (onWalletLogin ??
+                          () => _handleDirectWalletLogin(context, ref)),
             ),
           ],
         ),
@@ -201,6 +208,17 @@ class SocialLoginButtons extends ConsumerWidget {
           .loginWithGoogle(token, countryName);
 
       if (success) {
+        // Update logged in state
+        ref.read(isLoggedInProvider.notifier).state = true;
+
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(content: Text('Login successful! Redirecting...')),
+        );
+
+        // Add a small delay for the snackbar to be visible
+        await Future.delayed(const Duration(milliseconds: 1000));
+
+        if (!context.mounted) return;
         context.go('/home');
       } else {
         final errorMessage =
@@ -270,6 +288,20 @@ class SocialLoginButtons extends ConsumerWidget {
           .loginWithFacebook(accessToken, countryName);
 
       if (success) {
+        // Update logged in state
+        ref.read(isLoggedInProvider.notifier).state = true;
+
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(
+            content: Text('Facebook login successful! Redirecting...'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        // Add a small delay for the snackbar to be visible
+        await Future.delayed(const Duration(milliseconds: 1000));
+
+        if (!context.mounted) return;
         context.go('/home');
       } else {
         final errorMessage =
@@ -334,6 +366,20 @@ class SocialLoginButtons extends ConsumerWidget {
           .loginWithApple(idToken, countryName);
 
       if (success) {
+        // Update logged in state
+        ref.read(isLoggedInProvider.notifier).state = true;
+
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(
+            content: Text('Apple login successful! Redirecting...'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        // Add a small delay for the snackbar to be visible
+        await Future.delayed(const Duration(milliseconds: 1000));
+
+        if (!context.mounted) return;
         context.go('/home');
       } else {
         final errorMessage =
@@ -358,7 +404,10 @@ class SocialLoginButtons extends ConsumerWidget {
     }
   }
 
-  Future<void> _handleDirectWalletLogin(BuildContext context, WidgetRef ref) async {
+  Future<void> _handleDirectWalletLogin(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
     try {
@@ -367,8 +416,9 @@ class SocialLoginButtons extends ConsumerWidget {
       final connected = await walletNotifier.connectWallet(context);
 
       if (!connected) {
-        final errorMessage = ref.read(directWalletProvider).errorMessage ?? 
-                             'Wallet connection failed';
+        final errorMessage =
+            ref.read(directWalletProvider).errorMessage ??
+            'Wallet connection failed';
         scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
         return;
       }
@@ -406,6 +456,20 @@ class SocialLoginButtons extends ConsumerWidget {
           .loginWithWalletAddress(walletAddress, countryName);
 
       if (success) {
+        // Update logged in state
+        ref.read(isLoggedInProvider.notifier).state = true;
+
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(
+            content: Text('Wallet login successful! Redirecting...'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        // Add a small delay for the snackbar to be visible
+        await Future.delayed(const Duration(milliseconds: 1000));
+
+        if (!context.mounted) return;
         context.go('/home');
       } else {
         final errorMessage =

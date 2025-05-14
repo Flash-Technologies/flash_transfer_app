@@ -8,64 +8,58 @@ import '../presentation/auth/set_identity_screen.dart';
 import '../presentation/auth/verification_screen.dart';
 import '../presentation/auth/success_screen.dart';
 import '../presentation/home/home_screen.dart';
+import '../core/services/auth_service.dart';
 import '../providers/auth_provider.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-final _initialNavigationDoneProvider = StateProvider<bool>((ref) => false);
+// Provider to track if splash screen has completed
+final splashCompletedProvider = StateProvider<bool>((ref) => false);
 
+// Provider to track if user is logged in
+final isLoggedInProvider = StateProvider<bool>((ref) => false);
+
+// Router provider
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authProvider);
-  final initialNavigationDone = ref.watch(_initialNavigationDoneProvider);
+  final authService = ref.watch(authServiceProvider);
+  final splashCompleted = ref.watch(splashCompletedProvider);
+
+  // Check logged in status once on router init
+  authService.isLoggedIn().then((loggedIn) {
+    ref.read(isLoggedInProvider.notifier).state = loggedIn;
+  });
 
   return GoRouter(
     navigatorKey: navigatorKey,
     debugLogDiagnostics: true,
     initialLocation: '/',
     redirect: (context, state) {
-      final isLoggedIn = authState.status == AuthStatus.authenticated;
-      
-      if (state.matchedLocation == '/' && !initialNavigationDone) {
-        return null;
-      }
+      final isLoggedIn = ref.read(isLoggedInProvider);
 
-      if (state.matchedLocation == '/' && initialNavigationDone) {
+      // Only handle redirects after splash has completed
+      if (!splashCompleted) return null;
+
+      // If at root route and splash completed, go to sign-in or home
+      if (state.matchedLocation == '/') {
         return isLoggedIn ? '/home' : '/sign-in';
       }
 
-       
-      final isAuthRoute = [
-        '/sign-in',
-        '/sign-up',
-        '/verification',
-        '/registration-success',
-        '/success',
-      ].contains(state.matchedLocation);
-      
-      // Redirect authenticated users away from auth screens
-      if (isLoggedIn && isAuthRoute) {
-        return '/home';
-      }
-      
-      // Redirect unauthenticated users from main app routes to sign-in
-      if (!isLoggedIn && !isAuthRoute && state.matchedLocation != '/set-identity') {
-        return '/sign-in';
-      }
-      
-      // Allow all other navigations
       return null;
     },
     routes: [
+      // Splash screen
       GoRoute(
         path: '/',
         builder: (context, state) {
           return SplashScreen(
             onInitialized: () {
-              ref.read(_initialNavigationDoneProvider.notifier).state = true;
+              ref.read(splashCompletedProvider.notifier).state = true;
             },
           );
         },
       ),
+
+      // Auth routes
       GoRoute(
         path: '/sign-in',
         builder: (context, state) => const SignInScreen(),
@@ -99,14 +93,8 @@ final routerProvider = Provider<GoRouter>((ref) {
           return RegistrationSuccessScreen(email: params?['email'] ?? '');
         },
       ),
-      GoRoute(
-        path: '/success',
-        builder: (context, state) {
-          final params = state.extra as Map<String, dynamic>?;
-          return RegistrationSuccessScreen(email: params?['email']);
-        },
-      ),
-      // Main app routes
+
+      // Main app route
       GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
     ],
   );

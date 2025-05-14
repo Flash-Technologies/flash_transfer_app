@@ -1,10 +1,11 @@
-import 'package:flash_transfer_app/presentation/auth/sign_in_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
+import '../../config/router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class RegistrationSuccessScreen extends StatelessWidget {
+class RegistrationSuccessScreen extends ConsumerWidget {
   final String email;
 
   const RegistrationSuccessScreen({Key? key, required this.email})
@@ -40,18 +41,11 @@ class RegistrationSuccessScreen extends StatelessWidget {
       debugPrint('Error opening email app: $e');
       // Just copy to clipboard if there's an error
       await Clipboard.setData(ClipboardData(text: email));
-      
-      // ScaffoldMessenger.of(navigatorKey?.currentContext ?? navigatorKey?.currentState?.context ?? context).showSnackBar(
-      //   const SnackBar(
-      //     content: Text('Could not open mail app. Email copied to clipboard.'),
-      //     behavior: SnackBarBehavior.floating,
-      //   ),
-      // );
     }
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return WillPopScope(
       // Prevent back navigation
       onWillPop: () async => false,
@@ -70,23 +64,24 @@ class RegistrationSuccessScreen extends StatelessWidget {
               children: [
                 const Spacer(flex: 1),
 
-                // Success image 
+                // Success image
                 Image.asset(
                   'assets/images/success.png',
                   height: 220,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    height: 220,
-                    width: 220,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.check_circle,
-                      size: 100,
-                      color: Color(0xFF4CAF50),
-                    ),
-                  ),
+                  errorBuilder:
+                      (context, error, stackTrace) => Container(
+                        height: 220,
+                        width: 220,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.check_circle,
+                          size: 100,
+                          color: Color(0xFF4CAF50),
+                        ),
+                      ),
                 ),
 
                 const SizedBox(height: 32),
@@ -185,7 +180,10 @@ class RegistrationSuccessScreen extends StatelessWidget {
                     icon: const Icon(Icons.mail_outline, size: 24),
                     label: const Text(
                       'Open Gmail',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFFFC000),
@@ -206,13 +204,11 @@ class RegistrationSuccessScreen extends StatelessWidget {
                   width: double.infinity,
                   height: 56,
                   child: OutlinedButton(
-                   onPressed: () {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => const SignInScreen()),
-                          (route) => false,
-                        );
-                      },
+                    onPressed: () {
+                      // Reset splash completed to ensure we go through splash when restarting the app
+                      ref.read(splashCompletedProvider.notifier).state = false;
+                      context.go('/');
+                    },
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Color(0xFF2475FF)),
                       shape: RoundedRectangleBorder(

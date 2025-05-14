@@ -8,6 +8,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../core/models/auth_models.dart';
 import '../../providers/auth_provider.dart';
+import '../../config/router.dart';
 import '../common/social_login_buttons.dart';
 import '../../main.dart' show googleSignIn;
 
@@ -100,13 +101,16 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       });
 
       if (success) {
+        // Update logged in state
+        ref.read(isLoggedInProvider.notifier).state = true;
+
         _showAnimatedSnackBar(
           'Google sign up successful! Redirecting...',
           true,
         );
 
         // Wait for snackbar to be visible
-        await Future.delayed(const Duration(milliseconds: 1200));
+        await Future.delayed(const Duration(milliseconds: 1000));
 
         // Check again if still mounted
         if (!mounted) return;
@@ -191,13 +195,16 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       });
 
       if (success) {
+        // Update logged in state
+        ref.read(isLoggedInProvider.notifier).state = true;
+
         _showAnimatedSnackBar(
           'Facebook sign up successful! Redirecting...',
           true,
         );
 
         // Wait for snackbar to be visible
-        await Future.delayed(const Duration(milliseconds: 1200));
+        await Future.delayed(const Duration(milliseconds: 1000));
 
         // Check again if still mounted
         if (!mounted) return;
@@ -267,10 +274,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       });
 
       if (success) {
+        // Update logged in state
+        ref.read(isLoggedInProvider.notifier).state = true;
+
         _showAnimatedSnackBar('Apple sign up successful! Redirecting...', true);
 
         // Wait for snackbar to be visible
-        await Future.delayed(const Duration(milliseconds: 1200));
+        await Future.delayed(const Duration(milliseconds: 1000));
 
         // Check again if still mounted
         if (!mounted) return;

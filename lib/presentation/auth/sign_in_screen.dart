@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../core/models/auth_models.dart';
 import '../../providers/auth_provider.dart';
+import '../../config/router.dart';
 import '../common/social_login_buttons.dart';
 import '../../main.dart' show googleSignIn;
 
@@ -92,64 +93,67 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     }
   }
 
- Future<void> _handleLogin() async {
-  // Validate inputs first
-  if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-    _showAnimatedSnackBar('Please fill in all fields', false);
-    return;
-  }
-
-  final loginRequest = LoginRequest(
-    email: _emailController.text,
-    password: _passwordController.text,
-  );
-
-  setState(() {
-    _isLoading = true;
-  });
-
-  try {
-    // Log for debugging
-    debugPrint('Attempting login with email: ${_emailController.text}');
-    
-    final success = await ref.read(authProvider.notifier).login(loginRequest);
-
-    if (!mounted) return;
-
-    setState(() {
-      _isLoading = false;
-    });
-
-    if (success) {
-      _showAnimatedSnackBar('Login successful! Redirecting...', true);
-      
-      // Short delay to let the snackbar be visible
-      await Future.delayed(const Duration(milliseconds: 500));
-      
-      if (!mounted) return;
-      
-      // No need to navigate explicitly - router will handle this
-      // based on authenticated state
-    } else {
-      // Get error message from auth state
-      final errorMessage = ref.read(authProvider).message ?? 'Login failed';
-      debugPrint('Login failed with error: $errorMessage');
-      
-      // Show error message
-      _showAnimatedSnackBar(errorMessage, false);
+  Future<void> _handleLogin() async {
+    // Validate inputs first
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      _showAnimatedSnackBar('Please fill in all fields', false);
+      return;
     }
-  } catch (e) {
-    debugPrint('Login exception: $e');
-    
-    if (!mounted) return;
-    
+
+    final loginRequest = LoginRequest(
+      email: _emailController.text,
+      password: _passwordController.text,
+    );
+
     setState(() {
-      _isLoading = false;
+      _isLoading = true;
     });
-    
-    _showAnimatedSnackBar('Error: ${e.toString()}', false);
+
+    try {
+      // Log for debugging
+      debugPrint('Attempting login with email: ${_emailController.text}');
+
+      final success = await ref.read(authProvider.notifier).login(loginRequest);
+
+      if (!mounted) return;
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (success) {
+        _showAnimatedSnackBar('Login successful! Redirecting...', true);
+
+        // Update the logged in state in the router
+        ref.read(isLoggedInProvider.notifier).state = true;
+
+        // Short delay to let the snackbar be visible
+        await Future.delayed(const Duration(milliseconds: 1000));
+
+        if (!mounted) return;
+
+        // Navigate to home screen
+        context.go('/home');
+      } else {
+        // Get error message from auth state
+        final errorMessage = ref.read(authProvider).message ?? 'Login failed';
+        debugPrint('Login failed with error: $errorMessage');
+
+        // Show error message
+        _showAnimatedSnackBar(errorMessage, false);
+      }
+    } catch (e) {
+      debugPrint('Login exception: $e');
+
+      if (!mounted) return;
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      _showAnimatedSnackBar('Error: ${e.toString()}', false);
+    }
   }
-}
 
   Future<void> _handleGoogleLogin() async {
     try {
@@ -197,15 +201,18 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       });
 
       if (success) {
+        // Update logged in state
+        ref.read(isLoggedInProvider.notifier).state = true;
+
         _showAnimatedSnackBar('Google login successful! Redirecting...', true);
 
         // Give the snackbar time to display
-        await Future.delayed(const Duration(milliseconds: 1200));
+        await Future.delayed(const Duration(milliseconds: 1000));
 
         // Check again if still mounted
         if (!mounted) return;
 
-        // Direct navigation to home without triggering splash screen
+        // Navigate to home
         context.go('/home');
       } else {
         final errorMessage =
@@ -289,6 +296,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       });
 
       if (success) {
+        // Update logged in state
+        ref.read(isLoggedInProvider.notifier).state = true;
+
         if (mounted) {
           scaffoldMessenger.showSnackBar(
             const SnackBar(
@@ -296,7 +306,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               backgroundColor: Colors.green,
             ),
           );
-          context.go('/home');
+
+          // Add a small delay to see the success message
+          await Future.delayed(const Duration(milliseconds: 1000));
+
+          if (mounted) {
+            context.go('/home');
+          }
         }
       } else {
         if (mounted) {
@@ -377,6 +393,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       });
 
       if (success) {
+        // Update logged in state
+        ref.read(isLoggedInProvider.notifier).state = true;
+
         if (mounted) {
           scaffoldMessenger.showSnackBar(
             const SnackBar(
@@ -384,7 +403,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               backgroundColor: Colors.green,
             ),
           );
-          context.go('/home');
+
+          // Add a small delay to see the success message
+          await Future.delayed(const Duration(milliseconds: 1000));
+
+          if (mounted) {
+            context.go('/home');
+          }
         }
       } else {
         if (mounted) {
