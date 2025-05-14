@@ -24,7 +24,7 @@ final routerProvider = Provider<GoRouter>((ref) {
     initialLocation: '/',
     redirect: (context, state) {
       final isLoggedIn = authState.status == AuthStatus.authenticated;
-
+      
       if (state.matchedLocation == '/' && !initialNavigationDone) {
         return null;
       }
@@ -33,23 +33,26 @@ final routerProvider = Provider<GoRouter>((ref) {
         return isLoggedIn ? '/home' : '/sign-in';
       }
 
+       
       final isAuthRoute = [
         '/sign-in',
         '/sign-up',
-        '/set-identity',
         '/verification',
         '/registration-success',
         '/success',
       ].contains(state.matchedLocation);
       
+      // Redirect authenticated users away from auth screens
       if (isLoggedIn && isAuthRoute) {
         return '/home';
       }
       
-      if (!isLoggedIn && !isAuthRoute && state.matchedLocation != '/') {
+      // Redirect unauthenticated users from main app routes to sign-in
+      if (!isLoggedIn && !isAuthRoute && state.matchedLocation != '/set-identity') {
         return '/sign-in';
       }
       
+      // Allow all other navigations
       return null;
     },
     routes: [
@@ -100,16 +103,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/success',
         builder: (context, state) {
           final params = state.extra as Map<String, dynamic>?;
-          return RegistrationSuccessScreen(
-            email: params?['email'],
-          );
+          return RegistrationSuccessScreen(email: params?['email']);
         },
       ),
       // Main app routes
-      GoRoute(
-        path: '/home',
-        builder: (context, state) => const HomeScreen(),
-      ),
+      GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
     ],
   );
 });

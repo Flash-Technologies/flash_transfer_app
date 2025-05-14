@@ -26,6 +26,7 @@ enum AuthStatus {
   unauthenticated,
   registering,
   verifying,
+  registration_failed
 }
 
 class AuthState {
@@ -33,12 +34,14 @@ class AuthState {
   final User? user;
   final String? message;
   final bool isLoading;
+  final Map<String, String>? fieldErrors;
 
   AuthState({
     required this.status,
     this.user,
     this.message,
     this.isLoading = false,
+    this.fieldErrors,
   });
 
   AuthState copyWith({
@@ -46,12 +49,14 @@ class AuthState {
     User? user,
     String? message,
     bool? isLoading,
+    Map<String, String>? fieldErrors,
   }) {
     return AuthState(
       status: status ?? this.status,
       user: user ?? this.user,
       message: message ?? this.message,
       isLoading: isLoading ?? this.isLoading,
+      fieldErrors: fieldErrors ?? this.fieldErrors,
     );
   }
 }
@@ -81,57 +86,82 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> _initialize() async {
-  // Set to initial state with loading flag
-  state = AuthState(status: AuthStatus.initial, isLoading: true);
-  
-  try {
-    final isLoggedIn = await _authService.isLoggedIn();
-    if (isLoggedIn) {
-      final user = await _authService.getSavedUser();
-      state = AuthState(
-        status: AuthStatus.authenticated,
-        user: user,
-        isLoading: false,
-      );
-    } else {
-      state = AuthState(status: AuthStatus.unauthenticated, isLoading: false);
-    }
-  } catch (e) {
-    // Handle initialization errors
-    state = AuthState(
-      status: AuthStatus.unauthenticated, 
-      isLoading: false,
-      message: "Failed to initialize: ${e.toString()}"
-    );
-  }
-}
+    // Set to initial state with loading flag
+    state = AuthState(status: AuthStatus.initial, isLoading: true);
 
+    try {
+      final isLoggedIn = await _authService.isLoggedIn();
+      if (isLoggedIn) {
+        final user = await _authService.getSavedUser();
+        state = AuthState(
+          status: AuthStatus.authenticated,
+          user: user,
+          isLoading: false,
+        );
+      } else {
+        state = AuthState(status: AuthStatus.unauthenticated, isLoading: false);
+      }
+    } catch (e) {
+      // Handle initialization errors
+      state = AuthState(
+        status: AuthStatus.unauthenticated,
+        isLoading: false,
+        message: "Failed to initialize: ${e.toString()}",
+      );
+    }
+  }
 
   Future<bool> register(RegisterRequest request) async {
-    state = state.copyWith(isLoading: true);
+  state = state.copyWith(
+    isLoading: true,
+    fieldErrors: null,
+    status: AuthStatus.registering,
+  );
 
+  try {
     final response = await _authService.register(request);
 
     if (response.success) {
-      // CRITICAL FIX: Don't change auth status on successful registration
-      // Just update message and loading state
       state = state.copyWith(
-        // DON'T set status here - leave it unchanged
         message: response.message,
         isLoading: false,
+        status: AuthStatus.registering,
       );
       return true;
     } else {
-      final errorMessage = _extractErrorMessage(response);
+      Map<String, String>? fieldErrors;
+      
+      if (response.errors != null && 
+          response.errors!.rawErrors != null && 
+          response.errors!.rawErrors!.containsKey('FV')) {
+          
+        final fvErrors = response.errors!.rawErrors!['FV'] as Map<String, dynamic>;
+        fieldErrors = {};
+        
+        fvErrors.forEach((field, errorList) {
+          if (errorList is List && errorList.isNotEmpty) {
+            fieldErrors![field] = errorList.first.toString();
+          }
+        });
+      }
       
       state = state.copyWith(
-        status: AuthStatus.unauthenticated,
-        message: errorMessage,
+        status: AuthStatus.registration_failed,
+        message: response.message,
         isLoading: false,
+        fieldErrors: fieldErrors,
       );
       return false;
     }
+  } catch (e) {
+    state = state.copyWith(
+      status: AuthStatus.registration_failed,
+      message: 'Registration error: ${e.toString()}',
+      isLoading: false,
+    );
+    return false;
   }
+}
 
   String _extractErrorMessage(ApiResponse<dynamic> response) {
     String errorMessage = response.message ?? 'An error occurred';
@@ -193,54 +223,55 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<bool> login(LoginRequest request) async {
-  // Set loading state
-  state = state.copyWith(isLoading: true, message: null);
+    // Set loading state
+    state = state.copyWith(isLoading: true, message: null);
 
-  try {
-    final response = await _authService.login(request);
+    try {
+      final response = await _authService.login(request);
 
-    if (response.success && response.data != null) {
-      await _authService.saveUserData(response.data!);
-      state = state.copyWith(
-        status: AuthStatus.authenticated,
-        user: response.data,
-        message: response.message,
-        isLoading: false,
-      );
-      return true;
-    } else {
-      // Extract error message from the response
-      String errorMessage = response.message ?? 'Login failed';
-      if (response.data != null &&
-          response.data is Map<String, dynamic> &&
-          (response.data as Map<String, dynamic>)['errors']
-              is Map<String, dynamic>) {
-        final errors =
+      if (response.success && response.data != null) {
+        await _authService.saveUserData(response.data!);
+        state = state.copyWith(
+          status: AuthStatus.authenticated,
+          user: response.data,
+          message: response.message,
+          isLoading: false,
+        );
+        return true;
+      } else {
+        // Extract error message from the response
+        String errorMessage = response.message ?? 'Login failed';
+        if (response.data != null &&
+            response.data is Map<String, dynamic> &&
             (response.data as Map<String, dynamic>)['errors']
-                as Map<String, dynamic>;
-        if (errors['CD'] is Map<String, dynamic>) {
-          final cdErrors = errors['CD'] as Map<String, dynamic>;
-          errorMessage = cdErrors['CD02']?.toString() ?? errorMessage;
+                is Map<String, dynamic>) {
+          final errors =
+              (response.data as Map<String, dynamic>)['errors']
+                  as Map<String, dynamic>;
+          if (errors['CD'] is Map<String, dynamic>) {
+            final cdErrors = errors['CD'] as Map<String, dynamic>;
+            errorMessage = cdErrors['CD02']?.toString() ?? errorMessage;
+          }
         }
-      }
 
+        state = state.copyWith(
+          status: AuthStatus.unauthenticated,
+          message: errorMessage,
+          isLoading: false,
+        );
+        return false;
+      }
+    } catch (e) {
+      // Handle exceptions
       state = state.copyWith(
         status: AuthStatus.unauthenticated,
-        message: errorMessage,
+        message: "Authentication error: ${e.toString()}",
         isLoading: false,
       );
       return false;
     }
-  } catch (e) {
-    // Handle exceptions
-    state = state.copyWith(
-      status: AuthStatus.unauthenticated,
-      message: "Authentication error: ${e.toString()}",
-      isLoading: false,
-    );
-    return false;
   }
-}
+
   Future<bool> loginWithGoogle(String idToken, String countryName) async {
     _updateState(state.copyWith(isLoading: true));
     try {

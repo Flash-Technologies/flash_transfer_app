@@ -206,16 +206,13 @@ class RegistrationSuccessScreen extends StatelessWidget {
                   width: double.infinity,
                   height: 56,
                   child: OutlinedButton(
-                    onPressed: () {
-                      // Use direct navigation to go to sign-in
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SignInScreen(),
-                        ),
-                        (route) => false, // Clear navigation stack
-                      );
-                    },
+                   onPressed: () {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => const SignInScreen()),
+                          (route) => false,
+                        );
+                      },
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Color(0xFF2475FF)),
                       shape: RoundedRectangleBorder(

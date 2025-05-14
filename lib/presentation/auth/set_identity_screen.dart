@@ -51,28 +51,24 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
     _postalCodeController.dispose();
     super.dispose();
   }
-
+  
   void _handleRegister() async {
   if (!_formKey.currentState!.validate()) {
     return;
   }
 
   if (!_isAgreed) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Please agree to the Terms of Use')),
-    );
+    _showSnackBar('Please agree to the Terms of Use');
     return;
   }
 
   if (_dob == null) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Please select your date of birth')),
-    );
+    _showSnackBar('Please select your date of birth');
     return;
   }
 
   setState(() {
-    _isSubmitting = true; // Add this state variable
+    _isSubmitting = true;
   });
 
   final registerRequest = RegisterRequest(
@@ -84,55 +80,80 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
     gender: _gender.toLowerCase(),
     dob: _dob!,
     permanentAddress: _permanentAddressController.text,
-    presentAddress:
-        _sameAddress
-            ? _permanentAddressController.text
-            : _presentAddressController.text,
+    presentAddress: _sameAddress ? _permanentAddressController.text : _presentAddressController.text,
     city: _cityController.text,
     state: _stateController.text,
     postalCode: _postalCodeController.text,
   );
 
-  final success = await ref
-      .read(authProvider.notifier)
-      .register(registerRequest);
+  try {
+    final success = await ref.read(authProvider.notifier).register(registerRequest);
 
-  setState(() {
-    _isSubmitting = false;
-  });
+    // Make sure we're still mounted before updating UI
+    if (!mounted) return;
 
-  if (success) {
-    if (mounted) {
-      // Use GoRouter with correct parameters
-      context.go('/registration-success', extra: {'email': widget.email});
-    }
-  } else {
-    if (mounted) {
-      final errorMessage =
-          ref.read(authProvider).message ?? 'Registration failed';
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMessage)),
+    setState(() {
+      _isSubmitting = false;
+    });
+
+    if (success) {
+      // Traditional navigation to success screen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => RegistrationSuccessScreen(email: widget.email),
+        ),
       );
+    } else {
+      final authState = ref.read(authProvider);
+      String errorMessage = authState.message ?? 'Registration failed';
+      
+      if (authState.fieldErrors != null && authState.fieldErrors!.isNotEmpty) {
+        final fieldErrorsList = authState.fieldErrors!.entries
+            .map((e) => "${e.key}: ${e.value}")
+            .join("\n• ");
+            
+        errorMessage = "Validation errors:\n• $fieldErrorsList";
+      }
+      
+      _showSnackBar(errorMessage);
     }
+  } catch (e) {
+    if (!mounted) return;
+    
+    setState(() {
+      _isSubmitting = false;
+    });
+    
+    _showSnackBar('Error: ${e.toString()}');
   }
 }
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red.shade700,
-        behavior: SnackBarBehavior.floating,
+
+void _showSnackBar(String message) {
+  ScaffoldMessenger.of(context).hideCurrentSnackBar();
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          message,
+          style: const TextStyle(fontSize: 14),
+        ),
       ),
-    );
-  }
+      backgroundColor: Colors.red.shade700,
+      behavior: SnackBarBehavior.floating,
+      duration: const Duration(seconds: 3), 
+      margin: const EdgeInsets.all(16),
+      elevation: 4,
+    ),
+  );
+} 
 
   @override
   Widget build(BuildContext context) {
     final isLoading = _isSubmitting;
 
     return WillPopScope(
-      // Prevent back navigation during submission
       onWillPop: () async => !isLoading,
       child: Scaffold(
         appBar: AppBar(
@@ -140,9 +161,9 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
           leading: isLoading 
               ? null 
               : IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () => Navigator.pop(context),
-                ),
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Navigator.pop(context),  
+              ),
         ),
         body: SafeArea(
           child: Form(
@@ -401,14 +422,13 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
                       onPressed: () {
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => const SignInScreen(),
-                          ),
-                          (route) => false,
+                          MaterialPageRoute(builder: (context) => const SignInScreen()),
+                          (route) => false, // Clear navigation stack
                         );
                       },
                       child: const Text('Login'),
                     ),
+
                   ],
                 ),
               ],

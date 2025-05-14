@@ -12,7 +12,6 @@ class AuthService {
 
   AuthService(this._apiClient);
 
-  // Register a new user
   Future<ApiResponse<RegistrationResponse>> register(
     RegisterRequest request,
   ) async {
@@ -21,7 +20,7 @@ class AuthService {
         Endpoints.register,
         data: request.toJson(),
       );
-
+      print("what the hell is response $response");
       return ApiResponse<RegistrationResponse>.fromJson(
         response.data,
         (json) => RegistrationResponse.fromJson(json),
