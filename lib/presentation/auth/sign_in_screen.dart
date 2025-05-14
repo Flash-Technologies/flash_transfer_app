@@ -53,14 +53,48 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     }
   }
 
+  void _showAnimatedSnackBar(String message, bool isSuccess) {
+    // Ensure any existing snackbar is dismissed
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+    final snackBar = SnackBar(
+      content: Row(
+        children: [
+          Icon(
+            isSuccess ? Icons.check_circle : Icons.error,
+            color: Colors.white,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              message,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            ),
+          ),
+        ],
+      ),
+      backgroundColor: isSuccess ? Colors.green.shade600 : Colors.red.shade600,
+      behavior: SnackBarBehavior.floating,
+      margin: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      duration: const Duration(seconds: 4),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  // Add this method to safely update state
+  void _safeSetState(Function setState) {
+    if (mounted) {
+      setState();
+    }
+  }
+
   Future<void> _handleLogin() async {
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fill in all fields'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      _showAnimatedSnackBar('Please fill in all fields', false);
       return;
     }
 
@@ -69,52 +103,39 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       password: _passwordController.text,
     );
 
-    setState(() {
+    _safeSetState(() {
       _isLoading = true;
     });
 
     final success = await ref.read(authProvider.notifier).login(loginRequest);
 
-    setState(() {
+    // Check if widget is still mounted before updating state or UI
+    if (!mounted) return;
+
+    _safeSetState(() {
       _isLoading = false;
     });
 
-    if (!mounted) return;
-
     if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Login successful! Redirecting...'),
-          backgroundColor: Colors.green,
-        ),
-      );
-      // Add a small delay to ensure the snackbar is visible
-      await Future.delayed(const Duration(milliseconds: 500));
-      if (mounted) {
-        context.go('/home');
-      }
+      // Show success message and navigate after a delay
+      _showAnimatedSnackBar('Login successful! Redirecting...', true);
+
+      // Give the snackbar time to display
+      await Future.delayed(const Duration(milliseconds: 1200));
+
+      // Check again if still mounted before navigation
+      if (!mounted) return;
+
+      // Direct navigation to home without triggering splash screen
+      context.go('/home');
     } else {
+      // Show error message (will stay visible)
       final errorMessage = ref.read(authProvider).message ?? 'Login failed';
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(errorMessage),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 3),
-          action: SnackBarAction(
-            label: 'Dismiss',
-            textColor: Colors.white,
-            onPressed: () {
-              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-            },
-          ),
-        ),
-      );
+      _showAnimatedSnackBar(errorMessage, false);
     }
   }
 
   Future<void> _handleGoogleLogin() async {
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-
     try {
       // Sign out first to ensure we get the account selection dialog
       await _googleSignIn.signOut();
@@ -122,9 +143,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       final result = await _googleSignIn.signIn();
 
       if (result == null) {
-        scaffoldMessenger.showSnackBar(
-          const SnackBar(content: Text('Google sign in was cancelled')),
-        );
+        _showAnimatedSnackBar('Google sign in was cancelled', false);
         return;
       }
 
@@ -132,13 +151,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       final token = googleAuth.idToken;
 
       if (token == null) {
-        scaffoldMessenger.showSnackBar(
-          const SnackBar(content: Text('Could not get Google auth token')),
-        );
+        _showAnimatedSnackBar('Could not get Google auth token', false);
         return;
       }
 
-      setState(() {
+      _safeSetState(() {
         _isLoading = true;
       });
 
@@ -146,71 +163,49 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         await _fetchUserCountry();
       }
 
-      // Show loading indicator
-      scaffoldMessenger.showSnackBar(
-        const SnackBar(content: Text('Signing in with Google...')),
-      );
+      // Check if still mounted
+      if (!mounted) return;
+
+      // Show loading message
+      _showAnimatedSnackBar('Signing in with Google...', true);
 
       final success = await ref
           .read(authProvider.notifier)
           .loginWithGoogle(token, _userCountry ?? 'Unknown');
 
-      setState(() {
+      // Check if still mounted
+      if (!mounted) return;
+
+      _safeSetState(() {
         _isLoading = false;
       });
 
       if (success) {
-        if (mounted) {
-          scaffoldMessenger.showSnackBar(
-            const SnackBar(
-              content: Text('Google login successful! Redirecting...'),
-              backgroundColor: Colors.green,
-            ),
-          );
-          context.go('/home');
-        }
+        _showAnimatedSnackBar('Google login successful! Redirecting...', true);
+
+        // Give the snackbar time to display
+        await Future.delayed(const Duration(milliseconds: 1200));
+
+        // Check again if still mounted
+        if (!mounted) return;
+
+        // Direct navigation to home without triggering splash screen
+        context.go('/home');
       } else {
-        if (mounted) {
-          final errorMessage =
-              ref.read(authProvider).message ?? 'Google login failed';
-          scaffoldMessenger.showSnackBar(
-            SnackBar(
-              content: Text(errorMessage),
-              backgroundColor: Colors.red,
-              duration: const Duration(seconds: 3),
-              action: SnackBarAction(
-                label: 'Dismiss',
-                textColor: Colors.white,
-                onPressed: () {
-                  scaffoldMessenger.hideCurrentSnackBar();
-                },
-              ),
-            ),
-          );
-        }
+        final errorMessage =
+            ref.read(authProvider).message ?? 'Google login failed';
+        _showAnimatedSnackBar(errorMessage, false);
       }
     } catch (e) {
-      setState(() {
+      // Check if still mounted before updating state
+      if (!mounted) return;
+
+      _safeSetState(() {
         _isLoading = false;
       });
 
-      if (mounted) {
-        debugPrint('Google sign in error: $e');
-        scaffoldMessenger.showSnackBar(
-          SnackBar(
-            content: Text('Failed to sign in with Google: $e'),
-            backgroundColor: Colors.red,
-            duration: const Duration(seconds: 3),
-            action: SnackBarAction(
-              label: 'Dismiss',
-              textColor: Colors.white,
-              onPressed: () {
-                scaffoldMessenger.hideCurrentSnackBar();
-              },
-            ),
-          ),
-        );
-      }
+      debugPrint('Google sign in error: $e');
+      _showAnimatedSnackBar('Failed to sign in with Google: $e', false);
     }
   }
 

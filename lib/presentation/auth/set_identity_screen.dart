@@ -56,21 +56,17 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
     }
 
     if (!_isAgreed) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please agree to the Terms of Use')),
-      );
+      _showAnimatedSnackBar('Please agree to the Terms of Use', false);
       return;
     }
 
     if (_dob == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select your date of birth')),
-      );
+      _showAnimatedSnackBar('Please select your date of birth', false);
       return;
     }
 
     setState(() {
-      _isSubmitting = true; // Add this state variable
+      _isSubmitting = true;
     });
 
     final registerRequest = RegisterRequest(
@@ -99,10 +95,10 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
       _isSubmitting = false;
     });
 
-    if (success) {
-      _showRegistrationSuccessDialog();
-    } else {
-      if (mounted) {
+    if (mounted) {
+      if (success) {
+        _showRegistrationSuccessDialog();
+      } else {
         final errorMessage =
             ref.read(authProvider).message ?? 'Registration failed';
         _showRegistrationErrorDialog(errorMessage);
@@ -111,55 +107,51 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
   }
 
   void _showRegistrationSuccessDialog() {
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (context) => AlertDialog(
-      title: const Text('Registration Successful'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+    context.go(
+      '/success',
+      extra: {
+        'message':
+            'A verification link has been sent to your email. Please check your inbox and click on the link to activate your account.',
+        'buttonText': 'Go to Login',
+      },
+    );
+  }
+
+  void _showRegistrationErrorDialog(String errorMessage) {
+    _showAnimatedSnackBar(errorMessage, false);
+  }
+
+  void _showAnimatedSnackBar(String message, bool isSuccess) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+    final snackBar = SnackBar(
+      content: Row(
         children: [
-          const Text(
-              'A verification link has been sent to your email address.'),
-          const SizedBox(height: 8),
-          const Text(
-              'Please check your inbox and click on the verification link to activate your account.'),
-          const SizedBox(height: 16),
-          const Text(
-              'After verifying your email, you can log in to your account.'),
+          Icon(
+            isSuccess ? Icons.check_circle : Icons.error,
+            color: Colors.white,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              message,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            ),
+          ),
         ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context); // Close the dialog
-            // Navigate directly to sign-in, bypassing splash screen
-            context.go('/sign-in');
-          },
-          child: const Text('Go to Login'),
-        ),
-      ],
-    ),
-  );
-}
-void _showRegistrationErrorDialog(String errorMessage) {
-  showDialog(
-    context: context,
-    builder: (context) => AlertDialog(
-      title: const Text('Registration Failed'),
-      content: Text(errorMessage),
-      actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('OK'),
-        ),
-      ],
-    ),
-  );
-}
+      backgroundColor: isSuccess ? Colors.green.shade600 : Colors.red.shade600,
+      behavior: SnackBarBehavior.floating,
+      margin: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      duration: const Duration(seconds: 4),
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);

@@ -9,7 +9,7 @@ class Endpoints {
   static const String googleAuth = '/api/user/authenticate-google';
   static const String facebookAuth = '/api/user/authenticate-facebook';
   static const String appleAuth = '/api/user/authenticate-apple';
-  static const String walletAuth = '/api/user/login-wallet';
+  static const String walletAuth = '/api/user/authenticate-wallet';
 
   // currency endpoints
   static const String exchangeRates = '$baseUrl/api/exchange/rates';

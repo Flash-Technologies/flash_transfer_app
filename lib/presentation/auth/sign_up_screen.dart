@@ -42,6 +42,13 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     super.dispose();
   }
 
+  // Add this method to safely update state
+  void _safeSetState(Function setState) {
+    if (mounted) {
+      setState();
+    }
+  }
+
   // Handlers for social login
   Future<void> _handleGoogleSignUp() async {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
@@ -68,20 +75,16 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       final token = googleAuth.idToken;
 
       if (token == null) {
-        scaffoldMessenger.showSnackBar(
-          const SnackBar(content: Text('Could not get Google auth token')),
-        );
+        _showAnimatedSnackBar('Could not get Google auth token', false);
         return;
       }
 
-      setState(() {
+      _safeSetState(() {
         _isLoading = true;
       });
 
       // Show loading
-      scaffoldMessenger.showSnackBar(
-        const SnackBar(content: Text('Signing up with Google...')),
-      );
+      _showAnimatedSnackBar('Signing up with Google...', true);
 
       // Call auth provider with the country from selection
       final success = await authNotifier.loginWithGoogle(
@@ -89,142 +92,205 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         _selectedCountry!.name,
       );
 
-      setState(() {
+      // Check if still mounted before updating state
+      if (!mounted) return;
+
+      _safeSetState(() {
         _isLoading = false;
       });
 
       if (success) {
-        if (mounted) {
-          scaffoldMessenger.showSnackBar(
-            const SnackBar(
-              content: Text('Google login successful! Redirecting...'),
-              backgroundColor: Colors.green,
-            ),
-          );
-          context.go('/home');
-        }
+        _showAnimatedSnackBar(
+          'Google sign up successful! Redirecting...',
+          true,
+        );
+
+        // Wait for snackbar to be visible
+        await Future.delayed(const Duration(milliseconds: 1200));
+
+        // Check again if still mounted
+        if (!mounted) return;
+
+        context.go('/home');
       } else {
-        if (mounted) {
-          final errorMessage =
-              ref.read(authProvider).message ?? 'Google sign up failed';
-          scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
-        }
+        final errorMessage =
+            ref.read(authProvider).message ?? 'Google sign up failed';
+        _showAnimatedSnackBar(errorMessage, false);
       }
     } catch (e) {
-      setState(() {
+      // Check if still mounted before updating state
+      if (!mounted) return;
+
+      _safeSetState(() {
         _isLoading = false;
       });
 
       debugPrint('Google sign up error: $e');
-      scaffoldMessenger.showSnackBar(
-        SnackBar(content: Text('Failed to sign up with Google: $e')),
-      );
+      _showAnimatedSnackBar('Failed to sign up with Google: $e', false);
     }
   }
 
   Future<void> _handleFacebookSignUp() async {
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final authNotifier = ref.read(authProvider.notifier);
-
     if (_selectedCountry == null) {
       _showErrorDialog('Please select a country');
       return;
     }
 
     try {
-      // For Facebook sign in, we'll use the SocialLoginButtons implementation since
-      // it has the proper credential handling
-      setState(() {
+      // For Facebook sign in, we'll use the SocialLoginButtons implementation
+      _safeSetState(() {
         _isLoading = true;
       });
 
-      scaffoldMessenger.showSnackBar(
-        const SnackBar(content: Text('Sign in with Facebook...')),
+      _showAnimatedSnackBar('Signing in with Facebook...', true);
+
+      // Implement actual Facebook login here if available
+      final result = await FacebookAuth.instance.login(
+        permissions: ['email', 'public_profile'],
       );
 
-      // In actual implementation, we would:
-      // 1. Get Facebook login result
-      // 2. Extract the access token
-      // 3. Call auth provider
+      if (result.status != LoginStatus.success) {
+        _safeSetState(() {
+          _isLoading = false;
+        });
 
-      // For now, show a message about implementation
-      setState(() {
+        if (result.status == LoginStatus.cancelled) {
+          _showAnimatedSnackBar('Facebook login was cancelled', false);
+          return;
+        } else {
+          _showAnimatedSnackBar(
+            'Facebook login failed: ${result.message}',
+            false,
+          );
+          return;
+        }
+      }
+
+      // Get the access token
+      final accessToken = result.accessToken?.token;
+
+      if (accessToken == null) {
+        _safeSetState(() {
+          _isLoading = false;
+        });
+
+        _showAnimatedSnackBar('Failed to get Facebook access token', false);
+        return;
+      }
+
+      // Call auth provider with the country from selection
+      final success = await ref
+          .read(authProvider.notifier)
+          .loginWithFacebook(accessToken, _selectedCountry!.name);
+
+      // Check if still mounted
+      if (!mounted) return;
+
+      _safeSetState(() {
         _isLoading = false;
       });
 
-      // Replace with SocialLoginButtons handling
-      await Future.delayed(const Duration(milliseconds: 500));
+      if (success) {
+        _showAnimatedSnackBar(
+          'Facebook sign up successful! Redirecting...',
+          true,
+        );
 
-      scaffoldMessenger.showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Using Facebook Sign In from the login button - please use the button below',
-          ),
-          duration: Duration(seconds: 5),
-        ),
-      );
+        // Wait for snackbar to be visible
+        await Future.delayed(const Duration(milliseconds: 1200));
+
+        // Check again if still mounted
+        if (!mounted) return;
+
+        context.go('/home');
+      } else {
+        final errorMessage =
+            ref.read(authProvider).message ?? 'Facebook sign up failed';
+        _showAnimatedSnackBar(errorMessage, false);
+      }
     } catch (e) {
-      setState(() {
+      // Check if still mounted
+      if (!mounted) return;
+
+      _safeSetState(() {
         _isLoading = false;
       });
 
       debugPrint('Facebook sign up error: $e');
-      scaffoldMessenger.showSnackBar(
-        SnackBar(content: Text('Failed to sign up with Facebook: $e')),
-      );
+      _showAnimatedSnackBar('Failed to sign up with Facebook: $e', false);
     }
   }
 
   Future<void> _handleAppleSignUp() async {
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final authNotifier = ref.read(authProvider.notifier);
-
     if (_selectedCountry == null) {
       _showErrorDialog('Please select a country');
       return;
     }
 
     try {
-      // For Apple sign in, we'll use the SocialLoginButtons implementation since
-      // it has the proper credential handling
-      setState(() {
+      _safeSetState(() {
         _isLoading = true;
       });
 
-      scaffoldMessenger.showSnackBar(
-        const SnackBar(content: Text('Sign in with Apple...')),
+      _showAnimatedSnackBar('Signing in with Apple...', true);
+
+      // Get Apple credentials
+      final credential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
       );
 
-      // In actual implementation, we would:
-      // 1. Get Apple credential
-      // 2. Extract the idToken
-      // 3. Call auth provider
+      // Get the ID token
+      final idToken = credential.identityToken;
 
-      // For now, show a message about implementation
-      setState(() {
+      if (idToken == null) {
+        _safeSetState(() {
+          _isLoading = false;
+        });
+
+        _showAnimatedSnackBar('Failed to get Apple ID token', false);
+        return;
+      }
+
+      // Call auth provider with the country from selection
+      final success = await ref
+          .read(authProvider.notifier)
+          .loginWithApple(idToken, _selectedCountry!.name);
+
+      // Check if still mounted
+      if (!mounted) return;
+
+      _safeSetState(() {
         _isLoading = false;
       });
 
-      // Replace with SocialLoginButtons handling
-      await Future.delayed(const Duration(milliseconds: 500));
+      if (success) {
+        _showAnimatedSnackBar('Apple sign up successful! Redirecting...', true);
 
-      scaffoldMessenger.showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Using Apple Sign In from the login button - please use the button below',
-          ),
-          duration: Duration(seconds: 5),
-        ),
-      );
+        // Wait for snackbar to be visible
+        await Future.delayed(const Duration(milliseconds: 1200));
+
+        // Check again if still mounted
+        if (!mounted) return;
+
+        context.go('/home');
+      } else {
+        final errorMessage =
+            ref.read(authProvider).message ?? 'Apple sign up failed';
+        _showAnimatedSnackBar(errorMessage, false);
+      }
     } catch (e) {
-      setState(() {
+      // Check if still mounted
+      if (!mounted) return;
+
+      _safeSetState(() {
         _isLoading = false;
       });
 
       debugPrint('Apple sign up error: $e');
-      scaffoldMessenger.showSnackBar(
-        SnackBar(content: Text('Failed to sign up with Apple: $e')),
-      );
+      _showAnimatedSnackBar('Failed to sign up with Apple: $e', false);
     }
   }
 
@@ -326,23 +392,40 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     );
   }
 
-  void _showErrorDialog(String message) {
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Error'),
-            content: Text(message),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text('OK'),
-              ),
-            ],
+  void _showAnimatedSnackBar(String message, bool isSuccess) {
+    // Ensure any existing snackbar is dismissed
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+
+    final snackBar = SnackBar(
+      content: Row(
+        children: [
+          Icon(
+            isSuccess ? Icons.check_circle : Icons.error,
+            color: Colors.white,
           ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              message,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+            ),
+          ),
+        ],
+      ),
+      backgroundColor: isSuccess ? Colors.green.shade600 : Colors.red.shade600,
+      behavior: SnackBarBehavior.floating,
+      margin: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      duration: const Duration(seconds: 4),
     );
+
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  void _showErrorDialog(String message) {
+    _showAnimatedSnackBar(message, false);
   }
 
   void _showCountryPicker() {

@@ -12,9 +12,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Navigate to sign in screen after 3 seconds
     Future.delayed(const Duration(seconds: 3), () {
-      context.go('/sign-in');
+      if (mounted) {
+        context.go('/sign-in');
+      }
     });
   }
 

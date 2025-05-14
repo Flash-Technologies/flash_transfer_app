@@ -30,6 +30,8 @@ class HomeScreen extends ConsumerWidget {
               _buildContinueButton(context, ref),
               const SizedBox(height: 24),
               _buildExchangeInfo(context, exchangeForm),
+              // const SizedBox(height: 24),
+              // _buildMetaMaskDemoButton(context),
               const SizedBox(height: 24),
               _buildRecentTransactions(context),
             ],
@@ -63,7 +65,7 @@ class HomeScreen extends ConsumerWidget {
             ),
           ),
         ),
-        
+
         // App Title
         const Text(
           'Flash Transfer',
@@ -73,7 +75,7 @@ class HomeScreen extends ConsumerWidget {
             color: Color(0xFF181F30),
           ),
         ),
-        
+
         // Notification button
         InkWell(
           onTap: () {
@@ -89,7 +91,8 @@ class HomeScreen extends ConsumerWidget {
               'assets/image/icons/notification-bell.png',
               width: 24,
               height: 24,
-              errorBuilder: (context, error, _) => const Icon(Icons.notifications),
+              errorBuilder:
+                  (context, error, _) => const Icon(Icons.notifications),
             ),
           ),
         ),
@@ -97,140 +100,67 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildExchangeForm(BuildContext context, WidgetRef ref, ExchangeFormState state) {
-  return Stack(
-    alignment: Alignment.center,
-    children: [
-      Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildCurrencySelector(
-                      context, 
-                      ref,
-                      state.fromCurrency, 
-                      (currency) => ref.read(exchangeFormProvider.notifier).setFromCurrency(currency),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xFFEBECED)),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Text(
-                        'Send',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF181F30),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                SizedBox(
-                width: MediaQuery.of(context).size.width - 32,
-                height: 108,
-                child: TextField(
-                  textAlign: TextAlign.center,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  style: const TextStyle(
-                    fontSize: 40, // Corrected from 3 to 40 for better visibility
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF181F30),
-                  ),
-                  decoration: const InputDecoration(
-                    hintText: '0.00',
-                    hintStyle: TextStyle(
-                      color: Color(0xFF6E757D),
-                      fontSize: 40,
-                    ),
-                    border: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    errorBorder: InputBorder.none,
-                    disabledBorder: InputBorder.none,
-                    contentPadding: EdgeInsets.zero,
-                  ),
-                  onChanged: (value) {
-                    if (value.isEmpty || RegExp(r'^\d*\.?\d{0,6}$').hasMatch(value)) {
-                      ref.read(exchangeFormProvider.notifier).setSendAmount(value);
-                    }
-                  },
-                ),
+  Widget _buildExchangeForm(
+    BuildContext context,
+    WidgetRef ref,
+    ExchangeFormState state,
+  ) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
               ),
-                const Text(
-                  'Amount to Send',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF181F30),
-                  ),
-                ),
-                 SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-              ],
-            ),
-          ),
-          
-          const SizedBox(height: 20), // This spacing will make room for the swap button
-          
-          // To Currency Box
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-            ),
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildCurrencySelector(
-                      context, 
-                      ref,
-                      state.toCurrency, 
-                      (currency) => ref.read(exchangeFormProvider.notifier).setToCurrency(currency),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xFFEBECED)),
-                        borderRadius: BorderRadius.circular(20),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildCurrencySelector(
+                        context,
+                        ref,
+                        state.fromCurrency,
+                        (currency) => ref
+                            .read(exchangeFormProvider.notifier)
+                            .setFromCurrency(currency),
                       ),
-                      child: const Text(
-                        'Receive',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF181F30),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: const Color(0xFFEBECED)),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: const Text(
+                          'Send',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFF181F30),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                SizedBox(
-                width: MediaQuery.of(context).size.width - 32,
-                height: MediaQuery.of(context).size.height * 0.08,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    TextField(
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 32,
+                    height: 108,
+                    child: TextField(
                       textAlign: TextAlign.center,
-                      readOnly: true,
-                      controller: TextEditingController(text: state.receiveAmount),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       style: const TextStyle(
-                        fontSize: 32,
+                        fontSize:
+                            40, // Corrected from 3 to 40 for better visibility
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF181F30),
                       ),
@@ -247,71 +177,162 @@ class HomeScreen extends ConsumerWidget {
                         disabledBorder: InputBorder.none,
                         contentPadding: EdgeInsets.zero,
                       ),
+                      onChanged: (value) {
+                        if (value.isEmpty ||
+                            RegExp(r'^\d*\.?\d{0,6}$').hasMatch(value)) {
+                          ref
+                              .read(exchangeFormProvider.notifier)
+                              .setSendAmount(value);
+                        }
+                      },
                     ),
-                    if (state.isLoading)
-                      Positioned(
-                        right: -24,
-                        child: SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Theme.of(context).primaryColor,
+                  ),
+                  const Text(
+                    'Amount to Send',
+                    style: TextStyle(fontSize: 14, color: Color(0xFF181F30)),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                ],
+              ),
+            ),
+
+            const SizedBox(
+              height: 20,
+            ), // This spacing will make room for the swap button
+            // To Currency Box
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _buildCurrencySelector(
+                        context,
+                        ref,
+                        state.toCurrency,
+                        (currency) => ref
+                            .read(exchangeFormProvider.notifier)
+                            .setToCurrency(currency),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: const Color(0xFFEBECED)),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: const Text(
+                          'Receive',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Color(0xFF181F30),
                           ),
                         ),
                       ),
-                  ],
-                ),
-              ),
-                const Text(
-                  'Amount Received',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF181F30),
+                    ],
                   ),
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-              ],
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 32,
+                    height: MediaQuery.of(context).size.height * 0.08,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        TextField(
+                          textAlign: TextAlign.center,
+                          readOnly: true,
+                          controller: TextEditingController(
+                            text: state.receiveAmount,
+                          ),
+                          style: const TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF181F30),
+                          ),
+                          decoration: const InputDecoration(
+                            hintText: '0.00',
+                            hintStyle: TextStyle(
+                              color: Color(0xFF6E757D),
+                              fontSize: 40,
+                            ),
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                        ),
+                        if (state.isLoading)
+                          Positioned(
+                            right: -24,
+                            child: SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  const Text(
+                    'Amount Received',
+                    style: TextStyle(fontSize: 14, color: Color(0xFF181F30)),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-      
-      // Swap Button (Positioned over the two currency boxes)
-      Positioned(
-        top: MediaQuery.of(context).size.height * 0.21,  
-        child: InkWell(
-          onTap: () {
-            ref.read(exchangeFormProvider.notifier).swapCurrencies();
-          },
-          child: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(50),
-              border: Border.all(color: const Color(0xFFEFF0F1), width: 6),
-            ),
-            child: Image.asset(
-              'assets/image/icons/exchange-vertical.png',
-              width: 40,
-              height: 40,
-              errorBuilder: (context, error, _) => const Icon(
-                Icons.swap_vert,
-                color: Colors.black,
-                size: 40,
+          ],
+        ),
+
+        // Swap Button (Positioned over the two currency boxes)
+        Positioned(
+          top: MediaQuery.of(context).size.height * 0.21,
+          child: InkWell(
+            onTap: () {
+              ref.read(exchangeFormProvider.notifier).swapCurrencies();
+            },
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(50),
+                border: Border.all(color: const Color(0xFFEFF0F1), width: 6),
+              ),
+              child: Image.asset(
+                'assets/image/icons/exchange-vertical.png',
+                width: 40,
+                height: 40,
+                errorBuilder:
+                    (context, error, _) => const Icon(
+                      Icons.swap_vert,
+                      color: Colors.black,
+                      size: 40,
+                    ),
               ),
             ),
           ),
         ),
-      ),
-    ],
-  );
-}
+      ],
+    );
+  }
 
   Widget _buildCurrencySelector(
-    BuildContext context, 
+    BuildContext context,
     WidgetRef ref,
-    Currency? selectedCurrency, 
+    Currency? selectedCurrency,
     Function(Currency) onSelect,
   ) {
     return InkWell(
@@ -326,30 +347,30 @@ class HomeScreen extends ConsumerWidget {
               height: 36,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                image: selectedCurrency.logo != null
-                    ? DecorationImage(
-                        image: NetworkImage(selectedCurrency.logo!),
-                        fit: BoxFit.cover,
-                      )
-                    : null,
-                color: selectedCurrency.logo == null ? Colors.grey.shade200 : null,
+                image:
+                    selectedCurrency.logo != null
+                        ? DecorationImage(
+                          image: NetworkImage(selectedCurrency.logo!),
+                          fit: BoxFit.cover,
+                        )
+                        : null,
+                color:
+                    selectedCurrency.logo == null ? Colors.grey.shade200 : null,
               ),
-              child: selectedCurrency.logo == null
-                  ? Center(
-                      child: Text(
-                        selectedCurrency.code.substring(0, 1),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    )
-                  : null,
+              child:
+                  selectedCurrency.logo == null
+                      ? Center(
+                        child: Text(
+                          selectedCurrency.code.substring(0, 1),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      )
+                      : null,
             ),
             const SizedBox(width: 8),
             Text(
               selectedCurrency.code,
-              style: const TextStyle(
-                fontSize: 20,
-                color: Color(0xFF181F30),
-              ),
+              style: const TextStyle(fontSize: 20, color: Color(0xFF181F30)),
             ),
           ] else ...[
             Container(
@@ -366,10 +387,7 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(width: 8),
             const Text(
               'Select',
-              style: TextStyle(
-                fontSize: 20,
-                color: Color(0xFF181F30),
-              ),
+              style: TextStyle(fontSize: 20, color: Color(0xFF181F30)),
             ),
           ],
           const SizedBox(width: 8),
@@ -377,11 +395,12 @@ class HomeScreen extends ConsumerWidget {
             'assets/image/icons/arrow-short-down.png',
             width: 12,
             height: 6,
-            errorBuilder: (context, error, _) => const Icon(
-              Icons.keyboard_arrow_down,
-              size: 12,
-              color: Colors.black54,
-            ),
+            errorBuilder:
+                (context, error, _) => const Icon(
+                  Icons.keyboard_arrow_down,
+                  size: 12,
+                  color: Colors.black54,
+                ),
           ),
         ],
       ),
@@ -389,9 +408,9 @@ class HomeScreen extends ConsumerWidget {
   }
 
   void _showCurrencyPicker(
-    BuildContext context, 
+    BuildContext context,
     WidgetRef ref,
-    Currency? selectedCurrency, 
+    Currency? selectedCurrency,
     Function(Currency) onSelect,
   ) {
     showModalBottomSheet(
@@ -405,7 +424,7 @@ class HomeScreen extends ConsumerWidget {
           builder: (context, setState) {
             final currenciesAsync = ref.watch(currenciesProvider);
             String searchQuery = '';
-            
+
             return Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -423,17 +442,17 @@ class HomeScreen extends ConsumerWidget {
                       ),
                       IconButton(
                         onPressed: () => Navigator.pop(context),
-                        icon: const Text('✕', style: TextStyle(fontSize: 18, color: Colors.grey)),
+                        icon: const Text(
+                          '✕',
+                          style: TextStyle(fontSize: 18, color: Colors.grey),
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 8),
                   const Text(
                     'Select the currency you want to send or receive.',
-                    style: TextStyle(
-                      color: Color(0xFF6E757D),
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: Color(0xFF6E757D), fontSize: 12),
                   ),
                   const SizedBox(height: 16),
                   TextField(
@@ -451,7 +470,10 @@ class HomeScreen extends ConsumerWidget {
                       ),
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 16,
+                      ),
                     ),
                     onChanged: (value) {
                       setState(() {
@@ -464,13 +486,20 @@ class HomeScreen extends ConsumerWidget {
                     child: currenciesAsync.when(
                       data: (currencies) {
                         // Filter currencies based on search
-                        final filteredCurrencies = currencies.where((currency) {
-                          if (searchQuery.isEmpty) return true;
-                          return currency.code.toLowerCase().contains(searchQuery.toLowerCase()) ||
-                                 currency.name.toLowerCase().contains(searchQuery.toLowerCase()) ||
-                                 currency.type.toLowerCase().contains(searchQuery.toLowerCase());
-                        }).toList();
-                        
+                        final filteredCurrencies =
+                            currencies.where((currency) {
+                              if (searchQuery.isEmpty) return true;
+                              return currency.code.toLowerCase().contains(
+                                    searchQuery.toLowerCase(),
+                                  ) ||
+                                  currency.name.toLowerCase().contains(
+                                    searchQuery.toLowerCase(),
+                                  ) ||
+                                  currency.type.toLowerCase().contains(
+                                    searchQuery.toLowerCase(),
+                                  );
+                            }).toList();
+
                         return ListView.builder(
                           itemCount: filteredCurrencies.length,
                           itemBuilder: (context, index) {
@@ -481,22 +510,29 @@ class HomeScreen extends ConsumerWidget {
                                 height: 32,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  image: currency.logo != null
-                                      ? DecorationImage(
-                                          image: NetworkImage(currency.logo!),
-                                          fit: BoxFit.cover,
-                                        )
-                                      : null,
-                                  color: currency.logo == null ? Colors.grey.shade200 : null,
+                                  image:
+                                      currency.logo != null
+                                          ? DecorationImage(
+                                            image: NetworkImage(currency.logo!),
+                                            fit: BoxFit.cover,
+                                          )
+                                          : null,
+                                  color:
+                                      currency.logo == null
+                                          ? Colors.grey.shade200
+                                          : null,
                                 ),
-                                child: currency.logo == null
-                                    ? Center(
-                                        child: Text(
-                                          currency.code.substring(0, 1),
-                                          style: const TextStyle(fontWeight: FontWeight.bold),
-                                        ),
-                                      )
-                                    : null,
+                                child:
+                                    currency.logo == null
+                                        ? Center(
+                                          child: Text(
+                                            currency.code.substring(0, 1),
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        )
+                                        : null,
                               ),
                               title: Text(
                                 currency.code,
@@ -514,7 +550,10 @@ class HomeScreen extends ConsumerWidget {
                                 ),
                               ),
                               trailing: Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
                                 decoration: BoxDecoration(
                                   color: const Color(0xFFF4F5F7),
                                   borderRadius: BorderRadius.circular(20),
@@ -535,13 +574,16 @@ class HomeScreen extends ConsumerWidget {
                           },
                         );
                       },
-                      loading: () => const Center(child: CircularProgressIndicator()),
-                      error: (error, stack) => Center(
-                        child: Text(
-                          'Error loading currencies: $error',
-                          style: const TextStyle(color: Colors.red),
-                        ),
-                      ),
+                      loading:
+                          () =>
+                              const Center(child: CircularProgressIndicator()),
+                      error:
+                          (error, stack) => Center(
+                            child: Text(
+                              'Error loading currencies: $error',
+                              style: const TextStyle(color: Colors.red),
+                            ),
+                          ),
                     ),
                   ),
                 ],
@@ -570,30 +612,27 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildContinueButton(BuildContext context, WidgetRef ref) {
-  return Container(
-    width: double.infinity,
-    height: 56,
-    child: ElevatedButton(
-      onPressed: () => context.push('/cash'),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: const Color(0xFFFFC000), // Always yellow (#FFC000)
-        foregroundColor: const Color(0xFF181F30), // Text color
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+    return Container(
+      width: double.infinity,
+      height: 56,
+      child: ElevatedButton(
+        onPressed: () => context.push('/cash'),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFFFFC000), // Always yellow (#FFC000)
+          foregroundColor: const Color(0xFF181F30), // Text color
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: const Text(
+          'Continue',
+          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
         ),
       ),
-      child: const Text(
-        'Continue',
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-    ),
-  );
-}
+    );
+  }
 
   Widget _buildExchangeInfo(BuildContext context, ExchangeFormState state) {
     return Container(
@@ -617,9 +656,9 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
               Text(
-                state.exchangeRate != null 
-                  ? '1 ${state.fromCurrency?.code ?? ''} = ${state.exchangeRate?.rate.toStringAsFixed(2)} ${state.toCurrency?.code ?? ''}'
-                  : '—',
+                state.exchangeRate != null
+                    ? '1 ${state.fromCurrency?.code ?? ''} = ${state.exchangeRate?.rate.toStringAsFixed(2)} ${state.toCurrency?.code ?? ''}'
+                    : '—',
                 style: const TextStyle(
                   fontSize: 14,
                   color: Colors.black,
@@ -629,7 +668,7 @@ class HomeScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 8),
-          
+
           // Fee
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -643,9 +682,9 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
               Text(
-                state.calculation != null 
-                  ? '+${state.calculation?.fee} ${state.calculation?.feeCurrency}'
-                  : '—',
+                state.calculation != null
+                    ? '+${state.calculation?.fee} ${state.calculation?.feeCurrency}'
+                    : '—',
                 style: const TextStyle(
                   fontSize: 14,
                   color: Colors.black,
@@ -655,7 +694,7 @@ class HomeScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 8),
-          
+
           // Transfer Time
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -669,9 +708,9 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
               Text(
-                state.exchangeRate != null 
-                  ? '${state.exchangeRate?.transferTime.time} ${state.exchangeRate?.transferTime.unit}'
-                  : '—',
+                state.exchangeRate != null
+                    ? '${state.exchangeRate?.transferTime.time} ${state.exchangeRate?.transferTime.unit}'
+                    : '—',
                 style: const TextStyle(
                   fontSize: 14,
                   color: Colors.black,
@@ -681,10 +720,10 @@ class HomeScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 16),
-          
+
           const Divider(color: Color(0xFFD3D8DD), height: 1),
           const SizedBox(height: 16),
-          
+
           // Total to Pay
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -698,9 +737,9 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
               Text(
-                state.sendAmount.isNotEmpty && state.calculation != null 
-                  ? '${state.calculation?.amount} ${state.fromCurrency?.code ?? ''}'
-                  : '—',
+                state.sendAmount.isNotEmpty && state.calculation != null
+                    ? '${state.calculation?.amount} ${state.fromCurrency?.code ?? ''}'
+                    : '—',
                 style: const TextStyle(
                   fontSize: 14,
                   color: Colors.black,
@@ -710,7 +749,7 @@ class HomeScreen extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 8),
-          
+
           // Recipient Gets
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -724,9 +763,9 @@ class HomeScreen extends ConsumerWidget {
                 ),
               ),
               Text(
-                state.calculation != null 
-                  ? '${state.calculation?.receivedAmount} ${state.toCurrency?.code ?? ''}'
-                  : '—',
+                state.calculation != null
+                    ? '${state.calculation?.receivedAmount} ${state.toCurrency?.code ?? ''}'
+                    : '—',
                 style: const TextStyle(
                   fontSize: 14,
                   color: Colors.black,
@@ -736,6 +775,47 @@ class HomeScreen extends ConsumerWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildMetaMaskDemoButton(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      child: ElevatedButton(
+        onPressed: () => context.push('/metamask'),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: const Color(0xFFE2761B), // MetaMask orange
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/images/wallets/metamask.png',
+              width: 24,
+              height: 24,
+              errorBuilder:
+                  (context, error, stackTrace) => const Icon(
+                    Icons.account_balance_wallet,
+                    color: Colors.white,
+                  ),
+            ),
+            const SizedBox(width: 12),
+            const Text(
+              'Connect with MetaMask',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -798,7 +878,10 @@ class HomeScreen extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 minimumSize: const Size(0, 32),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
               ),
               child: const Text(
                 'See all',
@@ -812,19 +895,23 @@ class HomeScreen extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 16),
-        
+
         // Transaction list
-        ...dummyTransactions.map((transaction) => Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: _buildTransactionItem(
-            transaction['name']!,
-            transaction['date']!,
-            transaction['action']!,
-            transaction['amount']!,
-            transaction['action'] == 'Send',
-            transaction['avatar']!,
-          ),
-        )).toList(),
+        ...dummyTransactions
+            .map(
+              (transaction) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: _buildTransactionItem(
+                  transaction['name']!,
+                  transaction['date']!,
+                  transaction['action']!,
+                  transaction['amount']!,
+                  transaction['action'] == 'Send',
+                  transaction['avatar']!,
+                ),
+              ),
+            )
+            .toList(),
       ],
     );
   }
@@ -856,17 +943,18 @@ class HomeScreen extends ConsumerWidget {
                   width: 40,
                   height: 40,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, _) => CircleAvatar(
-                    backgroundColor: Colors.grey.shade200,
-                    radius: 20,
-                    child: Text(
-                      name.substring(0, 1),
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
+                  errorBuilder:
+                      (context, error, _) => CircleAvatar(
+                        backgroundColor: Colors.grey.shade200,
+                        radius: 20,
+                        child: Text(
+                          name.substring(0, 1),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
                 ),
               ),
               const SizedBox(width: 8),
@@ -901,7 +989,10 @@ class HomeScreen extends ConsumerWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: isSend ? const Color(0xFFFF3E24) : const Color(0xFF00C735),
+                  color:
+                      isSend
+                          ? const Color(0xFFFF3E24)
+                          : const Color(0xFF00C735),
                 ),
               ),
               Text(

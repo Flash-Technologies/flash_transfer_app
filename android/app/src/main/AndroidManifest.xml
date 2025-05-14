@@ -5,7 +5,8 @@
     <application
         android:label="Flash Transfer"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:enableOnBackInvokedCallback="true">
         
         <!-- Facebook login config -->
         <meta-data
@@ -18,7 +19,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:taskAffinity=""
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
@@ -55,13 +56,38 @@
                 <data android:scheme="com.example.flash_transfer_app" />
             </intent-filter>
 
-              <intent-filter android:autoVerify="true">
+            <!-- Add specific intent filter for flashtransferapp scheme -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="flashtransferapp" />
+            </intent-filter>
+            
+            <!-- More comprehensive filter for our custom scheme with paths -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="flashtransferapp" android:host="connect" />
+            </intent-filter>
+
+            <!-- Universal link handling for web-based redirects -->
+            <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="https" 
                       android:host="flashtransferapp"
                       android:pathPrefix="/connect" />
+            </intent-filter>
+            
+            <!-- MetaMask specific deep link handling -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="metamask" android:host="*" />
             </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.

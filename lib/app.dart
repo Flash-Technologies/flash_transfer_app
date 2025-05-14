@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'config/router.dart';
 import 'config/theme.dart';
 import 'core/services/storage_service.dart';
+import 'presentation/screens/metamask_demo_screen.dart';
 
 class FlashTransferApp extends StatelessWidget {
   const FlashTransferApp({Key? key}) : super(key: key);
@@ -12,8 +13,10 @@ class FlashTransferApp extends StatelessWidget {
     return ProviderScope(
       child: Consumer(
         builder: (context, ref, _) {
+          // Create route configuration that redirects to MetaMask demo
           final router = ref.watch(routerProvider);
-          
+
+          // For testing, we'll use the MaterialApp.router setup
           return MaterialApp.router(
             title: 'Flash Transfer',
             theme: appTheme,
