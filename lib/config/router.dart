@@ -1,6 +1,7 @@
 import 'package:flash_transfer_app/presentation/home/cash_screen.dart';
 import 'package:flash_transfer_app/presentation/method/select_method_screen.dart';
 import 'package:flash_transfer_app/presentation/payment/add_new_screen.dart';
+import 'package:flash_transfer_app/presentation/payment/payment_complete_screen.dart';
 import 'package:flash_transfer_app/presentation/payment/select_payment_screen.dart';
 import 'package:flash_transfer_app/presentation/review/review_details_screen.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     navigatorKey: navigatorKey,
     debugLogDiagnostics: true,
-    initialLocation: '/review-details/card',
+    initialLocation: '/payment-complete',
     redirect: (context, state) {
       final isLoggedIn = ref.read(isLoggedInProvider);
 
@@ -156,6 +157,24 @@ final routerProvider = Provider<GoRouter>((ref) {
       //   path: '/review-details-cryptosm',
       //   builder: (context, state) => const ReviewDetailsCryptosmScreen(),
       // ),
+
+         GoRoute(
+      path: '/payment-complete',
+      builder: (context, state) => const PaymentCompleteScreen(),
+    ),
+    
+    // Related routes that would navigate to this screen
+    // GoRoute(
+    //   path: '/crypto-payment',
+    //   builder: (context, state) => const CryptoPaymentScreen(),
+    //   // This screen would have a button that navigates to payment-complete
+    // ),
+    
+    // // Routes referenced from the payment complete screen
+    // GoRoute(
+    //   path: '/track-transfer',
+    //   builder: (context, state) => const TrackTransferScreen(),
+    // ),
     ],
   );
 
