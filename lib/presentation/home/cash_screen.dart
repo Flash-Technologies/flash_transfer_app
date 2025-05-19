@@ -197,43 +197,6 @@ class _CashScreenState extends State<CashScreen> {
   Widget _buildPaymentOption({required String title, required String value}) {
     final bool isActive = activePay == value;
 
-    Widget getLottieAnimation() {
-      double size = 58;  
-
-      switch (value) {
-        case 'cash':
-          return LottieAnimations.cashAnimation(
-            width: size,
-            height: size,
-            repeat: true,
-          );
-        case 'wallet':
-          return LottieAnimations.walletAnimation(
-            width: size,
-            height: size,
-            repeat: true,
-          );
-        case 'card':
-          return LottieAnimations.creditCardAnimation(
-            width: size,
-            height: size,
-            repeat: true,
-          );
-        case 'bank':
-          return LottieAnimations.bankAnimation(
-            width: size,
-            height: size,
-            repeat: true,
-          );
-        default:
-          return LottieAnimations.cashAnimation(
-            width: size,
-            height: size,
-            repeat: true,
-          );
-      }
-    }
-
     return Material(
           color: Colors.transparent,
           child: InkWell(
@@ -241,40 +204,80 @@ class _CashScreenState extends State<CashScreen> {
               setState(() => activePay = value);
             },
             borderRadius: BorderRadius.circular(AppRadius.radiusL),
-            child: Ink(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
               decoration: BoxDecoration(
-                color:
-                    isActive ? AppColors.primaryBlue : AppColors.cardBackground,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(AppRadius.radiusL),
+                border: Border.all(
+                  color: isActive ? AppColors.primaryBlue : Colors.transparent,
+                  width: 2.0,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 4,
+                    color:
+                        isActive
+                            ? AppColors.primaryBlue.withOpacity(0.2)
+                            : Colors.black.withOpacity(0.05),
+                    blurRadius: isActive ? 8 : 4,
                     offset: const Offset(0, 2),
+                    spreadRadius: isActive ? 1 : 0,
                   ),
                 ],
               ),
               padding: EdgeInsets.symmetric(
-                horizontal: AppSpacing.paddingS,
+                horizontal: AppSpacing.paddingM,
                 vertical: AppSpacing.paddingM,
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Replace the icon widget with Lottie animation
-                  getLottieAnimation(),
-                  SizedBox(width: AppSpacing.marginS),
-                  Flexible(
+                  // Lottie animation container
+                  Container(
+                    height: 54,
+                    width: 54,
+                    decoration: BoxDecoration(
+                      color:
+                          isActive
+                              ? AppColors.primaryBlue.withOpacity(0.1)
+                              : Colors.grey.withOpacity(0.05),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: _getLottieAnimationForPayment(value, isActive),
+                    ),
+                  ),
+                  SizedBox(width: AppSpacing.marginM),
+                  // Title text
+                  Expanded(
                     child: Text(
                       title,
                       style: AppTextStyles.bodyMedium.copyWith(
-                        color: isActive ? Colors.white : AppColors.textPrimary,
-                        fontWeight: FontWeight.w600,
+                        color:
+                            isActive
+                                ? AppColors.primaryBlue
+                                : AppColors.textPrimary,
+                        fontWeight:
+                            isActive ? FontWeight.w700 : FontWeight.w600,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
+                  // Selection indicator
+                  if (isActive)
+                    Container(
+                      width: 20,
+                      height: 20,
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryBlue,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.check,
+                        color: Colors.white,
+                        size: 12,
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -284,9 +287,51 @@ class _CashScreenState extends State<CashScreen> {
         .scale(
           duration: AppAnimations.quickAnimation,
           curve: AppAnimations.emphasizedCurve,
-          begin: const Offset(0.95, 0.95),
+          begin: const Offset(0.97, 0.97),
           end: const Offset(1.0, 1.0),
         );
+  }
+
+  Widget _getLottieAnimationForPayment(String value, bool isActive) {
+    double size = 40;
+
+    switch (value) {
+      case 'cash':
+        return LottieAnimations.cashAnimation(
+          width: 78,
+          height: 78,
+          repeat: true,
+          animate: true,
+        );
+      case 'wallet':
+        return LottieAnimations.walletAnimation(
+          width: size,
+          height: size,
+          repeat: true,
+          animate: true,
+        );
+      case 'card':
+        return LottieAnimations.creditCardAnimation(
+          width: size,
+          height: size,
+          repeat: true,
+          animate: true,
+        );
+      case 'bank':
+        return LottieAnimations.bankAnimation(
+          width: size,
+          height: size,
+          repeat: true,
+          animate: true,
+        );
+      default:
+        return LottieAnimations.cashAnimation(
+          width: size,
+          height: size,
+          repeat: true,
+          animate: true,
+        );
+    }
   }
 
   Widget _buildReceiverMethodSection() {
@@ -312,42 +357,10 @@ class _CashScreenState extends State<CashScreen> {
     );
   }
 
- Widget _buildReceiverOption({required String title, required String value}) {
+  Widget _buildReceiverOption({required String title, required String value}) {
     final bool isActive = activeReceive == value;
     final double width =
         (MediaQuery.of(context).size.width - (AppSpacing.paddingM * 4)) / 3;
-
-    // Get Lottie animation based on receiver type
-    Widget getLottieAnimation() {
-      double size = 36; // Smaller size for the receiver options
-      
-      switch (value) {
-        case 'cash':
-          return LottieAnimations.cashAnimation(
-            width: size,
-            height: size,
-            repeat: true,
-          );
-        case 'wallet':
-          return LottieAnimations.walletAnimation(
-            width: size,
-            height: size,
-            repeat: true,
-          );
-        case 'mobile':
-          return LottieAnimations.phoneAnimation(
-            width: size,
-            height: size,
-            repeat: true,
-          );
-        default:
-          return LottieAnimations.cashAnimation(
-            width: size,
-            height: size,
-            repeat: true,
-          );
-      }
-    }
 
     return Material(
           color: Colors.transparent,
@@ -356,18 +369,26 @@ class _CashScreenState extends State<CashScreen> {
               setState(() => activeReceive = value);
             },
             borderRadius: BorderRadius.circular(AppRadius.radiusL),
-            child: Ink(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
               width: width,
               padding: EdgeInsets.all(AppSpacing.paddingM),
               decoration: BoxDecoration(
-                color:
-                    isActive ? AppColors.primaryBlue : AppColors.cardBackground,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(AppRadius.radiusL),
+                border: Border.all(
+                  color: isActive ? AppColors.primaryBlue : Colors.transparent,
+                  width: 2.0,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 4,
+                    color:
+                        isActive
+                            ? AppColors.primaryBlue.withOpacity(0.2)
+                            : Colors.black.withOpacity(0.05),
+                    blurRadius: isActive ? 8 : 4,
                     offset: const Offset(0, 2),
+                    spreadRadius: isActive ? 1 : 0,
                   ),
                 ],
               ),
@@ -375,24 +396,29 @@ class _CashScreenState extends State<CashScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    padding: EdgeInsets.all(AppSpacing.paddingS),
+                    height: 65,
+                    width: 65,
                     decoration: BoxDecoration(
-                      color: isActive ? Colors.white : AppColors.primaryBlue,
+                      color:
+                          isActive
+                              ? AppColors.primaryBlue.withOpacity(0.1)
+                              : Colors.grey.withOpacity(0.05),
                       shape: BoxShape.circle,
                     ),
-                    width: 56, // Increased for better visibility
-                    height: 56,
                     child: Center(
-                      // Replace the icon widget with Lottie animation
-                      child: getLottieAnimation(),
+                      child: _getLottieAnimationForReceiver(value, isActive),
                     ),
                   ),
                   SizedBox(height: AppSpacing.marginS),
+                  // Title text
                   Text(
                     title,
                     style: AppTextStyles.bodyMedium.copyWith(
-                      color: isActive ? Colors.white : AppColors.textPrimary,
-                      fontWeight: FontWeight.w600,
+                      color:
+                          isActive
+                              ? AppColors.primaryBlue
+                              : AppColors.textPrimary,
+                      fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -405,9 +431,44 @@ class _CashScreenState extends State<CashScreen> {
         .scale(
           duration: AppAnimations.quickAnimation,
           curve: AppAnimations.emphasizedCurve,
-          begin: const Offset(0.95, 0.95),
+          begin: const Offset(0.97, 0.97),
           end: const Offset(1.0, 1.0),
         );
+  }
+
+  Widget _getLottieAnimationForReceiver(String value, bool isActive) {
+    double size = 48;
+
+    switch (value) {
+      case 'cash':
+        return LottieAnimations.cashAnimation(
+          width: 78,
+          height: 78,
+          repeat: true,
+          animate: true,
+        );
+      case 'wallet':
+        return LottieAnimations.walletAnimation(
+          width: size,
+          height: size,
+          repeat: true,
+          animate: true,
+        );
+      case 'mobile':
+        return LottieAnimations.phoneAnimation(
+          width: size,
+          height: size,
+          repeat: true,
+          animate: true,
+        );
+      default:
+        return LottieAnimations.cashAnimation(
+          width: size,
+          height: size,
+          repeat: true,
+          animate: true,
+        );
+    }
   }
 
   Widget _buildActionButtons() {

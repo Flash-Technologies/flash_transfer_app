@@ -6,6 +6,7 @@ class AppTheme {
   // Primary colors
   static const primaryColor = Color(0xFFFFC000);
   static const secondaryColor = Color(0xFF2475FF);
+  static const Color accentColor = Color(0xFFFFC000);
   static const backgroundColor = Color(0xFFEFF0F1);
   
   // Text styles
@@ -15,6 +16,19 @@ class AppTheme {
     color: Color(0xFF181F30),
   );
   
+    // Text colors
+  static const Color textDarkColor = Color(0xFF181F30);
+  static const Color textGrayColor = Color(0xFF6E757D);
+  
+  // Status colors
+  static const Color errorColor = Color(0xFFFF3E24);
+  static const Color errorLightColor = Color(0xFFFFF1F0);
+  static const Color successColor = Color(0xFF00C735);
+  
+  // Other UI colors
+  static const Color borderColor = Color(0xFFEBECED);
+  static const Color disabledColor = Color(0xFFD3D8DD);
+
   static const labelStyle = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w600,

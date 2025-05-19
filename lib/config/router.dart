@@ -1,5 +1,6 @@
 import 'package:flash_transfer_app/presentation/home/cash_screen.dart';
 import 'package:flash_transfer_app/presentation/payment/add_new_screen.dart';
+import 'package:flash_transfer_app/presentation/payment/select_payment_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -98,6 +99,19 @@ final routerProvider = Provider<GoRouter>((ref) {
 ),
 
       GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
+
+      GoRoute(
+  path: '/select-payment',
+  builder: (context, state) => const SelectPaymentScreen(),
+),
+// GoRoute(
+//   path: '/review-details-mobile',
+//   builder: (context, state) => const ReviewDetailsMobileScreen(),
+// ),
+// GoRoute(
+//   path: '/review-details-cryptosm',
+//   builder: (context, state) => const ReviewDetailsCryptosmScreen(),
+// ),
     ],
   );
 });
