@@ -1,9 +1,12 @@
 import 'package:flash_transfer_app/presentation/home/cash_screen.dart';
+import 'package:flash_transfer_app/presentation/method/select_method_screen.dart';
 import 'package:flash_transfer_app/presentation/payment/add_new_screen.dart';
 import 'package:flash_transfer_app/presentation/payment/select_payment_screen.dart';
+import 'package:flash_transfer_app/presentation/review/review_details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flash_transfer_app/providers/payment_provider.dart';
 import '../presentation/auth/splash_screen.dart';
 import '../presentation/auth/sign_in_screen.dart';
 import '../presentation/auth/sign_up_screen.dart';
@@ -31,7 +34,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     navigatorKey: navigatorKey,
     debugLogDiagnostics: true,
-    initialLocation: '/cash',
+    initialLocation: '/review-details/card',
     redirect: (context, state) {
       final isLoggedIn = ref.read(isLoggedInProvider);
 
@@ -88,30 +91,94 @@ final routerProvider = Provider<GoRouter>((ref) {
           return RegistrationSuccessScreen(email: params?['email'] ?? '');
         },
       ),
-      GoRoute(
-        path: '/cash',
-        builder: (context, state) => const CashScreen(),
-      ),
+      GoRoute(path: '/cash', builder: (context, state) => const CashScreen()),
 
       GoRoute(
-  path: '/add-new',
-  builder: (context, state) => const AddNewScreen(),
-),
+        path: '/add-new',
+        builder: (context, state) => const AddNewScreen(),
+      ),
 
       GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
 
       GoRoute(
-  path: '/select-payment',
-  builder: (context, state) => const SelectPaymentScreen(),
-),
-// GoRoute(
-//   path: '/review-details-mobile',
-//   builder: (context, state) => const ReviewDetailsMobileScreen(),
-// ),
-// GoRoute(
-//   path: '/review-details-cryptosm',
-//   builder: (context, state) => const ReviewDetailsCryptosmScreen(),
-// ),
+        path: '/select-payment',
+        builder: (context, state) => const SelectPaymentScreen(),
+      ),
+
+      GoRoute(
+        path: '/select-method',
+        builder: (context, state) => const SelectMethodScreen(),
+      ),
+      GoRoute(
+        path: '/review-details/:type',
+        builder: (context, state) {
+          final typeParam = state.pathParameters['type'] ?? 'cash';
+          final PaymentType paymentType = _getPaymentTypeFromParam(typeParam);
+
+          return ReviewDetailsScreen(paymentType: paymentType);
+        },
+      ),
+
+      // Legacy routes for backward compatibility - redirect to the parameterized route
+      GoRoute(
+        path: '/review-details-card',
+        redirect: (_, __) => '/review-details/card',
+      ),
+      GoRoute(
+        path: '/review-details-bank',
+        redirect: (_, __) => '/review-details/bank',
+      ),
+      GoRoute(
+        path: '/review-details-cash',
+        redirect: (_, __) => '/review-details/cash',
+      ),
+      GoRoute(
+        path: '/review-details-cryptos',
+        redirect: (_, __) => '/review-details/crypto',
+      ),
+      GoRoute(
+        path: '/review-details-cryptosm',
+        redirect: (_, __) => '/review-details/cryptoSendMobile',
+      ),
+      GoRoute(
+        path: '/review-details-cryptor',
+        redirect: (_, __) => '/review-details/cryptoReceive',
+      ),
+      GoRoute(
+        path: '/review-details-mobile',
+        redirect: (_, __) => '/review-details/mobile',
+      ),
+      // GoRoute(
+      //   path: '/review-details-mobile',
+      //   builder: (context, state) => const ReviewDetailsMobileScreen(),
+      // ),
+      // GoRoute(
+      //   path: '/review-details-cryptosm',
+      //   builder: (context, state) => const ReviewDetailsCryptosmScreen(),
+      // ),
     ],
   );
-});
+
+}
+);
+
+PaymentType _getPaymentTypeFromParam(String param) {
+  switch (param) {
+    case 'card':
+      return PaymentType.card;
+    case 'bank':
+      return PaymentType.bank;
+    case 'cash':
+      return PaymentType.cash;
+    case 'crypto':
+      return PaymentType.crypto;
+    case 'cryptoReceive':
+      return PaymentType.cryptoReceive;
+    case 'cryptoSendMobile':
+      return PaymentType.cryptoSendMobile;
+    case 'mobile':
+      return PaymentType.mobile;
+    default:
+      return PaymentType.cash; // Default fallback
+  }
+}
