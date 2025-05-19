@@ -1,3 +1,4 @@
+import 'package:flash_transfer_app/presentation/common/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -6,7 +7,8 @@ import 'dart:convert';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import '../../core/models/auth_models.dart';
+import '../../core/models/auth_models.dart' as auth_models;
+import '../../core/models/country_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../config/router.dart';
 import '../common/social_login_buttons.dart';
@@ -25,8 +27,8 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final _confirmPasswordController = TextEditingController();
   bool _isLoading = false;
 
-  CountryModel? _selectedCountry;
-  List<CountryModel> _countries = [];
+  auth_models.CountryModel? _selectedCountry;
+  List<auth_models.CountryModel> _countries = [];
   bool _loadingCountries = true;
 
   @override
@@ -48,6 +50,18 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     if (mounted) {
       setState();
     }
+  }
+
+  // Convert auth model to country model
+  CountryModel _convertToCountryModel(auth_models.CountryModel authCountry) {
+    return CountryModel(
+      name: authCountry.name,
+      code:
+          authCountry.name
+              .substring(0, 2)
+              .toLowerCase(), // Use first 2 chars as code
+      flagUrl: authCountry.flag,
+    );
   }
 
   // Handlers for social login
@@ -316,7 +330,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         final countries =
             data
                 .map(
-                  (country) => CountryModel(
+                  (country) => auth_models.CountryModel(
                     name: country['name']['common'],
                     flag:
                         country['flags']['svg'] ??
@@ -540,9 +554,64 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 8),
                     InkWell(
-                      onTap: _loadingCountries ? null : _showCountryPicker,
+                      onTap:
+                          _loadingCountries
+                              ? null
+                              : () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  backgroundColor: Colors.transparent,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(20),
+                                    ),
+                                  ),
+                                  builder:
+                                      (context) => Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                            0.7,
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.vertical(
+                                            top: Radius.circular(20),
+                                          ),
+                                        ),
+                                        child: CountryPicker(
+                                          countries:
+                                              _countries
+                                                  .map(
+                                                    (c) =>
+                                                        _convertToCountryModel(
+                                                          c,
+                                                        ),
+                                                  )
+                                                  .toList(),
+                                          selectedCountry:
+                                              _selectedCountry != null
+                                                  ? _convertToCountryModel(
+                                                    _selectedCountry!,
+                                                  )
+                                                  : null,
+                                          onSelect: (country) {
+                                            // Find matching auth country model by name
+                                            final authCountry = _countries
+                                                .firstWhere(
+                                                  (c) => c.name == country.name,
+                                                  orElse:
+                                                      () => _countries.first,
+                                                );
+                                            setState(() {
+                                              _selectedCountry = authCountry;
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ),
+                                );
+                              },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
@@ -570,18 +639,22 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                                 )
                                 : Row(
                                   children: [
-                                    if (_selectedCountry != null)
-                                      Image.network(
-                                        _selectedCountry!.flag,
-                                        width: 24,
-                                        height: 16,
-                                        errorBuilder:
-                                            (context, error, stackTrace) =>
-                                                const Icon(
-                                                  Icons.flag,
-                                                  size: 24,
-                                                ),
+                                    if (_selectedCountry != null) ...[
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(4),
+                                        child: Image.network(
+                                          _selectedCountry!.flag,
+                                          width: 24,
+                                          height: 16,
+                                          errorBuilder:
+                                              (context, error, stackTrace) =>
+                                                  const Icon(
+                                                    Icons.flag,
+                                                    size: 24,
+                                                  ),
+                                        ),
                                       ),
+                                    ],
                                     const SizedBox(width: 8),
                                     Text(
                                       _selectedCountry?.name ??

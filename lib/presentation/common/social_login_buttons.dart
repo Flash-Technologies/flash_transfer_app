@@ -159,79 +159,95 @@ class SocialLoginButtons extends ConsumerWidget {
   }
 
   Future<void> _handleGoogleLogin(BuildContext context, WidgetRef ref) async {
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
+  final scaffoldMessenger = ScaffoldMessenger.of(context);
 
-    try {
-      // Sign out first to ensure we get the account selection dialog
-      await googleSignIn.signOut();
+  try {
+    print("Starting Google Sign In flow");
+    // Sign out first to ensure we get the account selection dialog
+    await googleSignIn.signOut();
 
-      // Trigger sign in process
-      final result = await googleSignIn.signIn();
+    // Trigger sign in process
+    final result = await googleSignIn.signIn();
+    print("Sign in result: $result");
 
-      if (result == null) {
-        scaffoldMessenger.showSnackBar(
-          const SnackBar(content: Text('Google sign in was cancelled')),
-        );
-        return;
-      }
-
-      // Get authentication
-      final googleAuth = await result.authentication;
-      final token = googleAuth.idToken;
-
-      if (token == null) {
-        scaffoldMessenger.showSnackBar(
-          const SnackBar(content: Text('Could not get Google auth token')),
-        );
-        return;
-      }
-
-      // Get user country
-      String countryName = 'Unknown';
-      try {
-        final response = await http.get(Uri.parse('https://ipapi.co/json/'));
-        if (response.statusCode == 200) {
-          final data = json.decode(response.body);
-          countryName = data['country_name'] ?? 'Unknown';
-        }
-      } catch (e) {
-        debugPrint('Failed to fetch user country: $e');
-      }
-
-      // Show loading indicator
+    if (result == null) {
+      print("Sign in was cancelled by user");
       scaffoldMessenger.showSnackBar(
-        const SnackBar(content: Text('Signing in with Google...')),
+        const SnackBar(content: Text('Google sign in was cancelled')),
       );
+      return;
+    }
 
-      final success = await ref
-          .read(authProvider.notifier)
-          .loginWithGoogle(token, countryName);
+    print("Getting authentication tokens");
+    // Get authentication
+    final googleAuth = await result.authentication;
+    final token = googleAuth.idToken;
+    print("Access token: ${googleAuth.accessToken?.substring(0, 10)}...");
+    print("ID token: ${token?.substring(0, 10)}...");
 
-      if (success) {
-        // Update logged in state
-        ref.read(isLoggedInProvider.notifier).state = true;
+    if (token == null) {
+      print("ID token is null");
+      scaffoldMessenger.showSnackBar(
+        const SnackBar(content: Text('Could not get Google auth token')),
+      );
+      return;
+    }
 
-        scaffoldMessenger.showSnackBar(
-          const SnackBar(content: Text('Login successful! Redirecting...')),
-        );
-
-        // Add a small delay for the snackbar to be visible
-        await Future.delayed(const Duration(milliseconds: 1000));
-
-        if (!context.mounted) return;
-        context.go('/home');
-      } else {
-        final errorMessage =
-            ref.read(authProvider).message ?? 'Google login failed';
-        scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
+    // Get user country
+    String countryName = 'Unknown';
+    try {
+      final response = await http.get(Uri.parse('https://ipapi.co/json/'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        countryName = data['country_name'] ?? 'Unknown';
       }
     } catch (e) {
-      debugPrint('Google sign in error: $e');
-      scaffoldMessenger.showSnackBar(
-        SnackBar(content: Text('Failed to sign in with Google: $e')),
-      );
+      debugPrint('Failed to fetch user country: $e');
     }
+
+    // Show loading indicator
+    scaffoldMessenger.showSnackBar(
+      const SnackBar(content: Text('Signing in with Google...')),
+    );
+
+    final success = await ref
+        .read(authProvider.notifier)
+        .loginWithGoogle(token, countryName);
+
+    if (success) {
+      // Update logged in state
+      ref.read(isLoggedInProvider.notifier).state = true;
+
+      scaffoldMessenger.showSnackBar(
+        const SnackBar(content: Text('Login successful! Redirecting...')),
+      );
+
+      // Add a small delay for the snackbar to be visible
+      await Future.delayed(const Duration(milliseconds: 1000));
+
+      if (!context.mounted) return;
+      context.go('/home');
+    } else {
+      final errorMessage =
+          ref.read(authProvider).message ?? 'Google login failed';
+      scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
+    }
+  } catch (e) {
+    print("Detailed error information:");
+    print(e.toString());
+    
+    // if (e is PlatformException) {
+    //   print("Error code: ${e.code}");
+    //   print("Error message: ${e.message}");
+    //   print("Error details: ${e.details}");
+    // }
+    
+    debugPrint('Google sign in error: $e');
+    scaffoldMessenger.showSnackBar(
+      SnackBar(content: Text('Failed to sign in with Google: $e')),
+    );
   }
+}
 
   Future<void> _handleFacebookLogin(BuildContext context, WidgetRef ref) async {
     final scaffoldMessenger = ScaffoldMessenger.of(context);

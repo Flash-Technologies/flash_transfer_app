@@ -392,7 +392,7 @@ class HomeScreen extends ConsumerWidget {
           ],
           const SizedBox(width: 8),
           Image.asset(
-            'assets/image/icons/arrow-short-down.png',
+            'assets/icons/arrow-short-down.png',
             width: 12,
             height: 6,
             errorBuilder:

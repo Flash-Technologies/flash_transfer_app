@@ -1,5 +1,29 @@
 import 'package:flutter/material.dart';
 
+
+
+class AppTheme {
+  // Primary colors
+  static const primaryColor = Color(0xFFFFC000);
+  static const secondaryColor = Color(0xFF2475FF);
+  static const backgroundColor = Color(0xFFEFF0F1);
+  
+  // Text styles
+  static const headingStyle = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+    color: Color(0xFF181F30),
+  );
+  
+  static const labelStyle = TextStyle(
+    fontSize: 14,
+    fontWeight: FontWeight.w600,
+    color: Color(0xFF181F30),
+  );
+  
+  // Add more theme elements as needed
+}
+
 final appTheme = ThemeData(
   primaryColor: const Color(0xFFFFC000),
   colorScheme: ColorScheme.fromSeed(

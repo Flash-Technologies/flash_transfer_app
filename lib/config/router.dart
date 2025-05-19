@@ -1,3 +1,5 @@
+import 'package:flash_transfer_app/presentation/home/cash_screen.dart';
+import 'package:flash_transfer_app/presentation/payment/add_new_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -13,18 +15,14 @@ import '../providers/auth_provider.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-// Provider to track if splash screen has completed
 final splashCompletedProvider = StateProvider<bool>((ref) => false);
 
-// Provider to track if user is logged in
 final isLoggedInProvider = StateProvider<bool>((ref) => false);
 
-// Router provider
 final routerProvider = Provider<GoRouter>((ref) {
   final authService = ref.watch(authServiceProvider);
   final splashCompleted = ref.watch(splashCompletedProvider);
 
-  // Check logged in status once on router init
   authService.isLoggedIn().then((loggedIn) {
     ref.read(isLoggedInProvider.notifier).state = loggedIn;
   });
@@ -32,14 +30,12 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     navigatorKey: navigatorKey,
     debugLogDiagnostics: true,
-    initialLocation: '/',
+    initialLocation: '/cash',
     redirect: (context, state) {
       final isLoggedIn = ref.read(isLoggedInProvider);
 
-      // Only handle redirects after splash has completed
       if (!splashCompleted) return null;
 
-      // If at root route and splash completed, go to sign-in or home
       if (state.matchedLocation == '/') {
         return isLoggedIn ? '/home' : '/sign-in';
       }
@@ -47,7 +43,6 @@ final routerProvider = Provider<GoRouter>((ref) {
       return null;
     },
     routes: [
-      // Splash screen
       GoRoute(
         path: '/',
         builder: (context, state) {
@@ -59,7 +54,6 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
 
-      // Auth routes
       GoRoute(
         path: '/sign-in',
         builder: (context, state) => const SignInScreen(),
@@ -93,8 +87,16 @@ final routerProvider = Provider<GoRouter>((ref) {
           return RegistrationSuccessScreen(email: params?['email'] ?? '');
         },
       ),
+      GoRoute(
+        path: '/cash',
+        builder: (context, state) => const CashScreen(),
+      ),
 
-      // Main app route
+      GoRoute(
+  path: '/add-new',
+  builder: (context, state) => const AddNewScreen(),
+),
+
       GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
     ],
   );

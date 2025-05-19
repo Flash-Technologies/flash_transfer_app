@@ -7,15 +7,11 @@ import 'providers/direct_wallet_provider.dart';
 import 'providers/metamask_provider.dart';
 import 'app.dart';
 
-// Initialize GoogleSignIn at the app level
 final GoogleSignIn googleSignIn = GoogleSignIn(
-  // The client ID from the provided credentials
-  clientId:
-      '850808265877-916lji3l3vt73cc6r99d48hhtid53fb1.apps.googleusercontent.com',
   scopes: ['email', 'profile'],
+    signInOption: SignInOption.standard,
 );
 
-// Method channel for native wallet communication
 const MethodChannel walletChannel = MethodChannel(
   'com.flash_transfer_app.wallet_channel',
 );

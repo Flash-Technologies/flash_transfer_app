@@ -48,6 +48,10 @@ dependencies:
   url_launcher: ^6.2.3
   app_links: ^3.5.0
   android_intent_plus: ^5.3.0
+  google_fonts: ^6.2.1
+  flutter_animate: ^4.5.2
+  shimmer: ^3.0.0
+  lottie: ^3.1.0
 
 dev_dependencies:
   flutter_test:
@@ -75,6 +79,7 @@ flutter:
     - assets/images/
     - assets/images/wallets/
     - assets/icons/
+    - assets/LottieFiles/
     # - assets/images/wallets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
