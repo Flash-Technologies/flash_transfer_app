@@ -1,0 +1,36 @@
+{
+  "screen": {
+    "title": "Taal",
+    "searchPlaceholder": "Taal zoeken",
+    "back": "Terug"
+  },
+  "confirmation": {
+    "title": "Taalwijziging bevestigen",
+    "message": "Weet je zeker dat je de taal wilt wijzigen naar {languageName}? We helpen je daar graag bij.",
+    "subtitle": "Dit zal de hele app-interface bijwerken.",
+    "buttons": {
+      "yes": "Ja, verander taal",
+      "no": "Annuleren"
+    },
+    "success": "Taal succesvol gewijzigd naar {languageName}",
+    "loading": "Taalwijzigingen worden toegepast...",
+    "error": "Taal wijzigen mislukt. Probeer het opnieuw."
+  },
+  "languages": {
+    "ar": "Arabisch",
+    "de": "Duits",
+    "en": "Engels",
+    "es": "Spaans",
+    "fr": "Frans",
+    "hi": "Hindi",
+    "nl": "Nederlands",
+    "pt": "Portugees",
+    "vi": "Vietnamees"
+  },
+  "errors": {
+    "loadFailed": "Fout bij het laden van talen",
+    "noLanguagesFound": "Geen talen gevonden",
+    "tryAdjustingSearch": "Probeer je zoekopdracht aan te passen",
+    "retry": "Opnieuw proberen"
+  }
+}

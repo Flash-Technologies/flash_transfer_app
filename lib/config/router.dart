@@ -17,6 +17,20 @@ import '../presentation/auth/success_screen.dart';
 import '../presentation/home/home_screen.dart';
 import '../core/services/auth_service.dart';
 import '../providers/auth_provider.dart';
+import 'package:flash_transfer_app/presentation/home/profile_screen.dart';
+import 'package:flash_transfer_app/presentation/settings/edit_profile_screen.dart';
+import 'package:flash_transfer_app/presentation/transaction/transaction_screen.dart';
+import 'package:flash_transfer_app/presentation/transaction/recipients_screen.dart';
+import 'package:flash_transfer_app/presentation/transaction/track_transfer_screen.dart';
+// import 'package:flash_transfer_app/presentation/home/nft_screen.dart';
+// import 'package:flash_transfer_app/presentation/home/rank_screen.dart';
+// import 'package:flash_transfer_app/presentation/card/my_card_screen.dart';
+// import 'package:flash_transfer_app/presentation/home/invite_screen.dart';
+// import 'package:flash_transfer_app/presentation/home/notification_screen.dart';
+import 'package:flash_transfer_app/presentation/settings/language_screen.dart';
+// import 'package:flash_transfer_app/presentation/settings/settings_screen.dart';
+import 'package:flash_transfer_app/presentation/settings/privacy_screen.dart';
+import 'package:flash_transfer_app/presentation/settings/contact_us_screen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -149,6 +163,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/review-details-mobile',
         redirect: (_, __) => '/review-details/mobile',
       ),
+
       // GoRoute(
       //   path: '/review-details-mobile',
       //   builder: (context, state) => const ReviewDetailsMobileScreen(),
@@ -157,29 +172,92 @@ final routerProvider = Provider<GoRouter>((ref) {
       //   path: '/review-details-cryptosm',
       //   builder: (context, state) => const ReviewDetailsCryptosmScreen(),
       // ),
+      GoRoute(
+        path: '/payment-complete',
+        builder: (context, state) => const PaymentCompleteScreen(),
+      ),
 
-         GoRoute(
-      path: '/payment-complete',
-      builder: (context, state) => const PaymentCompleteScreen(),
-    ),
-    
-    // Related routes that would navigate to this screen
-    // GoRoute(
-    //   path: '/crypto-payment',
-    //   builder: (context, state) => const CryptoPaymentScreen(),
-    //   // This screen would have a button that navigates to payment-complete
-    // ),
-    
-    // // Routes referenced from the payment complete screen
-    // GoRoute(
-    //   path: '/track-transfer',
-    //   builder: (context, state) => const TrackTransferScreen(),
-    // ),
+      // Profile and related screens
+      GoRoute(
+        path: '/profile',
+        builder: (context, state) => const ProfileScreen(),
+      ),
+
+      // GoRoute(
+      //   path: '/edit-profile',
+      //   builder: (context, state) => const EditProfileScreen(),
+      // ),
+
+      // Transaction related screens
+      // GoRoute(
+      //   path: '/transaction',
+      //   builder: (context, state) => const TransactionScreen(),
+      // ),
+
+      // GoRoute(
+      //   path: '/recipients',
+      //   builder: (context, state) => const RecipientsScreen(),
+      // ),
+
+      // GoRoute(
+      //   path: '/track-transfer',
+      //   builder: (context, state) => const TrackTransferScreen(),
+      // ),
+
+      // Feature screens
+      // GoRoute(path: '/nft', builder: (context, state) => const NftScreen()),
+
+      // GoRoute(path: '/rank', builder: (context, state) => const RankScreen()),
+
+      // GoRoute(
+      //   path: '/my-card',
+      //   builder: (context, state) => const MyCardScreen(),
+      // ),
+
+      // GoRoute(
+      //   path: '/invite',
+      //   builder: (context, state) => const InviteScreen(),
+      // ),
+
+      // // Settings and support screens
+      // GoRoute(
+      //   path: '/notification',
+      //   builder: (context, state) => const NotificationScreen(),
+      // ),
+      GoRoute(
+        path: '/language',
+        builder: (context, state) => const LanguageScreen(),
+      ),
+
+      // GoRoute(
+      //   path: '/settings',
+      //   builder: (context, state) => const SettingsScreen(),
+      // ),
+
+      // GoRoute(
+      //   path: '/privacy',
+      //   builder: (context, state) => const PrivacyScreen(),
+      // ),
+
+      // GoRoute(
+      //   path: '/contact-us',
+      //   builder: (context, state) => const ContactUsScreen(),
+      // ),
+      // Related routes that would navigate to this screen
+      // GoRoute(
+      //   path: '/crypto-payment',
+      //   builder: (context, state) => const CryptoPaymentScreen(),
+      //   // This screen would have a button that navigates to payment-complete
+      // ),
+
+      // // Routes referenced from the payment complete screen
+      // GoRoute(
+      //   path: '/track-transfer',
+      //   builder: (context, state) => const TrackTransferScreen(),
+      // ),
     ],
   );
-
-}
-);
+});
 
 PaymentType _getPaymentTypeFromParam(String param) {
   switch (param) {

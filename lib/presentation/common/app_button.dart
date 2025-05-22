@@ -1,110 +1,201 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter/services.dart';
+import 'package:flash_transfer_app/config/constants.dart';
 
-class AppButton extends StatefulWidget {
+class AppButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
-  final Color backgroundColor;
-  final Color textColor;
-  final Color? borderColor;
   final bool isLoading;
   final bool isDisabled;
+  final Color? backgroundColor;
+  final Color? textColor;
+  final double height;
+  final double? width;
+  final IconData? icon;
+  final BorderRadius? borderRadius;
+  final EdgeInsets? padding;
+  final BoxBorder? border;
 
   const AppButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.onPressed,
-    this.backgroundColor = const Color(0xFFFFC000),
-    this.textColor = const Color(0xFF181F30),
-    this.borderColor,
     this.isLoading = false,
     this.isDisabled = false,
-  }) : super(key: key);
+    this.backgroundColor,
+    this.textColor,
+    this.height = 56.0,
+    this.width,
+    this.icon,
+    this.borderRadius,
+    this.padding,
+    this.border,
+  });
 
-  @override
-  State<AppButton> createState() => _AppButtonState();
-}
+  // Primary button
+  factory AppButton.primary({
+    Key? key,
+    required String text,
+    required VoidCallback onPressed,
+    bool isLoading = false,
+    bool isDisabled = false,
+    double height = 56.0,
+    double? width,
+    IconData? icon,
+    EdgeInsets? padding,
+  }) {
+    return AppButton(
+      key: key,
+      text: text,
+      onPressed: onPressed,
+      isLoading: isLoading,
+      isDisabled: isDisabled,
+      backgroundColor: AppColors.primary,
+      textColor: Colors.black,
+      height: height,
+      width: width,
+      icon: icon,
+      padding: padding,
+    );
+  }
 
-class _AppButtonState extends State<AppButton> {
-  bool _isPressed = false;
+  // Secondary button
+  factory AppButton.secondary({
+    Key? key,
+    required String text,
+    required VoidCallback onPressed,
+    bool isLoading = false,
+    bool isDisabled = false,
+    double height = 56.0,
+    double? width,
+    IconData? icon,
+    EdgeInsets? padding,
+  }) {
+    return AppButton(
+      key: key,
+      text: text,
+      onPressed: onPressed,
+      isLoading: isLoading,
+      isDisabled: isDisabled,
+      backgroundColor: Colors.transparent,
+      textColor: Colors.black,
+      height: height,
+      width: width,
+      icon: icon,
+      padding: padding,
+      border: Border.all(color: Colors.grey.shade300, width: 1),
+    );
+  }
+
+  // Destructive button
+  factory AppButton.destructive({
+    Key? key,
+    required String text,
+    required VoidCallback onPressed,
+    bool isLoading = false,
+    bool isDisabled = false,
+    double height = 56.0,
+    double? width,
+    IconData? icon,
+    EdgeInsets? padding,
+  }) {
+    return AppButton(
+      key: key,
+      text: text,
+      onPressed: onPressed,
+      isLoading: isLoading,
+      isDisabled: isDisabled,
+      backgroundColor: AppColors.error,
+      textColor: Colors.white,
+      height: height,
+      width: width,
+      icon: icon,
+      padding: padding,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final isInteractive = !widget.isLoading && !widget.isDisabled;
-    
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: isInteractive ? widget.onPressed : null,
-        onTapDown: isInteractive
-            ? (_) {
-                setState(() {
-                  _isPressed = true;
-                });
-              }
-            : null,
-        onTapUp: isInteractive
-            ? (_) {
-                setState(() {
-                  _isPressed = false;
-                });
-              }
-            : null,
-        onTapCancel: isInteractive
-            ? () {
-                setState(() {
-                  _isPressed = false;
-                });
-              }
-            : null,
-        borderRadius: BorderRadius.circular(16),
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        child: Ink(
-          width: double.infinity,
-          height: 56,
-          decoration: BoxDecoration(
-            color: widget.isDisabled
-                ? widget.backgroundColor.withOpacity(0.5)
-                : widget.backgroundColor,
-            borderRadius: BorderRadius.circular(16),
-            border: widget.borderColor != null
-                ? Border.all(color: widget.borderColor!, width: 1.5)
-                : null,
-            boxShadow: _isPressed || widget.isDisabled || widget.borderColor != null
-                ? null
-                : [
+    final isButtonDisabled = isDisabled || isLoading;
+
+    return GestureDetector(
+      onTap:
+          isButtonDisabled
+              ? null
+              : () {
+                HapticFeedback.mediumImpact();
+                onPressed();
+              },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 150),
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color:
+              isButtonDisabled
+                  ? (backgroundColor ?? Theme.of(context).primaryColor)
+                      .withOpacity(0.6)
+                  : backgroundColor ?? Theme.of(context).primaryColor,
+          borderRadius: borderRadius ?? BorderRadius.circular(12),
+          border: border,
+          boxShadow:
+              backgroundColor != Colors.transparent && !isButtonDisabled
+                  ? [
                     BoxShadow(
-                      color: widget.backgroundColor.withOpacity(0.3),
+                      color: (backgroundColor ?? Theme.of(context).primaryColor)
+                          .withOpacity(0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
-                  ],
-          ),
-          child: Center(
-            child: widget.isLoading
-                ? SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(widget.textColor),
-                    ),
-                  )
-                : Text(
-                    widget.text,
-                    style: TextStyle(
-                      color: widget.isDisabled
-                          ? widget.textColor.withOpacity(0.5)
-                          : widget.textColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  ]
+                  : null,
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: isButtonDisabled ? null : onPressed,
+            borderRadius: borderRadius ?? BorderRadius.circular(12),
+            child: Padding(
+              padding: padding ?? const EdgeInsets.symmetric(horizontal: 16),
+              child: Center(
+                child:
+                    isLoading
+                        ? SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              textColor ?? Colors.white,
+                            ),
+                          ),
+                        )
+                        : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (icon != null) ...[
+                              Icon(
+                                icon,
+                                color: textColor ?? Colors.white,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 8),
+                            ],
+                            Text(
+                              text,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: textColor ?? Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+              ),
+            ),
           ),
         ),
       ),
-    ).animate(target: _isPressed ? 1 : 0)
-      .scale(end: const Offset(0.97, 0.97), duration: 100.ms);
+    );
   }
 }

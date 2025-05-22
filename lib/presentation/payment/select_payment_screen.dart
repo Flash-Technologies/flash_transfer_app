@@ -265,9 +265,9 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
             onPressed: () => context.pop(),
             backgroundColor: Colors.transparent,
             textColor: AppTheme.textGrayColor,
-            borderColor: AppTheme.textGrayColor,
+            // borderColor: AppTheme.textGrayColor,
           ),
-        ],
+        ],  
       ),
     );
   }

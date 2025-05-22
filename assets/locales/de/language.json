@@ -1,0 +1,36 @@
+{
+  "screen": {
+    "title": "Sprache",
+    "searchPlaceholder": "Sprache suchen",
+    "back": "Zurück"
+  },
+  "confirmation": {
+    "title": "Sprachänderung bestätigen",
+    "message": "Sind Sie sicher, dass Sie die Sprache auf {languageName} ändern möchten? Wir helfen Ihnen gerne dabei.",
+    "subtitle": "Dies wird die gesamte App-Oberfläche aktualisieren.",
+    "buttons": {
+      "yes": "Ja, Sprache ändern",
+      "no": "Abbrechen"
+    },
+    "success": "Sprache erfolgreich auf {languageName} geändert",
+    "loading": "Sprachänderungen werden angewendet...",
+    "error": "Fehler beim Ändern der Sprache. Bitte versuchen Sie es erneut."
+  },
+  "languages": {
+    "ar": "Arabisch",
+    "de": "Deutsch",
+    "en": "Englisch",
+    "es": "Spanisch",
+    "fr": "Französisch",
+    "hi": "Hindi",
+    "nl": "Niederländisch",
+    "pt": "Portugiesisch",
+    "vi": "Vietnamesisch"
+  },
+  "errors": {
+    "loadFailed": "Fehler beim Laden der Sprachen",
+    "noLanguagesFound": "Keine Sprachen gefunden",
+    "tryAdjustingSearch": "Versuchen Sie, Ihre Suchanfrage anzupassen",
+    "retry": "Wiederholen"
+  }
+}

@@ -168,7 +168,7 @@ class ReviewDetailsScreen extends ConsumerWidget {
             onPressed: () => context.pop(),
             backgroundColor: Colors.transparent,
             textColor: AppTheme.textGrayColor,
-            borderColor: AppTheme.textGrayColor,
+            // borderColor: AppTheme.textGrayColor,
           ),
         ],
       ),

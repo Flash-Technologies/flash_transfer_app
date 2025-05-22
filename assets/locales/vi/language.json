@@ -1,0 +1,36 @@
+{
+  "screen": {
+    "title": "Ngôn ngữ",
+    "searchPlaceholder": "Tìm kiếm ngôn ngữ",
+    "back": "Quay lại"
+  },
+  "confirmation": {
+    "title": "Xác nhận thay đổi ngôn ngữ",
+    "message": "Bạn có chắc chắn muốn thay đổi ngôn ngữ thành {languageName} không? Chúng tôi rất vui được hỗ trợ bạn điều đó.",
+    "subtitle": "Điều này sẽ cập nhật toàn bộ giao diện ứng dụng.",
+    "buttons": {
+      "yes": "Có, thay đổi ngôn ngữ",
+      "no": "Hủy bỏ"
+    },
+    "success": "Đã thay đổi ngôn ngữ thành công thành {languageName}",
+    "loading": "Đang áp dụng các thay đổi ngôn ngữ...",
+    "error": "Không thể thay đổi ngôn ngữ. Vui lòng thử lại."
+  },
+  "languages": {
+    "ar": "Tiếng Ả Rập",
+    "de": "Tiếng Đức",
+    "en": "Tiếng Anh",
+    "es": "Tiếng Tây Ban Nha",
+    "fr": "Tiếng Pháp",
+    "hi": "Tiếng Hindi",
+    "nl": "Tiếng Hà Lan",
+    "pt": "Tiếng Bồ Đào Nha",
+    "vi": "Tiếng Việt"
+  },
+  "errors": {
+    "loadFailed": "Lỗi khi tải ngôn ngữ",
+    "noLanguagesFound": "Không tìm thấy ngôn ngữ nào",
+    "tryAdjustingSearch": "Hãy thử điều chỉnh truy vấn tìm kiếm của bạn",
+    "retry": "Thử lại"
+  }
+}

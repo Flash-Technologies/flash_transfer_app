@@ -1,0 +1,36 @@
+{
+  "screen": {
+    "title": "Idioma",
+    "searchPlaceholder": "Pesquisar idioma",
+    "back": "Voltar"
+  },
+  "confirmation": {
+    "title": "Confirmação de mudança de idioma",
+    "message": "Tem certeza de que deseja alterar o idioma para {languageName}? Ficamos felizes em ajudá-lo com isso.",
+    "subtitle": "Isso atualizará toda a interface do aplicativo.",
+    "buttons": {
+      "yes": "Sim, alterar idioma",
+      "no": "Cancelar"
+    },
+    "success": "Idioma alterado com sucesso para {languageName}",
+    "loading": "Aplicando alterações de idioma...",
+    "error": "Falha ao alterar idioma. Tente novamente."
+  },
+  "languages": {
+    "ar": "Árabe",
+    "de": "Alemão",
+    "en": "Inglês",
+    "es": "Espanhol",
+    "fr": "Francês",
+    "hi": "Hindi",
+    "nl": "Holandês",
+    "pt": "Português",
+    "vi": "Vietnamita"
+  },
+  "errors": {
+    "loadFailed": "Erro ao carregar idiomas",
+    "noLanguagesFound": "Nenhum idioma encontrado",
+    "tryAdjustingSearch": "Tente ajustar sua consulta de pesquisa",
+    "retry": "Tentar novamente"
+  }
+}

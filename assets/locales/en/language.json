@@ -1,0 +1,36 @@
+{
+  "screen": {
+    "title": "Language",
+    "searchPlaceholder": "Search Language",
+    "back": "Back"
+  },
+  "confirmation": {
+    "title": "Language Change Confirmation",
+    "message": "Are you sure you want to change the language to {languageName}? We are happy to assist you with that.",
+    "subtitle": "This will update the entire app interface.",
+    "buttons": {
+      "yes": "Yes, Change Language",
+      "no": "Cancel"
+    },
+    "success": "Language changed successfully to {languageName}",
+    "loading": "Applying language changes...",
+    "error": "Failed to change language. Please try again."
+  },
+  "languages": {
+    "ar": "Arabic",
+    "de": "German", 
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French",
+    "hi": "Hindi",
+    "nl": "Dutch",
+    "pt": "Portuguese",
+    "vi": "Vietnamese"
+  },
+  "errors": {
+    "loadFailed": "Error loading languages",
+    "noLanguagesFound": "No languages found",
+    "tryAdjustingSearch": "Try adjusting your search query",
+    "retry": "Retry"
+  }
+}
