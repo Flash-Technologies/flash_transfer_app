@@ -262,8 +262,29 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                               ? Image.network(
                                 user!.profileImage!,
                                 fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  // Handle image load errors
+                                  return const Icon(
+                                    Icons.person,
+                                    size: 40,
+                                    color: Colors.white,
+                                  );
+                                },
+                                loadingBuilder: (
+                                  context,
+                                  child,
+                                  loadingProgress,
+                                ) {
+                                  if (loadingProgress == null) return child;
+                                  return const Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  );
+                                },
                               )
-                              : Icon(
+                              : const Icon(
                                 Icons.person,
                                 size: 40,
                                 color: Colors.white,

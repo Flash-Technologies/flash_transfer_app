@@ -49,7 +49,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     navigatorKey: navigatorKey,
     debugLogDiagnostics: true,
-    initialLocation: '/payment-complete',
+    initialLocation: '/profile',
     redirect: (context, state) {
       final isLoggedIn = ref.read(isLoggedInProvider);
 

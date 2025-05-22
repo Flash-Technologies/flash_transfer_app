@@ -29,6 +29,18 @@ class User {
   final String? state;
   final String? token;
 
+  String get displayName {
+    if (firstName != null && lastName != null) {
+      return '$firstName $lastName';
+    } else if (firstName != null) {
+      return firstName!;
+    } else if (walletAddress != null) {
+      return '${walletAddress!.substring(0, 6)}...${walletAddress!.substring(walletAddress!.length - 4)}';
+    } else {
+      return email.split('@')[0];
+    }
+  }
+
   User({
     this.id,
     required this.email,
@@ -72,14 +84,19 @@ class User {
       loyaltyPoints: json['loyaltyPoints'],
       loyaltyRank: json['loyaltyRank'],
       walletAddress: json['walletAddress'],
-      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
-      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
+      createdAt:
+          json['createdAt'] != null ? DateTime.parse(json['createdAt']) : null,
+      updatedAt:
+          json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
       isAdmin: json['isAdmin'],
       isKycVerified: json['isKycVerified'],
       authMethod: json['authMethod'],
       emailVerified: json['emailVerified'],
       isActive: json['isActive'],
-      lastLoginAt: json['lastLoginAt'] != null ? DateTime.parse(json['lastLoginAt']) : null,
+      lastLoginAt:
+          json['lastLoginAt'] != null
+              ? DateTime.parse(json['lastLoginAt'])
+              : null,
       lastLoginIp: json['lastLoginIp'],
       profileImage: json['profileImage'],
       socialProvider: json['socialProvider'],

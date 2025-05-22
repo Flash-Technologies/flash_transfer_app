@@ -214,7 +214,7 @@ class _ProfileHeaderState extends State<ProfileHeader>
     return Column(
       children: [
         Text(
-          widget.user?.displayName ?? 'User Name',
+          widget.user?.firstName ?? 'User Name',
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.w700,
             letterSpacing: 0.5,
