@@ -1,0 +1,27 @@
+{
+  "title": "Envoyer via",
+  "subtitle": "La maison est derrière, le monde est devant et il y a de nombreux chemins à parcourir à travers les ombres jusqu'au bord.",
+  "subtitle_mobile": "La maison est derrière, le monde est devant et il y a de nombreux chemins à parcourir à travers les ombres jusqu'au bord.",
+  "payment": {
+    "title": "Comment souhaitez-vous payer ?",
+    "methods": {
+      "cash": "Paiement en espèces",
+      "crypto": "Portefeuille crypto",
+      "card": "Carte de crédit",
+      "bank": "Virement bancaire",
+      "mobile": "Mobile Money"
+    }
+  },
+  "receiver": {
+    "title": "Comment votre bénéficiaire souhaite-t-il recevoir l'argent ?",
+    "methods": {
+      "cash": "Paiement en espèces",
+      "crypto": "Portefeuille crypto",
+      "mobile": "Mobile Money"
+    }
+  },
+  "buttons": {
+    "addFromContact": "Ajouter depuis les contacts",
+    "addNew": "Ajouter nouveau"
+  }
+}

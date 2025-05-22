@@ -1,0 +1,27 @@
+{
+  "title": "Gửi qua",
+  "subtitle": "Nhà ở phía sau, thế giới ở phía trước và có nhiều con đường để đi qua bóng tối đến tận cùng.",
+  "subtitle_mobile": "Nhà ở phía sau, thế giới ở phía trước và có nhiều con đường để đi qua bóng tối đến tận cùng.",
+  "payment": {
+    "title": "Bạn muốn thanh toán như thế nào?",
+    "methods": {
+      "cash": "Thanh toán tiền mặt",
+      "crypto": "Ví tiền điện tử",
+      "card": "Thẻ tín dụng",
+      "bank": "Chuyển khoản ngân hàng",
+      "mobile": "Tiền di động"
+    }
+  },
+  "receiver": {
+    "title": "Người nhận muốn nhận tiền như thế nào?",
+    "methods": {
+      "cash": "Thanh toán tiền mặt",
+      "crypto": "Ví tiền điện tử",
+      "mobile": "Tiền di động"
+    }
+  },
+  "buttons": {
+    "addFromContact": "Thêm từ danh bạ",
+    "addNew": "Thêm mới"
+  }
+}

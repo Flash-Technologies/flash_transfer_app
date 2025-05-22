@@ -1,0 +1,102 @@
+{
+  "progressSteps": {
+    "step1": {
+      "label": "Informationen des Empfängers",
+      "description": "Geben Sie die Informationen ein"
+    },
+    "step2": {
+      "label": "Methode des Absenders",
+      "description": "Zahlungsart auswählen"
+    },
+    "step3": {
+      "label": "Methode des Empfängers",
+      "description": "Versandart"
+    },
+    "step4": {
+      "label": "Zahlung erfolgreich.",
+      "description": "Bestätigung"
+    }
+  },
+  "mobileProgress": {
+    "title": "Absenderinformationen",
+    "description": "Alle Informationen eingeben."
+  },
+  "navigation": {
+    "back": "Zurück",
+    "cancel": "Abbrechen"
+  },
+  "header": {
+    "title": "Krypto-Zahlung senden",
+    "description": "Verbinden Sie Ihre Brieftasche und senden Sie Kryptowährungszahlungen sicher an jeden Ort der Welt."
+  },
+  "network": {
+    "label": "Blockchain-Netzwerk auswählen",
+    "required": "*",
+    "select": "Bitte wählen Sie ein Blockchain-Netzwerk aus, um fortzufahren",
+    "security": {
+      "production": "Produktiv-Netzwerk",
+      "test": "Testnetzwerk",
+      "development": "Entwicklung, netzwerk"
+    }
+  },
+  "wallet": {
+    "connect": {
+      "title": "Deine Wallet verbinden",
+      "description": "Verbinden, um mit der Krypto-Zahlung fortzufahren",
+      "button": "Wallet verbinden",
+      "connecting": "Die Verbindung wird hergestellt ...",
+      "scanQR": "Scannen Sie mit Ihrer Wallet-App"
+    },
+    "change": {
+      "title": "Wallet wechseln",
+      "description": "Wechseln Sie bei Bedarf zu einem anderen Wallet",
+      "button": "Wallet wechseln",
+      "changing": "Ändern..."
+    },
+    "connected": {
+      "status": "Verbunden",
+      "active": "Aktiv",
+      "address": "Kopieren",
+      "copied": "Kopiert",
+      "disconnectButton": "Geldbörse trennen",
+      "disconnecting": "Wird getrennt",
+      "changeWallet": "Wallet wechseln"
+    },
+    "balance": {
+      "label": "Saldo:",
+      "loading": "Wird geladen …",
+      "refresh": "Guthaben aktualisieren"
+    }
+  },
+  "actions": {
+    "continue": "Weiter",
+    "loading": "Wird geladen …",
+    "enableText": {
+      "wallet": "Bitte verbinden Sie Ihr Wallet, um fortzufahren",
+      "network": "Bitte wählen Sie ein Blockchain-Netzwerk aus, um fortzufahren",
+      "token": "Bitte wählen Sie ein Token aus, um fortzufahren",
+      "balance": "Ihre Kontodaten werden geladen..."
+    }
+  },
+  "errors": {
+    "noCopy": "Keine Adresse zum Kopieren",
+    "copyFailed": "Adresse konnte nicht kopiert werden",
+    "noWallet": "Bitte verbinden Sie eine Wallet, bevor Sie fortfahren",
+    "noToken": "Bitte wählen Sie eine Bank aus, bevor Sie fortfahren",
+    "noNetwork": "Bitte wählen Sie ein Blockchain-Netzwerk aus, bevor Sie fortfahren",
+    "connectWalletFirst": "Bitte verbinden Sie zuerst die Brieftasche und wählen Sie Token und Netzwerk aus",
+    "connectionTimeout": "Verbindungsversuch abgelaufen. Bitte versuchen Sie es erneut.",
+    "walletSelector": "Wallet-Selektor konnte nicht geöffnet werden",
+    "connectWallet": "Wallet konnte nicht verbunden werden",
+    "disconnectWallet": "Fehler beim Trennen der Wallet"
+  },
+  "success": {
+    "copied": "Adresse in Zwischenablage kopiert",
+    "balanceRefreshed": "Saldo erfolgreich aktualisiert",
+    "disconnected": "Wallet erfolgreich getrennt",
+    "walletSaved": "Wallet-Informationen erfolgreich gespeichert"
+  },
+  "info": {
+    "noBalanceFunction": "getWalletBalance-Funktion nicht verfügbar"
+  }
+}

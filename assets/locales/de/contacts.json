@@ -1,0 +1,12 @@
+{
+  "heading": "Meine Kontakte",
+  "subheading": "Das Zuhause ist zurück, die Welt vor uns und es gibt viele Wege, um durch Schatten bis an den Rand zu gehen.",
+  "loading": "Kontakte werden laden",
+  "noContacts": "Sie haben noch keine Begünstigten",
+  "continue": "Weiter",
+  "addNew": "Hinzufügen",
+  "share": "Teil",
+  "errors": {
+    "fetchFailed": "Kontakte konnten nicht abgerufen werden"
+  }
+}

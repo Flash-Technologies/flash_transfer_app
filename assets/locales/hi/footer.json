@@ -1,0 +1,39 @@
+{
+    "logo": {
+      "alt": "Flash Transfer लोगो"
+    },
+    "company": {
+      "name": "Flash Transfer",
+      "description": "Flash Transfer के साथ आसानी से दुनिया भर में क्रिप्टो भेजें, खरीदें और बेचें।"
+    },
+    "social": {
+      "twitter": "ट्विटर",
+      "facebook": "फेसबुक",
+      "instagram": "इंस्टाग्राम",
+      "youtube": "यूट्यूब",
+      "pinterest": "पिनटेरेस्ट"
+    },
+    "links": {
+      "company": {
+        "title": "कंपनी",
+        "about": "बारे में",
+        "faq": "अक्सर पूछे जाने वाले प्रश्न",
+        "blog": "ब्लॉग",
+        "countries": "देश"
+      },
+      "information": {
+        "title": "जानकारी",
+        "app": "ऐप डाउनलोड करें",
+        "currency": "सभी मुद्राएं",
+        "support": "सहायता",
+        "status": "स्थिति"
+      }
+    },
+    "newsletter": {
+      "title": "अपडेट रहें",
+      "description": "अपडेट के लिए हमारे साप्ताहिक न्यूज़लेटर की सदस्यता लें",
+      "placeholder": "अपना ईमेल दर्ज करें",
+      "button": "साइन अप करें"
+    },
+    "copyright": "कॉपीराइट {{year}} © Flash Technologies. सर्वाधिकार सुरक्षित।"
+  }

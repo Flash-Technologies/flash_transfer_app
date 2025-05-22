@@ -1,0 +1,40 @@
+{
+  "form": {
+    "heading": "Track a {{action}}",
+    "action": "Transfer",
+    "subheading": "Home is behind, the world ahead and there are many paths to tread through shadows to the edge.",
+    "send": "Send",
+    "receive": "Receive",
+    "trackingLabel": "Enter Tracking Number or Transaction ID",
+    "trackingPlaceholder": "Flash Tracking Number (FTN) or Transaction ID",
+    "continue": "Continue",
+    "searching": "Searching..."
+  },
+  "status": {
+    "heading": "Track a {{action}}",
+    "action": "Status",
+    "subheading": "Stay updated on your transfers with real-time status tracking. Know exactly when your transaction is initiated, processed, and completed for complete peace of mind.",
+    "trackingLabel": "Flash Tracking Number (FTN)",
+    "cryptoPurchase": "Crypto Purchase",
+    "amount": "Amount",
+    "totalWithFee": "Total with Fee",
+    "fee": "Fee",
+    "exchangeRate": "Exchange Rate",
+    "timeline": "Transaction Timeline",
+    "blockchainTransaction": "Blockchain Transaction",
+    "trackAnother": "Track Another",
+    "backToHome": "Back to Home",
+    "statuses": {
+      "completed": "COMPLETED",
+      "processing": "PROCESSING",
+      "pending": "PENDING",
+      "failed": "FAILED",
+      "cancelled": "CANCELLED"
+    }
+  },
+  "errors": {
+    "fetchFailed": "Failed to fetch transaction. Please check the ID and try again.",
+    "emptyTracking": "Please enter a tracking number",
+    "invalidTracking": "Enter a valid tracking ID or tracking number"
+  }
+}

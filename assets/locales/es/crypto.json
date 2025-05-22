@@ -1,0 +1,45 @@
+{
+  "page": {
+    "heading": "Confirmar la dirección de la criptomoneda",
+    "subheading": "¿Cómo quieres que te entreguen el dinero?"
+  },
+  "form": {
+    "addressLabel": "Introduzca la dirección criptográfica de una cadena EVM:",
+    "addressSubLabel": "(ETH, Polígono, Base, Arbitrum, Optimismo ...)",
+    "addressPlaceholder": "0x",
+    "cryptoLabel": "Cripto seleccionada",
+    "cryptoPlaceholder": "USDT",
+    "blockchainLabel": "Selecciona la cadena de bloques",
+    "cancelButton": "Cancelar",
+    "continueButton": "Continuar",
+    "validatingButton": "Validando...."
+  },
+  "validation": {
+    "invalidFormat": "Formato de dirección no válido para la red seleccionada. Compruébalo e inténtalo de nuevo.",
+    "selectNetwork": "Por favor, seleccione una red blockchain",
+    "enterValidAddress": "Introduce una dirección de monedero válida para la red seleccionada",
+    "validatingAddress": "Validando dirección antes de continuar...",
+    "waitValidating": "Por favor, espere mientras validamos su dirección...",
+    "networkError": "Error de red al validar la dirección",
+    "failed": "No se ha podido validar la dirección",
+    "invalidForNetwork": "Invalid address format for {{networkName}}"
+  },
+  "steps": {
+    "receiverInfo": {
+      "label": "Información del destinatario",
+      "description": "Introduzca la información"
+    },
+    "receiverMethod": {
+      "label": "Método del receptor",
+      "description": "Introduzca la información"
+    },
+    "reviewDetails": {
+      "label": "Detalles de la reseña",
+      "description": "Introduzca la información"
+    },
+    "paymentComplete": {
+      "label": "Pago completo",
+      "description": "Introduzca la información"
+    }
+  }
+}

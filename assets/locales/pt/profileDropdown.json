@@ -1,0 +1,18 @@
+{
+  "profile": {
+    "imageAlt": "Perfil",
+    "defaultUserName": "Usuário"
+  },
+  "menu": {
+    "myProfile": "Meu perfil",
+    "myTransaction": "Minhas transações",
+    "myRecipients": "Meus destinatários",
+    "trackTransfer": "Rastrear transferência",
+    "nft": "NFT",
+    "myRank": "Minha classificação",
+    "myCards": "Meus cartões",
+    "referFriend": "Indicar um amigo",
+    "settings": "Configurações",
+    "logout": "Sair"
+  }
+}

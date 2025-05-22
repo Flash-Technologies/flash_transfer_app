@@ -1,0 +1,21 @@
+{
+  "navbar": {
+    "send": "Enviar",
+    "findLocation": "Encontrar local",
+    "trackOrder": "Rastrear transferência",
+    "help": "Ajuda",
+    "login": "Login",
+    "signup": "Cadastre-se",
+    "profile": "Perfil",
+    "language": "Idioma",
+    "wallet": "Carteira",
+    "nfts": "NFTs",
+    "notifications": "Notificações",
+    "logout": "Sair",
+    "logoAlt": "Logo Flash Transfer",
+    "currencyAlt": "Ícone de moeda",
+    "profilePicture": "Foto do perfil",
+    "languageSelector": "Seletor de idioma",
+    "toggleMenu": "Alternar menu"
+  }
+}

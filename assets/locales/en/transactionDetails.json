@@ -1,0 +1,87 @@
+{
+    "page": {
+      "title": "Transaction Details",
+      "subtitle": "View the complete details of your transaction",
+      "loading": "Loading transaction details..."
+    },
+    "tracking": {
+      "label": "Flash Tracking Number (FTN)",
+      "copied": "Copied!"
+    },
+    "transaction": {
+      "title": "Transaction Details",
+      "info": {
+        "title": "Transaction Information",
+        "type": "Type",
+        "created": "Created",
+        "completed": "Completed",
+        "orderId": "Order ID",
+        "statusDetail": "Status Detail"
+      },
+      "types": {
+        "CASH_TO_CRYPTO": "Cash to Crypto",
+        "CRYPTO_TO_CASH": "Crypto to Cash",
+        "MOBILE_TO_CRYPTO": "Mobile Money to Crypto",
+        "CASH_TO_MOBILE": "Cash to Mobile Money"
+      }
+    },
+    "payment": {
+      "title": "Payment Details",
+      "amount": "Amount",
+      "fee": "Fee",
+      "totalWithFee": "Total with Fee",
+      "exchangeRate": "Exchange Rate",
+      "feeBreakdown": {
+        "title": "Fee Breakdown",
+        "gasFee": "Gas Fee",
+        "baseFee": "Base Fee",
+        "providerFee": "Provider Fee",
+        "discounts": "Discounts"
+      }
+    },
+    "user": {
+      "title": "User Information",
+      "name": "Name",
+      "email": "Email",
+      "loyaltyRank": "Loyalty Rank",
+      "loyaltyPoints": "Loyalty Points",
+      "points": "pts"
+    },
+    "source": {
+      "title": "Source Information",
+      "type": "Type",
+      "currency": "Currency",
+      "country": "Country",
+      "phoneNumber": "Phone Number",
+      "paymentMethod": "Payment Method"
+    },
+    "destination": {
+      "title": "Destination Information",
+      "type": "Type",
+      "currency": "Currency",
+      "walletAddress": "Wallet Address",
+      "network": "Network"
+    },
+    "blockchain": {
+      "title": "Blockchain Information",
+      "txHash": "Transaction Hash",
+      "network": "Network"
+    },
+    "timeline": {
+      "title": "Transaction Timeline"
+    },
+    "buttons": {
+      "trackAnother": "Track Another",
+      "backToHome": "Back to Home"
+    },
+    "errors": {
+      "notFound": "Failed to fetch transaction. Please check the tracking number and try again."
+    },
+    "status": {
+      "completed": "COMPLETED",
+      "processing": "PROCESSING",
+      "pending": "PENDING",
+      "failed": "FAILED",
+      "cancelled": "CANCELLED"
+    }
+  }

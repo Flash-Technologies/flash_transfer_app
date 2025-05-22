@@ -1,0 +1,27 @@
+{
+    "progress": {
+      "receiverInfo": "Receiver's info",
+      "receiverMethod": "Receiver's Method",
+      "reviewDetails": "Review Details",
+      "paymentComplete": "Payment Complete",
+      "enterInfo": "Enter the informations"
+    },
+    "headingTitle": "Receiver's info",
+    "headingDescription": "You can see all the details of your transaction, check that you have made no mistake if necessary you can modify information on this page.",
+    "benefitButton": "i'm the benefit",
+    "form": {
+      "sendingCountry": "Sending country - Currency",
+      "countryPlaceholder": "Choose your currency eg. USD , ETH",
+      "beneficiaryReceives": "The beneficiary receives",
+      "beneficiaryPlaceholder": "Enter your beneficiary receives",
+      "amountSent": "Amount sent",
+      "amountPlaceholder": "Enter your amount",
+      "cancel": "Cancel",
+      "continue": "Continue"
+    },
+    "contacts": {
+      "title": "Already added",
+      "searchPlaceholder": "Search",
+      "transferAgain": "Transfer again"
+    }
+  }

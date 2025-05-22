@@ -1,0 +1,46 @@
+{
+  "hero": {
+    "title": "مواقع مقراتنا الرئيسية",
+    "subtitle": "اعثر على مقرات ومراكز خدمة Flash Transfer القريبة منك"
+  },
+  "search": {
+    "title": "البحث عن المقرات الرئيسية",
+    "globalLocations": "المواقع العالمية",
+    "placeholder": "البحث بالاسم أو المدينة أو الدولة"
+  },
+  "map": {
+    "mapView": "خريطة",
+    "satelliteView": "قمر صناعي"
+  },
+  "location": {
+    "services": "الخدمات",
+    "hours": "الساعات",
+    "phone": "الهاتف",
+    "hoursUnavailable": "الساعات غير متوفرة"
+  },
+  "locations": {
+    "noLocations": "لم يتم العثور على مواقع.",
+    "tryDifferentSearch": "جرب مصطلح بحث مختلف."
+  },
+  "buttons": {
+    "search": "بحث",
+    "tryAgain": "حاول مرة أخرى",
+    "share": "مشاركة",
+    "directions": "الاتجاهات"
+  },
+  "pagination": {
+    "previous": "السابق",
+    "next": "التالي",
+    "pageInfo": "الصفحة {{current}} من {{total}}"
+  },
+  "error": {
+    "statusError": "خطأ",
+    "fetchFailed": "فشل في جلب بيانات الموقع",
+    "fetchingData": "خطأ في جلب البيانات",
+    "fetchingHeadquarters": "خطأ في جلب المقرات الرئيسية",
+    "shareFailed": "فشلت المشاركة"
+  },
+  "alert": {
+    "copiedToClipboard": "تم نسخ تفاصيل الموقع إلى الحافظة!"
+  }
+}

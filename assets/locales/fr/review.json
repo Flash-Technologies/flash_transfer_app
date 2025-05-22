@@ -1,0 +1,88 @@
+{
+  "progress": {
+    "receiverInfo": {
+      "label": "Infos du destinataire",
+      "description": "Entrez les informations"
+    },
+    "receiverMethod": {
+      "label": "Méthode du destinataire",
+      "description": "Entrez les informations"
+    },
+    "reviewDetails": {
+      "label": "Vérifier les détails",
+      "description": "Entrez les informations"
+    },
+    "paymentComplete": {
+      "label": "Paiement terminé",
+      "description": "Entrez les informations"
+    }
+  },
+  "header": {
+    "title": "Vérifier les détails",
+    "subheading": "Vérifiez le résumé de votre commande avant de valider."
+  },
+  "buttons": {
+    "cancel": "Annuler",
+    "processing": "Traitement en cours...",
+    "confirm": "Confirmer",
+    "calculating": "Calcul en cours...",
+    "edit": "Modifier"
+  },
+  "sections": {
+    "amount": {
+      "title": "Montant",
+      "editAmount": "Modifier le montant"
+    },
+    "transferSummary": {
+      "title": "Résumé du transfert",
+      "updating": "Mise à jour...",
+      "amountToSend": "Montant à envoyer",
+      "transferFee": "Frais de transfert",
+      "feeWaived": "Frais annulés",
+      "totalCost": "Coût total",
+      "totalToRecipient": "Total au destinataire",
+      "exchangeRate": "Taux de change",
+      "networkCongestion": "Congestion du réseau",
+      "congestionLow": "Faible",
+      "congestionMedium": "Moyenne",
+      "congestionHigh": "Élevée",
+      "totalToPay": "Total à payer",
+      "recipientGets": "Le destinataire reçoit",
+      "availability": "Disponibilité",
+      "transactionUnavailable": "Transaction indisponible pour le moment"
+    },
+    "senderDetails": {
+      "title": "Détails de l'expéditeur",
+      "kyc": "KYC",
+      "mobileProvider": "Opérateur mobile",
+      "phoneNumber": "Numéro de téléphone",
+      "sourceOfFunds": "Source des fonds",
+      "purposeOfTransaction": "Objet de la transaction"
+    },
+    "receiverDetails": {
+      "title": "Détails du destinataire",
+      "walletAddress": "Adresse du portefeuille",
+      "blockchainNetwork": "Réseau blockchain",
+      "mobileNumber": "Numéro mobile",
+      "mobileProvider": "Opérateur mobile",
+      "receiverCountry": "Pays du destinataire",
+      "youSent": "Vous avez envoyé",
+      "transferRate": "Taux de transfert",
+      "fee": "Frais"
+    }
+  },
+  "paymentMethods": {
+    "bankTransfer": "Virement bancaire",
+    "creditCard": "Carte de crédit",
+    "cash": "Espèces",
+    "mobileMoney": "Mobile Money",
+    "wallet": "Portefeuille",
+    "cashPickup": "Retrait en espèces",
+    "cryptoWallet": "Portefeuille {{currency}}"
+  },
+  "errors": {
+    "somethingWentWrong": "Une erreur s'est produite",
+    "networkError": "Erreur réseau: Impossible d'estimer la transaction",
+    "transactionFailed": "La transaction a échoué"
+  }
+}

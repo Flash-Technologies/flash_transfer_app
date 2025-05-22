@@ -1,0 +1,155 @@
+{
+  "landing": {
+    "title": "Gửi, mua hoặc bán tiền điện tử toàn cầu với Flash Transfer",
+    "subtitle": "Quy đổi tiền điện tử của bạn lấy tiền mặt hoặc mua tiền điện tử bằng tiền mặt từ các đối tác được chấp thuận của chúng tôi. Bạn cũng có thể gửi tiền điện tử của mình đổi lấy tiền pháp định trên toàn thế giới bằng ví không ký gửi của bạn (Flash wallet, Metamask, Phantom...)",
+    "tutorial": "Hướng dẫn",
+    "trustpilot": "Trustpilot",
+    "send": "Gửi",
+    "receive": "Nhận",
+    "amountSend": "Số tiền gửi",
+    "receiveAmount": "Số tiền nhận",
+    "loadingExchangeRate": "Đang tải tỷ giá hối đoái...",
+    "exchangeRate": "Tỷ giá hối đoái",
+    "fee": "Phí",
+    "transferTime": "Thời gian chuyển",
+    "networkCongestion": "Tắc nghẽn mạng",
+    "totalToPay": "Tổng số phải trả",
+    "recipientGets": "Người nhận được",
+    "continue": "Tiếp tục",
+    "cancel": "Hủy",
+    "noFee": "Không phí",
+    "networkStatus": {
+      "unknown": "Không xác định",
+      "low": "Thấp",
+      "medium": "Trung bình",
+      "high": "Cao"
+    }
+  },
+  "currencySelector": {
+    "walletConnected": "Đã kết nối"
+  },
+  "partners": {
+    "title": "Chọn từ các đối tác đáng tin cậy của chúng tôi",
+    "subtitle": "Chúng tôi đảm bảo tiền của bạn được gửi nhanh chóng và dễ dàng.",
+    "subtitle2": "Chọn các loại thanh toán từ mạng lưới của chúng tôi: điểm thu tiền mặt, tiền di động và chuyển khoản ngân hàng."
+  },
+  "exchangeStats": {
+    "title": "Trao đổi Fiat và Tiền điện tử Toàn cầu trong tầm tay",
+    "title2": "Fiat và Tiền điện tử Toàn cầu",
+    "title3": "Trao đổi trong tầm tay",
+    "subtitle": "Trao đổi tiền điện tử và tiền pháp định yêu thích của bạn một cách liền mạch với giao dịch nhanh, phí thấp và hỗ trợ 24/7.",
+    "cryptocurrencies": {
+      "value": "20",
+      "title2": "Tiền điện tử phổ biến",
+      "title3": "có sẵn!",
+      "title": "Tiền điện tử phổ biến có sẵn!",
+      "description": "Bạn có thể trao đổi tiền điện tử của mình: BTC, ETH, FLASH, USDC, USDT, DAI, BNB, POL, SOL, AVAX, CRO, SUI và nhiều hơn nữa."
+    },
+    "fiatCurrencies": {
+      "value": "200+",
+      "title": "Hỗ trợ Tiền tệ Fiat",
+      "description": "Chúng tôi hỗ trợ tất cả các loại tiền Fiat trên thế giới!"
+    },
+    "activeUsers": {
+      "value": "5k",
+      "title": "Người dùng Hoạt động",
+      "description": "Người dùng của chúng tôi hài lòng với tốc độ, phí thấp và hỗ trợ!"
+    },
+    "fastExchange": "Trao đổi Nhanh chóng, An toàn"
+  },
+  "whyChooseUs": {
+    "title": "Tại sao Chọn Chúng tôi",
+    "subtitle": "Gửi & Nhận tiền đến người thân của bạn chỉ trong vài phút với tỷ giá tốt và phí thấp.",
+    "subtitle2": "Hơn 40 quốc gia và hơn 36 loại tiền tệ được hỗ trợ.",
+    "features": {
+      "fastTransaction": {
+        "title": "Giao dịch Nhanh",
+        "description": "Giao dịch diễn ra tức thì với tiền điện tử trong vài giây."
+      },
+      "security": {
+        "title": "Bảo mật",
+        "description": "Blockchain là không thể giả mạo, minh bạch và an toàn."
+      },
+      "easyTransfer": {
+        "title": "Chuyển tiền Dễ dàng",
+        "description": "Gửi tiền và dễ dàng chuyển đổi tiền điện tử của bạn thành tiền mặt và ngược lại."
+      }
+    }
+  },
+  "moneyTransfers": {
+    "title": "Chuyển Tiền Nhanh, An toàn",
+    "subtitle": "Trao đổi tiền điện tử và tiền pháp định yêu thích của bạn một cách liền mạch với giao dịch nhanh, phí thấp và hỗ trợ 24/7.",
+    "features": {
+      "decentralized": {
+        "title": "100% Phi tập trung",
+        "description": "Giữ quyền kiểm soát khóa riêng của bạn, gửi tiền điện tử của bạn, hoặc kết nối ví của bạn thông qua WalletConnect."
+      },
+      "convertFiatCrypto": {
+        "title": "Chuyển đổi Fiat & Crypto",
+        "description": "Chuyển đổi liền mạch giữa fiat và crypto với hơn 36 loại tiền tệ khả dụng."
+      }
+    }
+  },
+  "howItWorks": {
+    "title": "Chỉ vài bước để bắt đầu",
+    "subtitle": "Nó dễ dàng hơn bạn nghĩ. Thực hiện 3 bước đơn giản nhất",
+    "steps": {
+      "register": {
+        "title": "Đăng ký miễn phí",
+        "description": "Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis."
+      },
+      "sendCrypto": {
+        "title": "Gửi tiền điện tử của bạn",
+        "description": "Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis."
+      },
+      "withdrawCash": {
+        "title": "Đi rút tiền mặt của bạn",
+        "description": "Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis."
+      }
+    }
+  },
+  "appPromotion": {
+    "title": "Cách Nhanh nhất & An toàn nhất",
+    "title2": "để Gửi Crypto sang",
+    "title3": "Fiat Toàn cầu",
+    "subtitle": "Gửi crypto sang fiat toàn cầu với tốc độ, bảo mật và phí thấp không đối thủ.",
+    "appleStore": "Apple Store",
+    "playStore": "Play Store"
+  },
+  "faq": {
+    "title": "Câu hỏi thường gặp",
+    "subtitle": "Tìm câu trả lời cho các thắc mắc phổ biến và nhận hỗ trợ bạn cần trong",
+    "subtitle2": "phần Câu hỏi Thường gặp của chúng tôi.",
+    "questions": [
+      {
+        "title": "Làm thế nào để gửi tiền điện tử đến Flash Transfer?",
+        "content": "Để gửi tiền điện tử đến Flash Transfer, chỉ cần đăng nhập vào tài khoản Flash Transfer của bạn, chọn loại tiền điện tử mong muốn, nhập số tiền và gửi trực tiếp đến địa chỉ được cung cấp bởi nền tảng của chúng tôi. Flash Transfer sẽ chuyển đổi ngay lập tức tiền điện tử của bạn thành stablecoin để tránh biến động giá."
+      },
+      {
+        "title": "Dịch vụ Flash Transfer có thể được sử dụng ở đâu?",
+        "content": "Flash Transfer có thể được sử dụng tại hơn một triệu địa điểm đối tác trên khắp châu Âu, châu Phi và châu Á. Người thụ hưởng có thể thuận tiện nhận tiền mặt hoặc nạp tiền trực tiếp vào tài khoản tiền di động của họ thông qua các đối tác này."
+      },
+      {
+        "title": "Flash Transfer hoạt động ở quốc gia nào/bao nhiêu quốc gia?",
+        "content": "Flash Transfer hoạt động rộng rãi trên khắp châu Âu, châu Phi và châu Á, bao phủ một mạng lưới rộng lớn các quốc gia. Phạm vi hoạt động của chúng tôi tiếp tục mở rộng khi chúng tôi hợp tác với nhiều nhà cung cấp thanh toán địa phương hơn."
+      },
+      {
+        "title": "Làm thế nào để chuyển đổi tiền điện tử của bạn sang fiat?",
+        "content": "Để chuyển đổi tiền điện tử của bạn sang fiat, đăng nhập vào tài khoản Flash Transfer, chọn tùy chọn \"Crypto sang Fiat\", nhập số lượng tiền điện tử bạn muốn chuyển đổi và chọn phương thức thanh toán ưa thích cùng đối tác địa phương (Orange Money, MTN, Wave, v.v.). Tiền điện tử của bạn sẽ được chuyển đổi ngay lập tức sang tiền pháp định và có sẵn tại địa điểm bạn chọn."
+      },
+      {
+        "title": "Làm thế nào để gửi tiền điện tử để người nhận nhận được tiền mặt?",
+        "content": "Để gửi tiền điện tử cho người nhận tiền mặt, chỉ cần chọn tùy chọn \"Crypto sang Tiền mặt\" trong bảng điều khiển Flash Transfer của bạn. Nhập thông tin chi tiết của người nhận, chọn địa điểm đối tác và đối tác thanh toán địa phương (Orange Money, MTN, Wave, v.v.) nơi họ có thể nhận tiền mặt, và gửi tiền điện tử của bạn. Người nhận có thể ngay lập tức rút số tiền mặt tương đương tại địa điểm đối tác đã chọn."
+      },
+      {
+        "title": "Phí giao dịch",
+        "content": "Flash Transfer tính phí rõ ràng, minh bạch là 2% mỗi giao dịch, cộng với bất kỳ phí nào từ nhà cung cấp thanh toán địa phương. Tất cả các phí đều được hiển thị trước khi bạn xác nhận giao dịch."
+      }
+    ]
+  },
+  "common": {
+    "walletConnection": {
+      "connected": "Đã kết nối"
+    }
+  }
+}

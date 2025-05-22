@@ -1,0 +1,16 @@
+{
+  "title": "Encontrar locais",
+  "subtitle": "O lar está atrás, o mundo à frente e há muitos caminhos a percorrer através das sombras até a extremidade.",
+  "addressRequired": "Para continuar, por favor insira o endereço.",
+  "sendFrom": "Enviar de",
+  "countryPlaceholder": "EUA",
+  "enterZipCode": "Digite o CEP",
+  "addressPlaceholder": "Endereço/Estado ou CEP",
+  "useCurrentLocation": "Usar localização atual",
+  "whatAreYouTryingToDo": "O que você está tentando fazer?",
+  "sendMoney": "Enviar dinheiro",
+  "receiveMoney": "Receber dinheiro",
+  "continue": "Continuar",
+  "visitUs": "Visite-nos",
+  "visitUsSubtitle": "O lar está atrás, o mundo à frente e há muitos caminhos a percorrer através das sombras até a extremidade."
+}

@@ -1,0 +1,155 @@
+{
+  "landing": {
+    "title": "Envie, compre ou venda criptomoedas globalmente com Flash Transfer",
+    "subtitle": "Troque sua criptomoeda por dinheiro ou compre criptomoeda com dinheiro dos nossos parceiros aprovados. Você também pode enviar sua criptomoeda para fiat em todo o mundo usando sua carteira não-custodial (Flash wallet, Metamask, Phantom...)",
+    "tutorial": "Tutorial",
+    "trustpilot": "Trustpilot",
+    "send": "Enviar",
+    "receive": "Receber",
+    "amountSend": "Valor a enviar",
+    "receiveAmount": "Valor a receber",
+    "loadingExchangeRate": "Carregando taxa de câmbio...",
+    "exchangeRate": "Taxa de câmbio",
+    "fee": "Taxa",
+    "transferTime": "Tempo de transferência",
+    "networkCongestion": "Congestionamento da rede",
+    "totalToPay": "Total a pagar",
+    "recipientGets": "Destinatário recebe",
+    "continue": "Continuar",
+    "cancel": "Cancelar",
+    "noFee": "Sem taxa",
+    "networkStatus": {
+      "unknown": "Desconhecido",
+      "low": "Baixo",
+      "medium": "Médio",
+      "high": "Alto"
+    }
+  },
+  "currencySelector": {
+    "walletConnected": "Conectado"
+  },
+  "partners": {
+    "title": "Escolha entre nossos parceiros confiáveis",
+    "subtitle": "Garantimos que seu dinheiro seja entregue de forma rápida e fácil.",
+    "subtitle2": "Escolha tipos de pagamento da nossa rede: pontos de coleta em dinheiro, dinheiro móvel e transferência bancária."
+  },
+  "exchangeStats": {
+    "title": "Câmbio Global de Fiat e Cripto ao seu alcance",
+    "title2": "Fiat e Cripto Global",
+    "title3": "Câmbio ao seu alcance",
+    "subtitle": "Troque suas criptomoedas e moedas fiat favoritas perfeitamente com transações rápidas, taxas baixas e suporte 24/7.",
+    "cryptocurrencies": {
+      "value": "20",
+      "title2": "Criptomoedas populares",
+      "title3": "disponíveis!",
+      "title": "Criptomoedas populares disponíveis!",
+      "description": "Você pode trocar suas criptomoedas: BTC, ETH, FLASH, USDC, USDT, DAI, BNB, POL, SOL, AVAX, CRO, SUI e mais."
+    },
+    "fiatCurrencies": {
+      "value": "200+",
+      "title": "Suporte a Moedas Fiat",
+      "description": "Suportamos todas as moedas Fiat do mundo!"
+    },
+    "activeUsers": {
+      "value": "5k",
+      "title": "Usuários Ativos",
+      "description": "Nossos usuários estão satisfeitos com a velocidade, baixas taxas e suporte!"
+    },
+    "fastExchange": "Câmbio Rápido e Seguro"
+  },
+  "whyChooseUs": {
+    "title": "Por que nos escolher",
+    "subtitle": "Envie e receba dinheiro para seus entes queridos em minutos com ótimas taxas e baixos custos.",
+    "subtitle2": "Mais de 40 países e +36 moedas suportadas.",
+    "features": {
+      "fastTransaction": {
+        "title": "Transação Rápida",
+        "description": "A transação é instantânea com criptomoeda em segundos."
+      },
+      "security": {
+        "title": "Segurança",
+        "description": "O blockchain é à prova de adulteração, transparente e seguro."
+      },
+      "easyTransfer": {
+        "title": "Transferência Fácil",
+        "description": "Envie dinheiro e converta facilmente sua criptomoeda em dinheiro e vice-versa."
+      }
+    }
+  },
+  "moneyTransfers": {
+    "title": "Transferências de Dinheiro Rápidas e Seguras",
+    "subtitle": "Troque suas criptomoedas e moedas fiat favoritas perfeitamente com transações rápidas, taxas baixas e suporte 24/7.",
+    "features": {
+      "decentralized": {
+        "title": "100% Descentralizado",
+        "description": "Mantenha o controle de suas chaves privadas, envie suas criptomoedas ou conecte sua carteira via WalletConnect."
+      },
+      "convertFiatCrypto": {
+        "title": "Converter Fiat e Cripto",
+        "description": "Converta entre fiat e cripto perfeitamente com +36 moedas disponíveis."
+      }
+    }
+  },
+  "howItWorks": {
+    "title": "Apenas alguns passos para começar",
+    "subtitle": "É mais fácil do que você pensa. Siga 3 passos simples",
+    "steps": {
+      "register": {
+        "title": "Registre-se gratuitamente",
+        "description": "Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis."
+      },
+      "sendCrypto": {
+        "title": "Envie sua cripto",
+        "description": "Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis."
+      },
+      "withdrawCash": {
+        "title": "Vá sacar seu dinheiro",
+        "description": "Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis."
+      }
+    }
+  },
+  "appPromotion": {
+    "title": "A Maneira Mais Rápida e Segura",
+    "title2": "de Enviar Cripto para",
+    "title3": "Fiat Globalmente",
+    "subtitle": "Envie cripto para fiat globalmente com velocidade, segurança e taxas baixas incomparáveis.",
+    "appleStore": "Apple Store",
+    "playStore": "Play Store"
+  },
+  "faq": {
+    "title": "Perguntas frequentes",
+    "subtitle": "Encontre respostas para perguntas comuns e obtenha o suporte que você precisa em",
+    "subtitle2": "nossa seção de Perguntas Frequentes.",
+    "questions": [
+      {
+        "title": "Como enviar cripto para Flash Transfer?",
+        "content": "Para enviar cripto para Flash Transfer, basta fazer login na sua conta Flash Transfer, selecionar a criptomoeda desejada, especificar o valor e enviá-la diretamente para o endereço fornecido pela nossa plataforma. Flash Transfer converte instantaneamente sua criptomoeda em stablecoins para evitar flutuações de preço."
+      },
+      {
+        "title": "Onde o serviço Flash Transfer pode ser usado?",
+        "content": "Flash Transfer pode ser usado em mais de um milhão de locais de comerciantes parceiros em toda a Europa, África e Ásia. Os beneficiários podem coletar dinheiro convenientemente ou depositar fundos diretamente em suas contas de dinheiro móvel através desses comerciantes."
+      },
+      {
+        "title": "Em quais/quantos países a Flash Transfer opera?",
+        "content": "Flash Transfer opera extensivamente em toda a Europa, África e Ásia, cobrindo uma ampla rede de países. Nosso alcance continua a expandir à medida que fazemos parceria com mais provedores de pagamento locais."
+      },
+      {
+        "title": "Como converter sua criptomoeda para fiat?",
+        "content": "Para converter sua cripto para fiat, faça login na sua conta Flash Transfer, selecione a opção \"Cripto para Fiat\", especifique o valor de criptomoeda que deseja converter e escolha seu método de pagamento preferido e parceiro local (Orange Money, MTN, Wave, etc.). Sua cripto é instantaneamente convertida em moeda fiat e disponível no local escolhido."
+      },
+      {
+        "title": "Como enviar criptomoeda para que o beneficiário a receba em dinheiro?",
+        "content": "Para enviar criptomoeda para retirada em dinheiro, simplesmente escolha a opção \"Cripto para Dinheiro\" no seu painel Flash Transfer. Digite os detalhes do destinatário, selecione um local de comerciante parceiro e parceiro de pagamento local (Orange Money, MTN, Wave, etc.) onde eles podem coletar o dinheiro, e envie sua cripto. O destinatário pode imediatamente retirar o valor equivalente em dinheiro no local parceiro escolhido."
+      },
+      {
+        "title": "Taxas de transação",
+        "content": "Flash Transfer cobra uma taxa clara e transparente de 2% por transação, mais quaisquer taxas do provedor de pagamento local. Todas as taxas são exibidas antecipadamente antes de você confirmar sua transação."
+      }
+    ]
+  },
+  "common": {
+    "walletConnection": {
+      "connected": "Conectado"
+    }
+  }
+}

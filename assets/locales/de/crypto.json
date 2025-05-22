@@ -1,0 +1,45 @@
+{
+  "page": {
+    "heading": "Krypto-Adresse bestätigen",
+    "subheading": "Wie soll das Geld geliefert werden?"
+  },
+  "form": {
+    "addressLabel": "Geben Sie die Krypto-Adresse einer EVM-Kette ein:",
+    "addressSubLabel": "(ETH, Polygon, Basis, Arbitrum, Optimismus …)",
+    "addressPlaceholder": "0x",
+    "cryptoLabel": "Ausgewählte Krypto",
+    "cryptoPlaceholder": "USDT",
+    "blockchainLabel": "Wählen Sie die Blockchain",
+    "cancelButton": "Abbrechen",
+    "continueButton": "Weiter",
+    "validatingButton": "Wird validiert ..."
+  },
+  "validation": {
+    "invalidFormat": "Ungültiges Adressformat für das ausgewählte Netzwerk. Bitte überprüfen und erneut versuchen.",
+    "selectNetwork": "Bitte wählen Sie ein Blockchain-Netzwerk aus",
+    "enterValidAddress": "Bitte geben Sie eine gültige Wallet-Adresse für das ausgewählte Netzwerk ein",
+    "validatingAddress": "Adresse wird validiert, bevor Sie fortfahren...",
+    "waitValidating": "Bitte warten Sie, während wir Ihre Adresse validieren...",
+    "networkError": "Netzwerkfehler beim Validieren der Adresse",
+    "failed": "Adresse konnte nicht validiert werden",
+    "invalidForNetwork": "Invalid address format for {{networkName}}"
+  },
+  "steps": {
+    "receiverInfo": {
+      "label": "Informationen des Empfängers",
+      "description": "Geben Sie die Informationen ein"
+    },
+    "receiverMethod": {
+      "label": "Methode des Empfängers",
+      "description": "Geben Sie die Informationen ein"
+    },
+    "reviewDetails": {
+      "label": "Bewertungsdetails",
+      "description": "Geben Sie die Informationen ein"
+    },
+    "paymentComplete": {
+      "label": "Zahlung erfolgreich.",
+      "description": "Geben Sie die Informationen ein"
+    }
+  }
+}

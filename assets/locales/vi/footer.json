@@ -1,0 +1,39 @@
+{
+  "logo": {
+    "alt": "Logo Flash Transfer"
+  },
+  "company": {
+    "name": "Flash Transfer",
+    "description": "Dễ dàng gửi, mua và bán tiền điện tử trên toàn thế giới với Flash Transfer."
+  },
+  "social": {
+    "twitter": "Twitter",
+    "facebook": "Facebook",
+    "instagram": "Instagram",
+    "youtube": "YouTube",
+    "pinterest": "Pinterest"
+  },
+  "links": {
+    "company": {
+      "title": "Công ty",
+      "about": "Giới thiệu",
+      "faq": "FAQ",
+      "blog": "Blog",
+      "countries": "Quốc gia"
+    },
+    "information": {
+      "title": "Thông tin",
+      "app": "Tải ứng dụng",
+      "currency": "Tất cả tiền tệ",
+      "support": "Hỗ trợ",
+      "status": "Trạng thái"
+    }
+  },
+  "newsletter": {
+    "title": "Cập nhật thông tin",
+    "description": "Đăng ký nhận bản tin hàng tuần để cập nhật",
+    "placeholder": "Nhập email của bạn",
+    "button": "Đăng ký"
+  },
+  "copyright": "Bản quyền {{year}} © Flash Technologies. Tất cả các quyền được bảo lưu."
+}

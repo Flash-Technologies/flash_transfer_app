@@ -1,0 +1,87 @@
+{
+  "loading": {
+    "transactionDetails": "Transactiegegevens worden geladen..."
+  },
+  "error": {
+    "title": "Transactiefout",
+    "failedToLoad": "Kan transactiegegevens niet laden"
+  },
+  "navigation": {
+    "backToHome": "Terug",
+    "trackOrder": "Volg bestelling"
+  },
+  "payment": {
+    "status": "Status",
+    "youSent": "Je hebt verzonden",
+    "transferRate": "Overdrachtssnelheid",
+    "fee": "Toeslag",
+    "transactionType": "Transactietype",
+    "createdOn": "Aangemaakt op",
+    "receivedAmount": "Ontvangen bedrag",
+    "totalToPay": "Totaal te betalen"
+  },
+  "wallet": {
+    "connected": "{{walletName}} wallet connected",
+    "connectToPayment": "Connect {{walletType}} wallet to proceed with payment",
+    "transactionSubmitted": "TRANSACTIE INGEDIEND",
+    "hash": "Hash: {{txHash}}",
+    "trackingNumber": "Tracking number: {{trackingNumber}}"
+  },
+  "paymentInstructions": {
+    "title": "Betaalinstructies",
+    "sendPayment": "Stuur de volgende betaling vanuit uw portemonnee:",
+    "recipientAddress": "Adres van ontvanger:",
+    "amount": "Bedrag:",
+    "network": "Netwerk:",
+    "reference": "Referentie:"
+  },
+  "connectedWallet": {
+    "title": "Gekoppelde portemonnee",
+    "wallet": "Wallet",
+    "address": "Adres:",
+    "network": "Netwerk:"
+  },
+  "transactionInstructions": {
+    "title": "Transactie-instructies",
+    "initiateTransfer": "Click on the \"Pay Now\" button below to initiate a transfer from your {{walletName}}.",
+    "connectWallet": "Connect your {{walletType}} wallet by clicking the \"Connect Wallet\" button below.",
+    "approveTransaction": "Keur de transactie in uw portemonnee goed wanneer daarom wordt gevraagd.",
+    "paymentProcessing": "De betaling wordt verwerkt zodra de blockchain-bevestiging is ontvangen.",
+    "recipientReceiveFunds": "De ontvanger ontvangt het geld via mobiel geld zodra het is verwerkt.",
+    "transactionProcessing": "Uw transactie wordt verwerkt.",
+    "keepTrackingNumber": "Bewaar je trackingnummer ter referentie.",
+    "notifyComplete": "You will be notified once the transaction is complete."
+  },
+  "buttons": {
+    "processing": "Processing...",
+    "paymentSent": "Payment Sent",
+    "payWith": "Pay with {{walletName}}",
+    "payNow": "Pay Now",
+    "connecting": "Connecting...",
+    "connectWallet": "Connect {{walletType}} Wallet"
+  },
+  "notifications": {
+    "copySuccess": "Address copied to clipboard",
+    "copyFailed": "Failed to copy address",
+    "preparingTransaction": "Preparing transaction...",
+    "approveTransaction": "Please approve the transaction in your {{walletName}}...",
+    "transactionSubmitted": "Transaction submitted. Waiting for confirmation...",
+    "transactionConfirmed": "Transaction confirmed!",
+    "viewOnExplorer": "View on explorer:",
+    "notifyingServer": "Notifying server about your payment on {{network}}...",
+    "paymentCompleted": "Payment completed successfully!",
+    "serverVerificationFailed": "Transaction successful, but server couldn't verify it. Please contact support.",
+    "transactionCompleted": "Transaction completed, but we couldn't notify our server. Please contact support with your transaction hash."
+  },
+  "errors": {
+    "noTransactionId": "No transaction ID found",
+    "networkError": "Network error: Could not fetch transaction details",
+    "noWalletConnected": "No wallet is connected",
+    "noPaymentInstructions": "Payment instructions not available",
+    "unsupportedWalletType": "Unsupported wallet type: {{walletType}}",
+    "transactionRejected": "Transaction rejected by user",
+    "insufficientFunds": "Insufficient funds for transaction",
+    "networkConnectionError": "Network error. Please check your wallet connection.",
+    "transactionTimeout": "Transaction may have been submitted but confirmation timed out. Please check your wallet for status."
+  }
+}

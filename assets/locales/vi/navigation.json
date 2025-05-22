@@ -1,0 +1,21 @@
+{
+  "navbar": {
+    "send": "Gửi",
+    "findLocation": "Tìm địa điểm",
+    "trackOrder": "Theo dõi chuyển tiền",
+    "help": "Trợ giúp",
+    "login": "Đăng nhập",
+    "signup": "Đăng ký",
+    "profile": "Hồ sơ",
+    "language": "Ngôn ngữ",
+    "wallet": "Ví",
+    "nfts": "NFTs",
+    "notifications": "Thông báo",
+    "logout": "Đăng xuất",
+    "logoAlt": "Logo Flash Transfer",
+    "currencyAlt": "Biểu tượng tiền tệ",
+    "profilePicture": "Ảnh hồ sơ",
+    "languageSelector": "Bộ chọn ngôn ngữ",
+    "toggleMenu": "Chuyển đổi menu"
+  }
+}

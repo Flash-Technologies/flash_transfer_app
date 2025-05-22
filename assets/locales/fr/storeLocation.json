@@ -1,0 +1,46 @@
+{
+  "hero": {
+    "title": "Nos sièges sociaux",
+    "subtitle": "Trouvez les sièges et centres de service Flash Transfer près de chez vous"
+  },
+  "search": {
+    "title": "Trouver les sièges",
+    "globalLocations": "Emplacements mondiaux",
+    "placeholder": "Rechercher par nom, ville ou pays"
+  },
+  "map": {
+    "mapView": "Carte",
+    "satelliteView": "Satellite"
+  },
+  "location": {
+    "services": "Services",
+    "hours": "Horaires",
+    "phone": "Téléphone",
+    "hoursUnavailable": "Horaires non disponibles"
+  },
+  "locations": {
+    "noLocations": "Aucun lieu trouvé.",
+    "tryDifferentSearch": "Essayez un autre terme de recherche."
+  },
+  "buttons": {
+    "search": "Rechercher",
+    "tryAgain": "Réessayer",
+    "share": "Partager",
+    "directions": "Itinéraire"
+  },
+  "pagination": {
+    "previous": "Précédent",
+    "next": "Suivant",
+    "pageInfo": "Page {{current}} sur {{total}}"
+  },
+  "error": {
+    "statusError": "Erreur",
+    "fetchFailed": "Échec de la récupération des données de localisation",
+    "fetchingData": "Erreur lors de la récupération des données",
+    "fetchingHeadquarters": "Erreur lors de la récupération des sièges",
+    "shareFailed": "Échec du partage"
+  },
+  "alert": {
+    "copiedToClipboard": "Détails de l'emplacement copiés dans le presse-papiers !"
+  }
+}

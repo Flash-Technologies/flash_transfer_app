@@ -1,0 +1,102 @@
+{
+  "progressSteps": {
+    "step1": {
+      "label": "Información del destinatario",
+      "description": "Introducir información"
+    },
+    "step2": {
+      "label": "Método del remitente",
+      "description": "Elegir método de pago"
+    },
+    "step3": {
+      "label": "Método del receptor",
+      "description": "Método de entrega"
+    },
+    "step4": {
+      "label": "Pago completo",
+      "description": "Confirmación"
+    }
+  },
+  "mobileProgress": {
+    "title": "Información del remitente",
+    "description": "2) Introduzca la información."
+  },
+  "navigation": {
+    "back": "Atrás",
+    "cancel": "Cancelar"
+  },
+  "header": {
+    "title": "Pago de Criptomonedas ",
+    "description": "Conecta tu monedero y envía pagos en criptomonedas de forma segura a cualquier parte del mundo."
+  },
+  "network": {
+    "label": "Seleccionar red blockchain",
+    "required": "*",
+    "select": "Por favor, seleccione una red blockchain para continuar",
+    "security": {
+      "production": "Red de producción",
+      "test": "Red de pruebas",
+      "development": "Red de Desarrollo"
+    }
+  },
+  "wallet": {
+    "connect": {
+      "title": "Conecta tu billetera",
+      "description": "Conéctate para continuar con el pago con criptomonedas",
+      "button": "Conectar la billetera",
+      "connecting": "Conectando...",
+      "scanQR": "Escanea con la app de tu monedero"
+    },
+    "change": {
+      "title": "Cambiar cartera",
+      "description": "Cambia a un monedero diferente si es necesario",
+      "button": "Cambiar cartera",
+      "changing": "Cambiando"
+    },
+    "connected": {
+      "status": "Conectado",
+      "active": "Activo",
+      "address": "Copy",
+      "copied": "Copiado",
+      "disconnectButton": "Desconectar el monedero",
+      "disconnecting": "Desconectando...",
+      "changeWallet": "Cambiar cartera"
+    },
+    "balance": {
+      "label": "Equilibrar:",
+      "loading": "Cargando... Espera un momento...",
+      "refresh": "Actualizar saldo"
+    }
+  },
+  "actions": {
+    "continue": "Continuar",
+    "loading": "Cargando... Espera un momento...",
+    "enableText": {
+      "wallet": "Conecta tu monedero para continuar",
+      "network": "Por favor, seleccione una red blockchain para continuar",
+      "token": "Selecciona un token para continuar",
+      "balance": "Cargando la información de su saldo..."
+    }
+  },
+  "errors": {
+    "noCopy": "No hay dirección para copiar",
+    "copyFailed": "No se ha podido copiar la dirección",
+    "noWallet": "Conecta un monedero antes de continuar",
+    "noToken": "Selecciona un token antes de continuar",
+    "noNetwork": "Por favor, seleccione una red blockchain antes de continuar",
+    "connectWalletFirst": "Por favor, conecte el monedero y seleccione primero el token y la red",
+    "connectionTimeout": "Se ha agotado el tiempo de espera del intento de conexión. Inténtalo de nuevo.",
+    "walletSelector": "Error al abrir el selector de monedero",
+    "connectWallet": "Error al conectar el monedero",
+    "disconnectWallet": "Error al desconectar el monedero"
+  },
+  "success": {
+    "copied": "Dirección copiada al portapapeles.",
+    "balanceRefreshed": "Saldo actualizado correctamente",
+    "disconnected": "Monedero desconectado correctamente",
+    "walletSaved": "Información guardada con éxito"
+  },
+  "info": {
+    "noBalanceFunction": "la función getWalletBalance no está disponible"
+  }
+}

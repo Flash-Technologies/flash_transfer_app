@@ -1,0 +1,21 @@
+{
+    "navbar": {
+      "send": "भेजें",
+      "findLocation": "स्थान खोजें",
+      "trackOrder": "ट्रांसफर ट्रैक करें",
+      "help": "सहायता",
+      "login": "लॉगिन",
+      "signup": "साइन अप",
+      "profile": "प्रोफाइल",
+      "language": "भाषा",
+      "wallet": "वॉलेट",
+      "nfts": "एनएफटी",
+      "notifications": "सूचनाएं",
+      "logout": "लॉग आउट",
+      "logoAlt": "Flash Transfer लोगो",
+      "currencyAlt": "मुद्रा आइकन",
+      "profilePicture": "प्रोफाइल चित्र",
+      "languageSelector": "भाषा चयनकर्ता",
+      "toggleMenu": "मेनू टॉगल करें"
+    }
+  }

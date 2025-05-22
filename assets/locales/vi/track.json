@@ -1,0 +1,40 @@
+{
+  "form": {
+    "heading": "Theo dõi {{action}}",
+    "action": "Chuyển tiền",
+    "subheading": "Nhà ở phía sau, thế giới ở phía trước và có nhiều con đường để đi qua bóng tối đến tận cùng.",
+    "send": "Gửi",
+    "receive": "Nhận",
+    "trackingLabel": "Nhập số theo dõi hoặc ID giao dịch",
+    "trackingPlaceholder": "Số theo dõi Flash (FTN) hoặc ID giao dịch",
+    "continue": "Tiếp tục",
+    "searching": "Đang tìm kiếm..."
+  },
+  "status": {
+    "heading": "Theo dõi {{action}}",
+    "action": "Trạng thái",
+    "subheading": "Luôn cập nhật về các giao dịch chuyển tiền của bạn với tính năng theo dõi trạng thái thời gian thực. Biết chính xác khi giao dịch của bạn được khởi tạo, xử lý và hoàn thành để hoàn toàn yên tâm.",
+    "trackingLabel": "Số theo dõi Flash (FTN)",
+    "cryptoPurchase": "Mua tiền điện tử",
+    "amount": "Số tiền",
+    "totalWithFee": "Tổng cộng với phí",
+    "fee": "Phí",
+    "exchangeRate": "Tỷ giá hối đoái",
+    "timeline": "Dòng thời gian giao dịch",
+    "blockchainTransaction": "Giao dịch blockchain",
+    "trackAnother": "Theo dõi giao dịch khác",
+    "backToHome": "Quay lại trang chủ",
+    "statuses": {
+      "completed": "HOÀN THÀNH",
+      "processing": "ĐANG XỬ LÝ",
+      "pending": "ĐANG CHỜ",
+      "failed": "THẤT BẠI",
+      "cancelled": "ĐÃ HỦY"
+    }
+  },
+  "errors": {
+    "fetchFailed": "Không thể tải giao dịch. Vui lòng kiểm tra ID và thử lại.",
+    "emptyTracking": "Vui lòng nhập số theo dõi",
+    "invalidTracking": "Nhập ID theo dõi hoặc số theo dõi hợp lệ"
+  }
+}

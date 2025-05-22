@@ -1,0 +1,13 @@
+{
+  "title": "Transaction History",
+  "subtitle": "View and track all your previous transactions",
+  "newTransfer": "Start New Transfer",
+  "searchPlaceholder": "Search by reference, type, status, or currency",
+  "filter": "Filter",
+  "errors": {
+    "title": "Error Loading Transactions",
+    "fetchFailed": "Failed to fetch transaction history",
+    "networkError": "Network error: Could not fetch transaction history",
+    "tryAgain": "Try Again"
+  }
+}

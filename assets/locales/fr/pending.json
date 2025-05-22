@@ -1,0 +1,59 @@
+{
+    "loading": {
+      "title": "Chargement des détails de la transaction..."
+    },
+    "error": {
+      "title": "Erreur de Transaction",
+      "noId": "Aucun ID de transaction trouvé",
+      "fetchFailed": "Échec de la récupération des détails de la transaction",
+      "networkError": "Erreur réseau: Impossible de récupérer les détails de la transaction",
+      "defaultError": "Échec du chargement des détails de la transaction"
+    },
+    "transaction": {
+      "status": {
+        "title": "Paiement {status}",
+        "pending": "En attente",
+        "completed": "Terminé",
+        "failed": "Échoué",
+        "cancelled": "Annulé",
+        "processing": "En cours"
+      },
+      "details": {
+        "youSent": "Vous avez envoyé",
+        "transferRate": "Taux de transfert",
+        "fee": "Frais",
+        "transactionType": "Type de transaction",
+        "status": "Statut",
+        "createdOn": "Créé le",
+        "receivedAmount": "Montant reçu",
+        "totalToPay": "Total à payer"
+      },
+      "tracking": {
+        "label": "Numéro de suivi: {number}"
+      },
+      "instructions": {
+        "title": "Instructions de transaction",
+        "mobileMoney": [
+          "Cliquez sur le bouton \"Payer maintenant\" ci-dessous pour compléter votre paiement par mobile money.",
+          "Suivez les instructions sur la page de paiement.",
+          "Une fois le paiement confirmé, votre transaction sera traitée."
+        ],
+        "cashToCrypto": [
+          "Visitez l'un de nos points de collecte autorisés.",
+          "Présentez votre numéro de suivi: {trackingNumber}",
+          "Effectuez votre paiement en espèces.",
+          "Une fois confirmé, votre crypto sera envoyée à votre portefeuille."
+        ],
+        "default": [
+          "Votre transaction est en cours de traitement.",
+          "Conservez votre numéro de suivi pour référence.",
+          "Vous serez notifié une fois la transaction terminée."
+        ]
+      }
+    },
+    "buttons": {
+      "backToHome": "Retour à l'accueil",
+      "payNow": "Payer maintenant",
+      "trackOrder": "Suivre la commande"
+    }
+  }

@@ -1,0 +1,46 @@
+{
+  "hero": {
+    "title": "Unsere Hauptstandorte",
+    "subtitle": "Finden Sie Flash Transfer Hauptsitze und Servicezentren in Ihrer Nähe"
+  },
+  "search": {
+    "title": "Hauptsitze finden",
+    "globalLocations": "Globale Standorte",
+    "placeholder": "Suche nach Name, Stadt oder Land"
+  },
+  "map": {
+    "mapView": "Karte",
+    "satelliteView": "Satellit"
+  },
+  "location": {
+    "services": "Dienstleistungen",
+    "hours": "Öffnungszeiten",
+    "phone": "Telefon",
+    "hoursUnavailable": "Öffnungszeiten nicht verfügbar"
+  },
+  "locations": {
+    "noLocations": "Keine Standorte gefunden.",
+    "tryDifferentSearch": "Versuchen Sie einen anderen Suchbegriff."
+  },
+  "buttons": {
+    "search": "Suchen",
+    "tryAgain": "Erneut versuchen",
+    "share": "Teilen",
+    "directions": "Wegbeschreibung"
+  },
+  "pagination": {
+    "previous": "Zurück",
+    "next": "Weiter",
+    "pageInfo": "Seite {{current}} von {{total}}"
+  },
+  "error": {
+    "statusError": "Fehler",
+    "fetchFailed": "Standortdaten konnten nicht abgerufen werden",
+    "fetchingData": "Fehler beim Abrufen der Daten",
+    "fetchingHeadquarters": "Fehler beim Abrufen der Hauptsitze",
+    "shareFailed": "Teilen fehlgeschlagen"
+  },
+  "alert": {
+    "copiedToClipboard": "Standortdetails in die Zwischenablage kopiert!"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "title": "Transactiegeschiedenis",
+  "subtitle": "Bekijk en volg al je eerdere transacties",
+  "newTransfer": "Start nieuwe overdracht",
+  "searchPlaceholder": "Zoek op referentie, type, status of valuta",
+  "filter": "Filteren",
+  "errors": {
+    "title": "Fout bij laden transacties",
+    "fetchFailed": "Kan transactiegeschiedenis niet ophalen",
+    "networkError": "Netwerkfout: Kan transactiegeschiedenis niet ophalen",
+    "tryAgain": "Probeer opnieuw"
+  }
+}

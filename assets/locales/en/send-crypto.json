@@ -1,0 +1,102 @@
+{
+    "progressSteps": {
+      "step1": {
+        "label": "Receiver's info",
+        "description": "Enter information"
+      },
+      "step2": {
+        "label": "Sender's Method",
+        "description": "Choose payment method"
+      },
+      "step3": {
+        "label": "Receiver's Method",
+        "description": "Delivery method"
+      },
+      "step4": {
+        "label": "Payment Complete",
+        "description": "Confirmation"
+      }
+    },
+    "mobileProgress": {
+      "title": "Sender's info",
+      "description": "Enter the information"
+    },
+    "navigation": {
+      "back": "Back",
+      "cancel": "Cancel"
+    },
+    "header": {
+      "title": "Send Crypto Payment",
+      "description": "Connect your wallet and send cryptocurrency payments securely to anywhere in the world."
+    },
+    "network": {
+      "label": "Select Blockchain Network",
+      "required": "*",
+      "select": "Please select a blockchain network to continue",
+      "security": {
+        "production": "Production Network",
+        "test": "Test Network",
+        "development": "Development Network"
+      }
+    },
+    "wallet": {
+      "connect": {
+        "title": "Connect Your Wallet",
+        "description": "Connect to continue with crypto payment",
+        "button": "Connect Wallet",
+        "connecting": "Connecting...",
+        "scanQR": "Scan with your wallet app"
+      },
+      "change": {
+        "title": "Change Wallet",
+        "description": "Switch to a different wallet if needed",
+        "button": "Change Wallet",
+        "changing": "Changing..."
+      },
+      "connected": {
+        "status": "Connected",
+        "active": "Active",
+        "address": "Copy",
+        "copied": "Copied",
+        "disconnectButton": "Disconnect Wallet",
+        "disconnecting": "Disconnecting...",
+        "changeWallet": "Or Change Wallet"
+      },
+      "balance": {
+        "label": "Balance:",
+        "loading": "Loading...",
+        "refresh": "Refresh balance"
+      }
+    },
+    "actions": {
+      "continue": "Continue",
+      "loading": "Loading...",
+      "enableText": {
+        "wallet": "Please connect your wallet to continue",
+        "network": "Please select a blockchain network to continue",
+        "token": "Please select a token to continue",
+        "balance": "Loading your balance information..."
+      }
+    },
+    "errors": {
+      "noCopy": "No address to copy",
+      "copyFailed": "Failed to copy address",
+      "noWallet": "Please connect a wallet before proceeding",
+      "noToken": "Please select a token before proceeding",
+      "noNetwork": "Please select a blockchain network before proceeding",
+      "connectWalletFirst": "Please connect wallet and select token and network first",
+      "connectionTimeout": "Connection attempt timed out. Please try again.",
+      "walletSelector": "Failed to open wallet selector",
+      "connectWallet": "Failed to connect wallet",
+      "disconnectWallet": "Error disconnecting wallet"
+    },
+    "success": {
+      "copied": "Address copied to clipboard",
+      "balanceRefreshed": "Balance refreshed successfully",
+      "disconnected": "Wallet disconnected successfully",
+      "walletSaved": "Wallet information saved successfully"
+    },
+    "info": {
+      "noBalanceFunction": "getWalletBalance function not available"
+    }
+  }

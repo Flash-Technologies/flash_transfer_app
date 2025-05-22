@@ -1,0 +1,155 @@
+{
+  "landing": {
+    "title": "Verzend, koop of verkoop crypto wereldwijd met Flash Transfer",
+    "subtitle": "Wissel je cryptocurrency in voor contant geld of koop cryptocurrency met contant geld van onze goedgekeurde partners. Je kunt ook je cryptocurrency wereldwijd verzenden tegen fiat met behulp van je niet-bewaarnemende wallet (Flash wallet, Metamask, Phantom...)",
+    "tutorial": "Tutorial",
+    "trustpilot": "Trustpilot",
+    "send": "Verzenden",
+    "receive": "Ontvangen",
+    "amountSend": "Te verzenden bedrag",
+    "receiveAmount": "Te ontvangen bedrag",
+    "loadingExchangeRate": "Wisselkoers laden...",
+    "exchangeRate": "Wisselkoers",
+    "fee": "Kosten",
+    "transferTime": "Overdrachtstijd",
+    "networkCongestion": "Netwerkcongestie",
+    "totalToPay": "Totaal te betalen",
+    "recipientGets": "Ontvanger krijgt",
+    "continue": "Doorgaan",
+    "cancel": "Annuleren",
+    "noFee": "Geen kosten",
+    "networkStatus": {
+      "unknown": "Onbekend",
+      "low": "Laag",
+      "medium": "Gemiddeld",
+      "high": "Hoog"
+    }
+  },
+  "currencySelector": {
+    "walletConnected": "Verbonden"
+  },
+  "partners": {
+    "title": "Kies uit onze vertrouwde partners",
+    "subtitle": "Wij zorgen ervoor dat je geld snel en gemakkelijk wordt geleverd.",
+    "subtitle2": "Kies betalingstypen uit ons netwerk: contante afhaalpunten, mobiel geld en bankoverschrijving."
+  },
+  "exchangeStats": {
+    "title": "Wereldwijde Fiat- en Crypto-uitwisseling binnen handbereik",
+    "title2": "Wereldwijde Fiat en Crypto",
+    "title3": "Uitwisseling binnen handbereik",
+    "subtitle": "Wissel je favoriete cryptocurrencies en fiat-valuta's naadloos uit met snelle transacties, lage kosten en 24/7 ondersteuning.",
+    "cryptocurrencies": {
+      "value": "20",
+      "title2": "Populaire cryptocurrencies",
+      "title3": "beschikbaar!",
+      "title": "Populaire cryptocurrencies beschikbaar!",
+      "description": "Je kunt je cryptocurrencies uitwisselen: BTC, ETH, FLASH, USDC, USDT, DAI, BNB, POL, SOL, AVAX, CRO, SUI en meer."
+    },
+    "fiatCurrencies": {
+      "value": "200+",
+      "title": "Ondersteuning voor Fiat-valuta's",
+      "description": "We ondersteunen alle Fiat-valuta's in de wereld!"
+    },
+    "activeUsers": {
+      "value": "5k",
+      "title": "Actieve gebruikers",
+      "description": "Onze gebruikers zijn tevreden over de snelheid, lage kosten en ondersteuning!"
+    },
+    "fastExchange": "Snelle, veilige uitwisseling"
+  },
+  "whyChooseUs": {
+    "title": "Waarom voor ons kiezen",
+    "subtitle": "Verzend en ontvang geld naar je dierbaren in minuten met geweldige tarieven en lage kosten.",
+    "subtitle2": "Meer dan 40 landen en +36 valuta's ondersteund.",
+    "features": {
+      "fastTransaction": {
+        "title": "Snelle transactie",
+        "description": "De transactie is direct met cryptocurrency in seconden."
+      },
+      "security": {
+        "title": "Veiligheid",
+        "description": "De blockchain is manipulatiebestendig, transparant en veilig."
+      },
+      "easyTransfer": {
+        "title": "Eenvoudige overdracht",
+        "description": "Verstuur geld en zet je cryptocurrency eenvoudig om in contant geld en vice versa."
+      }
+    }
+  },
+  "moneyTransfers": {
+    "title": "Snelle, veilige geldoverdrachten",
+    "subtitle": "Wissel je favoriete cryptocurrencies en fiat-valuta's naadloos uit met snelle transacties, lage kosten en 24/7 ondersteuning.",
+    "features": {
+      "decentralized": {
+        "title": "100% Gedecentraliseerd",
+        "description": "Behoud controle over je privésleutels, verstuur je crypto, of verbind je wallet via WalletConnect."
+      },
+      "convertFiatCrypto": {
+        "title": "Fiat & Crypto omzetten",
+        "description": "Zet naadloos om tussen fiat en crypto met +36 beschikbare valuta's."
+      }
+    }
+  },
+  "howItWorks": {
+    "title": "Slechts enkele stappen om te beginnen",
+    "subtitle": "Het is eenvoudiger dan je denkt. Volg 3 eenvoudige stappen",
+    "steps": {
+      "register": {
+        "title": "Registreer gratis",
+        "description": "Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis."
+      },
+      "sendCrypto": {
+        "title": "Verstuur je crypto",
+        "description": "Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis."
+      },
+      "withdrawCash": {
+        "title": "Ga je contant geld opnemen",
+        "description": "Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis."
+      }
+    }
+  },
+  "appPromotion": {
+    "title": "Snelste & meest veilige",
+    "title2": "manier om Crypto naar",
+    "title3": "Fiat wereldwijd te versturen",
+    "subtitle": "Verstuur crypto naar fiat wereldwijd met ongeëvenaarde snelheid, veiligheid en lage kosten.",
+    "appleStore": "Apple Store",
+    "playStore": "Play Store"
+  },
+  "faq": {
+    "title": "Veelgestelde vragen",
+    "subtitle": "Vind antwoorden op veelvoorkomende vragen en krijg de ondersteuning die je nodig hebt in",
+    "subtitle2": "onze sectie Veelgestelde Vragen.",
+    "questions": [
+      {
+        "title": "Hoe verstuur je crypto naar Flash Transfer?",
+        "content": "Om crypto naar Flash Transfer te sturen, log je simpelweg in op je Flash Transfer account, selecteer je de gewenste cryptocurrency, specificeer het bedrag en stuur het direct naar het adres dat door ons platform wordt verstrekt. Flash Transfer zet je cryptocurrency direct om in stablecoins om prijsschommelingen te voorkomen."
+      },
+      {
+        "title": "Waar kan de Flash Transfer service worden gebruikt?",
+        "content": "Flash Transfer kan worden gebruikt bij meer dan een miljoen partner-verkooppunten in Europa, Afrika en Azië. Begunstigden kunnen gemakkelijk contant geld ophalen of fondsen direct op hun mobiele geldrekening storten via deze handelaren."
+      },
+      {
+        "title": "In welke/hoeveel landen is Flash Transfer actief?",
+        "content": "Flash Transfer is uitgebreid actief in Europa, Afrika en Azië en beslaat een breed netwerk van landen. Ons bereik blijft groeien naarmate we samenwerken met meer lokale betalingsaanbieders."
+      },
+      {
+        "title": "Hoe zet je je cryptocurrency om naar fiat?",
+        "content": "Om je crypto om te zetten naar fiat, log je in op je Flash Transfer account, selecteer je de optie \"Crypto naar Fiat\", specificeer je het cryptocurrency bedrag dat je wilt omzetten en kies je je voorkeursmethode voor uitbetaling en lokale partner (Orange Money, MTN, Wave, etc.). Je crypto wordt direct omgezet naar fiat-valuta en is beschikbaar op de door jou gekozen locatie."
+      },
+      {
+        "title": "Hoe verstuur je cryptocurrency zodat de begunstigde het in contant geld ontvangt?",
+        "content": "Om cryptocurrency te sturen voor contante ophaling, kies je simpelweg de optie Crypto-naar-Contant in je Flash Transfer dashboard. Voer de gegevens van de ontvanger in, selecteer een partner-verkooppunt en lokale betalingspartner (Orange Money, MTN, Wave, etc.) waar ze het contante geld kunnen ophalen, en verstuur je crypto. De ontvanger kan direct het equivalente contante bedrag ophalen bij de gekozen partnerlocatie."
+      },
+      {
+        "title": "Transactiekosten",
+        "content": "Flash Transfer rekent een duidelijke, transparante vergoeding van 2% per transactie, plus eventuele kosten van lokale betalingsaanbieders. Alle kosten worden vooraf weergegeven voordat je je transactie bevestigt."
+      }
+    ]
+  },
+  "common": {
+    "walletConnection": {
+      "connected": "Verbonden"
+    }
+  }
+}

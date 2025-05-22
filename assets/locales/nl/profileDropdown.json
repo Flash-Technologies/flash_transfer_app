@@ -1,0 +1,18 @@
+{
+  "profile": {
+    "imageAlt": "Profiel",
+    "defaultUserName": "Gebruiker"
+  },
+  "menu": {
+    "myProfile": "Mijn profiel",
+    "myTransaction": "Mijn transacties",
+    "myRecipients": "Mijn ontvangers",
+    "trackTransfer": "Volg een overdracht",
+    "nft": "NFT",
+    "myRank": "Mijn rang",
+    "myCards": "Mijn kaarten",
+    "referFriend": "Verwijs een vriend",
+    "settings": "Instellingen",
+    "logout": "Uitloggen"
+  }
+}

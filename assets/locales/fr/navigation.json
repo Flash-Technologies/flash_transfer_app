@@ -1,0 +1,21 @@
+{
+  "navbar": {
+    "send": "Envoyer",
+    "findLocation": "Trouver un lieu",
+    "trackOrder": "Suivre un transfert",
+    "help": "Aide",
+    "login": "Connexion",
+    "signup": "S'inscrire",
+    "profile": "Profil",
+    "language": "Langue",
+    "wallet": "Portefeuille",
+    "nfts": "NFTs",
+    "notifications": "Notifications",
+    "logout": "Déconnexion",
+    "logoAlt": "Logo Flash Transfer",
+    "currencyAlt": "Icône de devise",
+    "profilePicture": "Photo de profil",
+    "languageSelector": "Sélecteur de langue",
+    "toggleMenu": "Basculer le menu"
+  }
+}

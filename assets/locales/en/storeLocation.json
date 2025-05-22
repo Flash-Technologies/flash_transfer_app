@@ -1,0 +1,46 @@
+{
+  "hero": {
+    "title": "Our headquarter locations",
+    "subtitle": "Find Flash Transfer headquarters and service centers near you"
+  },
+  "search": {
+    "title": "Find Headquarters",
+    "globalLocations": "Global Locations",
+    "placeholder": "Search by name, city, or country"
+  },
+  "map": {
+    "mapView": "Map",
+    "satelliteView": "Satellite"
+  },
+  "location": {
+    "services": "Services",
+    "hours": "Hours",
+    "phone": "Phone",
+    "hoursUnavailable": "Hours unavailable"
+  },
+  "locations": {
+    "noLocations": "No locations found.",
+    "tryDifferentSearch": "Try a different search term."
+  },
+  "buttons": {
+    "search": "Search",
+    "tryAgain": "Try Again",
+    "share": "Share",
+    "directions": "Directions"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "pageInfo": "Page {{current}} of {{total}}"
+  },
+  "error": {
+    "statusError": "Error",
+    "fetchFailed": "Failed to fetch location data",
+    "fetchingData": "Error fetching data",
+    "fetchingHeadquarters": "Error fetching headquarters",
+    "shareFailed": "Share failed"
+  },
+  "alert": {
+    "copiedToClipboard": "Location details copied to clipboard!"
+  }
+}

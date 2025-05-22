@@ -1,0 +1,14 @@
+{
+    
+      "heading": "My Contacts",
+      "subheading": "Home is behind, the world ahead and there are many paths to tread through shadows to the edge.",
+      "loading": "Loading contacts...",
+      "noContacts": "You don't yet have any beneficiaries",
+      "continue": "Continue",
+      "addNew": "Add New",
+      "share": "Share",
+      "errors": {
+        "fetchFailed": "Failed to fetch contacts"
+      
+    }
+  }

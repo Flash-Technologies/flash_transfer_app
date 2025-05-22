@@ -1,0 +1,40 @@
+{
+  "form": {
+    "heading": "Volg een {{action}}",
+    "action": "Overdracht",
+    "subheading": "Thuis is achter, de wereld is voor, en er zijn vele paden te bewandelen door schaduwen naar de rand.",
+    "send": "Verzenden",
+    "receive": "Ontvangen",
+    "trackingLabel": "Voer trackingnummer of transactie-ID in",
+    "trackingPlaceholder": "Flash Tracking Number (FTN) of Transactie-ID",
+    "continue": "Doorgaan",
+    "searching": "Zoeken..."
+  },
+  "status": {
+    "heading": "Volg een {{action}}",
+    "action": "Status",
+    "subheading": "Blijf op de hoogte van je overdrachten met real-time statustracking. Weet precies wanneer je transactie is gestart, verwerkt en voltooid voor complete gemoedsrust.",
+    "trackingLabel": "Flash Tracking Number (FTN)",
+    "cryptoPurchase": "Crypto aankoop",
+    "amount": "Bedrag",
+    "totalWithFee": "Totaal met kosten",
+    "fee": "Kosten",
+    "exchangeRate": "Wisselkoers",
+    "timeline": "Transactietijdlijn",
+    "blockchainTransaction": "Blockchain transactie",
+    "trackAnother": "Volg andere",
+    "backToHome": "Terug naar home",
+    "statuses": {
+      "completed": "VOLTOOID",
+      "processing": "IN VERWERKING",
+      "pending": "IN AFWACHTING",
+      "failed": "MISLUKT",
+      "cancelled": "GEANNULEERD"
+    }
+  },
+  "errors": {
+    "fetchFailed": "Kan transactie niet ophalen. Controleer het ID en probeer opnieuw.",
+    "emptyTracking": "Voer een trackingnummer in",
+    "invalidTracking": "Voer een geldig tracking-ID of trackingnummer in"
+  }
+}

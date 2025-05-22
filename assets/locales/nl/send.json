@@ -1,0 +1,27 @@
+{
+  "title": "Verzenden via",
+  "subtitle": "Thuis is achter, de wereld is voor, en er zijn vele paden te bewandelen door schaduwen naar de rand.",
+  "subtitle_mobile": "Thuis is achter, de wereld is voor, en er zijn vele paden te bewandelen door schaduwen naar de rand.",
+  "payment": {
+    "title": "Hoe wilt u betalen?",
+    "methods": {
+      "cash": "Contante betaling",
+      "crypto": "Crypto Wallet",
+      "card": "Creditcard",
+      "bank": "Bankoverschrijving",
+      "mobile": "Mobiel geld"
+    }
+  },
+  "receiver": {
+    "title": "Hoe wil de ontvanger het geld ontvangen?",
+    "methods": {
+      "cash": "Contante betaling",
+      "crypto": "Crypto Wallet",
+      "mobile": "Mobiel geld"
+    }
+  },
+  "buttons": {
+    "addFromContact": "Toevoegen uit contacten",
+    "addNew": "Nieuwe toevoegen"
+  }
+}

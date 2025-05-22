@@ -1,0 +1,27 @@
+{
+  "progress": {
+    "receiverInfo": "Informationen des Empfängers",
+    "receiverMethod": "Methode des Empfängers",
+    "reviewDetails": "Bewertungsdetails",
+    "paymentComplete": "Zahlung erfolgreich.",
+    "enterInfo": "Geben Sie die Informationen ein"
+  },
+  "headingTitle": "Informationen des Empfängers",
+  "headingDescription": "Sie können alle Details Ihrer Transaktion sehen, überprüfen, ob Sie keinen Fehler gemacht haben, wenn nötig, können Sie die Informationen auf dieser Seite ändern.",
+  "benefitButton": "ich bin der Vorteil",
+  "form": {
+    "sendingCountry": "Sendeland - Währung",
+    "countryPlaceholder": "Wählen Sie Ihre Währung, z. B. USD , ETH",
+    "beneficiaryReceives": "Der Begünstigte erhält",
+    "beneficiaryPlaceholder": "Geben Sie ein, was Ihr Begünstigter erhält",
+    "amountSent": "Betrag gesendet",
+    "amountPlaceholder": "Geben Sie Ihren eigenen Preis ein",
+    "cancel": "Abbrechen",
+    "continue": "Weiter"
+  },
+  "contacts": {
+    "title": "Schon hinzugefügt",
+    "searchPlaceholder": "Suche",
+    "transferAgain": "Erneut übertragen"
+  }
+}

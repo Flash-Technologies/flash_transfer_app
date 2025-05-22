@@ -1,0 +1,21 @@
+{
+  "navbar": {
+    "send": "إرسال",
+    "findLocation": "البحث عن موقع",
+    "trackOrder": "تتبع التحويل",
+    "help": "المساعدة",
+    "login": "تسجيل الدخول",
+    "signup": "التسجيل",
+    "profile": "الملف الشخصي",
+    "language": "اللغة",
+    "wallet": "المحفظة",
+    "nfts": "الرموز غير القابلة للاستبدال",
+    "notifications": "الإشعارات",
+    "logout": "تسجيل الخروج",
+    "logoAlt": "شعار Flash Transfer",
+    "currencyAlt": "أيقونة العملة",
+    "profilePicture": "صورة الملف الشخصي",
+    "languageSelector": "محدد اللغة",
+    "toggleMenu": "تبديل القائمة"
+  }
+}

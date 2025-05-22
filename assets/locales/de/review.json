@@ -1,0 +1,88 @@
+{
+  "progress": {
+    "receiverInfo": {
+      "label": "Informationen des Empfängers",
+      "description": "Geben Sie die Informationen ein"
+    },
+    "receiverMethod": {
+      "label": "Methode des Empfängers",
+      "description": "Geben Sie die Informationen ein"
+    },
+    "reviewDetails": {
+      "label": "Bewertungsdetails",
+      "description": "Geben Sie die Informationen ein"
+    },
+    "paymentComplete": {
+      "label": "Zahlung erfolgreich.",
+      "description": "Geben Sie die Informationen ein"
+    }
+  },
+  "header": {
+    "title": "Bewertungsdetails",
+    "subheading": "Überprüfen Sie die Zusammenfassung Ihrer Bestellung, bevor Sie sie validieren."
+  },
+  "buttons": {
+    "cancel": "Abbrechen",
+    "processing": "Wird bearbeitet...",
+    "confirm": "Bestätigen",
+    "calculating": "Wird berechnet...",
+    "edit": "Bearbeiten"
+  },
+  "sections": {
+    "amount": {
+      "title": "Betrag",
+      "editAmount": "Betrag bearbeiten"
+    },
+    "transferSummary": {
+      "title": "Zusammenfassung der Übertragung",
+      "updating": "Aktualisieren…",
+      "amountToSend": "Zu sendende Anzahl",
+      "transferFee": "Überweisungsgebühr",
+      "feeWaived": "Gebühr erlassen",
+      "totalCost": "Gesamtkosten",
+      "totalToRecipient": "Gesamtsumme an Empfänger",
+      "exchangeRate": "Wechselkurs",
+      "networkCongestion": "Netzwerküberlastung",
+      "congestionLow": "Niedrig",
+      "congestionMedium": "Mittel",
+      "congestionHigh": "Hoch",
+      "totalToPay": "Zu zahlender Gesamtbetrag",
+      "recipientGets": "Empfänger bekommt",
+      "availability": "Verfügbarkeit",
+      "transactionUnavailable": "Transaktion derzeit nicht verfügbar"
+    },
+    "senderDetails": {
+      "title": "Details Absender",
+      "kyc": "KYC",
+      "mobileProvider": "Mobilfunkanbieter unterschiedlich funktionieren.",
+      "phoneNumber": "Telefonnummer",
+      "sourceOfFunds": "Mittelherkunft",
+      "purposeOfTransaction": "Verwendungszweck der Transaktion"
+    },
+    "receiverDetails": {
+      "title": "Empfängerdetails",
+      "walletAddress": "Wallet-Adresse",
+      "blockchainNetwork": "Blockchain-Netzwerk",
+      "mobileNumber": "Mobilfunknummer",
+      "mobileProvider": "Mobilfunkanbieter unterschiedlich funktionieren.",
+      "receiverCountry": "Land des Empfängers",
+      "youSent": "Sie haben geschickt",
+      "transferRate": "Transfer Rate",
+      "fee": "Gebühr"
+    }
+  },
+  "paymentMethods": {
+    "bankTransfer": "Banküberweisung",
+    "creditCard": "Kreditkarte",
+    "cash": "Bargeld",
+    "mobileMoney": "Handy Geld",
+    "wallet": "Virtuelle Geldbörse",
+    "cashPickup": "Abholung vor Ort",
+    "cryptoWallet": "{{currency}} Wallet"
+  },
+  "errors": {
+    "somethingWentWrong": "Etwas ist schief gelaufen",
+    "networkError": "Netzwerkfehler: Transaktion konnte nicht geschätzt werden",
+    "transactionFailed": "Transaktion fehlgeschlagen"
+  }
+}

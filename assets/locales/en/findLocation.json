@@ -1,0 +1,16 @@
+{
+  "title": "Find locations",
+  "subtitle": "Home is behind, the world ahead and there are many paths to tread through shadows to the edge.",
+  "addressRequired": "To continue, please enter the address.",
+  "sendFrom": "Send From",
+  "countryPlaceholder": "USA",
+  "enterZipCode": "Enter ZIP/Postal Code",
+  "addressPlaceholder": "Address/State or Zip",
+  "useCurrentLocation": "Use Current Location",
+  "whatAreYouTryingToDo": "What are you trying to do?",
+  "sendMoney": "Send Money",
+  "receiveMoney": "Receive Money",
+  "continue": "Continue",
+  "visitUs": "Visit us",
+  "visitUsSubtitle": "Home is behind, the world ahead and there are many paths to tread through shadows to the edge."
+}

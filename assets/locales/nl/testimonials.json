@@ -1,0 +1,28 @@
+{
+  "section": {
+    "title": "Wat onze klanten zeggen"
+  },
+  "trustpilot": {
+    "title": "TrustPilot",
+    "description": "Onze reviews geverifieerd door Trustpilot"
+  },
+  "navigation": {
+    "previous": "Vorige testimonial",
+    "next": "Volgende testimonial"
+  },
+  "testimonial1": {
+    "author": "Bertram Jensen",
+    "role": "Auteur bij Panepply Store",
+    "content": "Flash Transfer is ongelooflijk handig! Ik stuurde crypto naar mijn familie, en zij konden direct het geld ophalen via Wave zonder enig gedoe. Sterk aanbevolen!"
+  },
+  "testimonial2": {
+    "author": "Sarah Williams",
+    "role": "Marketing Director",
+    "content": "Eindelijk een eenvoudige en snelle oplossing om mijn crypto om te zetten naar contant geld! De kosten zijn transparant en ik waardeer het dat ik mijn favoriete lokale partner kan kiezen (Orange Money, in mijn geval). Zeer tevreden!"
+  },
+  "testimonial3": {
+    "author": "Michael Chen",
+    "role": "Senior Developer",
+    "content": "Super gebruiksvriendelijk, betrouwbaar en snel. De automatische conversie van crypto om prijsschommelingen te vermijden is een enorm voordeel. Flash Transfer vereenvoudigt echt crypto-naar-fiat geldoverdrachten."
+  }
+}

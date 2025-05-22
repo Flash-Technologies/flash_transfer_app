@@ -1,0 +1,12 @@
+{
+  "heading": "Mis Contactos",
+  "subheading": "El hogar está atrás, el mundo por delante y hay muchos caminos que recorrer a través de las sombras hasta el borde.",
+  "loading": "Cargando los contactos...",
+  "noContacts": "Todavía no tiene ningún beneficiario",
+  "continue": "Continuar",
+  "addNew": "Añadir noticia",
+  "share": "Compartir",
+  "errors": {
+    "fetchFailed": "No se han podido recuperar los contactos"
+  }
+}

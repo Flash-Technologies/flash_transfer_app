@@ -1,0 +1,46 @@
+{
+    "hero": {
+      "title": "हमारे मुख्यालय स्थान",
+      "subtitle": "अपने निकट Flash Transfer मुख्यालय और सेवा केंद्र खोजें"
+    },
+    "search": {
+      "title": "मुख्यालय खोजें",
+      "globalLocations": "वैश्विक स्थान",
+      "placeholder": "नाम, शहर या देश द्वारा खोजें"
+    },
+    "map": {
+      "mapView": "मानचित्र",
+      "satelliteView": "उपग्रह"
+    },
+    "location": {
+      "services": "सेवाएं",
+      "hours": "घंटे",
+      "phone": "फोन",
+      "hoursUnavailable": "घंटे उपलब्ध नहीं"
+    },
+    "locations": {
+      "noLocations": "कोई स्थान नहीं मिला।",
+      "tryDifferentSearch": "एक अलग खोज शब्द आज़माएं।"
+    },
+    "buttons": {
+      "search": "खोजें",
+      "tryAgain": "फिर से प्रयास करें",
+      "share": "साझा करें",
+      "directions": "दिशा-निर्देश"
+    },
+    "pagination": {
+      "previous": "पिछला",
+      "next": "अगला",
+      "pageInfo": "पृष्ठ {{current}} कुल {{total}}"
+    },
+    "error": {
+      "statusError": "त्रुटि",
+      "fetchFailed": "स्थान डेटा प्राप्त करने में विफल",
+      "fetchingData": "डेटा प्राप्त करने में त्रुटि",
+      "fetchingHeadquarters": "मुख्यालय प्राप्त करने में त्रुटि",
+      "shareFailed": "साझा करना विफल"
+    },
+    "alert": {
+      "copiedToClipboard": "स्थान विवरण क्लिपबोर्ड पर कॉपी किया गया!"
+    }
+  }

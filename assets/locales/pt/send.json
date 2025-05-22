@@ -1,0 +1,27 @@
+{
+  "title": "Enviar através de",
+  "subtitle": "O lar está atrás, o mundo à frente e há muitos caminhos a percorrer através das sombras até a extremidade.",
+  "subtitle_mobile": "O lar está atrás, o mundo à frente e há muitos caminhos a percorrer através das sombras até a extremidade.",
+  "payment": {
+    "title": "Como você gostaria de pagar?",
+    "methods": {
+      "cash": "Pagamento em dinheiro",
+      "crypto": "Carteira cripto",
+      "card": "Cartão de crédito",
+      "bank": "Transferência bancária",
+      "mobile": "Dinheiro móvel"
+    }
+  },
+  "receiver": {
+    "title": "Como seu destinatário quer receber o dinheiro?",
+    "methods": {
+      "cash": "Pagamento em dinheiro",
+      "crypto": "Carteira cripto",
+      "mobile": "Dinheiro móvel"
+    }
+  },
+  "buttons": {
+    "addFromContact": "Adicionar dos contatos",
+    "addNew": "Adicionar novo"
+  }
+}

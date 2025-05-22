@@ -1,0 +1,16 @@
+{
+  "title": "Trouver des lieux",
+  "subtitle": "La maison est derrière, le monde est devant et il y a de nombreux chemins à parcourir à travers les ombres jusqu'au bord.",
+  "addressRequired": "Pour continuer, veuillez entrer l'adresse.",
+  "sendFrom": "Envoyer depuis",
+  "countryPlaceholder": "États-Unis",
+  "enterZipCode": "Entrer le code postal",
+  "addressPlaceholder": "Adresse/État ou code postal",
+  "useCurrentLocation": "Utiliser ma position actuelle",
+  "whatAreYouTryingToDo": "Que souhaitez-vous faire ?",
+  "sendMoney": "Envoyer de l'argent",
+  "receiveMoney": "Recevoir de l'argent",
+  "continue": "Continuer",
+  "visitUs": "Nous rendre visite",
+  "visitUsSubtitle": "La maison est derrière, le monde est devant et il y a de nombreux chemins à parcourir à travers les ombres jusqu'au bord."
+}

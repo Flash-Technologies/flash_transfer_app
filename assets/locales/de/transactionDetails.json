@@ -1,0 +1,87 @@
+{
+  "page": {
+    "title": "Umsätze",
+    "subtitle": "Zeigen Sie die vollständigen Details Ihrer Transaktion an",
+    "loading": "Transaktionsdetails werden geladen..."
+  },
+  "tracking": {
+    "label": "Flash-Tracking-Nummer (FTN)",
+    "copied": "Kopiert!"
+  },
+  "transaction": {
+    "title": "Umsätze",
+    "info": {
+      "title": "Informationen zur Transaktion",
+      "type": "Typ",
+      "created": "Erstellt",
+      "completed": "Abgeschlossen",
+      "orderId": "Auftragsnummer",
+      "statusDetail": "Statusdetails anzeigen"
+    },
+    "types": {
+      "CASH_TO_CRYPTO": "Bargeld an Krypto",
+      "CRYPTO_TO_CASH": "Crypto to Cash",
+      "MOBILE_TO_CRYPTO": "Mobile Money to Crypto",
+      "CASH_TO_MOBILE": "Bargeld zu mobilem Geld"
+    }
+  },
+  "payment": {
+    "title": "Zahlungsdetails",
+    "amount": "Betrag",
+    "fee": "Gebühr",
+    "totalWithFee": "Gesamtsumme mit Gebühr",
+    "exchangeRate": "Wechselkurs",
+    "feeBreakdown": {
+      "title": "Gebührenaufschlüsselung",
+      "gasFee": "Gasgebühr",
+      "baseFee": "Basisgebühr",
+      "providerFee": "Kreditkarten Gebühren",
+      "discounts": "Rabatte"
+    }
+  },
+  "user": {
+    "title": "Benutzerinformationen",
+    "name": "Name",
+    "email": "E-Mail",
+    "loyaltyRank": "Loyalitätsrang",
+    "loyaltyPoints": "Treuepunkte",
+    "points": "pts"
+  },
+  "source": {
+    "title": "Source Information",
+    "type": "Typ",
+    "currency": "Währung",
+    "country": "Staat",
+    "phoneNumber": "Telefonnummer",
+    "paymentMethod": "Zahlungsweise"
+  },
+  "destination": {
+    "title": "Information über das Reiseziel",
+    "type": "Typ",
+    "currency": "Währung",
+    "walletAddress": "Wallet-Adresse",
+    "network": "Netzwerk"
+  },
+  "blockchain": {
+    "title": "Blockchain-Informationen",
+    "txHash": "Transaktions-Hash",
+    "network": "Netzwerk"
+  },
+  "timeline": {
+    "title": "Zeitplan der Transaktion."
+  },
+  "buttons": {
+    "trackAnother": "Verfolgen Sie eine andere",
+    "backToHome": "Zurück zur Startseite"
+  },
+  "errors": {
+    "notFound": "Transaktion konnte nicht abgerufen werden. Bitte überprüfen Sie die Tracking-Nummer und versuchen Sie es erneut."
+  },
+  "status": {
+    "completed": "ABGESCHLOSSEN",
+    "processing": "BEARBEITUNG",
+    "pending": "AUSSTEHEND",
+    "failed": "FEHLGESCHLAGEN",
+    "cancelled": "STORNIERT"
+  }
+}

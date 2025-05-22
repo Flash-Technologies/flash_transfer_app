@@ -1,0 +1,39 @@
+{
+  "logo": {
+    "alt": "Flash Transfer logo"
+  },
+  "company": {
+    "name": "Flash Transfer",
+    "description": "Verzend, koop en verkoop eenvoudig crypto wereldwijd met Flash Transfer."
+  },
+  "social": {
+    "twitter": "Twitter",
+    "facebook": "Facebook",
+    "instagram": "Instagram",
+    "youtube": "YouTube",
+    "pinterest": "Pinterest"
+  },
+  "links": {
+    "company": {
+      "title": "Bedrijf",
+      "about": "Over ons",
+      "faq": "FAQ",
+      "blog": "Blog",
+      "countries": "Landen"
+    },
+    "information": {
+      "title": "Informatie",
+      "app": "Download App",
+      "currency": "Alle valuta",
+      "support": "Ondersteuning",
+      "status": "Status"
+    }
+  },
+  "newsletter": {
+    "title": "Blijf op de hoogte",
+    "description": "Abonneer je op onze wekelijkse nieuwsbrief voor updates",
+    "placeholder": "Voer je e-mailadres in",
+    "button": "Aanmelden"
+  },
+  "copyright": "Copyright {{year}} © Flash Technologies. Alle rechten voorbehouden."
+}

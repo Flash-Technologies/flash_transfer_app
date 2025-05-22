@@ -1,0 +1,46 @@
+{
+  "hero": {
+    "title": "Onze hoofdkantoorlocaties",
+    "subtitle": "Vind Flash Transfer hoofdkantoren en servicecentra bij jou in de buurt"
+  },
+  "search": {
+    "title": "Zoek hoofdkantoren",
+    "globalLocations": "Wereldwijde locaties",
+    "placeholder": "Zoek op naam, stad of land"
+  },
+  "map": {
+    "mapView": "Kaart",
+    "satelliteView": "Satelliet"
+  },
+  "location": {
+    "services": "Diensten",
+    "hours": "Openingstijden",
+    "phone": "Telefoon",
+    "hoursUnavailable": "Openingstijden niet beschikbaar"
+  },
+  "locations": {
+    "noLocations": "Geen locaties gevonden.",
+    "tryDifferentSearch": "Probeer een andere zoekterm."
+  },
+  "buttons": {
+    "search": "Zoeken",
+    "tryAgain": "Probeer opnieuw",
+    "share": "Delen",
+    "directions": "Routebeschrijving"
+  },
+  "pagination": {
+    "previous": "Vorige",
+    "next": "Volgende",
+    "pageInfo": "Pagina {{current}} van {{total}}"
+  },
+  "error": {
+    "statusError": "Fout",
+    "fetchFailed": "Kan locatiegegevens niet ophalen",
+    "fetchingData": "Fout bij ophalen gegevens",
+    "fetchingHeadquarters": "Fout bij ophalen hoofdkantoren",
+    "shareFailed": "Delen mislukt"
+  },
+  "alert": {
+    "copiedToClipboard": "Locatiegegevens gekopieerd naar klembord!"
+  }
+}

@@ -1,0 +1,88 @@
+{
+    "loading": {
+      "transactionDetails": "Chargement des détails de la transaction..."
+    },
+    "error": {
+      "title": "Erreur de Transaction",
+      "failedToLoad": "Échec du chargement des détails de la transaction"
+    },
+    "navigation": {
+      "backToHome": "Retour à l'Accueil",
+      "trackOrder": "Suivre la Commande"
+    },
+    "payment": {
+      "status": "Paiement {{status}}",
+      "youSent": "Vous avez envoyé",
+      "transferRate": "Taux de Change",
+      "fee": "Frais",
+      "transactionType": "Type de Transaction",
+      "status": "Statut",
+      "createdOn": "Créé le",
+      "receivedAmount": "Montant Reçu",
+      "totalToPay": "Total à payer"
+    },
+    "wallet": {
+      "connected": "Portefeuille {{walletName}} connecté",
+      "connectToPayment": "Connectez votre portefeuille {{walletType}} pour procéder au paiement",
+      "transactionSubmitted": "Transaction Soumise!",
+      "hash": "Hash: {{txHash}}",
+      "trackingNumber": "Numéro de suivi: {{trackingNumber}}"
+    },
+    "paymentInstructions": {
+      "title": "Instructions de Paiement",
+      "sendPayment": "Veuillez envoyer le paiement suivant depuis votre portefeuille:",
+      "recipientAddress": "Adresse du Destinataire:",
+      "amount": "Montant:",
+      "network": "Réseau:",
+      "reference": "Référence:"
+    },
+    "connectedWallet": {
+      "title": "Portefeuille Connecté",
+      "wallet": "Portefeuille:",
+      "address": "Adresse:",
+      "network": "Réseau:"
+    },
+    "transactionInstructions": {
+      "title": "Instructions de Transaction",
+      "initiateTransfer": "Cliquez sur le bouton \"Payer Maintenant\" ci-dessous pour initier un transfert depuis votre {{walletName}}.",
+      "connectWallet": "Connectez votre portefeuille {{walletType}} en cliquant sur le bouton \"Connecter le Portefeuille\" ci-dessous.",
+      "approveTransaction": "Approuvez la transaction dans votre portefeuille lorsque vous y êtes invité.",
+      "paymentProcessing": "Le paiement sera traité une fois la confirmation de la blockchain reçue.",
+      "recipientReceiveFunds": "Le destinataire recevra les fonds via l'argent mobile une fois le traitement terminé.",
+      "transactionProcessing": "Votre transaction est en cours de traitement.",
+      "keepTrackingNumber": "Conservez votre numéro de suivi comme référence.",
+      "notifyComplete": "Vous serez notifié une fois la transaction terminée."
+    },
+    "buttons": {
+      "processing": "Traitement en cours...",
+      "paymentSent": "Paiement Envoyé",
+      "payWith": "Payer avec {{walletName}}",
+      "payNow": "Payer Maintenant",
+      "connecting": "Connexion...",
+      "connectWallet": "Connecter le Portefeuille {{walletType}}"
+    },
+    "notifications": {
+      "copySuccess": "Adresse copiée dans le presse-papiers",
+      "copyFailed": "Échec de la copie de l'adresse",
+      "preparingTransaction": "Préparation de la transaction...",
+      "approveTransaction": "Veuillez approuver la transaction dans votre {{walletName}}...",
+      "transactionSubmitted": "Transaction soumise. En attente de confirmation...",
+      "transactionConfirmed": "Transaction confirmée!",
+      "viewOnExplorer": "Voir sur l'explorateur:",
+      "notifyingServer": "Notification au serveur concernant votre paiement sur {{network}}...",
+      "paymentCompleted": "Paiement effectué avec succès!",
+      "serverVerificationFailed": "Transaction réussie, mais le serveur n'a pas pu la vérifier. Veuillez contacter le support.",
+      "transactionCompleted": "Transaction terminée, mais nous n'avons pas pu notifier notre serveur. Veuillez contacter le support avec votre hash de transaction."
+    },
+    "errors": {
+      "noTransactionId": "Aucun ID de transaction trouvé",
+      "networkError": "Erreur réseau: Impossible de récupérer les détails de la transaction",
+      "noWalletConnected": "Aucun portefeuille n'est connecté",
+      "noPaymentInstructions": "Instructions de paiement non disponibles",
+      "unsupportedWalletType": "Type de portefeuille non pris en charge: {{walletType}}",
+      "transactionRejected": "Transaction rejetée par l'utilisateur",
+      "insufficientFunds": "Fonds insuffisants pour cette transaction",
+      "networkConnectionError": "Erreur réseau. Veuillez vérifier votre connexion au portefeuille.",
+      "transactionTimeout": "La transaction a peut-être été soumise mais la confirmation a expiré. Veuillez vérifier le statut dans votre portefeuille."
+    }
+  }

@@ -1,0 +1,15 @@
+
+
+{
+  "title": "Historique des Transactions",
+  "subtitle": "Consultez et suivez toutes vos transactions précédentes",
+  "newTransfer": "Commencer un Nouveau Transfert",
+  "searchPlaceholder": "Rechercher par référence, type, statut ou devise",
+  "filter": "Filtrer",
+  "errors": {
+    "title": "Erreur de Chargement des Transactions",
+    "fetchFailed": "Échec de la récupération de l'historique des transactions",
+    "networkError": "Erreur réseau: Impossible de récupérer l'historique des transactions",
+    "tryAgain": "Réessayer"
+  }
+}

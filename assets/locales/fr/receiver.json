@@ -1,0 +1,27 @@
+{
+    "progress": {
+      "receiverInfo": "Informations du destinataire",
+      "receiverMethod": "Méthode du destinataire",
+      "reviewDetails": "Vérification des détails",
+      "paymentComplete": "Paiement terminé",
+      "enterInfo": "Saisissez les informations"
+    },
+    "headingTitle": "Informations du destinataire",
+    "headingDescription": "Vous pouvez voir tous les détails de votre transaction, vérifier que vous n'avez fait aucune erreur et si nécessaire, modifier les informations sur cette page.",
+    "benefitButton": "Je suis le bénéficiaire",
+    "form": {
+      "sendingCountry": "Pays d'envoi - Devise",
+      "countryPlaceholder": "Choisissez votre devise p. ex. USD, ETH",
+      "beneficiaryReceives": "Le bénéficiaire reçoit",
+      "beneficiaryPlaceholder": "Entrez le montant que reçoit le bénéficiaire",
+      "amountSent": "Montant envoyé",
+      "amountPlaceholder": "Entrez votre montant",
+      "cancel": "Annuler",
+      "continue": "Continuer"
+    },
+    "contacts": {
+      "title": "Déjà ajoutés",
+      "searchPlaceholder": "Rechercher",
+      "transferAgain": "Transférer à nouveau"
+    }
+  }

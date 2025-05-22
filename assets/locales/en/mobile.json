@@ -1,0 +1,47 @@
+{
+    "progress": {
+      "receiverInfo": "Receiver's info",
+      "receiverMethod": "Receiver's Method",
+      "senderWallet": "Sender's Wallet",
+      "receiverCash": "Receiver's Cash",
+      "reviewDetails": "Review Details",
+      "receiverDetails": "Reciver's Details",
+      "confirmPayment": "Confirm Payment",
+      "paymentComplete": "Payment Complete",
+      "enterInfo": "Enter the informations"
+    },
+    "heading": {
+      "title": "Select your mobile money",
+      "description": "How would you like the money delivered?"
+    },
+    "notification": {
+      "selectMobileFirst": "Select Mobile Money First"
+    },
+    "mobileOptions": {
+      "orangeMoney": "Orange Money",
+      "wave": "Wave",
+      "mtn": "MTN",
+      "moovMoney": "Moov Money",
+      "paymentAccount": "Payment Mobile Money account"
+    },
+    "buttons": {
+      "back": "Back",
+      "continue": "Continue",
+      "cancel": "Cancel",
+      "submit": "Submit"
+    },
+    "popup": {
+      "title": "Phone Information",
+      "country": "Country",
+      "selectCountry": "Select country",
+      "phoneNumber": "Phone Number",
+      "phonePlaceholder": "123456789",
+      "language": "Language",
+      "selectLanguage": "Select language",
+      "english": "English",
+      "french": "French",
+      "spanish": "Spanish",
+      "portuguese": "Portuguese",
+      "availableOperators": "Available Operators"
+    }
+  }

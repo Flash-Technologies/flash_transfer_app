@@ -1,0 +1,18 @@
+{
+  "profile": {
+    "imageAlt": "प्रोफाइल",
+    "defaultUserName": "उपयोगकर्ता"
+  },
+  "menu": {
+    "myProfile": "मेरी प्रोफाइल",
+    "myTransaction": "मेरे लेनदेन",
+    "myRecipients": "मेरे प्राप्तकर्ता",
+    "trackTransfer": "ट्रांसफर ट्रैक करें",
+    "nft": "एनएफटी",
+    "myRank": "मेरी रैंक",
+    "myCards": "मेरे कार्ड",
+    "referFriend": "मित्र को रेफर करें",
+    "settings": "सेटिंग्स",
+    "logout": "लॉग आउट"
+  }
+}

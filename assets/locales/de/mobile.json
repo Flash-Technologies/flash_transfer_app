@@ -1,0 +1,47 @@
+{
+  "progress": {
+    "receiverInfo": "Informationen des Empfängers",
+    "receiverMethod": "Methode des Empfängers",
+    "senderWallet": "Brieftasche des Absenders",
+    "receiverCash": "Bargeld des Empfängers",
+    "reviewDetails": "Bewertungsdetails",
+    "receiverDetails": "Angaben des Empfängers",
+    "confirmPayment": "Zahlung bestätigen",
+    "paymentComplete": "Zahlung erfolgreich.",
+    "enterInfo": "Geben Sie die Informationen ein"
+  },
+  "heading": {
+    "title": "Wählen Sie Ihr mobiles Geld",
+    "description": "Wie soll das Geld geliefert werden?"
+  },
+  "notification": {
+    "selectMobileFirst": "Wählen Sie Mobile Money First"
+  },
+  "mobileOptions": {
+    "orangeMoney": "Orange Money",
+    "wave": "Welle",
+    "mtn": "ALCA",
+    "moovMoney": "Moov Money",
+    "paymentAccount": "Mobile Money-Konto für Zahlungen"
+  },
+  "buttons": {
+    "back": "Zurück",
+    "continue": "Weiter",
+    "cancel": "Abbrechen",
+    "submit": "Senden"
+  },
+  "popup": {
+    "title": "Telefoninformationen",
+    "country": "Staat",
+    "selectCountry": "Land auswählen",
+    "phoneNumber": "Telefonnummer",
+    "phonePlaceholder": "123456789",
+    "language": "Sprache",
+    "selectLanguage": "Sprache auswählen",
+    "english": "Englisch",
+    "french": "Französisch",
+    "spanish": "Spanisch",
+    "portuguese": "Portugiesisch",
+    "availableOperators": "Verfügbare Operatoren"
+  }
+}

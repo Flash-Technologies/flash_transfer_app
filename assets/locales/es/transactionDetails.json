@@ -1,0 +1,87 @@
+{
+  "page": {
+    "title": "Detalles de la transacción",
+    "subtitle": "Consulta los detalles completos de tu transacción",
+    "loading": "Cargando detalles de la transacción..."
+  },
+  "tracking": {
+    "label": "Número de seguimiento de Flash (FTN)",
+    "copied": "¡Copiado!"
+  },
+  "transaction": {
+    "title": "Detalles de la transacción",
+    "info": {
+      "title": "Información de transacciones",
+      "type": "Tipo",
+      "created": "Creada",
+      "completed": "Completado",
+      "orderId": "Order ID",
+      "statusDetail": "Detalle del estado"
+    },
+    "types": {
+      "CASH_TO_CRYPTO": "Dinero en efectivo a criptomonedas",
+      "CRYPTO_TO_CASH": "Cripto a efectivo",
+      "MOBILE_TO_CRYPTO": "De dinero móvil a criptomonedas",
+      "CASH_TO_MOBILE": "Dinero en efectivo a dinero móvil"
+    }
+  },
+  "payment": {
+    "title": "Details de pago",
+    "amount": "Importe",
+    "fee": "Tarifa",
+    "totalWithFee": "TOTAL con",
+    "exchangeRate": "Tasa de cambio",
+    "feeBreakdown": {
+      "title": "Desglose de cuotas",
+      "gasFee": "tarifa de gas",
+      "baseFee": "Tarifa base",
+      "providerFee": "Tarifa del proveedor",
+      "discounts": "Descuentos"
+    }
+  },
+  "user": {
+    "title": "Información del usuario",
+    "name": "Nombre",
+    "email": "Correo electrónico",
+    "loyaltyRank": "Rango de lealtad",
+    "loyaltyPoints": "Puntos de Lealtad",
+    "points": "pts"
+  },
+  "source": {
+    "title": "Información de la Fuente",
+    "type": "Tipo",
+    "currency": "Moneda",
+    "country": "País",
+    "phoneNumber": "Número de teléfono",
+    "paymentMethod": "Método de pago"
+  },
+  "destination": {
+    "title": "Información de destino",
+    "type": "Tipo",
+    "currency": "Moneda",
+    "walletAddress": "Dirección de la Billetera",
+    "network": "Red"
+  },
+  "blockchain": {
+    "title": "Información de Blockchain",
+    "txHash": "Hash de transacción",
+    "network": "Red"
+  },
+  "timeline": {
+    "title": "Cronograma de transacciones"
+  },
+  "buttons": {
+    "trackAnother": "Seguir otro",
+    "backToHome": "Volver al Inicio"
+  },
+  "errors": {
+    "notFound": "Error al recuperar la transacción. Comprueba el número de seguimiento e inténtalo de nuevo."
+  },
+  "status": {
+    "completed": "COMPLETADO",
+    "processing": "PROCESAMIENTO",
+    "pending": "PENDIENTE",
+    "failed": "FALLIDO",
+    "cancelled": "CANCELADO"
+  }
+}

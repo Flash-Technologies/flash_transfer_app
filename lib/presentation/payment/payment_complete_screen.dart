@@ -23,7 +23,6 @@ class _PaymentCompleteScreenState extends ConsumerState<PaymentCompleteScreen>
   bool _showNotificationModal = false;
   late AnimationController _pulseAnimationController;
 
-  // Mock transaction data
   final Map<String, String> _transactionDetails = {
     'You Sent': '100 EUR',
     'Transfer Rate': '1 USDT = 1 EUR',
@@ -33,7 +32,6 @@ class _PaymentCompleteScreenState extends ConsumerState<PaymentCompleteScreen>
     'Total to pay': '102.50 EUR',
   };
 
-  // Mock notifications
   final List<NotificationItem> _notifications = [
     NotificationItem(
       action: 'Payment sent!',

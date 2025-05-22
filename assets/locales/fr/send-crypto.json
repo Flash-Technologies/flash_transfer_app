@@ -1,0 +1,102 @@
+{
+    "progressSteps": {
+      "step1": {
+        "label": "Informations du destinataire",
+        "description": "Saisir les informations"
+      },
+      "step2": {
+        "label": "Méthode d'envoi",
+        "description": "Choisir le moyen de paiement"
+      },
+      "step3": {
+        "label": "Méthode de réception",
+        "description": "Méthode de livraison"
+      },
+      "step4": {
+        "label": "Paiement terminé",
+        "description": "Confirmation"
+      }
+    },
+    "mobileProgress": {
+      "title": "Informations de l'expéditeur",
+      "description": "Saisissez les informations"
+    },
+    "navigation": {
+      "back": "Retour",
+      "cancel": "Annuler"
+    },
+    "header": {
+      "title": "Envoyer un paiement en crypto",
+      "description": "Connectez votre portefeuille et envoyez des paiements en cryptomonnaie en toute sécurité partout dans le monde."
+    },
+    "network": {
+      "label": "Sélectionner le réseau blockchain",
+      "required": "*",
+      "select": "Veuillez sélectionner un réseau blockchain pour continuer",
+      "security": {
+        "production": "Réseau de production",
+        "test": "Réseau de test",
+        "development": "Réseau de développement"
+      }
+    },
+    "wallet": {
+      "connect": {
+        "title": "Connectez votre portefeuille",
+        "description": "Connectez-vous pour continuer avec le paiement en crypto",
+        "button": "Connecter le portefeuille",
+        "connecting": "Connexion en cours...",
+        "scanQR": "Scannez avec votre application de portefeuille"
+      },
+      "change": {
+        "title": "Changer de portefeuille",
+        "description": "Passez à un portefeuille différent si nécessaire",
+        "button": "Changer de portefeuille",
+        "changing": "Changement en cours..."
+      },
+      "connected": {
+        "status": "Connecté",
+        "active": "Actif",
+        "address": "Copier",
+        "copied": "Copié",
+        "disconnectButton": "Déconnecter le portefeuille",
+        "disconnecting": "Déconnexion en cours...",
+        "changeWallet": "Ou changer de portefeuille"
+      },
+      "balance": {
+        "label": "Solde :",
+        "loading": "Chargement...",
+        "refresh": "Actualiser le solde"
+      }
+    },
+    "actions": {
+      "continue": "Continuer",
+      "loading": "Chargement...",
+      "enableText": {
+        "wallet": "Veuillez connecter votre portefeuille pour continuer",
+        "network": "Veuillez sélectionner un réseau blockchain pour continuer",
+        "token": "Veuillez sélectionner un jeton pour continuer",
+        "balance": "Chargement des informations de votre solde..."
+      }
+    },
+    "errors": {
+      "noCopy": "Pas d'adresse à copier",
+      "copyFailed": "Échec de la copie de l'adresse",
+      "noWallet": "Veuillez connecter un portefeuille avant de continuer",
+      "noToken": "Veuillez sélectionner un jeton avant de continuer",
+      "noNetwork": "Veuillez sélectionner un réseau blockchain avant de continuer",
+      "connectWalletFirst": "Veuillez d'abord connecter un portefeuille et sélectionner un jeton et un réseau",
+      "connectionTimeout": "La tentative de connexion a expiré. Veuillez réessayer.",
+      "walletSelector": "Échec de l'ouverture du sélecteur de portefeuille",
+      "connectWallet": "Échec de la connexion au portefeuille",
+      "disconnectWallet": "Erreur lors de la déconnexion du portefeuille"
+    },
+    "success": {
+      "copied": "Adresse copiée dans le presse-papiers",
+      "balanceRefreshed": "Solde actualisé avec succès",
+      "disconnected": "Portefeuille déconnecté avec succès",
+      "walletSaved": "Informations du portefeuille enregistrées avec succès"
+    },
+    "info": {
+      "noBalanceFunction": "Fonction getWalletBalance non disponible"
+    }
+  }

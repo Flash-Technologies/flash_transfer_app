@@ -1,0 +1,28 @@
+{
+  "section": {
+    "title": "Was unsere Kunden sagen"
+  },
+  "trustpilot": {
+    "title": "TrustPilot",
+    "description": "Unsere Bewertungen verifiziert durch Trustpilot"
+  },
+  "navigation": {
+    "previous": "Vorherige Bewertung",
+    "next": "Nächste Bewertung"
+  },
+  "testimonial1": {
+    "author": "Bertram Jensen",
+    "role": "Autor bei Panepply Store",
+    "content": "Flash Transfer ist unglaublich praktisch! Ich habe Krypto an meine Familie gesendet, und sie konnten das Bargeld sofort über Wave ohne Probleme abholen. Sehr empfehlenswert!"
+  },
+  "testimonial2": {
+    "author": "Sarah Williams",
+    "role": "Marketing-Direktorin",
+    "content": "Endlich eine einfache und schnelle Lösung, um meine Krypto in Bargeld umzuwandeln! Die Gebühren sind transparent, und ich schätze es, meinen bevorzugten lokalen Partner (Orange Money in meinem Fall) wählen zu können. Sehr zufrieden!"
+  },
+  "testimonial3": {
+    "author": "Michael Chen",
+    "role": "Senior Entwickler",
+    "content": "Super benutzerfreundlich, zuverlässig und schnell. Die automatische Konvertierung von Krypto zur Vermeidung von Preisschwankungen ist ein großer Vorteil. Flash Transfer vereinfacht wirklich die Krypto-zu-Fiat-Geldtransfers."
+  }
+}

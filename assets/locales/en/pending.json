@@ -1,0 +1,59 @@
+{
+    "loading": {
+      "title": "Loading transaction details..."
+    },
+    "error": {
+      "title": "Transaction Error",
+      "noId": "No transaction ID found",
+      "fetchFailed": "Failed to fetch transaction details",
+      "networkError": "Network error: Could not fetch transaction details",
+      "defaultError": "Failed to load transaction details"
+    },
+    "transaction": {
+      "status": {
+        "title": "Payment {status}",
+        "pending": "Pending",
+        "completed": "Completed",
+        "failed": "Failed",
+        "cancelled": "Cancelled",
+        "processing": "Processing"
+      },
+      "details": {
+        "youSent": "You Sent",
+        "transferRate": "Transfer Rate",
+        "fee": "Fee",
+        "transactionType": "Transaction Type",
+        "status": "Status",
+        "createdOn": "Created On",
+        "receivedAmount": "Received Amount",
+        "totalToPay": "Total to pay"
+      },
+      "tracking": {
+        "label": "Tracking number: {number}"
+      },
+      "instructions": {
+        "title": "Transaction Instructions",
+        "mobileMoney": [
+          "Click on the \"Pay Now\" button below to complete your mobile money payment.",
+          "Follow the instructions on the payment page.",
+          "Once payment is confirmed, your transaction will be processed."
+        ],
+        "cashToCrypto": [
+          "Visit one of our authorized cash collection points.",
+          "Present your tracking number: {trackingNumber}",
+          "Make your cash payment.",
+          "Once confirmed, your crypto will be sent to your wallet."
+        ],
+        "default": [
+          "Your transaction is being processed.",
+          "Keep your tracking number for reference.",
+          "You will be notified once the transaction is complete."
+        ]
+      }
+    },
+    "buttons": {
+      "backToHome": "Back to Home",
+      "payNow": "Pay Now",
+      "trackOrder": "Track Order"
+    }
+  }

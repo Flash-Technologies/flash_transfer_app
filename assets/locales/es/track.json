@@ -1,0 +1,40 @@
+{
+    "form": {
+      "heading": "Rastrear una {{action}}",
+      "action": "Transferencia",
+      "subheading": "El hogar está atrás, el mundo adelante y hay muchos caminos que recorrer entre las sombras hasta el borde.",
+      "send": "Enviar",
+      "receive": "Recibir",
+      "trackingLabel": "Ingrese el número de seguimiento o ID de transacción",
+      "trackingPlaceholder": "Número de seguimiento Flash (FTN) o ID de transacción",
+      "continue": "Continuar",
+      "searching": "Buscando..."
+    },
+    "status": {
+      "heading": "Rastrear {{action}}",
+      "action": "Estado",
+      "subheading": "Mantente informado sobre tus transferencias con seguimiento en tiempo real. Conoce exactamente cuándo se inicia, procesa y completa tu transacción para tu completa tranquilidad.",
+      "trackingLabel": "Número de seguimiento Flash (FTN)",
+      "cryptoPurchase": "Compra de cripto",
+      "amount": "Cantidad",
+      "totalWithFee": "Total con comisión",
+      "fee": "Comisión",
+      "exchangeRate": "Tipo de cambio",
+      "timeline": "Línea de tiempo de la transacción",
+      "blockchainTransaction": "Transacción blockchain",
+      "trackAnother": "Rastrear otra",
+      "backToHome": "Volver al inicio",
+      "statuses": {
+        "completed": "COMPLETADO",
+        "processing": "PROCESANDO",
+        "pending": "PENDIENTE",
+        "failed": "FALLIDO",
+        "cancelled": "CANCELADO"
+      }
+    },
+    "errors": {
+      "fetchFailed": "Error al obtener la transacción. Por favor, verifica el ID e intenta de nuevo.",
+      "emptyTracking": "Por favor, ingresa un número de seguimiento",
+      "invalidTracking": "Ingresa un ID de seguimiento o número de seguimiento válido"
+    }
+  }

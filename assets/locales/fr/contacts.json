@@ -1,0 +1,14 @@
+{
+ 
+      "heading": "Mes Contacts",
+      "subheading": "La maison est derrière, le monde est devant et il y a de nombreux chemins à parcourir à travers les ombres jusqu'au bout.",
+      "loading": "Chargement des contacts...",
+      "noContacts": "Vous n'avez pas encore de bénéficiaires",
+      "continue": "Continuer",
+      "addNew": "Ajouter",
+      "share": "Partager",
+      "errors": {
+        "fetchFailed": "Échec du chargement des contacts"
+      }
+    
+  }

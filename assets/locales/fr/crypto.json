@@ -1,0 +1,45 @@
+{
+    "page": {
+      "heading": "Confirmer l'adresse Crypto",
+      "subheading": "Comment souhaitez-vous que l'argent soit livré ?"
+    },
+    "form": {
+      "addressLabel": "Entrez l'adresse Crypto d'une chaîne EVM :",
+      "addressSubLabel": "(ETH, Polygon, Base, Arbitrum, Optimism ...)",
+      "addressPlaceholder": "0x.................................",
+      "cryptoLabel": "Crypto sélectionnée",
+      "cryptoPlaceholder": "USDT",
+      "blockchainLabel": "Sélectionnez la Blockchain",
+      "cancelButton": "Annuler",
+      "continueButton": "Continuer",
+      "validatingButton": "Validation en cours..."
+    },
+    "validation": {
+      "invalidFormat": "Format d'adresse invalide pour le réseau sélectionné. Veuillez vérifier et réessayer.",
+      "selectNetwork": "Veuillez sélectionner un réseau blockchain",
+      "enterValidAddress": "Veuillez entrer une adresse de portefeuille valide pour le réseau sélectionné",
+      "validatingAddress": "Validation de l'adresse avant de continuer...",
+      "waitValidating": "Veuillez patienter pendant que nous validons votre adresse...",
+      "networkError": "Erreur réseau lors de la validation de l'adresse",
+      "failed": "Échec de la validation de l'adresse",
+      "invalidForNetwork": "Format d'adresse invalide pour {{networkName}}"
+    },
+    "steps": {
+      "receiverInfo": {
+        "label": "Infos du destinataire",
+        "description": "Entrez les informations"
+      },
+      "receiverMethod": {
+        "label": "Méthode du destinataire",
+        "description": "Entrez les informations"
+      },
+      "reviewDetails": {
+        "label": "Vérifier les détails",
+        "description": "Entrez les informations"
+      },
+      "paymentComplete": {
+        "label": "Paiement terminé",
+        "description": "Entrez les informations"
+      }
+    }
+  }

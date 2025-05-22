@@ -1,0 +1,39 @@
+{
+  "logo": {
+    "alt": "شعار Flash Transfer"
+  },
+  "company": {
+    "name": "Flash Transfer",
+    "description": "أرسل واشتر وبع العملات المشفرة بسهولة في جميع أنحاء العالم مع Flash Transfer."
+  },
+  "social": {
+    "twitter": "تويتر",
+    "facebook": "فيسبوك",
+    "instagram": "إنستغرام",
+    "youtube": "يوتيوب",
+    "pinterest": "بينترست"
+  },
+  "links": {
+    "company": {
+      "title": "الشركة",
+      "about": "عن الشركة",
+      "faq": "الأسئلة الشائعة",
+      "blog": "المدونة",
+      "countries": "الدول"
+    },
+    "information": {
+      "title": "المعلومات",
+      "app": "تحميل التطبيق",
+      "currency": "جميع العملات",
+      "support": "الدعم",
+      "status": "الحالة"
+    }
+  },
+  "newsletter": {
+    "title": "ابق على اطلاع",
+    "description": "اشترك في نشرتنا الإخبارية الأسبوعية للحصول على التحديثات",
+    "placeholder": "أدخل بريدك الإلكتروني",
+    "button": "اشترك"
+  },
+  "copyright": "حقوق الطبع والنشر {{year}} © Flash Technologies. جميع الحقوق محفوظة."
+}

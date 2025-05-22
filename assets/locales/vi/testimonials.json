@@ -1,0 +1,28 @@
+{
+  "section": {
+    "title": "Khách hàng của chúng tôi nói gì"
+  },
+  "trustpilot": {
+    "title": "TrustPilot",
+    "description": "Đánh giá của chúng tôi được xác minh bởi Trustpilot"
+  },
+  "navigation": {
+    "previous": "Nhận xét trước",
+    "next": "Nhận xét tiếp theo"
+  },
+  "testimonial1": {
+    "author": "Bertram Jensen",
+    "role": "Tác giả tại Panepply Store",
+    "content": "Flash Transfer cực kỳ tiện lợi! Tôi đã gửi tiền điện tử cho gia đình và họ có thể nhận tiền mặt ngay lập tức qua Wave mà không gặp bất kỳ khó khăn nào. Rất đáng để giới thiệu!"
+  },
+  "testimonial2": {
+    "author": "Sarah Williams",
+    "role": "Giám đốc Marketing",
+    "content": "Cuối cùng cũng có một giải pháp dễ dàng và nhanh chóng để chuyển đổi tiền điện tử của tôi sang tiền mặt! Phí minh bạch và tôi đánh giá cao việc có thể chọn đối tác địa phương ưa thích (Orange Money, trong trường hợp của tôi). Rất hài lòng!"
+  },
+  "testimonial3": {
+    "author": "Michael Chen",
+    "role": "Nhà phát triển cấp cao",
+    "content": "Cực kỳ thân thiện với người dùng, đáng tin cậy và nhanh chóng. Việc chuyển đổi tiền điện tử tự động để tránh biến động giá là một lợi thế lớn. Flash Transfer thực sự đơn giản hóa việc chuyển tiền từ crypto sang fiat."
+  }
+}

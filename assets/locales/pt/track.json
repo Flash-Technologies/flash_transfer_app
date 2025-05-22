@@ -1,0 +1,40 @@
+{
+  "form": {
+    "heading": "Rastrear uma {{action}}",
+    "action": "Transferência",
+    "subheading": "O lar está atrás, o mundo à frente e há muitos caminhos a percorrer através das sombras até a extremidade.",
+    "send": "Enviar",
+    "receive": "Receber",
+    "trackingLabel": "Digite o número de rastreamento ou ID da transação",
+    "trackingPlaceholder": "Número de rastreamento Flash (FTN) ou ID da transação",
+    "continue": "Continuar",
+    "searching": "Pesquisando..."
+  },
+  "status": {
+    "heading": "Rastrear um {{action}}",
+    "action": "Status",
+    "subheading": "Mantenha-se atualizado sobre suas transferências com rastreamento de status em tempo real. Saiba exatamente quando sua transação é iniciada, processada e concluída para total tranquilidade.",
+    "trackingLabel": "Número de rastreamento Flash (FTN)",
+    "cryptoPurchase": "Compra de cripto",
+    "amount": "Valor",
+    "totalWithFee": "Total com taxa",
+    "fee": "Taxa",
+    "exchangeRate": "Taxa de câmbio",
+    "timeline": "Linha do tempo da transação",
+    "blockchainTransaction": "Transação blockchain",
+    "trackAnother": "Rastrear outra",
+    "backToHome": "Voltar ao início",
+    "statuses": {
+      "completed": "CONCLUÍDO",
+      "processing": "PROCESSANDO",
+      "pending": "PENDENTE",
+      "failed": "FALHOU",
+      "cancelled": "CANCELADO"
+    }
+  },
+  "errors": {
+    "fetchFailed": "Falha ao buscar transação. Por favor, verifique o ID e tente novamente.",
+    "emptyTracking": "Por favor, insira um número de rastreamento",
+    "invalidTracking": "Digite um ID de rastreamento ou número de rastreamento válido"
+  }
+}

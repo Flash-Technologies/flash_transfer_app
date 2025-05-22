@@ -1,0 +1,27 @@
+{
+  "title": "Senden über",
+  "subtitle": "Die Heimat liegt hinter uns, die Welt vor uns und es gibt viele Wege durch Schatten bis zum Rand.",
+  "subtitle_mobile": "Die Heimat liegt hinter uns, die Welt vor uns und es gibt viele Wege durch Schatten bis zum Rand.",
+  "payment": {
+    "title": "Wie möchten Sie bezahlen?",
+    "methods": {
+      "cash": "Barzahlung",
+      "crypto": "Krypto Wallet",
+      "card": "Kreditkarte",
+      "bank": "Banküberweisung",
+      "mobile": "Mobile Money"
+    }
+  },
+  "receiver": {
+    "title": "Wie möchte Ihr Empfänger das Geld erhalten?",
+    "methods": {
+      "cash": "Barzahlung",
+      "crypto": "Krypto Wallet",
+      "mobile": "Mobile Money"
+    }
+  },
+  "buttons": {
+    "addFromContact": "Aus Kontakten hinzufügen",
+    "addNew": "Neu hinzufügen"
+  }
+}

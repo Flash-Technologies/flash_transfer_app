@@ -1,0 +1,13 @@
+{
+  "title": "Transaktionsverlauf",
+  "subtitle": "Sehen Sie sich alle Ihre vorherigen Transaktionen an und verfolgen Sie diese",
+  "newTransfer": "Neue Überweisung starten",
+  "searchPlaceholder": "Suche nach Referenz, Typ, Status oder Währung",
+  "filter": "Filter",
+  "errors": {
+    "title": "Fehler beim Laden der Transaktionen",
+    "fetchFailed": "Transaktionsverlauf konnte nicht abgerufen werden",
+    "networkError": "Netzwerkfehler: Transaktionsverlauf konnte nicht abgerufen werden",
+    "tryAgain": "Erneut versuchen"
+  }
+}

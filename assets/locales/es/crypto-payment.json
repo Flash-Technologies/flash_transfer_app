@@ -1,0 +1,87 @@
+{
+  "loading": {
+    "transactionDetails": "Cargando detalles de la transacción..."
+  },
+  "error": {
+    "title": "Error en la transacción: ",
+    "failedToLoad": "Error al actualizar los datos de la transacción"
+  },
+  "navigation": {
+    "backToHome": "Volver al Inicio",
+    "trackOrder": "Rastrea tu Pedido"
+  },
+  "payment": {
+    "status": "Estado",
+    "youSent": "Has enviado",
+    "transferRate": "Velocidad de transferencia",
+    "fee": "Tarifa",
+    "transactionType": "Tipo de transacción",
+    "createdOn": "Creado el",
+    "receivedAmount": "Importe recibido",
+    "totalToPay": "Total a pagar"
+  },
+  "wallet": {
+    "connected": "{{walletName}} wallet connected",
+    "connectToPayment": "Connect {{walletType}} wallet to proceed with payment",
+    "transactionSubmitted": "Transacción enviada",
+    "hash": "Hash: {{txHash}}",
+    "trackingNumber": "Tracking number: {{trackingNumber}}"
+  },
+  "paymentInstructions": {
+    "title": "Instrucciones de pago",
+    "sendPayment": "Envía el siguiente pago desde tu monedero:",
+    "recipientAddress": "Domicilio del destinatario:",
+    "amount": "Importe:",
+    "network": "red:",
+    "reference": "Referencia:"
+  },
+  "connectedWallet": {
+    "title": "Cartera conectada",
+    "wallet": "Cartera:",
+    "address": "Dirección:",
+    "network": "red:"
+  },
+  "transactionInstructions": {
+    "title": "Instrucciones de transacción",
+    "initiateTransfer": "Click on the \"Pay Now\" button below to initiate a transfer from your {{walletName}}.",
+    "connectWallet": "Connect your {{walletType}} wallet by clicking the \"Connect Wallet\" button below.",
+    "approveTransaction": "Aprueba la transacción en tu monedero cuando se te solicite.",
+    "paymentProcessing": "El pago se procesará una vez que se reciba la confirmación de la cadena de bloques.",
+    "recipientReceiveFunds": "El destinatario recibirá los fondos a través de dinero móvil una vez procesados.",
+    "transactionProcessing": "La transacción se está procesando",
+    "keepTrackingNumber": "Conserve su número de seguimiento como referencia.",
+    "notifyComplete": "Se le notificará una vez que se complete la transacción."
+  },
+  "buttons": {
+    "processing": "Procesando...",
+    "paymentSent": "Pago enviado",
+    "payWith": "Pay with {{walletName}}",
+    "payNow": ".",
+    "connecting": "Conectando...",
+    "connectWallet": "Connect {{walletType}} Wallet"
+  },
+  "notifications": {
+    "copySuccess": "Dirección copiada al portapapeles.",
+    "copyFailed": "No se ha podido copiar la dirección",
+    "preparingTransaction": "Preparando transacción...",
+    "approveTransaction": "Please approve the transaction in your {{walletName}}...",
+    "transactionSubmitted": "Transacción enviada. Esperando confirmación...",
+    "transactionConfirmed": "Transacción confirmada",
+    "viewOnExplorer": "Ver en el explorador:",
+    "notifyingServer": "Notifying server about your payment on {{network}}...",
+    "paymentCompleted": "El pago se ha completado con éxito",
+    "serverVerificationFailed": "Transacción correcta, pero el servidor no pudo verificarla. Ponte en contacto con el servicio de asistencia.",
+    "transactionCompleted": "Transacción completada, pero no hemos podido notificar a nuestro servidor. Póngase en contacto con el servicio de asistencia con su hash de transacción."
+  },
+  "errors": {
+    "noTransactionId": "Transacción no encontrada",
+    "networkError": "Error de red: no se han podido obtener los detalles de la transacción",
+    "noWalletConnected": "No hay ningún monedero conectado",
+    "noPaymentInstructions": "Instrucciones de pago no disponibles",
+    "unsupportedWalletType": "Unsupported wallet type: {{walletType}}",
+    "transactionRejected": "Transacción rechazada por el usuario",
+    "insufficientFunds": "Transacción con fondos insuficientes",
+    "networkConnectionError": "Error de red. Comprueba la conexión de tu monedero.",
+    "transactionTimeout": "Es posible que se haya enviado la transacción, pero se ha agotado el tiempo de espera de la confirmación. Comprueba el estado de tu monedero."
+  }
+}

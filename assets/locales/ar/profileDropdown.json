@@ -1,0 +1,18 @@
+{
+  "profile": {
+    "imageAlt": "الملف الشخصي",
+    "defaultUserName": "المستخدم"
+  },
+  "menu": {
+    "myProfile": "ملفي الشخصي",
+    "myTransaction": "معاملاتي",
+    "myRecipients": "المستلمون",
+    "trackTransfer": "تتبع التحويل",
+    "nft": "الرموز غير القابلة للاستبدال",
+    "myRank": "رتبتي",
+    "myCards": "بطاقاتي",
+    "referFriend": "دعوة صديق",
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج"
+  }
+}

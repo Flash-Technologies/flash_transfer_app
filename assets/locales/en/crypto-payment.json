@@ -1,0 +1,88 @@
+{
+    "loading": {
+      "transactionDetails": "Loading transaction details..."
+    },
+    "error": {
+      "title": "Transaction Error",
+      "failedToLoad": "Failed to load transaction details"
+    },
+    "navigation": {
+      "backToHome": "Back to Home",
+      "trackOrder": "Track Order"
+    },
+    "payment": {
+      "status": "Payment {{status}}",
+      "youSent": "You Sent",
+      "transferRate": "Transfer Rate",
+      "fee": "Fee",
+      "transactionType": "Transaction Type",
+      "status": "Status",
+      "createdOn": "Created On",
+      "receivedAmount": "Received Amount",
+      "totalToPay": "Total to pay"
+    },
+    "wallet": {
+      "connected": "{{walletName}} wallet connected",
+      "connectToPayment": "Connect {{walletType}} wallet to proceed with payment",
+      "transactionSubmitted": "Transaction Submitted!",
+      "hash": "Hash: {{txHash}}",
+      "trackingNumber": "Tracking number: {{trackingNumber}}"
+    },
+    "paymentInstructions": {
+      "title": "Payment Instructions",
+      "sendPayment": "Please send the following payment from your wallet:",
+      "recipientAddress": "Recipient Address:",
+      "amount": "Amount:",
+      "network": "Network:",
+      "reference": "Reference:"
+    },
+    "connectedWallet": {
+      "title": "Connected Wallet",
+      "wallet": "Wallet:",
+      "address": "Address:",
+      "network": "Network:"
+    },
+    "transactionInstructions": {
+      "title": "Transaction Instructions",
+      "initiateTransfer": "Click on the \"Pay Now\" button below to initiate a transfer from your {{walletName}}.",
+      "connectWallet": "Connect your {{walletType}} wallet by clicking the \"Connect Wallet\" button below.",
+      "approveTransaction": "Approve the transaction in your wallet when prompted.",
+      "paymentProcessing": "The payment will be processed once blockchain confirmation is received.",
+      "recipientReceiveFunds": "The recipient will receive the funds via mobile money once processed.",
+      "transactionProcessing": "Your transaction is being processed.",
+      "keepTrackingNumber": "Keep your tracking number for reference.",
+      "notifyComplete": "You will be notified once the transaction is complete."
+    },
+    "buttons": {
+      "processing": "Processing...",
+      "paymentSent": "Payment Sent",
+      "payWith": "Pay with {{walletName}}",
+      "payNow": "Pay Now",
+      "connecting": "Connecting...",
+      "connectWallet": "Connect {{walletType}} Wallet"
+    },
+    "notifications": {
+      "copySuccess": "Address copied to clipboard",
+      "copyFailed": "Failed to copy address",
+      "preparingTransaction": "Preparing transaction...",
+      "approveTransaction": "Please approve the transaction in your {{walletName}}...",
+      "transactionSubmitted": "Transaction submitted. Waiting for confirmation...",
+      "transactionConfirmed": "Transaction confirmed!",
+      "viewOnExplorer": "View on explorer:",
+      "notifyingServer": "Notifying server about your payment on {{network}}...",
+      "paymentCompleted": "Payment completed successfully!",
+      "serverVerificationFailed": "Transaction successful, but server couldn't verify it. Please contact support.",
+      "transactionCompleted": "Transaction completed, but we couldn't notify our server. Please contact support with your transaction hash."
+    },
+    "errors": {
+      "noTransactionId": "No transaction ID found",
+      "networkError": "Network error: Could not fetch transaction details",
+      "noWalletConnected": "No wallet is connected",
+      "noPaymentInstructions": "Payment instructions not available",
+      "unsupportedWalletType": "Unsupported wallet type: {{walletType}}",
+      "transactionRejected": "Transaction rejected by user",
+      "insufficientFunds": "Insufficient funds for transaction",
+      "networkConnectionError": "Network error. Please check your wallet connection.",
+      "transactionTimeout": "Transaction may have been submitted but confirmation timed out. Please check your wallet for status."
+    }
+  }

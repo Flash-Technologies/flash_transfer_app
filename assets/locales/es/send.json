@@ -1,0 +1,27 @@
+{
+    "title": "Enviar a través de",
+    "subtitle": "El hogar está atrás, el mundo adelante y hay muchos caminos que recorrer entre las sombras hasta el borde.",
+    "subtitle_mobile": "El hogar está atrás, el mundo adelante y hay muchos caminos que recorrer entre las sombras hasta el borde.",
+    "payment": {
+      "title": "¿Cómo deseas pagar?",
+      "methods": {
+        "cash": "Pago en efectivo",
+        "crypto": "Monedero cripto",
+        "card": "Tarjeta de crédito",
+        "bank": "Transferencia bancaria",
+        "mobile": "Dinero móvil"
+      }
+    },
+    "receiver": {
+      "title": "¿Cómo quiere recibir el dinero tu beneficiario?",
+      "methods": {
+        "cash": "Pago en efectivo",
+        "crypto": "Monedero cripto",
+        "mobile": "Dinero móvil"
+      }
+    },
+    "buttons": {
+      "addFromContact": "Agregar desde contactos",
+      "addNew": "Agregar nuevo"
+    }
+  }

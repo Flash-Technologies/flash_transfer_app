@@ -1,0 +1,46 @@
+{
+  "hero": {
+    "title": "Các trụ sở chính của chúng tôi",
+    "subtitle": "Tìm các trụ sở chính và trung tâm dịch vụ Flash Transfer gần bạn"
+  },
+  "search": {
+    "title": "Tìm trụ sở chính",
+    "globalLocations": "Địa điểm toàn cầu",
+    "placeholder": "Tìm kiếm theo tên, thành phố hoặc quốc gia"
+  },
+  "map": {
+    "mapView": "Bản đồ",
+    "satelliteView": "Vệ tinh"
+  },
+  "location": {
+    "services": "Dịch vụ",
+    "hours": "Giờ làm việc",
+    "phone": "Điện thoại",
+    "hoursUnavailable": "Giờ làm việc không có sẵn"
+  },
+  "locations": {
+    "noLocations": "Không tìm thấy địa điểm nào.",
+    "tryDifferentSearch": "Thử một từ khóa tìm kiếm khác."
+  },
+  "buttons": {
+    "search": "Tìm kiếm",
+    "tryAgain": "Thử lại",
+    "share": "Chia sẻ",
+    "directions": "Chỉ đường"
+  },
+  "pagination": {
+    "previous": "Trước",
+    "next": "Tiếp theo",
+    "pageInfo": "Trang {{current}} của {{total}}"
+  },
+  "error": {
+    "statusError": "Lỗi",
+    "fetchFailed": "Không thể tải dữ liệu vị trí",
+    "fetchingData": "Lỗi khi tải dữ liệu",
+    "fetchingHeadquarters": "Lỗi khi tải trụ sở chính",
+    "shareFailed": "Chia sẻ thất bại"
+  },
+  "alert": {
+    "copiedToClipboard": "Chi tiết địa điểm đã được sao chép vào clipboard!"
+  }
+}

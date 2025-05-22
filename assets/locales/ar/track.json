@@ -1,0 +1,40 @@
+{
+  "form": {
+    "heading": "تتبع {{action}}",
+    "action": "التحويل",
+    "subheading": "الوطن خلفنا، والعالم أمامنا وهناك العديد من المسارات لنسلكها عبر الظلال إلى الحافة.",
+    "send": "إرسال",
+    "receive": "استلام",
+    "trackingLabel": "أدخل رقم التتبع أو معرف المعاملة",
+    "trackingPlaceholder": "رقم تتبع Flash (FTN) أو معرف المعاملة",
+    "continue": "متابعة",
+    "searching": "جاري البحث..."
+  },
+  "status": {
+    "heading": "تتبع {{action}}",
+    "action": "الحالة",
+    "subheading": "ابق على اطلاع بتحويلاتك من خلال تتبع الحالة في الوقت الفعلي. اعرف بالضبط متى تم بدء معاملتك ومعالجتها وإكمالها لراحة البال التامة.",
+    "trackingLabel": "رقم تتبع Flash (FTN)",
+    "cryptoPurchase": "شراء العملات المشفرة",
+    "amount": "المبلغ",
+    "totalWithFee": "الإجمالي مع الرسوم",
+    "fee": "الرسوم",
+    "exchangeRate": "سعر الصرف",
+    "timeline": "الجدول الزمني للمعاملة",
+    "blockchainTransaction": "معاملة البلوكتشين",
+    "trackAnother": "تتبع معاملة أخرى",
+    "backToHome": "العودة إلى الصفحة الرئيسية",
+    "statuses": {
+      "completed": "مكتملة",
+      "processing": "قيد المعالجة",
+      "pending": "معلقة",
+      "failed": "فشلت",
+      "cancelled": "ملغاة"
+    }
+  },
+  "errors": {
+    "fetchFailed": "فشل في جلب المعاملة. يرجى التحقق من المعرف والمحاولة مرة أخرى.",
+    "emptyTracking": "يرجى إدخال رقم التتبع",
+    "invalidTracking": "أدخل معرف تتبع أو رقم تتبع صالح"
+  }
+}

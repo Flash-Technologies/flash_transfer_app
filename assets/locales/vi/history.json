@@ -1,0 +1,13 @@
+{
+  "title": "Lịch sử giao dịch",
+  "subtitle": "Xem và theo dõi tất cả các giao dịch trước đây của bạn",
+  "newTransfer": "Bắt đầu chuyển tiền mới",
+  "searchPlaceholder": "Tìm kiếm theo mã tham chiếu, loại, trạng thái hoặc tiền tệ",
+  "filter": "Lọc",
+  "errors": {
+    "title": "Lỗi khi tải giao dịch",
+    "fetchFailed": "Không thể tải lịch sử giao dịch",
+    "networkError": "Lỗi mạng: Không thể tải lịch sử giao dịch",
+    "tryAgain": "Thử lại"
+  }
+}

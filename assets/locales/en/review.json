@@ -1,0 +1,88 @@
+{
+    "progress": {
+      "receiverInfo": {
+        "label": "Receiver's info",
+        "description": "Enter the informations"
+      },
+      "receiverMethod": {
+        "label": "Receiver's Method",
+        "description": "Enter the informations"
+      },
+      "reviewDetails": {
+        "label": "Review Details",
+        "description": "Enter the informations"
+      },
+      "paymentComplete": {
+        "label": "Payment Complete",
+        "description": "Enter the informations"
+      }
+    },
+    "header": {
+      "title": "Review Details",
+      "subheading": "Check the summary of your order before validating."
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "processing": "Processing...",
+      "confirm": "Confirm",
+      "calculating": "Calculating...",
+      "edit": "Edit"
+    },
+    "sections": {
+      "amount": {
+        "title": "Amount",
+        "editAmount": "Edit Amount"
+      },
+      "transferSummary": {
+        "title": "Transfer Summary",
+        "updating": "Updating...",
+        "amountToSend": "Amount to send",
+        "transferFee": "Transfer Fee",
+        "feeWaived": "Fee Waived",
+        "totalCost": "Total Cost",
+        "totalToRecipient": "Total to recipient",
+        "exchangeRate": "Exchange Rate",
+        "networkCongestion": "Network Congestion",
+        "congestionLow": "Low",
+        "congestionMedium": "Medium",
+        "congestionHigh": "High",
+        "totalToPay": "Total to pay",
+        "recipientGets": "Recipient Gets",
+        "availability": "Availability",
+        "transactionUnavailable": "Transaction unavailable at this time"
+      },
+      "senderDetails": {
+        "title": "Sender Details",
+        "kyc": "KYC",
+        "mobileProvider": "Mobile Provider",
+        "phoneNumber": "Phone Number",
+        "sourceOfFunds": "Source of funds",
+        "purposeOfTransaction": "Purpose of transaction"
+      },
+      "receiverDetails": {
+        "title": "Receiver details",
+        "walletAddress": "Wallet Address",
+        "blockchainNetwork": "Blockchain Network",
+        "mobileNumber": "Mobile Number",
+        "mobileProvider": "Mobile Provider",
+        "receiverCountry": "Receiver Country",
+        "youSent": "You sent",
+        "transferRate": "Transfer rate",
+        "fee": "Fee"
+      }
+    },
+    "paymentMethods": {
+      "bankTransfer": "Bank Transfer",
+      "creditCard": "Credit Card",
+      "cash": "Cash",
+      "mobileMoney": "Mobile Money",
+      "wallet": "Wallet",
+      "cashPickup": "Cash Pickup",
+      "cryptoWallet": "{{currency}} Wallet"
+    },
+    "errors": {
+      "somethingWentWrong": "Something went wrong",
+      "networkError": "Network error: Could not estimate transaction",
+      "transactionFailed": "Transaction failed"
+    }
+  }

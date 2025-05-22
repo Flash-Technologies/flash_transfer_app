@@ -1,0 +1,28 @@
+{
+  "section": {
+    "title": "O que nossos clientes dizem"
+  },
+  "trustpilot": {
+    "title": "TrustPilot",
+    "description": "Nossas avaliações verificadas pelo Trustpilot"
+  },
+  "navigation": {
+    "previous": "Depoimento anterior",
+    "next": "Próximo depoimento"
+  },
+  "testimonial1": {
+    "author": "Bertram Jensen",
+    "role": "Autor na Panepply Store",
+    "content": "Flash Transfer é incrivelmente conveniente! Enviei cripto para minha família, e eles conseguiram retirar o dinheiro instantaneamente via Wave sem nenhuma complicação. Altamente recomendado!"
+  },
+  "testimonial2": {
+    "author": "Sarah Williams",
+    "role": "Diretora de Marketing",
+    "content": "Finalmente, uma solução fácil e rápida para converter minha cripto em dinheiro! As taxas são transparentes, e aprecio poder escolher meu parceiro local preferido (Orange Money, no meu caso). Muito satisfeita!"
+  },
+  "testimonial3": {
+    "author": "Michael Chen",
+    "role": "Desenvolvedor Sênior",
+    "content": "Super fácil de usar, confiável e rápido. A conversão automática de cripto para evitar flutuações de preço é uma grande vantagem. Flash Transfer realmente simplifica as transferências de cripto para fiat."
+  }
+}

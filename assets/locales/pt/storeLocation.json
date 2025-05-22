@@ -1,0 +1,46 @@
+{
+  "hero": {
+    "title": "Nossas sedes",
+    "subtitle": "Encontre sedes e centros de serviço da Flash Transfer perto de você"
+  },
+  "search": {
+    "title": "Encontrar sedes",
+    "globalLocations": "Locais globais",
+    "placeholder": "Pesquisar por nome, cidade ou país"
+  },
+  "map": {
+    "mapView": "Mapa",
+    "satelliteView": "Satélite"
+  },
+  "location": {
+    "services": "Serviços",
+    "hours": "Horário",
+    "phone": "Telefone",
+    "hoursUnavailable": "Horário indisponível"
+  },
+  "locations": {
+    "noLocations": "Nenhum local encontrado.",
+    "tryDifferentSearch": "Tente um termo de pesquisa diferente."
+  },
+  "buttons": {
+    "search": "Pesquisar",
+    "tryAgain": "Tentar novamente",
+    "share": "Compartilhar",
+    "directions": "Como chegar"
+  },
+  "pagination": {
+    "previous": "Anterior",
+    "next": "Próximo",
+    "pageInfo": "Página {{current}} de {{total}}"
+  },
+  "error": {
+    "statusError": "Erro",
+    "fetchFailed": "Falha ao buscar dados de localização",
+    "fetchingData": "Erro ao buscar dados",
+    "fetchingHeadquarters": "Erro ao buscar sedes",
+    "shareFailed": "Falha ao compartilhar"
+  },
+  "alert": {
+    "copiedToClipboard": "Detalhes da localização copiados para a área de transferência!"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "heading": "Mijn Contact",
+  "subheading": "Thuis is achter, de wereld voor je en er zijn veel paden om door schaduwen naar de rand te gaan.",
+  "loading": "Contacten laden bezig...",
+  "noContacts": "U heeft nog geen begunstigden",
+  "continue": "Doorgaan",
+  "addNew": "Nieuw toevoegen",
+  "share": "Delen",
+  "errors": {
+    "fetchFailed": "Ophalen van contacten mislukt"
+  }
+}

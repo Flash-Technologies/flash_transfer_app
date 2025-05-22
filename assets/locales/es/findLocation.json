@@ -1,0 +1,16 @@
+{
+    "title": "Encontrar ubicaciones",
+    "subtitle": "El hogar está atrás, el mundo adelante y hay muchos caminos que recorrer entre las sombras hasta el borde.",
+    "addressRequired": "Para continuar, por favor ingrese la dirección.",
+    "sendFrom": "Enviar desde",
+    "countryPlaceholder": "Estados Unidos",
+    "enterZipCode": "Ingrese código postal",
+    "addressPlaceholder": "Dirección/Estado o código postal",
+    "useCurrentLocation": "Usar mi ubicación actual",
+    "whatAreYouTryingToDo": "¿Qué deseas hacer?",
+    "sendMoney": "Enviar dinero",
+    "receiveMoney": "Recibir dinero",
+    "continue": "Continuar",
+    "visitUs": "Visítanos",
+    "visitUsSubtitle": "El hogar está atrás, el mundo adelante y hay muchos caminos que recorrer entre las sombras hasta el borde."
+  }

@@ -1,0 +1,39 @@
+{
+  "logo": {
+    "alt": "Logo Flash Transfer"
+  },
+  "company": {
+    "name": "Flash Transfer",
+    "description": "Envoyez, achetez et vendez facilement des cryptomonnaies dans le monde entier avec Flash Transfer."
+  },
+  "social": {
+    "twitter": "Twitter",
+    "facebook": "Facebook",
+    "instagram": "Instagram",
+    "youtube": "YouTube",
+    "pinterest": "Pinterest"
+  },
+  "links": {
+    "company": {
+      "title": "Entreprise",
+      "about": "À propos",
+      "faq": "FAQ",
+      "blog": "Blog",
+      "countries": "Pays"
+    },
+    "information": {
+      "title": "Informations",
+      "app": "Télécharger l'application",
+      "currency": "Toutes les devises",
+      "support": "Support",
+      "status": "Statut"
+    }
+  },
+  "newsletter": {
+    "title": "Restez informé",
+    "description": "Abonnez-vous à notre newsletter hebdomadaire pour les mises à jour",
+    "placeholder": "Entrez votre email",
+    "button": "S'inscrire"
+  },
+  "copyright": "Copyright {{year}} © Flash Technologies. Tous droits réservés."
+}

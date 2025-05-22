@@ -1,0 +1,59 @@
+{
+  "loading": {
+    "title": "Cargando detalles de la transacción..."
+  },
+  "error": {
+    "title": "Error en la transacción: ",
+    "noId": "Transacción no encontrada",
+    "fetchFailed": "No se han podido obtener los detalles de la transacción",
+    "networkError": "Error de red: no se han podido obtener los detalles de la transacción",
+    "defaultError": "Error al actualizar los datos de la transacción"
+  },
+  "transaction": {
+    "status": {
+      "title": "Payment {status}",
+      "pending": "Pendiente",
+      "completed": "Completado",
+      "failed": "Fallido",
+      "cancelled": "Cancelada",
+      "processing": "Procesando"
+    },
+    "details": {
+      "youSent": "Has enviado",
+      "transferRate": "Velocidad de transferencia",
+      "fee": "Tarifa",
+      "transactionType": "Tipo de transacción",
+      "status": "Estado",
+      "createdOn": "Creado el",
+      "receivedAmount": "Importe recibido",
+      "totalToPay": "Total a pagar"
+    },
+    "tracking": {
+      "label": "Tracking number: {number}"
+    },
+    "instructions": {
+      "title": "Instrucciones de transacción",
+      "mobileMoney": [
+        "Haga clic en el botón \"Pagar ahora\" a continuación para completar su pago de dinero móvil.",
+        "Sigue las instrucciones de la página de pago.",
+        "Una vez que se confirme el pago, se procesará su transacción."
+      ],
+      "cashToCrypto": [
+        "Visita uno de nuestros puntos de recogida de efectivo autorizados.",
+        "Present your tracking number: {trackingNumber}",
+        "3. Realice su pago en efectivo.",
+        "Una vez confirmada, tu criptomoneda se enviará a tu monedero."
+      ],
+      "default": [
+        "La transacción se está procesando",
+        "Conserve su número de seguimiento como referencia.",
+        "Se le notificará una vez que se complete la transacción."
+      ]
+    }
+  },
+  "buttons": {
+    "backToHome": "Volver al Inicio",
+    "payNow": ".",
+    "trackOrder": "Rastrea tu Pedido"
+  }
+}

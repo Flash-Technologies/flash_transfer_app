@@ -1,0 +1,155 @@
+{
+  "landing": {
+    "title": "Envoyez, achetez ou vendez des cryptomonnaies dans le monde entier avec Flash Transfer",
+    "subtitle": "Échangez vos cryptomonnaies contre du cash ou achetez des cryptomonnaies avec du cash auprès de nos partenaires agréés. Vous pouvez également envoyer vos cryptomonnaies contre de la monnaie fiduciaire dans le monde entier en utilisant votre portefeuille non-custodial (Flash wallet, Metamask, Phantom ...)",
+    "tutorial": "Tutoriel",
+    "trustpilot": "Trustpilot",
+    "send": "Envoyer",
+    "receive": "Recevoir",
+    "amountSend": "Montant à envoyer",
+    "receiveAmount": "Montant à recevoir",
+    "loadingExchangeRate": "Chargement du taux de change...",
+    "exchangeRate": "Taux de change",
+    "fee": "Frais",
+    "transferTime": "Temps de transfert",
+    "networkCongestion": "Congestion du réseau",
+    "totalToPay": "Total à payer",
+    "recipientGets": "Le bénéficiaire reçoit",
+    "continue": "Continuer",
+    "cancel": "Annuler",
+    "noFee": "Sans frais",
+    "networkStatus": {
+      "unknown": "Inconnu",
+      "low": "Faible",
+      "medium": "Moyen",
+      "high": "Élevé"
+    }
+  },
+  "currencySelector": {
+    "walletConnected": "Connecté"
+  },
+  "partners": {
+    "title": "Choisissez parmi nos partenaires de confiance",
+    "subtitle": "Nous nous assurons que votre argent est livré rapidement et facilement.",
+    "subtitle2": "Choisissez les types de paiement de notre réseau : points de collecte d'espèces, mobile money et virement bancaire."
+  },
+  "exchangeStats": {
+    "title": "Échange mondial de monnaies fiduciaires et crypto à portée de main",
+    "title2": "Échange mondial de monnaies",
+    "title3": "fiduciaires et crypto à portée de main",
+    "subtitle": "Échangez vos cryptomonnaies et devises fiduciaires préférées en toute transparence avec des transactions rapides, des frais réduits et une assistance 24h/24 et 7j/7.",
+    "cryptocurrencies": {
+      "value": "20",
+      "title2": "Cryptomonnaies populaires",
+      "title3": "disponibles !",
+      "title": "Cryptomonnaies populaires disponibles !",
+      "description": "Vous pouvez échanger vos cryptomonnaies : BTC, ETH, FLASH, USDC, USDT, DAI, BNB, POL, SOL, AVAX, CRO, SUI et plus encore."
+    },
+    "fiatCurrencies": {
+      "value": "200+",
+      "title": "Support des devises fiduciaires",
+      "description": "Nous prenons en charge toutes les devises fiduciaires du monde !"
+    },
+    "activeUsers": {
+      "value": "5k",
+      "title": "Utilisateurs actifs",
+      "description": "Nos utilisateurs sont satisfaits de la vitesse, des frais réduits et du support !"
+    },
+    "fastExchange": "Échange rapide et sécurisé"
+  },
+  "whyChooseUs": {
+    "title": "Pourquoi nous choisir",
+    "subtitle": "Envoyez et recevez de l'argent à vos proches en quelques minutes avec d'excellents taux et des frais réduits.",
+    "subtitle2": "Plus de 40 pays et +36 devises prises en charge.",
+    "features": {
+      "fastTransaction": {
+        "title": "Transaction rapide",
+        "description": "La transaction est instantanée avec la cryptomonnaie en quelques secondes."
+      },
+      "security": {
+        "title": "Sécurité",
+        "description": "La blockchain est infalsifiable, transparente et sécurisée."
+      },
+      "easyTransfer": {
+        "title": "Transfert facile",
+        "description": "Envoyez de l'argent et convertissez facilement vos cryptomonnaies en espèces et vice versa."
+      }
+    }
+  },
+  "moneyTransfers": {
+    "title": "Transferts d'argent rapides et sécurisés",
+    "subtitle": "Échangez vos cryptomonnaies et devises fiduciaires préférées en toute transparence avec des transactions rapides, des frais réduits et une assistance 24h/24 et 7j/7.",
+    "features": {
+      "decentralized": {
+        "title": "100% Décentralisé",
+        "description": "Gardez le contrôle de vos clés privées, envoyez vos cryptos ou connectez votre portefeuille via WalletConnect."
+      },
+      "convertFiatCrypto": {
+        "title": "Convertir fiat & crypto",
+        "description": "Convertissez entre monnaies fiduciaires et cryptomonnaies en toute transparence avec +36 devises disponibles."
+      }
+    }
+  },
+  "howItWorks": {
+    "title": "Quelques étapes pour commencer",
+    "subtitle": "C'est aussi simple que vous le pensez. Suivez 3 étapes faciles",
+    "steps": {
+      "register": {
+        "title": "Inscrivez-vous gratuitement",
+        "description": "Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis."
+      },
+      "sendCrypto": {
+        "title": "Envoyez vos cryptos",
+        "description": "Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis."
+      },
+      "withdrawCash": {
+        "title": "Allez retirer votre argent",
+        "description": "Ac tincidunt sapien vehicula erat auctor pellentesque rhoncus. Et magna sit morbi lobortis."
+      }
+    }
+  },
+  "appPromotion": {
+    "title": "La manière la plus rapide et",
+    "title2": "sécurisée d'envoyer des cryptos",
+    "title3": "vers du fiat dans le monde entier",
+    "subtitle": "Envoyez des cryptos vers des devises fiduciaires dans le monde entier avec une vitesse inégalée, une sécurité et des frais réduits.",
+    "appleStore": "Apple Store",
+    "playStore": "Play Store"
+  },
+  "faq": {
+    "title": "Questions fréquemment posées",
+    "subtitle": "Trouvez des réponses aux questions courantes et obtenez le support dont vous avez besoin dans",
+    "subtitle2": "notre section Questions Fréquemment Posées.",
+    "questions": [
+      {
+        "title": "Comment envoyer des cryptos à Flash Transfer ?",
+        "content": "Pour envoyer des cryptos à Flash Transfer, connectez-vous simplement à votre compte Flash Transfer, sélectionnez la cryptomonnaie souhaitée, spécifiez le montant et envoyez-le directement à l'adresse fournie par notre plateforme. Flash Transfer convertit instantanément votre cryptomonnaie en stablecoins pour éviter les fluctuations de prix."
+      },
+      {
+        "title": "Où peut-on utiliser le service Flash Transfer ?",
+        "content": "Flash Transfer peut être utilisé chez plus d'un million de partenaires marchands à travers l'Europe, l'Afrique et l'Asie. Les bénéficiaires peuvent facilement retirer des espèces ou déposer des fonds directement sur leurs comptes mobile money via ces marchands."
+      },
+      {
+        "title": "Dans combien de pays Flash Transfer opère-t-il ?",
+        "content": "Flash Transfer opère largement à travers l'Europe, l'Afrique et l'Asie, couvrant un vaste réseau de pays. Notre portée continue de s'étendre à mesure que nous établissons des partenariats avec davantage de fournisseurs de paiement locaux."
+      },
+      {
+        "title": "Comment convertir vos cryptomonnaies en monnaie fiduciaire ?",
+        "content": "Pour convertir vos cryptos en fiat, connectez-vous à votre compte Flash Transfer, sélectionnez l'option « Crypto vers Fiat », spécifiez le montant de cryptomonnaie que vous souhaitez convertir et choisissez votre méthode de paiement préférée et votre partenaire local (Orange Money, MTN, Wave, etc.). Votre crypto est instantanément convertie en monnaie fiduciaire et disponible à l'emplacement de votre choix."
+      },
+      {
+        "title": "Comment envoyer des cryptomonnaies pour que le bénéficiaire les reçoive en espèces ?",
+        "content": "Pour envoyer des cryptomonnaies pour un retrait en espèces, choisissez simplement l'option « Crypto-vers-Cash » dans votre tableau de bord Flash Transfer. Entrez les détails du destinataire, sélectionnez un partenaire marchand et un partenaire de paiement local (Orange Money, MTN, Wave, etc.) où il pourra retirer l'argent, et envoyez vos cryptos. Le destinataire peut immédiatement retirer l'équivalent en espèces chez le partenaire choisi."
+      },
+      {
+        "title": "Frais de transaction",
+        "content": "Flash Transfer facture des frais clairs et transparents de 2% par transaction, plus les éventuels frais du fournisseur de paiement local. Tous les frais sont affichés à l'avance avant que vous ne confirmiez votre transaction."
+      }
+    ]
+  },
+  "common": {
+    "walletConnection": {
+      "connected": "Connecté"
+    }
+  }
+}

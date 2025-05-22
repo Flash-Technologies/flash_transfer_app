@@ -1,0 +1,59 @@
+{
+  "loading": {
+    "title": "Transaktionsdetails werden geladen..."
+  },
+  "error": {
+    "title": "Transaktionsfehler",
+    "noId": "Keine Transaktion gefunden",
+    "fetchFailed": "Fehler beim Abrufen von Details.",
+    "networkError": "Netzwerkfehler: Transaktionsdetails konnten nicht abgerufen werden",
+    "defaultError": "Transaktionsdetails konnten nicht geladen werden"
+  },
+  "transaction": {
+    "status": {
+      "title": "Payment {status}",
+      "pending": "Ausstehend",
+      "completed": "Abgeschlossen",
+      "failed": "Fehlgeschlagen",
+      "cancelled": "Abgebrochen",
+      "processing": "Verarbeitung"
+    },
+    "details": {
+      "youSent": "Sie haben geschickt",
+      "transferRate": "Übertragungsrate",
+      "fee": "Gebühr",
+      "transactionType": "Transaktionsart",
+      "status": "Status",
+      "createdOn": "Erstellt am",
+      "receivedAmount": "Erhaltener Betrag",
+      "totalToPay": "Zu zahlender Gesamtbetrag"
+    },
+    "tracking": {
+      "label": "Tracking number: {number}"
+    },
+    "instructions": {
+      "title": "Transaktionsanweisungen",
+      "mobileMoney": [
+        "Klicken Sie unten auf die Schaltfläche \"Jetzt bezahlen\", um Ihre mobile Geldzahlung abzuschließen.",
+        "Folgen Sie den Anweisungen auf der Zahlungsseite.",
+        "Sobald die Zahlung bestätigt ist, wird Ihre Transaktion verarbeitet."
+      ],
+      "cashToCrypto": [
+        "Besuchen Sie eine unserer autorisierten Bargeldsammelstellen.",
+        "Present your tracking number: {trackingNumber}",
+        "Leisten Sie Ihre Barzahlung.",
+        "Nach der Bestätigung wird Ihre Krypto an Ihre Brieftasche gesendet."
+      ],
+      "default": [
+        "Ihre Transaktion wird verarbeitet.",
+        "Bewahren Sie Ihre Tracking-Nummer als Referenz auf.",
+        "Sie werden benachrichtigt, sobald die Transaktion abgeschlossen ist."
+      ]
+    }
+  },
+  "buttons": {
+    "backToHome": "Zurück zur Startseite",
+    "payNow": "Sofort bezahlen",
+    "trackOrder": "Bestellung verfolgen"
+  }
+}

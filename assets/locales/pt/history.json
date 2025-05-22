@@ -1,0 +1,13 @@
+{
+  "title": "Histórico de transações",
+  "subtitle": "Visualize e acompanhe todas as suas transações anteriores",
+  "newTransfer": "Iniciar nova transferência",
+  "searchPlaceholder": "Pesquisar por referência, tipo, status ou moeda",
+  "filter": "Filtrar",
+  "errors": {
+    "title": "Erro ao carregar transações",
+    "fetchFailed": "Falha ao buscar histórico de transações",
+    "networkError": "Erro de rede: Não foi possível buscar histórico de transações",
+    "tryAgain": "Tentar novamente"
+  }
+}

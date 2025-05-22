@@ -1,0 +1,87 @@
+{
+    "page": {
+      "title": "Détails de la Transaction",
+      "subtitle": "Consultez les détails complets de votre transaction",
+      "loading": "Chargement des détails de la transaction..."
+    },
+    "tracking": {
+      "label": "Numéro de Suivi Flash (FTN)",
+      "copied": "Copié !"
+    },
+    "transaction": {
+      "title": "Détails de la Transaction",
+      "info": {
+        "title": "Informations sur la Transaction",
+        "type": "Type",
+        "created": "Créé le",
+        "completed": "Terminé le",
+        "orderId": "ID de Commande",
+        "statusDetail": "Détail du Statut"
+      },
+      "types": {
+        "CASH_TO_CRYPTO": "Espèces vers Crypto",
+        "CRYPTO_TO_CASH": "Crypto vers Espèces",
+        "MOBILE_TO_CRYPTO": "Mobile Money vers Crypto",
+        "CASH_TO_MOBILE": "Espèces vers Mobile Money"
+      }
+    },
+    "payment": {
+      "title": "Détails du Paiement",
+      "amount": "Montant",
+      "fee": "Frais",
+      "totalWithFee": "Total avec Frais",
+      "exchangeRate": "Taux de Change",
+      "feeBreakdown": {
+        "title": "Détail des Frais",
+        "gasFee": "Frais de Gas",
+        "baseFee": "Frais de Base",
+        "providerFee": "Frais du Fournisseur",
+        "discounts": "Remises"
+      }
+    },
+    "user": {
+      "title": "Informations Utilisateur",
+      "name": "Nom",
+      "email": "Email",
+      "loyaltyRank": "Rang de Fidélité",
+      "loyaltyPoints": "Points de Fidélité",
+      "points": "pts"
+    },
+    "source": {
+      "title": "Informations de Source",
+      "type": "Type",
+      "currency": "Devise",
+      "country": "Pays",
+      "phoneNumber": "Numéro de Téléphone",
+      "paymentMethod": "Méthode de Paiement"
+    },
+    "destination": {
+      "title": "Informations de Destination",
+      "type": "Type",
+      "currency": "Devise",
+      "walletAddress": "Adresse du Portefeuille",
+      "network": "Réseau"
+    },
+    "blockchain": {
+      "title": "Informations Blockchain",
+      "txHash": "Hash de Transaction",
+      "network": "Réseau"
+    },
+    "timeline": {
+      "title": "Chronologie de Transaction"
+    },
+    "buttons": {
+      "trackAnother": "Suivre une Autre",
+      "backToHome": "Retour à l'Accueil"
+    },
+    "errors": {
+      "notFound": "Impossible de récupérer la transaction. Veuillez vérifier le numéro de suivi et réessayer."
+    },
+    "status": {
+      "completed": "TERMINÉ",
+      "processing": "EN COURS",
+      "pending": "EN ATTENTE",
+      "failed": "ÉCHOUÉ",
+      "cancelled": "ANNULÉ"
+    }
+  }

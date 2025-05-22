@@ -1,0 +1,87 @@
+{
+  "loading": {
+    "transactionDetails": "Transaktionsdetails werden geladen..."
+  },
+  "error": {
+    "title": "Transaktionsfehler",
+    "failedToLoad": "Transaktionsdetails konnten nicht geladen werden"
+  },
+  "navigation": {
+    "backToHome": "Zurück zur Startseite",
+    "trackOrder": "Bestellung verfolgen"
+  },
+  "payment": {
+    "status": "Status",
+    "youSent": "Sie haben geschickt",
+    "transferRate": "Übertragungsrate",
+    "fee": "Gebühr",
+    "transactionType": "Transaktionsart",
+    "createdOn": "Erstellt am",
+    "receivedAmount": "Erhaltener Betrag",
+    "totalToPay": "Zu zahlender Gesamtbetrag"
+  },
+  "wallet": {
+    "connected": "{{walletName}} wallet connected",
+    "connectToPayment": "Connect {{walletType}} wallet to proceed with payment",
+    "transactionSubmitted": "Transaktion eingereicht",
+    "hash": "Hash: {{txHash}}",
+    "trackingNumber": "Tracking number: {{trackingNumber}}"
+  },
+  "paymentInstructions": {
+    "title": "Zahlungsanweisungen",
+    "sendPayment": "Bitte senden Sie die folgende Zahlung aus Ihrem Wallet:",
+    "recipientAddress": "Empfängeradresse",
+    "amount": "Betrag:",
+    "network": "Netzwerk:",
+    "reference": "Referenz:"
+  },
+  "connectedWallet": {
+    "title": "Verbundene Brieftasche",
+    "wallet": "Portemonnaie:",
+    "address": "Adresse:",
+    "network": "Netzwerk:"
+  },
+  "transactionInstructions": {
+    "title": "Transaktionsanweisungen",
+    "initiateTransfer": "Click on the \"Pay Now\" button below to initiate a transfer from your {{walletName}}.",
+    "connectWallet": "Connect your {{walletType}} wallet by clicking the \"Connect Wallet\" button below.",
+    "approveTransaction": "Bestätigen Sie die Transaktion in Ihrem Wallet, wenn Sie dazu aufgefordert werden.",
+    "paymentProcessing": "Die Zahlung wird bearbeitet, sobald die Blockchain-Bestätigung eingegangen ist.",
+    "recipientReceiveFunds": "Der Empfänger erhält das Geld nach der Verarbeitung per Handygeld.",
+    "transactionProcessing": "Ihre Transaktion wird verarbeitet.",
+    "keepTrackingNumber": "Bewahren Sie Ihre Tracking-Nummer als Referenz auf.",
+    "notifyComplete": "Sie werden benachrichtigt, sobald die Transaktion abgeschlossen ist."
+  },
+  "buttons": {
+    "processing": "Wird bearbeitet...",
+    "paymentSent": "Zahlung gesendet",
+    "payWith": "Pay with {{walletName}}",
+    "payNow": "Sofort bezahlen",
+    "connecting": "Die Verbindung wird hergestellt ...",
+    "connectWallet": "Connect {{walletType}} Wallet"
+  },
+  "notifications": {
+    "copySuccess": "Adresse in Zwischenablage kopiert",
+    "copyFailed": "Adresse konnte nicht kopiert werden",
+    "preparingTransaction": "Transaktion wird vorbereitet...",
+    "approveTransaction": "Please approve the transaction in your {{walletName}}...",
+    "transactionSubmitted": "Transaktion übermittelt. Warten auf Bestätigung...",
+    "transactionConfirmed": "Transaktion bestätigt",
+    "viewOnExplorer": "Ansicht im Explorer:",
+    "notifyingServer": "Notifying server about your payment on {{network}}...",
+    "paymentCompleted": "Zahlung erfolgreich abgeschlossen.",
+    "serverVerificationFailed": "Transaktion erfolgreich, aber der Server konnte sie nicht verifizieren. Bitte wenden Sie sich an den Support.",
+    "transactionCompleted": "Transaktion abgeschlossen, aber wir konnten unseren Server nicht benachrichtigen. Bitte wenden Sie sich mit Ihrem Transaktions-Hash an den Support."
+  },
+  "errors": {
+    "noTransactionId": "Keine Transaktion gefunden",
+    "networkError": "Netzwerkfehler: Transaktionsdetails konnten nicht abgerufen werden",
+    "noWalletConnected": "Keine Brieftasche verbunden",
+    "noPaymentInstructions": "Zahlungsanweisungen nicht verfügbar",
+    "unsupportedWalletType": "Unsupported wallet type: {{walletType}}",
+    "transactionRejected": "Transaktion vom Benutzer abgelehnt",
+    "insufficientFunds": "Unzureichende Mittel für die Transaktion",
+    "networkConnectionError": "Netzwerkfehler. Bitte überprüfen Sie Ihre Wallet-Verbindung.",
+    "transactionTimeout": "Die Transaktion wurde möglicherweise gesendet, aber die Zeit für die Bestätigung ist abgelaufen. Bitte überprüfe dein Wallet auf den Status."
+  }
+}

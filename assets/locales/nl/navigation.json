@@ -1,0 +1,21 @@
+{
+  "navbar": {
+    "send": "Verzenden",
+    "findLocation": "Zoek locatie",
+    "trackOrder": "Volg een overdracht",
+    "help": "Help",
+    "login": "Inloggen",
+    "signup": "Aanmelden",
+    "profile": "Profiel",
+    "language": "Taal",
+    "wallet": "Wallet",
+    "nfts": "NFTs",
+    "notifications": "Meldingen",
+    "logout": "Uitloggen",
+    "logoAlt": "Flash Transfer logo",
+    "currencyAlt": "Valuta pictogram",
+    "profilePicture": "Profielfoto",
+    "languageSelector": "Taalkeuze",
+    "toggleMenu": "Menu openen/sluiten"
+  }
+}

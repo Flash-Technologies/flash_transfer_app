@@ -1,0 +1,40 @@
+{
+  "form": {
+    "heading": "{{action}} verfolgen",
+    "action": "Überweisung",
+    "subheading": "Die Heimat liegt hinter uns, die Welt vor uns und es gibt viele Wege durch Schatten bis zum Rand.",
+    "send": "Senden",
+    "receive": "Empfangen",
+    "trackingLabel": "Tracking-Nummer oder Transaktions-ID eingeben",
+    "trackingPlaceholder": "Flash Tracking-Nummer (FTN) oder Transaktions-ID",
+    "continue": "Fortfahren",
+    "searching": "Suche läuft..."
+  },
+  "status": {
+    "heading": "{{action}} verfolgen",
+    "action": "Status",
+    "subheading": "Bleiben Sie über Ihre Überweisungen mit Echtzeit-Statusverfolgung auf dem Laufenden. Wissen Sie genau, wann Ihre Transaktion initiiert, verarbeitet und abgeschlossen wird, für vollständige Sicherheit.",
+    "trackingLabel": "Flash Tracking-Nummer (FTN)",
+    "cryptoPurchase": "Krypto-Kauf",
+    "amount": "Betrag",
+    "totalWithFee": "Gesamt mit Gebühr",
+    "fee": "Gebühr",
+    "exchangeRate": "Wechselkurs",
+    "timeline": "Transaktionszeitachse",
+    "blockchainTransaction": "Blockchain-Transaktion",
+    "trackAnother": "Weitere verfolgen",
+    "backToHome": "Zurück zur Startseite",
+    "statuses": {
+      "completed": "ABGESCHLOSSEN",
+      "processing": "IN BEARBEITUNG",
+      "pending": "AUSSTEHEND",
+      "failed": "FEHLGESCHLAGEN",
+      "cancelled": "STORNIERT"
+    }
+  },
+  "errors": {
+    "fetchFailed": "Transaktion konnte nicht abgerufen werden. Bitte überprüfen Sie die ID und versuchen Sie es erneut.",
+    "emptyTracking": "Bitte geben Sie eine Tracking-Nummer ein",
+    "invalidTracking": "Geben Sie eine gültige Tracking-ID oder Tracking-Nummer ein"
+  }
+}

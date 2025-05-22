@@ -1,0 +1,45 @@
+{
+  "page": {
+    "heading": "Confirm Crypto Address",
+    "subheading": "How would you like the money delivered?"
+  },
+  "form": {
+    "addressLabel": "Enter the Crypto Address of an EVM chain:",
+    "addressSubLabel": "(ETH, Polygon, Base, Arbitrum, Optimism ...)",
+    "addressPlaceholder": "0x.................................",
+    "cryptoLabel": "Selected Crypto",
+    "cryptoPlaceholder": "USDT",
+    "blockchainLabel": "Select the Blockchain",
+    "cancelButton": "Cancel",
+    "continueButton": "Continue",
+    "validatingButton": "Validating..."
+  },
+  "validation": {
+    "invalidFormat": "Invalid address format for the selected network. Please check and try again.",
+    "selectNetwork": "Please select a blockchain network",
+    "enterValidAddress": "Please enter a valid wallet address for the selected network",
+    "validatingAddress": "Validating address before proceeding...",
+    "waitValidating": "Please wait while we validate your address...",
+    "networkError": "Network error while validating address",
+    "failed": "Failed to validate address",
+    "invalidForNetwork": "Invalid address format for {{networkName}}"
+  },
+  "steps": {
+    "receiverInfo": {
+      "label": "Receiver's info",
+      "description": "Enter the informations"
+    },
+    "receiverMethod": {
+      "label": "Receiver's Method",
+      "description": "Enter the informations"
+    },
+    "reviewDetails": {
+      "label": "Review Details",
+      "description": "Enter the informations"
+    },
+    "paymentComplete": {
+      "label": "Payment Complete",
+      "description": "Enter the informations"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "navbar": {
+    "send": "Send",
+    "findLocation": "Find location",
+    "trackOrder": "Track a transfer",
+    "help": "Help",
+    "login": "Login",
+    "signup": "Sign up",
+    "profile": "Profile",
+    "language": "Language",
+    "wallet": "Wallet",
+    "nfts": "NFTs",
+    "notifications": "Notifications",
+    "logout": "Log out",
+    "logoAlt": "Flash Transfer logo",
+    "currencyAlt": "Currency icon",
+    "profilePicture": "Profile picture",
+    "languageSelector": "Language selector",
+    "toggleMenu": "Toggle menu"
+  }
+}

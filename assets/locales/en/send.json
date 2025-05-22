@@ -1,0 +1,39 @@
+{
+  "title": "Send through",
+  "subtitle": "Home is behind, the world ahead and there are many paths to tread through shadows to the edge.",
+  "subtitle_mobile": "Home is behind, the world ahead and there are many paths to tread through shadows to the edge.",
+  "payment": {
+    "title": "How would you like to pay?",
+    "methods": {
+      "cash": "Cash Payment",
+      "crypto": "Crypto Wallet",
+      "card": "Credit Card",
+      "bank": "Bank Transfer",
+      "mobile": "Mobile Money"
+    }
+  },
+  "receiver": {
+    "title": "How does your receiver want money?",
+    "methods": {
+      "cash": "Cash Payment",
+      "crypto": "Crypto Wallet",
+      "mobile": "Mobile Money"
+    }
+  },
+  "buttons": {
+    "addFromContact": "Add From Contact",
+    "addNew": "Add New"
+  },
+  "currencyInfo": {
+    "sendingCrypto": "Sending {{currency}} (Cryptocurrency)",
+    "sendingFiat": "Sending {{currency}} (Fiat)",
+    "receivingCrypto": "Receiving {{currency}} (Cryptocurrency)",
+    "receivingFiat": "Receiving {{currency}} (Fiat)"
+  },
+  "tooltips": {
+    "cryptoRequiresWallet": "To send cryptocurrency, you must use a Crypto Wallet",
+    "fiatCannotUseWallet": "Crypto Wallet is only available for cryptocurrency transactions",
+    "cryptoRequiresCryptoWallet": "Cryptocurrency must be received in a Crypto Wallet",
+    "fiatCannotReceiveCrypto": "Fiat currencies cannot be received in a Crypto Wallet"
+  }
+}

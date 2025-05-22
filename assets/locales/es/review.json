@@ -1,0 +1,88 @@
+{
+  "progress": {
+    "receiverInfo": {
+      "label": "Información del destinatario",
+      "description": "Introduzca la información"
+    },
+    "receiverMethod": {
+      "label": "Método del receptor",
+      "description": "Introduzca la información"
+    },
+    "reviewDetails": {
+      "label": "Detalles de la reseña",
+      "description": "Introduzca la información"
+    },
+    "paymentComplete": {
+      "label": "Pago completo",
+      "description": "Introduzca la información"
+    }
+  },
+  "header": {
+    "title": "Detalles de la reseña",
+    "subheading": "Consulta el resumen de tu pedido antes de validarlo."
+  },
+  "buttons": {
+    "cancel": "Cancelar",
+    "processing": "Procesando...",
+    "confirm": "Confirmar",
+    "calculating": "Calculating...",
+    "edit": "Editar"
+  },
+  "sections": {
+    "amount": {
+      "title": "Importe",
+      "editAmount": "Editar importe"
+    },
+    "transferSummary": {
+      "title": "Resumen de la transferencia",
+      "updating": "Actualizando...",
+      "amountToSend": "Monto a enviar",
+      "transferFee": "Tarifa de transferencia",
+      "feeWaived": "Cargo por Renuncia",
+      "totalCost": "Comercio total",
+      "totalToRecipient": "Total to Recipient",
+      "exchangeRate": "Tasa de cambio",
+      "networkCongestion": "congestión de red",
+      "congestionLow": "Baja",
+      "congestionMedium": "Mediano",
+      "congestionHigh": "Alta",
+      "totalToPay": "Total a pagar",
+      "recipientGets": "El destinatario recibe",
+      "availability": "Disponibilidad",
+      "transactionUnavailable": "Transacción no disponible en este momento"
+    },
+    "senderDetails": {
+      "title": "Detalles del remitente",
+      "kyc": "KYC (Conozca a su cliente)",
+      "mobileProvider": "Proveedor de telefonía móvil",
+      "phoneNumber": "Número de teléfono",
+      "sourceOfFunds": "Origen de los fondos.",
+      "purposeOfTransaction": "Finalidad de la transacción"
+    },
+    "receiverDetails": {
+      "title": "Detalles del destinatario",
+      "walletAddress": "Dirección de la Billetera",
+      "blockchainNetwork": "Red de cadena de bloques .............................. .. .......................................................................................................",
+      "mobileNumber": "Número de teléfono móvil",
+      "mobileProvider": "Proveedor de telefonía móvil",
+      "receiverCountry": "País receptor",
+      "youSent": "Has enviado",
+      "transferRate": "Tasa de trasnferencia",
+      "fee": "Tarifa"
+    }
+  },
+  "paymentMethods": {
+    "bankTransfer": "Transferencia bancaria",
+    "creditCard": "Tarjeta de Crédito",
+    "cash": "Efectivo",
+    "mobileMoney": "Mobile Money",
+    "wallet": "Billetera",
+    "cashPickup": "Pago en efectivo",
+    "cryptoWallet": "{{currency}} Wallet"
+  },
+  "errors": {
+    "somethingWentWrong": "Se ha producido un error.",
+    "networkError": "Error de red: no se ha podido estimar la transacción",
+    "transactionFailed": "Transacción fallida"
+  }
+}

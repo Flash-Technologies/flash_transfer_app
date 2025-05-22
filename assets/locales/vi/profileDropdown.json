@@ -1,0 +1,18 @@
+{
+  "profile": {
+    "imageAlt": "Hồ sơ",
+    "defaultUserName": "Người dùng"
+  },
+  "menu": {
+    "myProfile": "Hồ sơ của tôi",
+    "myTransaction": "Giao dịch của tôi",
+    "myRecipients": "Người nhận của tôi",
+    "trackTransfer": "Theo dõi chuyển tiền",
+    "nft": "NFT",
+    "myRank": "Hạng của tôi",
+    "myCards": "Thẻ của tôi",
+    "referFriend": "Giới thiệu bạn bè",
+    "settings": "Cài đặt",
+    "logout": "Đăng xuất"
+  }
+}
