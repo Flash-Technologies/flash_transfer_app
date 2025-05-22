@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flash_transfer_app/core/api/endpoints.dart';
-import 'package:http/http.dart' as http;
 import '../models/credit_card_model.dart';
 import '../api/api_client.dart';
 import '../utils/exceptions.dart';
@@ -18,7 +17,7 @@ class CardService {
       final response = await _apiClient.get(_baseEndpoint);
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = response.data;
 
         if (data['success'] == true && data['data'] != null) {
           final List<dynamic> cardsJson = data['data'];
@@ -26,13 +25,13 @@ class CardService {
         } else {
           throw ApiException(
             message: data['message'] ?? 'Failed to fetch cards',
-            statusCode: response.statusCode,
+            statusCode: response.statusCode ?? 0,
           );
         }
       } else {
         throw ApiException(
           message: 'Failed to fetch cards',
-          statusCode: response.statusCode,
+          statusCode: response.statusCode ?? 0,
         );
       }
     } on ApiException {
@@ -51,21 +50,21 @@ class CardService {
       // Validate required fields
       _validateCardData(cardData);
 
-      final response = await _apiClient.post(_baseEndpoint, body: cardData);
+      final response = await _apiClient.post(_baseEndpoint, data: cardData);
 
       if (response.statusCode == 201 || response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = response.data;
 
         if (data['success'] == true && data['data'] != null) {
           return CreditCard.fromJson(data['data']);
         } else {
           throw ApiException(
             message: data['message'] ?? 'Failed to add card',
-            statusCode: response.statusCode,
+            statusCode: response.statusCode ?? 0,
           );
         }
       } else if (response.statusCode == 400) {
-        final data = json.decode(response.body);
+        final data = response.data;
         throw ValidationException(
           message: data['message'] ?? 'Invalid card data',
           validationErrors: _parseValidationErrors(data),
@@ -73,7 +72,7 @@ class CardService {
       } else {
         throw ApiException(
           message: 'Failed to add card',
-          statusCode: response.statusCode,
+          statusCode: response.statusCode ?? 0,
         );
       }
     } on ApiException {
@@ -94,14 +93,14 @@ class CardService {
       final response = await _apiClient.get('$_baseEndpoint/$cardId');
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = response.data;
 
         if (data['success'] == true && data['data'] != null) {
           return CreditCard.fromJson(data['data']);
         } else {
           throw ApiException(
             message: data['message'] ?? 'Card not found',
-            statusCode: response.statusCode,
+            statusCode: response.statusCode ?? 0,
           );
         }
       } else if (response.statusCode == 404) {
@@ -109,7 +108,7 @@ class CardService {
       } else {
         throw ApiException(
           message: 'Failed to fetch card',
-          statusCode: response.statusCode,
+          statusCode: response.statusCode ?? 0,
         );
       }
     } on ApiException {
@@ -134,22 +133,22 @@ class CardService {
 
       final response = await _apiClient.put(
         '$_baseEndpoint/$cardId',
-        body: cardData,
+        data: cardData,
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = response.data;
 
         if (data['success'] == true && data['data'] != null) {
           return CreditCard.fromJson(data['data']);
         } else {
           throw ApiException(
             message: data['message'] ?? 'Failed to update card',
-            statusCode: response.statusCode,
+            statusCode: response.statusCode ?? 0,
           );
         }
       } else if (response.statusCode == 400) {
-        final data = json.decode(response.body);
+        final data = response.data;
         throw ValidationException(
           message: data['message'] ?? 'Invalid card data',
           validationErrors: _parseValidationErrors(data),
@@ -159,7 +158,7 @@ class CardService {
       } else {
         throw ApiException(
           message: 'Failed to update card',
-          statusCode: response.statusCode,
+          statusCode: response.statusCode ?? 0,
         );
       }
     } on ApiException {
@@ -182,12 +181,12 @@ class CardService {
       final response = await _apiClient.delete('$_baseEndpoint/$cardId');
 
       if (response.statusCode == 200 || response.statusCode == 204) {
-        final data = json.decode(response.body);
+        final data = response.data;
 
         if (data['success'] != true) {
           throw ApiException(
             message: data['message'] ?? 'Failed to delete card',
-            statusCode: response.statusCode,
+            statusCode: response.statusCode ?? 0,
           );
         }
       } else if (response.statusCode == 404) {
@@ -195,7 +194,7 @@ class CardService {
       } else {
         throw ApiException(
           message: 'Failed to delete card',
-          statusCode: response.statusCode,
+          statusCode: response.statusCode ?? 0,
         );
       }
     } on ApiException {
@@ -218,14 +217,14 @@ class CardService {
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = response.data;
 
         if (data['success'] == true && data['data'] != null) {
           return CreditCard.fromJson(data['data']);
         } else {
           throw ApiException(
             message: data['message'] ?? 'Failed to set default card',
-            statusCode: response.statusCode,
+            statusCode: response.statusCode ?? 0,
           );
         }
       } else if (response.statusCode == 404) {
@@ -233,7 +232,7 @@ class CardService {
       } else {
         throw ApiException(
           message: 'Failed to set default card',
-          statusCode: response.statusCode,
+          statusCode: response.statusCode ?? 0,
         );
       }
     } on ApiException {
@@ -258,7 +257,7 @@ class CardService {
     try {
       final response = await _apiClient.post(
         '$_baseEndpoint/validate',
-        body: {
+        data: {
           'cardNumber': cardNumber,
           'expiryMonth': expiryMonth,
           'expiryYear': expiryYear,
@@ -267,7 +266,7 @@ class CardService {
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = response.data;
 
         return CardValidationResult(
           isValid: data['isValid'] ?? false,
@@ -279,7 +278,7 @@ class CardService {
       } else {
         throw ApiException(
           message: 'Failed to validate card',
-          statusCode: response.statusCode,
+          statusCode: response.statusCode ?? 0,
         );
       }
     } catch (e) {
