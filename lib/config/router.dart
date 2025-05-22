@@ -1,3 +1,8 @@
+import 'package:flash_transfer_app/core/models/credit_card_model.dart';
+import 'package:flash_transfer_app/presentation/card/card_added_success_screen.dart';
+import 'package:flash_transfer_app/presentation/card/confirm_card_screen.dart';
+import 'package:flash_transfer_app/presentation/card/enter_card_screen.dart';
+import 'package:flash_transfer_app/presentation/card/scan_card_screen.dart';
 import 'package:flash_transfer_app/presentation/home/cash_screen.dart';
 import 'package:flash_transfer_app/presentation/method/select_method_screen.dart';
 import 'package:flash_transfer_app/presentation/payment/add_new_screen.dart';
@@ -255,6 +260,53 @@ final routerProvider = Provider<GoRouter>((ref) {
       //   path: '/track-transfer',
       //   builder: (context, state) => const TrackTransferScreen(),
       // ),
+
+
+
+      // card routes  
+      GoRoute(
+        path: '/card/enter',
+        name: 'enterCard',
+        builder: (context, state) {
+          final existingCard = state.extra as CreditCard?;
+          return EnterCardScreen(existingCard: existingCard);
+        },
+      ),
+      
+      // Scan card with camera
+      GoRoute(
+        path: '/card/scan',
+        name: 'scanCard',
+        builder: (context, state) => const ScanCardScreen(),
+      ),
+      
+      // Confirm card details before saving
+      GoRoute(
+        path: '/card/confirm',
+        name: 'confirmCard',
+        builder: (context, state) {
+          final card = state.extra as CreditCard;
+          return ConfirmCardScreen(card: card);
+        },
+      ),
+      
+      // Card added success screen
+      GoRoute(
+        path: '/card/success',
+        name: 'cardSuccess',
+        builder: (context, state) => const CardAddedSuccessScreen(),
+      ),
+      
+      // Edit existing card
+      GoRoute(
+        path: '/card/edit/:cardId',
+        name: 'editCard',
+        builder: (context, state) {
+          final cardId = state.pathParameters['cardId'];
+          final existingCard = state.extra as CreditCard?;
+          return EnterCardScreen(existingCard: existingCard);
+        },
+      ),
     ],
   );
 });

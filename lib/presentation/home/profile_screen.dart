@@ -106,7 +106,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                   child: Column(
                     children: [
                       _buildProfileHeader(context, user),
-                      const SizedBox(height: AppSizes.spacingLarge),
+                      const SizedBox(height: AppSizes.spacingSmall),
                       _buildMenuItems(context),
                       const SizedBox(height: AppSizes.spacingXLarge),
                     ],
