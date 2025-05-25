@@ -1,7 +1,9 @@
 import 'package:equatable/equatable.dart';
 
 enum TransactionType { send, receive }
+
 enum TransactionStatus { pending, completed, failed, cancelled, processing }
+
 enum CurrencyType { fiat, crypto }
 
 // Transaction Model
@@ -21,6 +23,16 @@ class TransactionModel {
   final DateTime? completedAt;
   final Map<String, dynamic>? metadata;
 
+  // Additional properties used in UI
+  final TransactionType? type;
+  final String? recipient;
+  final DateTime? date;
+  final String? avatar;
+  final double? fee;
+  final String? reference;
+  final String? sender;
+  final CurrencyType? currencyType;
+
   const TransactionModel({
     required this.id,
     required this.trackingNumber,
@@ -36,6 +48,15 @@ class TransactionModel {
     required this.createdAt,
     this.completedAt,
     this.metadata,
+    // Additional UI properties
+    this.type,
+    this.recipient,
+    this.date,
+    this.avatar,
+    this.fee,
+    this.reference,
+    this.sender,
+    this.currencyType,
   });
 
   factory TransactionModel.fromJson(Map<String, dynamic> json) {
@@ -52,10 +73,32 @@ class TransactionModel {
       receivingMethod: json['receivingMethod'] ?? '',
       status: json['status'] ?? 'pending',
       createdAt: DateTime.parse(json['createdAt']),
-      completedAt: json['completedAt'] != null
-          ? DateTime.parse(json['completedAt'])
-          : null,
+      completedAt:
+          json['completedAt'] != null
+              ? DateTime.parse(json['completedAt'])
+              : null,
       metadata: json['metadata'],
+      // Additional UI properties
+      type:
+          json['type'] != null
+              ? TransactionType.values.firstWhere(
+                (e) => e.toString().split('.').last == json['type'],
+                orElse: () => TransactionType.send,
+              )
+              : null,
+      recipient: json['recipient'],
+      date: json['date'] != null ? DateTime.parse(json['date']) : null,
+      avatar: json['avatar'],
+      fee: json['fee']?.toDouble(),
+      reference: json['reference'],
+      sender: json['sender'],
+      currencyType:
+          json['currencyType'] != null
+              ? CurrencyType.values.firstWhere(
+                (e) => e.toString().split('.').last == json['currencyType'],
+                orElse: () => CurrencyType.fiat,
+              )
+              : null,
     );
   }
 
@@ -75,6 +118,15 @@ class TransactionModel {
       'createdAt': createdAt.toIso8601String(),
       'completedAt': completedAt?.toIso8601String(),
       'metadata': metadata,
+      // Additional UI properties
+      'type': type?.toString().split('.').last,
+      'recipient': recipient,
+      'date': date?.toIso8601String(),
+      'avatar': avatar,
+      'fee': fee,
+      'reference': reference,
+      'sender': sender,
+      'currencyType': currencyType?.toString().split('.').last,
     };
   }
 
@@ -93,6 +145,14 @@ class TransactionModel {
     DateTime? createdAt,
     DateTime? completedAt,
     Map<String, dynamic>? metadata,
+    TransactionType? type,
+    String? recipient,
+    DateTime? date,
+    String? avatar,
+    double? fee,
+    String? reference,
+    String? sender,
+    CurrencyType? currencyType,
   }) {
     return TransactionModel(
       id: id ?? this.id,
@@ -109,6 +169,14 @@ class TransactionModel {
       createdAt: createdAt ?? this.createdAt,
       completedAt: completedAt ?? this.completedAt,
       metadata: metadata ?? this.metadata,
+      type: type ?? this.type,
+      recipient: recipient ?? this.recipient,
+      date: date ?? this.date,
+      avatar: avatar ?? this.avatar,
+      fee: fee ?? this.fee,
+      reference: reference ?? this.reference,
+      sender: sender ?? this.sender,
+      currencyType: currencyType ?? this.currencyType,
     );
   }
 
@@ -217,9 +285,10 @@ class RecipientModel extends Equatable {
       flagAsset: json['flagAsset'] ?? '',
       avatar: json['avatar'],
       lastSentAmount: json['lastSentAmount']?.toDouble(),
-      lastSentDate: json['lastSentDate'] != null 
-          ? DateTime.parse(json['lastSentDate'])
-          : null,
+      lastSentDate:
+          json['lastSentDate'] != null
+              ? DateTime.parse(json['lastSentDate'])
+              : null,
       isFavorite: json['isFavorite'] ?? false,
       isBlocked: json['isBlocked'] ?? false,
       email: json['email'],
@@ -231,8 +300,19 @@ class RecipientModel extends Equatable {
 
   @override
   List<Object?> get props => [
-    id, name, country, flagAsset, avatar, lastSentAmount, lastSentDate,
-    isFavorite, isBlocked, email, phone, totalTransactions, totalAmountSent
+    id,
+    name,
+    country,
+    flagAsset,
+    avatar,
+    lastSentAmount,
+    lastSentDate,
+    isFavorite,
+    isBlocked,
+    email,
+    phone,
+    totalTransactions,
+    totalAmountSent,
   ];
 }
 
@@ -302,8 +382,19 @@ class InviteModel extends Equatable {
 
   @override
   List<Object?> get props => [
-    id, name, email, phone, country, flagAsset, avatar, status,
-    dateInvited, dateAccepted, dateCompleted, rewardAmount, referralCode
+    id,
+    name,
+    email,
+    phone,
+    country,
+    flagAsset,
+    avatar,
+    status,
+    dateInvited,
+    dateAccepted,
+    dateCompleted,
+    rewardAmount,
+    referralCode,
   ];
 }
 

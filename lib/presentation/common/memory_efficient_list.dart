@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class MemoryEfficientList<T> extends StatefulWidget {
@@ -49,30 +48,32 @@ class _MemoryEfficientListState<T> extends State<MemoryEfficientList<T>> {
   void _onScroll() {
     final scrollOffset = _scrollController.offset;
     final viewportHeight = _scrollController.position.viewportDimension;
-    
+
     final firstVisible = (scrollOffset / widget.itemExtent).floor();
-    final lastVisible = ((scrollOffset + viewportHeight) / widget.itemExtent).ceil();
-    
-    if (firstVisible != _firstVisibleIndex || lastVisible != _lastVisibleIndex) {
+    final lastVisible =
+        ((scrollOffset + viewportHeight) / widget.itemExtent).ceil();
+
+    if (firstVisible != _firstVisibleIndex ||
+        lastVisible != _lastVisibleIndex) {
       setState(() {
         _firstVisibleIndex = firstVisible;
         _lastVisibleIndex = lastVisible;
       });
-      
+
       _cleanupCache();
     }
   }
 
   void _cleanupCache() {
     final toRemove = <int>[];
-    
-    _cachedWidgets.forEach((index, widget) {
+
+    _cachedWidgets.forEach((index, cachedWidget) {
       if (index < _firstVisibleIndex - widget.cacheExtent ||
           index > _lastVisibleIndex + widget.cacheExtent) {
         toRemove.add(index);
       }
     });
-    
+
     for (final index in toRemove) {
       _cachedWidgets.remove(index);
     }
@@ -82,12 +83,12 @@ class _MemoryEfficientListState<T> extends State<MemoryEfficientList<T>> {
     if (_cachedWidgets.containsKey(index)) {
       return _cachedWidgets[index]!;
     }
-    
+
     final item = widget.items[index];
-    final widget_ = widget.itemBuilder(context, item, index);
-    
-    _cachedWidgets[index] = widget_;
-    return widget_;
+    final builtWidget = widget.itemBuilder(context, item, index);
+
+    _cachedWidgets[index] = builtWidget;
+    return builtWidget;
   }
 
   @override

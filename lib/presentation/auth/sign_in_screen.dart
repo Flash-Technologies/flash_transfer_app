@@ -157,22 +157,76 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
   Future<void> _handleGoogleLogin() async {
     try {
+      print("🚀 [SIGN_IN_SCREEN] Starting Google Sign In flow");
+
       // Sign out first to ensure we get the account selection dialog
       await _googleSignIn.signOut();
 
       final result = await _googleSignIn.signIn();
+      print("✅ [SIGN_IN_SCREEN] Google sign in result: $result");
 
       if (result == null) {
+        print("❌ [SIGN_IN_SCREEN] Google sign in was cancelled");
         _showAnimatedSnackBar('Google sign in was cancelled', false);
         return;
       }
 
       final googleAuth = await result.authentication;
       final token = googleAuth.idToken;
+      final accessToken = googleAuth.accessToken;
+
+      print("🔑 [SIGN_IN_SCREEN] Getting authentication tokens");
+      print(
+        "📱 [SIGN_IN_SCREEN] Access token: ${accessToken}...",
+      );
+
+      // Print the complete token with clear separators
+      print("🎯 ==========================================");
+      print("🎯 [SIGN_IN_SCREEN] COMPLETE GOOGLE ID TOKEN");
+      print("🎯 ==========================================");
+      debugPrint(token);
+      print("🎯 ==========================================");
+      print("🎯 [SIGN_IN_SCREEN] END OF TOKEN");
+      print("🎯 ==========================================");
 
       if (token == null) {
+        print("❌ [SIGN_IN_SCREEN] Could not get Google auth token");
         _showAnimatedSnackBar('Could not get Google auth token', false);
         return;
+      }
+
+      // Decode and print token payload
+      try {
+        final parts = token.split('.');
+        if (parts.length == 3) {
+          String payload = parts[1];
+          switch (payload.length % 4) {
+            case 2:
+              payload += '==';
+              break;
+            case 3:
+              payload += '=';
+              break;
+          }
+
+          final bytes = base64Url.decode(payload);
+          final decodedPayload = utf8.decode(bytes);
+          final payloadJson = json.decode(decodedPayload);
+
+          print("📋 [SIGN_IN_SCREEN] ===== DECODED TOKEN PAYLOAD =====");
+          print("📧 [SIGN_IN_SCREEN] Email: ${payloadJson['email']}");
+          print("👤 [SIGN_IN_SCREEN] Name: ${payloadJson['name']}");
+          print(
+            "🆔 [SIGN_IN_SCREEN] Subject (Google ID): ${payloadJson['sub']}",
+          );
+          print("⏰ [SIGN_IN_SCREEN] Issued at: ${payloadJson['iat']}");
+          print("⏰ [SIGN_IN_SCREEN] Expires at: ${payloadJson['exp']}");
+          print("📄 [SIGN_IN_SCREEN] Full payload JSON:");
+          print(decodedPayload);
+          print("📋 [SIGN_IN_SCREEN] ===== END DECODED PAYLOAD =====");
+        }
+      } catch (e) {
+        print("❌ [SIGN_IN_SCREEN] Error decoding token: $e");
       }
 
       _safeSetState(() {
@@ -185,6 +239,25 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
       // Check if still mounted
       if (!mounted) return;
+
+      print("🌍 [SIGN_IN_SCREEN] User country: ${_userCountry ?? 'Unknown'}");
+
+      // Print the exact request data
+      final requestData = {
+        'token': token,
+        'countryName': _userCountry ?? 'Unknown',
+      };
+      print("🧪 [SIGN_IN_SCREEN] =======================================");
+      print("🧪 [SIGN_IN_SCREEN] POSTMAN/CURL TEST DATA");
+      print("🧪 [SIGN_IN_SCREEN] =======================================");
+      print(
+        "🌐 [SIGN_IN_SCREEN] URL: https://flash-transfer.com/api/user/login-google",
+      );
+      print("📤 [SIGN_IN_SCREEN] Method: POST");
+      print("📋 [SIGN_IN_SCREEN] Headers: Content-Type: application/json");
+      print("📦 [SIGN_IN_SCREEN] Raw Body (JSON):");
+      print(json.encode(requestData));
+      print("🧪 [SIGN_IN_SCREEN] =======================================");
 
       // Show loading message
       _showAnimatedSnackBar('Signing in with Google...', true);
@@ -201,6 +274,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       });
 
       if (success) {
+        print("✅ [SIGN_IN_SCREEN] Google login successful");
         // Update logged in state
         ref.read(isLoggedInProvider.notifier).state = true;
 
@@ -217,9 +291,15 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       } else {
         final errorMessage =
             ref.read(authProvider).message ?? 'Google login failed';
+        print("❌ [SIGN_IN_SCREEN] Google login failed: $errorMessage");
         _showAnimatedSnackBar(errorMessage, false);
       }
     } catch (e) {
+      print("💥 [SIGN_IN_SCREEN] ===== DETAILED ERROR INFORMATION =====");
+      print("❌ [SIGN_IN_SCREEN] Error: ${e.toString()}");
+      print("📍 [SIGN_IN_SCREEN] Error type: ${e.runtimeType}");
+      print("💥 [SIGN_IN_SCREEN] ===== END ERROR INFORMATION =====");
+
       // Check if still mounted before updating state
       if (!mounted) return;
 

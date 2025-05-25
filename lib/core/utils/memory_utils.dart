@@ -1,14 +1,19 @@
-
 import 'dart:developer' as developer;
 import 'package:flutter/foundation.dart';
+import 'dart:io';
 
 class MemoryUtils {
   static void logMemoryUsage(String context) {
     if (kDebugMode) {
-      developer.Service.getInfo().then((info) {
+      try {
+        // Log memory usage using ProcessInfo for more accurate data
+        final processInfo = ProcessInfo.currentRss;
+        final memoryMB = (processInfo / (1024 * 1024)).toStringAsFixed(2);
         print('Memory Usage in $context:');
-        print('  Heap Used: ${info.serverWebSocket}');
-      });
+        print('  RSS Memory: ${memoryMB}MB');
+      } catch (e) {
+        print('Memory Usage in $context: Unable to get memory info');
+      }
     }
   }
 

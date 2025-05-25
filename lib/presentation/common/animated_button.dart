@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -14,7 +13,7 @@ class AnimatedButton extends StatefulWidget {
   final bool isLoading;
   final bool disabled;
   final EdgeInsets? padding;
-  final BorderSide? border;
+  final BoxBorder? border;
   final Duration animationDuration;
 
   const AnimatedButton({
@@ -48,27 +47,19 @@ class _AnimatedButtonState extends State<AnimatedButton>
   @override
   void initState() {
     super.initState();
-    
+
     _animationController = AnimationController(
       duration: widget.animationDuration,
       vsync: this,
     );
 
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.95,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
 
-    _opacityAnimation = Tween<double>(
-      begin: 1.0,
-      end: 0.8,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+    _opacityAnimation = Tween<double>(begin: 1.0, end: 0.8).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
   }
 
   @override
@@ -79,36 +70,37 @@ class _AnimatedButtonState extends State<AnimatedButton>
 
   void _onTapDown(TapDownDetails details) {
     if (!_isEnabled) return;
-    
+
     setState(() {
       _isPressed = true;
     });
-    
+
     HapticFeedback.lightImpact();
     _animationController.forward();
   }
 
   void _onTapUp(TapUpDetails details) {
     if (!_isEnabled) return;
-    
+
     setState(() {
       _isPressed = false;
     });
-    
+
     _animationController.reverse();
   }
 
   void _onTapCancel() {
     if (!_isEnabled) return;
-    
+
     setState(() {
       _isPressed = false;
     });
-    
+
     _animationController.reverse();
   }
 
-  bool get _isEnabled => widget.onPressed != null && !widget.disabled && !widget.isLoading;
+  bool get _isEnabled =>
+      widget.onPressed != null && !widget.disabled && !widget.isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -128,45 +120,54 @@ class _AnimatedButtonState extends State<AnimatedButton>
                 duration: const Duration(milliseconds: 200),
                 width: widget.width,
                 height: widget.height,
-                padding: widget.padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding:
+                    widget.padding ??
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
-                  color: _isEnabled 
-                      ? (widget.backgroundColor ?? Theme.of(context).primaryColor)
-                      : Colors.grey.shade300,
+                  color:
+                      _isEnabled
+                          ? (widget.backgroundColor ??
+                              Theme.of(context).primaryColor)
+                          : Colors.grey.shade300,
                   borderRadius: BorderRadius.circular(widget.borderRadius),
                   border: widget.border,
-                  boxShadow: _isEnabled && !_isPressed
-                      ? [
-                          BoxShadow(
-                            color: (widget.backgroundColor ?? Theme.of(context).primaryColor).withOpacity(0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ]
-                      : null,
+                  boxShadow:
+                      _isEnabled && !_isPressed
+                          ? [
+                            BoxShadow(
+                              color: (widget.backgroundColor ??
+                                      Theme.of(context).primaryColor)
+                                  .withOpacity(0.3),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ]
+                          : null,
                 ),
-                child: widget.isLoading
-                    ? Center(
-                        child: SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              widget.foregroundColor ?? Colors.white,
+                child:
+                    widget.isLoading
+                        ? Center(
+                          child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                widget.foregroundColor ?? Colors.white,
+                              ),
                             ),
                           ),
+                        )
+                        : DefaultTextStyle(
+                          style: TextStyle(
+                            color:
+                                _isEnabled
+                                    ? (widget.foregroundColor ?? Colors.white)
+                                    : Colors.grey.shade600,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          child: widget.child,
                         ),
-                      )
-                    : DefaultTextStyle(
-                        style: TextStyle(
-                          color: _isEnabled 
-                              ? (widget.foregroundColor ?? Colors.white)
-                              : Colors.grey.shade600,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        child: widget.child,
-                      ),
               ),
             ),
           ),

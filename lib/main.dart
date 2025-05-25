@@ -9,7 +9,11 @@ import 'app.dart';
 
 final GoogleSignIn googleSignIn = GoogleSignIn(
   scopes: ['email', 'profile'],
-    signInOption: SignInOption.standard,
+  signInOption: SignInOption.standard,
+  serverClientId:
+      '247313278717-rp6st2neucptvl0u3iqj5ihgsarjp9gc.apps.googleusercontent.com',
+  // Add this to force re-authentication
+  forceCodeForRefreshToken: true,
 );
 
 const MethodChannel walletChannel = MethodChannel(
@@ -33,6 +37,7 @@ void main() async {
     ),
   );
 }
+
 final navigatorObserverProvider = Provider<NavigatorObserver>((ref) {
   return NavigatorObserver();
 });

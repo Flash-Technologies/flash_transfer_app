@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart';
 import '../../../providers/profile_provider.dart';
 import '../../../core/models/user.dart';
+import '../../../core/models/country_model.dart';
 import '../../common/enhanced_text_field.dart';
 import '../../common/country_picker.dart';
 import '../../common/date_picker_widget.dart';
@@ -32,7 +33,7 @@ class ProfileFormWidget extends ConsumerStatefulWidget {
 class _ProfileFormWidgetState extends ConsumerState<ProfileFormWidget>
     with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
-  
+
   // Animation Controllers
   late AnimationController _formAnimationController;
   late Animation<double> _formFadeAnimation;
@@ -71,7 +72,7 @@ class _ProfileFormWidgetState extends ConsumerState<ProfileFormWidget>
     _initializeAnimations();
     _populateForm();
     _setupChangeListeners();
-    
+
     // Start animations
     _formAnimationController.forward();
   }
@@ -91,7 +92,7 @@ class _ProfileFormWidgetState extends ConsumerState<ProfileFormWidget>
   void _populateForm() {
     if (widget.initialUser != null) {
       final user = widget.initialUser!;
-      
+
       _firstNameController.text = user.firstName ?? '';
       _lastNameController.text = user.lastName ?? '';
       _emailController.text = user.email;
@@ -101,7 +102,7 @@ class _ProfileFormWidgetState extends ConsumerState<ProfileFormWidget>
       _stateController.text = user.state ?? '';
       _zipController.text = user.postalCode ?? '';
       _selectedCountry = user.countryName;
-      
+
       // Parse date of birth
       if (user.dob != null) {
         try {
@@ -142,7 +143,7 @@ class _ProfileFormWidgetState extends ConsumerState<ProfileFormWidget>
   @override
   void dispose() {
     _formAnimationController.dispose();
-    
+
     // Dispose controllers
     _firstNameController.dispose();
     _lastNameController.dispose();
@@ -153,7 +154,7 @@ class _ProfileFormWidgetState extends ConsumerState<ProfileFormWidget>
     _cityController.dispose();
     _stateController.dispose();
     _zipController.dispose();
-    
+
     // Dispose focus nodes
     _firstNameFocus.dispose();
     _lastNameFocus.dispose();
@@ -164,7 +165,7 @@ class _ProfileFormWidgetState extends ConsumerState<ProfileFormWidget>
     _cityFocus.dispose();
     _stateFocus.dispose();
     _zipFocus.dispose();
-    
+
     super.dispose();
   }
 
@@ -198,16 +199,18 @@ class _ProfileFormWidgetState extends ConsumerState<ProfileFormWidget>
     }
 
     try {
-      final success = await ref.read(profileProvider.notifier).updateProfile(profileData);
-      
+      final success = await ref
+          .read(profileProvider.notifier)
+          .updateProfile(profileData);
+
       if (success && mounted) {
         setState(() {
           _hasUnsavedChanges = false;
         });
-        
+
         HapticFeedback.mediumImpact();
         widget.onSaved?.call();
-        
+
         _showSuccessMessage();
       }
     } catch (e) {
@@ -274,26 +277,32 @@ class _ProfileFormWidgetState extends ConsumerState<ProfileFormWidget>
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.7,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: CountryPicker(
-          countries: _getCountries(),
-          selectedCountry: _selectedCountry != null
-              ? CountryModel(name: _selectedCountry!, code: '', flagUrl: '')
-              : null,
-          onSelect: (country) {
-            setState(() {
-              _selectedCountry = country.name;
-            });
-            _onFormChanged();
-            Navigator.pop(context);
-          },
-        ),
-      ),
+      builder:
+          (context) => Container(
+            height: MediaQuery.of(context).size.height * 0.7,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            child: CountryPicker(
+              countries: _getCountries(),
+              selectedCountry:
+                  _selectedCountry != null
+                      ? CountryModel(
+                        name: _selectedCountry!,
+                        code: '',
+                        flagUrl: '',
+                      )
+                      : null,
+              onSelect: (country) {
+                setState(() {
+                  _selectedCountry = country.name;
+                });
+                _onFormChanged();
+                Navigator.pop(context);
+              },
+            ),
+          ),
     );
   }
 
@@ -360,7 +369,9 @@ class _ProfileFormWidgetState extends ConsumerState<ProfileFormWidget>
                       required: true,
                       errorText: fieldErrors?['firstName'],
                       onChanged: (value) {
-                        ref.read(profileProvider.notifier).validateField('firstName', value);
+                        ref
+                            .read(profileProvider.notifier)
+                            .validateField('firstName', value);
                       },
                       onFieldSubmitted: (_) => _lastNameFocus.requestFocus(),
                       animationDelay: 100,
@@ -377,7 +388,9 @@ class _ProfileFormWidgetState extends ConsumerState<ProfileFormWidget>
                       required: true,
                       errorText: fieldErrors?['lastName'],
                       onChanged: (value) {
-                        ref.read(profileProvider.notifier).validateField('lastName', value);
+                        ref
+                            .read(profileProvider.notifier)
+                            .validateField('lastName', value);
                       },
                       onFieldSubmitted: (_) => _emailFocus.requestFocus(),
                       animationDelay: 200,
@@ -399,7 +412,9 @@ class _ProfileFormWidgetState extends ConsumerState<ProfileFormWidget>
                 required: true,
                 errorText: fieldErrors?['email'],
                 onChanged: (value) {
-                  ref.read(profileProvider.notifier).validateField('email', value);
+                  ref
+                      .read(profileProvider.notifier)
+                      .validateField('email', value);
                 },
                 onFieldSubmitted: (_) => _passwordFocus.requestFocus(),
                 animationDelay: 300,
@@ -416,21 +431,26 @@ class _ProfileFormWidgetState extends ConsumerState<ProfileFormWidget>
                 obscureText: !_passwordVisible,
                 enabled: widget.isEditable,
                 errorText: fieldErrors?['password'],
-                suffixIcon: widget.isEditable
-                    ? IconButton(
-                        icon: Icon(
-                          _passwordVisible ? Icons.visibility_off : Icons.visibility,
-                          color: Colors.grey[600],
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _passwordVisible = !_passwordVisible;
-                          });
-                        },
-                      )
-                    : null,
+                suffixIcon:
+                    widget.isEditable
+                        ? IconButton(
+                          icon: Icon(
+                            _passwordVisible
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: Colors.grey[600],
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _passwordVisible = !_passwordVisible;
+                            });
+                          },
+                        )
+                        : null,
                 onChanged: (value) {
-                  ref.read(profileProvider.notifier).validateField('password', value);
+                  ref
+                      .read(profileProvider.notifier)
+                      .validateField('password', value);
                 },
                 onFieldSubmitted: (_) => _permanentAddressFocus.requestFocus(),
                 animationDelay: 400,
@@ -501,7 +521,10 @@ class _ProfileFormWidgetState extends ConsumerState<ProfileFormWidget>
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: widget.isEditable ? Colors.grey[50] : Colors.grey[100],
+                        color:
+                            widget.isEditable
+                                ? Colors.grey[50]
+                                : Colors.grey[100],
                         border: Border.all(color: const Color(0xFFEBECED)),
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -512,9 +535,10 @@ class _ProfileFormWidgetState extends ConsumerState<ProfileFormWidget>
                               _selectedCountry ?? 'Select Country',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: _selectedCountry != null
-                                    ? const Color(0xFF181F30)
-                                    : const Color(0xFF6E757D),
+                                color:
+                                    _selectedCountry != null
+                                        ? const Color(0xFF181F30)
+                                        : const Color(0xFF6E757D),
                               ),
                             ),
                           ),
@@ -548,7 +572,9 @@ class _ProfileFormWidgetState extends ConsumerState<ProfileFormWidget>
                 required: true,
                 errorText: fieldErrors?['city'],
                 onChanged: (value) {
-                  ref.read(profileProvider.notifier).validateField('city', value);
+                  ref
+                      .read(profileProvider.notifier)
+                      .validateField('city', value);
                 },
                 onFieldSubmitted: (_) => _stateFocus.requestFocus(),
                 animationDelay: 900,
@@ -568,7 +594,9 @@ class _ProfileFormWidgetState extends ConsumerState<ProfileFormWidget>
                       required: true,
                       errorText: fieldErrors?['state'],
                       onChanged: (value) {
-                        ref.read(profileProvider.notifier).validateField('state', value);
+                        ref
+                            .read(profileProvider.notifier)
+                            .validateField('state', value);
                       },
                       onFieldSubmitted: (_) => _zipFocus.requestFocus(),
                       animationDelay: 1000,
@@ -586,7 +614,9 @@ class _ProfileFormWidgetState extends ConsumerState<ProfileFormWidget>
                       required: true,
                       errorText: fieldErrors?['postalCode'],
                       onChanged: (value) {
-                        ref.read(profileProvider.notifier).validateField('postalCode', value);
+                        ref
+                            .read(profileProvider.notifier)
+                            .validateField('postalCode', value);
                       },
                       onFieldSubmitted: (_) => _saveForm(),
                       animationDelay: 1100,
@@ -612,31 +642,32 @@ class _ProfileFormWidgetState extends ConsumerState<ProfileFormWidget>
                       elevation: 3,
                       disabledBackgroundColor: Colors.grey.shade300,
                     ),
-                    child: profileState.isLoading
-                        ? SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                const Color(0xFF181F30),
-                              ),
-                            ),
-                          )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.save, size: 20),
-                              const SizedBox(width: 8),
-                              Text(
-                                'Save Profile',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
+                    child:
+                        profileState.isLoading
+                            ? SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  const Color(0xFF181F30),
                                 ),
                               ),
-                            ],
-                          ),
+                            )
+                            : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.save, size: 20),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Save Profile',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
                   ),
                 ).animate().slideY(
                   begin: 1,

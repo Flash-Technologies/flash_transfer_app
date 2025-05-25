@@ -28,6 +28,7 @@ import 'package:flash_transfer_app/presentation/settings/edit_profile_screen.dar
 import 'package:flash_transfer_app/presentation/transaction/transaction_screen.dart';
 import 'package:flash_transfer_app/presentation/transaction/recipients_screen.dart';
 import 'package:flash_transfer_app/presentation/transaction/track_transfer_screen.dart';
+import 'package:flash_transfer_app/presentation/settings/contact_us_screen.dart';
 // import 'package:flash_transfer_app/presentation/home/nft_screen.dart';
 // import 'package:flash_transfer_app/presentation/home/rank_screen.dart';
 // import 'package:flash_transfer_app/presentation/card/my_card_screen.dart';
@@ -36,7 +37,6 @@ import 'package:flash_transfer_app/presentation/transaction/track_transfer_scree
 import 'package:flash_transfer_app/presentation/settings/language_screen.dart';
 // import 'package:flash_transfer_app/presentation/settings/settings_screen.dart';
 import 'package:flash_transfer_app/presentation/settings/privacy_screen.dart';
-import 'package:flash_transfer_app/presentation/settings/contact_us_screen.dart';
 
 import '../core/models/nft_model.dart';
 import '../presentation/nft/nft_screen.dart';
@@ -60,7 +60,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     navigatorKey: navigatorKey,
     debugLogDiagnostics: true,
-    initialLocation: '/profile',
+    initialLocation: '/',
     redirect: (context, state) {
       final isLoggedIn = ref.read(isLoggedInProvider);
 
@@ -194,10 +194,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const ProfileScreen(),
       ),
 
-      // GoRoute(
-      //   path: '/edit-profile',
-      //   builder: (context, state) => const EditProfileScreen(),
-      // ),
+      GoRoute(
+        path: '/edit-profile',
+        builder: (context, state) => const EditProfileScreen(),
+      ),
 
       // Transaction related screens
       GoRoute(
@@ -210,10 +210,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const RecipientsScreen(),
       ),
 
-      // GoRoute(
-      //   path: '/track-transfer',
-      //   builder: (context, state) => const TrackTransferScreen(),
-      // ),
+      GoRoute(
+        path: '/track-transfer',
+        builder: (context, state) => const TrackTransferScreen(),
+      ),
 
       // Feature screens
       // GoRoute(path: '/nft', builder: (context, state) => const NftScreen()),
@@ -248,10 +248,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const PrivacyScreen(),
       ),
 
-      // GoRoute(
-      //   path: '/contact-us',
-      //   builder: (context, state) => const ContactUsScreen(),
-      // ),
+      GoRoute(
+        path: '/contact-us',
+        builder: (context, state) => const ContactUsScreen(),
+      ),
       // Related routes that would navigate to this screen
       // GoRoute(
       //   path: '/crypto-payment',

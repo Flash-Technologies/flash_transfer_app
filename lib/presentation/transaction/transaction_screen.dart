@@ -122,7 +122,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
           final thisMonth = DateTime(now.year, now.month);
           _filteredTransactions =
               SampleData.sampleTransactions
-                  .where((t) => t.date.isAfter(thisMonth))
+                  .where((t) => (t.date ?? t.createdAt).isAfter(thisMonth))
                   .toList();
           break;
         case 'lastMonth':
@@ -133,7 +133,8 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
               SampleData.sampleTransactions
                   .where(
                     (t) =>
-                        t.date.isAfter(lastMonth) && t.date.isBefore(thisMonth),
+                        (t.date ?? t.createdAt).isAfter(lastMonth) &&
+                        (t.date ?? t.createdAt).isBefore(thisMonth),
                   )
                   .toList();
           break;
@@ -387,6 +388,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
 
   Widget _buildTransactionDetailsModal(TransactionModel transaction) {
     final translationService = TranslationService.instance;
+    final statusEnum = _parseStatus(transaction.status);
 
     return Container(
           height: MediaQuery.of(context).size.height * 0.7,
@@ -420,14 +422,12 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: _getStatusColor(
-                          transaction.status,
-                        ).withOpacity(0.1),
+                        color: _getStatusColor(statusEnum).withOpacity(0.1),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
-                        _getStatusIcon(transaction.status),
-                        color: _getStatusColor(transaction.status),
+                        _getStatusIcon(statusEnum),
+                        color: _getStatusColor(statusEnum),
                         size: 24,
                       ),
                     ),
@@ -448,7 +448,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
                           ),
                           Text(
                             translationService.translate(
-                              'transaction.${transaction.type.toString().split('.').last}',
+                              'transaction.${transaction.type?.toString().split('.').last ?? 'send'}',
                             ),
                             style: const TextStyle(
                               fontSize: 14,
@@ -480,23 +480,23 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
                     children: [
                       _buildDetailRow(
                         translationService.translate('transaction.recipient'),
-                        transaction.recipient,
+                        transaction.recipient ?? transaction.receiverName,
                       ),
                       _buildDetailRow(
                         translationService.translate('transaction.date'),
-                        _formatDate(transaction.date),
+                        _formatDate(transaction.date ?? transaction.createdAt),
                       ),
                       if (transaction.reference != null)
                         _buildDetailRow(
                           translationService.translate('transaction.reference'),
                           transaction.reference!,
                         ),
-                      if (transaction.trackingNumber != null)
+                      if (transaction.trackingNumber.isNotEmpty)
                         _buildDetailRow(
                           translationService.translate(
                             'transaction.transactionId',
                           ),
-                          transaction.trackingNumber!,
+                          transaction.trackingNumber,
                         ),
                       if (transaction.fee != null)
                         _buildDetailRow(
@@ -628,6 +628,17 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
       case TransactionStatus.failed:
       case TransactionStatus.cancelled:
         return Icons.error;
+    }
+  }
+
+  TransactionStatus _parseStatus(String status) {
+    try {
+      return TransactionStatus.values.firstWhere(
+        (e) => e.toString().split('.').last == status,
+        orElse: () => TransactionStatus.pending,
+      );
+    } catch (e) {
+      return TransactionStatus.pending;
     }
   }
 

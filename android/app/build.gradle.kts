@@ -8,7 +8,7 @@ plugins {
 android {
     namespace = "com.example.flash_transfer_app"
     compileSdk = 34  // Updated
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

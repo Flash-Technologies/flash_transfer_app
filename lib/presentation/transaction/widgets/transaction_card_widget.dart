@@ -103,7 +103,8 @@ class _TransactionCardWidgetState extends State<TransactionCardWidget>
                           children: [
                             Expanded(
                               child: Text(
-                                widget.transaction.recipient,
+                                widget.transaction.recipient ??
+                                    widget.transaction.receiverName,
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
@@ -131,7 +132,10 @@ class _TransactionCardWidgetState extends State<TransactionCardWidget>
                         Row(
                           children: [
                             Text(
-                              _formatDate(widget.transaction.date),
+                              _formatDate(
+                                widget.transaction.date ??
+                                    widget.transaction.createdAt,
+                              ),
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: Color(0xFF6E757D),
@@ -188,7 +192,9 @@ class _TransactionCardWidgetState extends State<TransactionCardWidget>
   }
 
   Color _getTypeColor() {
-    switch (widget.transaction.type) {
+    if (widget.transaction.type == null) return const Color(0xFF6E757D);
+
+    switch (widget.transaction.type!) {
       case TransactionType.send:
         return const Color(0xFFFF3E24);
       case TransactionType.receive:
@@ -197,7 +203,9 @@ class _TransactionCardWidgetState extends State<TransactionCardWidget>
   }
 
   IconData _getTypeIcon() {
-    switch (widget.transaction.type) {
+    if (widget.transaction.type == null) return Icons.swap_horiz;
+
+    switch (widget.transaction.type!) {
       case TransactionType.send:
         return Icons.arrow_upward;
       case TransactionType.receive:
@@ -206,7 +214,8 @@ class _TransactionCardWidgetState extends State<TransactionCardWidget>
   }
 
   Color _getBorderColor() {
-    switch (widget.transaction.status) {
+    final statusEnum = _parseStatus(widget.transaction.status);
+    switch (statusEnum) {
       case TransactionStatus.completed:
         return const Color(0xFF00C735).withOpacity(0.3);
       case TransactionStatus.pending:
@@ -219,7 +228,8 @@ class _TransactionCardWidgetState extends State<TransactionCardWidget>
   }
 
   Color _getStatusColor() {
-    switch (widget.transaction.status) {
+    final statusEnum = _parseStatus(widget.transaction.status);
+    switch (statusEnum) {
       case TransactionStatus.completed:
         return const Color(0xFF00C735);
       case TransactionStatus.pending:
@@ -232,7 +242,8 @@ class _TransactionCardWidgetState extends State<TransactionCardWidget>
   }
 
   String _getStatusText() {
-    switch (widget.transaction.status) {
+    final statusEnum = _parseStatus(widget.transaction.status);
+    switch (statusEnum) {
       case TransactionStatus.completed:
         return 'Completed';
       case TransactionStatus.pending:
@@ -243,6 +254,17 @@ class _TransactionCardWidgetState extends State<TransactionCardWidget>
         return 'Failed';
       case TransactionStatus.cancelled:
         return 'Cancelled';
+    }
+  }
+
+  TransactionStatus _parseStatus(String status) {
+    try {
+      return TransactionStatus.values.firstWhere(
+        (e) => e.toString().split('.').last == status,
+        orElse: () => TransactionStatus.pending,
+      );
+    } catch (e) {
+      return TransactionStatus.pending;
     }
   }
 

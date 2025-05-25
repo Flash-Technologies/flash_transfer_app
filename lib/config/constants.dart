@@ -8,6 +8,7 @@ class AppSizes {
   static const double paddingMedium = 16;
   static const double paddingLarge = 24;
   static const double paddingXLarge = 32;
+  
 
   // Spacing
   static const double spacingXSmall = 4;
@@ -52,4 +53,7 @@ class AppColors {
   // Text colors
   static const Color textPrimary = Color(0xFF181F30);
   static const Color textSecondary = Color(0xFF6E757D);
+
+
+  static const String GoogleClientId = "551761653851-eudfs650rc316i1n8pnfanntqds8d712.apps.googleusercontent.com";
 }

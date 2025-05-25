@@ -278,7 +278,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       final response = await _authService.authenticateWithGoogle(
         SocialAuthRequest(token: idToken, countryName: countryName),
       );
-
+      print("🔑 [AUTH_PROVIDER] Login with Google response: $response");
       if (response.success && response.data != null) {
         await _authService.saveUserData(response.data!);
         _updateState(

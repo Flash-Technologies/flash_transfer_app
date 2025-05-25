@@ -1,7 +1,7 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 class TestingUtils {
   // Widget Testing Helpers
   static Widget createTestableWidget({
@@ -11,10 +11,7 @@ class TestingUtils {
   }) {
     return ProviderScope(
       overrides: overrides ?? [],
-      child: MaterialApp(
-        theme: theme,
-        home: Scaffold(body: child),
-      ),
+      child: MaterialApp(theme: theme, home: Scaffold(body: child)),
     );
   }
 
@@ -60,10 +57,10 @@ class TestingUtils {
     Duration animationDuration,
   ) async {
     await tester.pumpWidget(widget);
-    
+
     final frameTimes = <Duration>[];
     final stopwatch = Stopwatch();
-    
+
     while (stopwatch.elapsed < animationDuration) {
       stopwatch.start();
       await tester.pump(const Duration(milliseconds: 16)); // 60fps
@@ -71,12 +68,11 @@ class TestingUtils {
       frameTimes.add(stopwatch.elapsed);
       stopwatch.reset();
     }
-    
-    final averageFrameTime = frameTimes.fold<Duration>(
-      Duration.zero,
-      (prev, curr) => prev + curr,
-    ) ~/ frameTimes.length;
-    
+
+    final averageFrameTime =
+        frameTimes.fold<Duration>(Duration.zero, (prev, curr) => prev + curr) ~/
+        frameTimes.length;
+
     // Assert that average frame time is reasonable (< 20ms for 60fps)
     expect(averageFrameTime.inMilliseconds, lessThan(20));
   }
@@ -87,15 +83,19 @@ class TestingUtils {
     Widget widget,
   ) async {
     await tester.pumpWidget(widget);
-    
-    // Test semantic labels
-    final semantics = tester.allSemantics.toList();
-    expect(semantics, isNotEmpty, reason: 'Widget should have semantic information');
-    
+
+    // Test semantic labels using WidgetTester's semantics method
+    final semanticsFinder = find.byWidgetPredicate((widget) => true);
+    final semanticsWidgets = semanticsFinder.evaluate();
+    expect(
+      semanticsWidgets,
+      isNotEmpty,
+      reason: 'Widget should have semantic information',
+    );
+
     // Test minimum touch target size (48x48 dp)
     final buttons = find.byType(MaterialButton);
     for (final button in buttons.evaluate()) {
-      final buttonWidget = button.widget as MaterialButton;
       final renderBox = button.renderObject as RenderBox?;
       if (renderBox != null) {
         expect(renderBox.size.width, greaterThanOrEqualTo(48));
@@ -114,10 +114,7 @@ class TestingUtils {
     await tester.pump();
   }
 
-  static Future<void> tapButton(
-    WidgetTester tester,
-    String key,
-  ) async {
+  static Future<void> tapButton(WidgetTester tester, String key) async {
     await tester.tap(find.byKey(ValueKey(key)));
     await tester.pump();
   }
@@ -129,22 +126,22 @@ class TestingUtils {
     Map<String, String> invalidInputs,
   ) async {
     await tester.pumpWidget(createTestableWidget(child: formWidget));
-    
+
     // Test invalid inputs
     for (final entry in invalidInputs.entries) {
       await enterTextInField(tester, entry.key, entry.value);
       await tapButton(tester, 'submit');
-      
+
       // Should show error
       expect(find.text('Submit'), findsOneWidget);
       expect(find.byType(SnackBar), findsNothing);
     }
-    
+
     // Test valid inputs
     for (final entry in validInputs.entries) {
       await enterTextInField(tester, entry.key, entry.value);
     }
-    
+
     await tapButton(tester, 'submit');
     // Should not show errors
     await tester.pumpAndSettle();
@@ -202,21 +199,24 @@ class MockNetworkClient {
 
   Future<Map<String, dynamic>> get(String endpoint) async {
     await Future.delayed(delay);
-    
+
     if (shouldFail) {
       throw Exception('Mock network error');
     }
-    
+
     return responses[endpoint] ?? {'error': 'Endpoint not mocked'};
   }
 
-  Future<Map<String, dynamic>> post(String endpoint, Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> post(
+    String endpoint,
+    Map<String, dynamic> data,
+  ) async {
     await Future.delayed(delay);
-    
+
     if (shouldFail) {
       throw Exception('Mock network error');
     }
-    
+
     return responses[endpoint] ?? {'success': true, 'data': data};
   }
 }

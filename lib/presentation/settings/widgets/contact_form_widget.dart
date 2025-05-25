@@ -424,7 +424,6 @@ class _ContactFormWidgetState extends ConsumerState<ContactFormWidget>
                       controller: _subjectController,
                       focusNode: _subjectFocus,
                       hintText: 'Enter subject',
-                      validator: _validateSubject,
                       maxLength: 100,
                       showCharacterCount: true,
                       onFieldSubmitted: (_) => _emailFocus.requestFocus(),
@@ -450,7 +449,6 @@ class _ContactFormWidgetState extends ConsumerState<ContactFormWidget>
                       focusNode: _emailFocus,
                       hintText: 'Enter your email',
                       keyboardType: TextInputType.emailAddress,
-                      validator: _validateEmail,
                       onFieldSubmitted: (_) => _messageFocus.requestFocus(),
                       animationDelay: 200,
                       suffixIcon: _hasInteracted && _emailController.text.isNotEmpty
@@ -475,7 +473,6 @@ class _ContactFormWidgetState extends ConsumerState<ContactFormWidget>
                       hintText: 'Type your message...',
                       maxLines: widget.isCompact ? 3 : 5,
                       maxLength: 1000,
-                      validator: _validateMessage,
                       showCharacterCount: true,
                       onFieldSubmitted: (_) => _submitForm(),
                       animationDelay: 300,

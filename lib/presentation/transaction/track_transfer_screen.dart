@@ -1,34 +1,34 @@
-// File: lib/presentation/settings/contact_us_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart';
-import '../../providers/contact_provider.dart';
+import '../../providers/tracking_provider.dart';
 
-class ContactUsScreen extends ConsumerStatefulWidget {
-  const ContactUsScreen({super.key});
+class TrackTransferScreen extends ConsumerStatefulWidget {
+  const TrackTransferScreen({super.key});
 
   @override
-  ConsumerState<ContactUsScreen> createState() => _ContactUsScreenState();
+  ConsumerState<TrackTransferScreen> createState() => _TrackTransferScreenState();
 }
 
-class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
+class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
     with TickerProviderStateMixin {
   late AnimationController _headerAnimationController;
-  late AnimationController _heroAnimationController;
-  late AnimationController _contentAnimationController;
+  late AnimationController _toggleAnimationController;
+  late AnimationController _formAnimationController;
+  late AnimationController _shakeAnimationController;
+  
   late Animation<Offset> _headerSlideAnimation;
-  late Animation<double> _heroFloatAnimation;
-  late Animation<double> _contentFadeAnimation;
+  late Animation<double> _toggleScaleAnimation;
+  late Animation<Offset> _formSlideAnimation;
+  late Animation<double> _shakeAnimation;
 
   final _formKey = GlobalKey<FormState>();
-  final _subjectController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _messageController = TextEditingController();
+  final _trackingController = TextEditingController();
+  final FocusNode _trackingFocus = FocusNode();
 
-  final FocusNode _subjectFocus = FocusNode();
-  final FocusNode _emailFocus = FocusNode();
-  final FocusNode _messageFocus = FocusNode();
+  String _activeTab = 'Send';
+  String? _validationError;
 
   @override
   void initState() {
@@ -43,13 +43,18 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
       vsync: this,
     );
 
-    _heroAnimationController = AnimationController(
-      duration: const Duration(seconds: 3),
+    _toggleAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
 
-    _contentAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 800),
+    _formAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+
+    _shakeAnimationController = AnimationController(
+      duration: const Duration(milliseconds: 400),
       vsync: this,
     );
 
@@ -61,27 +66,43 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
       curve: Curves.easeOutBack,
     ));
 
-    _heroFloatAnimation = Tween<double>(
-      begin: 0,
-      end: 10,
+    _toggleScaleAnimation = Tween<double>(
+      begin: 0.95,
+      end: 1.0,
     ).animate(CurvedAnimation(
-      parent: _heroAnimationController,
+      parent: _toggleAnimationController,
       curve: Curves.easeInOut,
     ));
 
-    _contentFadeAnimation = CurvedAnimation(
-      parent: _contentAnimationController,
-      curve: Curves.easeInOut,
-    );
+    _formSlideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.3),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _formAnimationController,
+      curve: Curves.easeOutBack,
+    ));
+
+    _shakeAnimation = Tween<double>(
+      begin: 0,
+      end: 10,
+    ).animate(CurvedAnimation(
+      parent: _shakeAnimationController,
+      curve: Curves.elasticInOut,
+    ));
   }
 
   void _startAnimations() {
     _headerAnimationController.forward();
-    _heroAnimationController.repeat(reverse: true);
     
     Future.delayed(const Duration(milliseconds: 200), () {
       if (mounted) {
-        _contentAnimationController.forward();
+        _toggleAnimationController.forward();
+      }
+    });
+
+    Future.delayed(const Duration(milliseconds: 400), () {
+      if (mounted) {
+        _formAnimationController.forward();
       }
     });
   }
@@ -89,39 +110,72 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
   @override
   void dispose() {
     _headerAnimationController.dispose();
-    _heroAnimationController.dispose();
-    _contentAnimationController.dispose();
-    _subjectController.dispose();
-    _emailController.dispose();
-    _messageController.dispose();
-    _subjectFocus.dispose();
-    _emailFocus.dispose();
-    _messageFocus.dispose();
+    _toggleAnimationController.dispose();
+    _formAnimationController.dispose();
+    _shakeAnimationController.dispose();
+    _trackingController.dispose();
+    _trackingFocus.dispose();
     super.dispose();
   }
 
-  void _submitForm() async {
-    if (!_formKey.currentState!.validate()) {
-      HapticFeedback.heavyImpact();
+  void _onTabChanged(String tab) {
+    if (_activeTab != tab) {
+      setState(() {
+        _activeTab = tab;
+        _validationError = null;
+      });
+      
+      HapticFeedback.selectionClick();
+      
+      // Animate toggle
+      _toggleAnimationController.reset();
+      _toggleAnimationController.forward();
+      
+      // Clear previous form
+      _trackingController.clear();
+      
+      // Update provider
+      ref.read(trackingProvider.notifier).setTrackingType(
+        tab == 'Send' ? TrackingType.send : TrackingType.receive,
+      );
+    }
+  }
+
+  void _validateAndSubmit() async {
+    final trackingNumber = _trackingController.text.trim();
+    
+    setState(() {
+      _validationError = null;
+    });
+
+    if (trackingNumber.isEmpty) {
+      _showValidationError('Please enter a tracking number');
+      return;
+    }
+
+    if (trackingNumber.length != 10) {
+      _showValidationError('Enter 10-Digit tracking number');
+      return;
+    }
+
+    // Validate format (basic)
+    final isValidFormat = RegExp(r'^[A-Z0-9]{10}$').hasMatch(trackingNumber.toUpperCase());
+    if (!isValidFormat) {
+      _showValidationError('Invalid tracking number format');
       return;
     }
 
     HapticFeedback.lightImpact();
     
-    // Show loading state
-    ref.read(contactProvider.notifier).setLoading(true);
-    
     try {
-      final success = await ref.read(contactProvider.notifier).submitContact(
-        subject: _subjectController.text.trim(),
-        email: _emailController.text.trim(),
-        message: _messageController.text.trim(),
+      final result = await ref.read(trackingProvider.notifier).trackTransfer(
+        trackingNumber: trackingNumber.toUpperCase(),
       );
 
-      if (success && mounted) {
+      if (result && mounted) {
         HapticFeedback.mediumImpact();
         
-        // Show success snackbar
+        // Navigate to results or show success
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(
@@ -129,7 +183,7 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
                 Icon(Icons.check_circle, color: Colors.white),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Text('Message sent successfully! We\'ll get back to you soon.'),
+                  child: Text('Transfer found! Loading details...'),
                 ),
               ],
             ),
@@ -137,76 +191,32 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             margin: const EdgeInsets.all(16),
-            duration: const Duration(seconds: 4),
           ),
         );
-
-        // Clear form
-        _subjectController.clear();
-        _emailController.clear();
-        _messageController.clear();
         
-        // Navigate back after delay
-        Future.delayed(const Duration(seconds: 2), () {
-          if (mounted) Navigator.of(context).pop();
-        });
+        // Here you would navigate to transfer details screen
+        // Navigator.pushNamed(context, '/transfer-details', arguments: trackingNumber);
       }
     } catch (e) {
-      if (mounted) {
-        HapticFeedback.heavyImpact();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                Icon(Icons.error, color: Colors.white),
-                const SizedBox(width: 12),
-                Expanded(child: Text('Failed to send message. Please try again.')),
-              ],
-            ),
-            backgroundColor: Colors.red[600],
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            margin: const EdgeInsets.all(16),
-          ),
-        );
-      }
+      _showValidationError('Transfer not found or invalid tracking number');
     }
   }
 
-  String? _validateEmail(String? value) {
-    if (value?.isEmpty ?? true) {
-      return 'Email is required';
-    }
-    final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
-    if (!emailRegex.hasMatch(value!)) {
-      return 'Please enter a valid email address';
-    }
-    return null;
-  }
-
-  String? _validateSubject(String? value) {
-    if (value?.isEmpty ?? true) {
-      return 'Subject is required';
-    }
-    if (value!.length < 3) {
-      return 'Subject must be at least 3 characters';
-    }
-    return null;
-  }
-
-  String? _validateMessage(String? value) {
-    if (value?.isEmpty ?? true) {
-      return 'Message is required';
-    }
-    if (value!.length < 10) {
-      return 'Message must be at least 10 characters';
-    }
-    return null;
+  void _showValidationError(String message) {
+    setState(() {
+      _validationError = message;
+    });
+    
+    HapticFeedback.heavyImpact();
+    
+    // Trigger shake animation
+    _shakeAnimationController.reset();
+    _shakeAnimationController.forward();
   }
 
   @override
   Widget build(BuildContext context) {
-    final contactState = ref.watch(contactProvider);
+    final trackingState = ref.watch(trackingProvider);
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -273,190 +283,272 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
 
           // Content
           Expanded(
-            child: FadeTransition(
-              opacity: _contentFadeAnimation,
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Title and Description
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Hero Image
-                      AnimatedBuilder(
-                        animation: _heroFloatAnimation,
-                        builder: (context, child) {
-                          return Transform.translate(
-                            offset: Offset(0, _heroFloatAnimation.value),
-                            child: Container(
-                              width: 282,
-                              height: 250,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16),
-                                gradient: LinearGradient(
-                                  colors: [
-                                    theme.primaryColor.withOpacity(0.1),
-                                    Colors.blue.withOpacity(0.05),
-                                  ],
-                                ),
-                              ),
-                              child: Center(
-                                child: Icon(
-                                  Icons.support_agent_rounded,
-                                  size: 120,
-                                  color: theme.primaryColor.withOpacity(0.6),
-                                ),
-                              ),
-                            ).animate().scale(
-                              delay: const Duration(milliseconds: 600),
-                              duration: const Duration(milliseconds: 800),
-                              curve: Curves.elasticOut,
-                            ),
-                          );
-                        },
-                      ),
-
-                      const SizedBox(height: 32),
-
-                      // Title and Description
-                      Column(
-                        children: [
-                          Text(
-                            'How can we help you?',
-                            style: theme.textTheme.headlineSmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: const Color(0xFF181F30),
-                            ),
-                          ).animate().fadeIn(
-                            delay: const Duration(milliseconds: 700),
-                            duration: const Duration(milliseconds: 600),
-                          ),
-                          
-                          const SizedBox(height: 12),
-                          
-                          Text(
-                            'It looks like you have problems with our system. We are here to help you, so, please get in touch with us.',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: const Color(0xFF6E757D),
-                              height: 1.6,
-                            ),
-                            textAlign: TextAlign.center,
-                          ).animate().fadeIn(
-                            delay: const Duration(milliseconds: 800),
-                            duration: const Duration(milliseconds: 600),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 32),
-
-                      // Form Fields
-                      Container(
-                        padding: const EdgeInsets.all(24),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 10,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
+                      Text(
+                        'Track a Transfer',
+                        style: theme.textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFF181F30),
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Subject Field
-                            _buildFormField(
-                              label: 'Subject',
-                              controller: _subjectController,
-                              focusNode: _subjectFocus,
-                              validator: _validateSubject,
-                              hintText: 'Enter your subject',
-                              animationDelay: 900,
-                              onFieldSubmitted: (_) => _emailFocus.requestFocus(),
-                            ),
-
-                            const SizedBox(height: 20),
-
-                            // Email Field
-                            _buildFormField(
-                              label: 'Email',
-                              controller: _emailController,
-                              focusNode: _emailFocus,
-                              validator: _validateEmail,
-                              hintText: 'Enter your email',
-                              keyboardType: TextInputType.emailAddress,
-                              animationDelay: 1000,
-                              onFieldSubmitted: (_) => _messageFocus.requestFocus(),
-                            ),
-
-                            const SizedBox(height: 20),
-
-                            // Message Field
-                            _buildFormField(
-                              label: 'Message',
-                              controller: _messageController,
-                              focusNode: _messageFocus,
-                              validator: _validateMessage,
-                              hintText: 'Type your message...',
-                              maxLines: 5,
-                              animationDelay: 1100,
-                              onFieldSubmitted: (_) => _submitForm(),
-                            ),
-
-                            const SizedBox(height: 32),
-
-                            // Submit Button
-                            SizedBox(
-                              width: double.infinity,
-                              height: 56,
-                              child: ElevatedButton(
-                                onPressed: contactState.isLoading ? null : _submitForm,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFFFFC000),
-                                  foregroundColor: const Color(0xFF181F30),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  elevation: 2,
-                                  disabledBackgroundColor: Colors.grey.shade300,
-                                ),
-                                child: contactState.isLoading
-                                    ? SizedBox(
-                                        width: 24,
-                                        height: 24,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          valueColor: AlwaysStoppedAnimation<Color>(
-                                            const Color(0xFF181F30),
-                                          ),
-                                        ),
-                                      )
-                                    : Text(
-                                        'Continue',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                              ),
-                            ).animate().slideY(
-                              begin: 1,
-                              delay: const Duration(milliseconds: 1200),
-                              duration: const Duration(milliseconds: 600),
-                              curve: Curves.easeOutBack,
-                            ),
-                          ],
-                        ),
-                      ).animate().scale(
+                      ).animate().fadeIn(
                         delay: const Duration(milliseconds: 500),
-                        duration: const Duration(milliseconds: 800),
-                        curve: Curves.easeOutBack,
+                        duration: const Duration(milliseconds: 600),
+                      ),
+                      
+                      const SizedBox(height: 12),
+                      
+                      Text(
+                        'Home is behind, the world ahead and there are many paths to tread through shadows to the edge.',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: const Color(0xFF6E757D),
+                          height: 1.6,
+                        ),
+                      ).animate().fadeIn(
+                        delay: const Duration(milliseconds: 600),
+                        duration: const Duration(milliseconds: 600),
                       ),
                     ],
                   ),
-                ),
+
+                  const SizedBox(height: 24),
+
+                  // Toggle Tabs
+                  ScaleTransition(
+                    scale: _toggleScaleAnimation,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: _buildToggleButton(
+                              'Send',
+                              Icons.flight_takeoff_rounded,
+                              _activeTab == 'Send',
+                            ),
+                          ),
+                          Expanded(
+                            child: _buildToggleButton(
+                              'Receive',
+                              Icons.flight_land_rounded,
+                              _activeTab == 'Receive',
+                            ),
+                          ),
+                        ],
+                      ),
+                    ).animate().slideY(
+                      begin: 0.5,
+                      delay: const Duration(milliseconds: 700),
+                      duration: const Duration(milliseconds: 600),
+                      curve: Curves.easeOutBack,
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // Form
+                  SlideTransition(
+                    position: _formSlideAnimation,
+                    child: AnimatedBuilder(
+                      animation: _shakeAnimation,
+                      builder: (context, child) {
+                        return Transform.translate(
+                          offset: Offset(_shakeAnimation.value, 0),
+                          child: Container(
+                            padding: const EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Input Label
+                                  Text(
+                                    'Enter Tracking Number',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      color: const Color(0xFF181F30),
+                                    ),
+                                  ),
+                                  
+                                  const SizedBox(height: 12),
+                                  
+                                  // Input Field
+                                  Focus(
+                                    onFocusChange: (hasFocus) {
+                                      if (hasFocus) {
+                                        HapticFeedback.selectionClick();
+                                        setState(() {
+                                          _validationError = null;
+                                        });
+                                      }
+                                    },
+                                    child: TextFormField(
+                                      controller: _trackingController,
+                                      focusNode: _trackingFocus,
+                                      textCapitalization: TextCapitalization.characters,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        letterSpacing: 1.2,
+                                        color: const Color(0xFF181F30),
+                                      ),
+                                      decoration: InputDecoration(
+                                        hintText: 'Flash Tracking Number (FTN)',
+                                        hintStyle: TextStyle(
+                                          color: const Color(0xFF6E757D),
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.normal,
+                                          letterSpacing: 0,
+                                        ),
+                                        filled: true,
+                                        fillColor: Colors.grey[50],
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                            color: _validationError != null
+                                                ? Colors.red.shade400
+                                                : const Color(0xFFD3D8DD),
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                            color: _validationError != null
+                                                ? Colors.red.shade400
+                                                : const Color(0xFFD3D8DD),
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                            color: _validationError != null
+                                                ? Colors.red.shade400
+                                                : const Color(0xFFFFC000),
+                                            width: 2,
+                                          ),
+                                        ),
+                                        contentPadding: const EdgeInsets.all(16),
+                                        suffixIcon: _validationError != null
+                                            ? Container(
+                                                margin: const EdgeInsets.all(12),
+                                                width: 24,
+                                                height: 24,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.red.shade400,
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Icon(
+                                                  Icons.priority_high,
+                                                  color: Colors.white,
+                                                  size: 16,
+                                                ),
+                                              )
+                                            : null,
+                                      ),
+                                      onChanged: (value) {
+                                        if (_validationError != null) {
+                                          setState(() {
+                                            _validationError = null;
+                                          });
+                                        }
+                                      },
+                                      onFieldSubmitted: (_) => _validateAndSubmit(),
+                                    ),
+                                  ),
+                                  
+                                  // Error Message
+                                  if (_validationError != null) ...[
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      _validationError!,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.red.shade600,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ).animate().fadeIn().shake(),
+                                  ],
+                                  
+                                  const SizedBox(height: 24),
+                                  
+                                  // Submit Button
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 56,
+                                    child: ElevatedButton(
+                                      onPressed: trackingState.isLoading ? null : _validateAndSubmit,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(0xFFFFC000),
+                                        foregroundColor: const Color(0xFF181F30),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        elevation: 2,
+                                        disabledBackgroundColor: Colors.grey.shade300,
+                                      ),
+                                      child: trackingState.isLoading
+                                          ? SizedBox(
+                                              width: 24,
+                                              height: 24,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                valueColor: AlwaysStoppedAnimation<Color>(
+                                                  const Color(0xFF181F30),
+                                                ),
+                                              ),
+                                            )
+                                          : Text(
+                                              'Continue',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ).animate().scale(
+                    delay: const Duration(milliseconds: 800),
+                    duration: const Duration(milliseconds: 600),
+                    curve: Curves.easeOutBack,
+                  ),
+                ],
               ),
             ),
           ),
@@ -465,88 +557,50 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
     );
   }
 
-  Widget _buildFormField({
-    required String label,
-    required TextEditingController controller,
-    required FocusNode focusNode,
-    required String? Function(String?) validator,
-    required String hintText,
-    required int animationDelay,
-    TextInputType? keyboardType,
-    int maxLines = 1,
-    void Function(String)? onFieldSubmitted,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: const Color(0xFF181F30),
-          ),
+  Widget _buildToggleButton(String text, IconData icon, bool isActive) {
+    return GestureDetector(
+      onTap: () => _onTabChanged(text),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        decoration: BoxDecoration(
+          color: isActive ? const Color(0xFFFFC000) : Colors.transparent,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: isActive
+              ? [
+                  BoxShadow(
+                    color: const Color(0xFFFFC000).withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ]
+              : null,
         ),
-        const SizedBox(height: 8),
-        Focus(
-          onFocusChange: (hasFocus) {
-            if (hasFocus) {
-              HapticFeedback.selectionClick();
-            }
-          },
-          child: TextFormField(
-            controller: controller,
-            focusNode: focusNode,
-            validator: validator,
-            keyboardType: keyboardType,
-            maxLines: maxLines,
-            onFieldSubmitted: onFieldSubmitted,
-            style: TextStyle(
-              fontSize: 14,
-              color: const Color(0xFF181F30),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              child: Icon(
+                icon,
+                size: 20,
+                color: isActive ? const Color(0xFF181F30) : const Color(0xFF6E757D),
+              ),
             ),
-            decoration: InputDecoration(
-              hintText: hintText,
-              hintStyle: TextStyle(
-                color: const Color(0xFF6E757D),
+            const SizedBox(width: 8),
+            AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 300),
+              style: TextStyle(
                 fontSize: 14,
+                fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+                color: isActive ? const Color(0xFF181F30) : const Color(0xFF6E757D),
               ),
-              filled: true,
-              fillColor: Colors.grey[50],
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: const Color(0xFFEBECED)),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: const Color(0xFFEBECED)),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: const Color(0xFFFFC000), width: 2),
-              ),
-              errorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.red.shade400, width: 2),
-              ),
-              focusedErrorBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: BorderSide(color: Colors.red.shade400, width: 2),
-              ),
-              contentPadding: const EdgeInsets.all(16),
-              errorStyle: TextStyle(
-                fontSize: 12,
-                color: Colors.red.shade600,
-              ),
+              child: Text(text),
             ),
-          ),
+          ],
         ),
-      ],
-    ).animate().slideX(
-      begin: -1,
-      delay: Duration(milliseconds: animationDelay),
-      duration: const Duration(milliseconds: 600),
-      curve: Curves.easeOutBack,
+      ),
     );
   }
 }

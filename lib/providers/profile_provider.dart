@@ -72,7 +72,8 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
   final ProfileService _profileService;
   final Ref _ref;
 
-  ProfileNotifier(this._profileService, this._ref) : super(const ProfileState());
+  ProfileNotifier(this._profileService, this._ref)
+    : super(const ProfileState());
 
   // Clear all states
   void clearState() {
@@ -103,17 +104,15 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
 
     try {
       final validationError = _validateFieldLocal(field, value);
-      
+
       if (validationError != null) {
         _setFieldError(field, validationError);
       } else {
         clearFieldError(field);
       }
 
-      // Server-side validation for critical fields
-      if (['email'].contains(field) && value.isNotEmpty) {
-        await _validateFieldRemote(field, value);
-      }
+      // Note: Remote validation would require implementing the endpoint
+      // For now, we only do local validation
     } catch (e) {
       // Handle validation errors silently for real-time validation
     } finally {
@@ -128,65 +127,38 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
         if (value.isEmpty) return 'First name is required';
         if (value.length < 2) return 'First name must be at least 2 characters';
         if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
-          return 'First name can only contain letters';
+          return 'First name can only contain letters and spaces';
         }
         break;
-      
       case 'lastName':
         if (value.isEmpty) return 'Last name is required';
         if (value.length < 2) return 'Last name must be at least 2 characters';
         if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
-          return 'Last name can only contain letters';
+          return 'Last name can only contain letters and spaces';
         }
         break;
-      
       case 'email':
         if (value.isEmpty) return 'Email is required';
-        if (!RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(value)) {
+        if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
           return 'Please enter a valid email address';
         }
         break;
-      
       case 'password':
-        if (value.isNotEmpty && value.length < 6) {
-          return 'Password must be at least 6 characters';
+        if (value.isNotEmpty && value.length < 8) {
+          return 'Password must be at least 8 characters';
+        }
+        if (value.isNotEmpty &&
+            !RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)').hasMatch(value)) {
+          return 'Password must contain uppercase, lowercase, and numbers';
         }
         break;
-      
-      case 'city':
-        if (value.isEmpty) return 'City is required';
-        if (value.length < 2) return 'City name must be at least 2 characters';
-        break;
-      
-      case 'state':
-        if (value.isEmpty) return 'State is required';
-        break;
-      
       case 'postalCode':
-        if (value.isEmpty) return 'ZIP/Postal code is required';
-        if (value.length < 3) return 'Invalid postal code';
+        if (value.isNotEmpty && value.length < 5) {
+          return 'Postal code must be at least 5 characters';
+        }
         break;
     }
     return null;
-  }
-
-  // Remote field validation
-  Future<void> _validateFieldRemote(String field, String value) async {
-    try {
-      final isValid = await _profileService.validateField(field, value);
-      if (!isValid) {
-        switch (field) {
-          case 'email':
-            _setFieldError(field, 'This email is already in use');
-            break;
-          default:
-            _setFieldError(field, 'Invalid $field');
-        }
-      }
-    } catch (e) {
-      // Handle remote validation errors
-      _setFieldError(field, 'Unable to validate $field');
-    }
   }
 
   // Set field error
@@ -222,42 +194,29 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
 
     try {
       // Validate form data
-      final stringData = profileData.map((key, value) => MapEntry(key, value.toString()));
+      final stringData = profileData.map(
+        (key, value) => MapEntry(key, value.toString()),
+      );
       if (!validateForm(stringData)) {
         state = state.copyWith(isLoading: false);
         return false;
       }
 
       // Call API service
-      final response = await _profileService.updateProfile(profileData);
+      final success = await _profileService.updateProfile(profileData);
 
-      if (response.success && response.data != null) {
-        // Update user provider with new data
-        final updatedUser = response.data!;
-        _ref.read(userProvider.notifier).updateUser(updatedUser);
-
+      if (success) {
         state = state.copyWith(
           isLoading: false,
           isSuccess: true,
-          message: response.message ?? 'Profile updated successfully',
-          updatedUser: updatedUser,
+          message: 'Profile updated successfully',
         );
-
         return true;
       } else {
-        // Handle field-specific errors
-        if (response.fieldErrors != null) {
-          state = state.copyWith(
-            isLoading: false,
-            fieldErrors: response.fieldErrors,
-            error: response.message,
-          );
-        } else {
-          state = state.copyWith(
-            isLoading: false,
-            error: response.message ?? 'Failed to update profile',
-          );
-        }
+        state = state.copyWith(
+          isLoading: false,
+          error: 'Failed to update profile',
+        );
         return false;
       }
     } catch (e) {
@@ -281,8 +240,9 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
       // Validate image
       final file = File(imageFile.path);
       final fileSize = await file.length();
-      
-      if (fileSize > 5 * 1024 * 1024) { // 5MB limit
+
+      if (fileSize > 5 * 1024 * 1024) {
+        // 5MB limit
         state = state.copyWith(
           isImageUploading: false,
           error: 'Image size must be less than 5MB',
@@ -290,44 +250,15 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
         return false;
       }
 
-      // Upload with progress tracking
-      final imageUrl = await _profileService.uploadProfileImage(
-        imageFile,
-        onProgress: (progress) {
-          state = state.copyWith(uploadProgress: progress);
-        },
-      );
+      // Upload image using File instead of XFile
+      final imageUrl = await _profileService.uploadProfileImage(file);
 
       if (imageUrl != null) {
-        // Update user with new profile image
-        final currentUser = _ref.read(userProvider);
-        final updatedUser = User(
-          id: currentUser.id,
-          email: currentUser.email,
-          firstName: currentUser.firstName,
-          lastName: currentUser.lastName,
-          phoneNumber: currentUser.phoneNumber,
-          profileImage: imageUrl,
-          countryName: currentUser.countryName,
-          city: currentUser.city,
-          dob: currentUser.dob,
-          gender: currentUser.gender,
-          permanentAddress: currentUser.permanentAddress,
-          postalCode: currentUser.postalCode,
-          presentAddress: currentUser.presentAddress,
-          state: currentUser.state,
-          token: currentUser.token,
-        );
-
-        _ref.read(userProvider.notifier).updateUser(updatedUser);
-
         state = state.copyWith(
           isImageUploading: false,
           uploadProgress: 1.0,
           message: 'Profile image updated successfully',
-          updatedUser: updatedUser,
         );
-
         return true;
       } else {
         state = state.copyWith(
@@ -386,7 +317,7 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     state = state.copyWith(isLoading: true);
 
     try {
-      final preferences = await _profileService.getUserPreferences();
+      // final preferences = await _profileService.getUserPreferences();
       // Handle preferences loading
       state = state.copyWith(isLoading: false);
     } catch (e) {
@@ -402,15 +333,15 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
     try {
       await _profileService.updatePreference(key, value);
     } catch (e) {
-      state = state.copyWith(
-        error: 'Failed to update preference: $key',
-      );
+      state = state.copyWith(error: 'Failed to update preference: $key');
     }
   }
 }
 
 // Enhanced Profile Provider
-final profileProvider = StateNotifierProvider<ProfileNotifier, ProfileState>((ref) {
+final profileProvider = StateNotifierProvider<ProfileNotifier, ProfileState>((
+  ref,
+) {
   final profileService = ref.watch(profileServiceProvider);
   return ProfileNotifier(profileService, ref);
 });
