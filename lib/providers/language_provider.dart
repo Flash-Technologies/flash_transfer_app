@@ -218,9 +218,22 @@ final isLanguageLoadingProvider = Provider<bool>((ref) {
   return ref.watch(languageProvider).isLoading;
 });
 
+
 final filteredLanguagesProvider = Provider<List<LanguageModel>>((ref) {
-  return ref.watch(languageProvider).filteredLanguages;
+  final languageState = ref.watch(languageProvider);
+  final query = languageState.searchQuery.toLowerCase();
+  
+  if (query.isEmpty) {
+    return languageState.availableLanguages;
+  }
+
+  return languageState.filteredLanguages.where((language) {
+    return language.name.toLowerCase().contains(query) ||
+        language.nativeName.toLowerCase().contains(query) ||
+        language.code.toLowerCase().contains(query);
+  }).toList();
 });
+
 
 final languageErrorProvider = Provider<String?>((ref) {
   return ref.watch(languageProvider).error;

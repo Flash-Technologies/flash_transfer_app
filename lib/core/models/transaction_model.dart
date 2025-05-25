@@ -5,125 +5,126 @@ enum TransactionStatus { pending, completed, failed, cancelled, processing }
 enum CurrencyType { fiat, crypto }
 
 // Transaction Model
-class TransactionModel extends Equatable {
+class TransactionModel {
   final String id;
-  final TransactionType type;
+  final String trackingNumber;
+  final String senderName;
+  final String senderEmail;
+  final String receiverName;
+  final String receiverEmail;
   final double amount;
   final String currency;
-  final String recipient;
-  final String? sender;
-  final DateTime date;
-  final TransactionStatus status;
-  final String? avatar;
-  final double? fee;
-  final String? reference;
-  final String? description;
-  final String? trackingNumber;
-  final CurrencyType currencyType;
+  final String paymentMethod;
+  final String receivingMethod;
+  final String status;
+  final DateTime createdAt;
+  final DateTime? completedAt;
+  final Map<String, dynamic>? metadata;
 
   const TransactionModel({
     required this.id,
-    required this.type,
+    required this.trackingNumber,
+    required this.senderName,
+    required this.senderEmail,
+    required this.receiverName,
+    required this.receiverEmail,
     required this.amount,
     required this.currency,
-    required this.recipient,
-    this.sender,
-    required this.date,
+    required this.paymentMethod,
+    required this.receivingMethod,
     required this.status,
-    this.avatar,
-    this.fee,
-    this.reference,
-    this.description,
-    this.trackingNumber,
-    this.currencyType = CurrencyType.fiat,
+    required this.createdAt,
+    this.completedAt,
+    this.metadata,
   });
 
-  TransactionModel copyWith({
-    String? id,
-    TransactionType? type,
-    double? amount,
-    String? currency,
-    String? recipient,
-    String? sender,
-    DateTime? date,
-    TransactionStatus? status,
-    String? avatar,
-    double? fee,
-    String? reference,
-    String? description,
-    String? trackingNumber,
-    CurrencyType? currencyType,
-  }) {
+  factory TransactionModel.fromJson(Map<String, dynamic> json) {
     return TransactionModel(
-      id: id ?? this.id,
-      type: type ?? this.type,
-      amount: amount ?? this.amount,
-      currency: currency ?? this.currency,
-      recipient: recipient ?? this.recipient,
-      sender: sender ?? this.sender,
-      date: date ?? this.date,
-      status: status ?? this.status,
-      avatar: avatar ?? this.avatar,
-      fee: fee ?? this.fee,
-      reference: reference ?? this.reference,
-      description: description ?? this.description,
-      trackingNumber: trackingNumber ?? this.trackingNumber,
-      currencyType: currencyType ?? this.currencyType,
+      id: json['id'] ?? '',
+      trackingNumber: json['trackingNumber'] ?? '',
+      senderName: json['senderName'] ?? '',
+      senderEmail: json['senderEmail'] ?? '',
+      receiverName: json['receiverName'] ?? '',
+      receiverEmail: json['receiverEmail'] ?? '',
+      amount: (json['amount'] ?? 0).toDouble(),
+      currency: json['currency'] ?? 'USD',
+      paymentMethod: json['paymentMethod'] ?? '',
+      receivingMethod: json['receivingMethod'] ?? '',
+      status: json['status'] ?? 'pending',
+      createdAt: DateTime.parse(json['createdAt']),
+      completedAt: json['completedAt'] != null
+          ? DateTime.parse(json['completedAt'])
+          : null,
+      metadata: json['metadata'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'type': type.toString().split('.').last,
+      'trackingNumber': trackingNumber,
+      'senderName': senderName,
+      'senderEmail': senderEmail,
+      'receiverName': receiverName,
+      'receiverEmail': receiverEmail,
       'amount': amount,
       'currency': currency,
-      'recipient': recipient,
-      'sender': sender,
-      'date': date.toIso8601String(),
-      'status': status.toString().split('.').last,
-      'avatar': avatar,
-      'fee': fee,
-      'reference': reference,
-      'description': description,
-      'trackingNumber': trackingNumber,
-      'currencyType': currencyType.toString().split('.').last,
+      'paymentMethod': paymentMethod,
+      'receivingMethod': receivingMethod,
+      'status': status,
+      'createdAt': createdAt.toIso8601String(),
+      'completedAt': completedAt?.toIso8601String(),
+      'metadata': metadata,
     };
   }
 
-  factory TransactionModel.fromJson(Map<String, dynamic> json) {
+  TransactionModel copyWith({
+    String? id,
+    String? trackingNumber,
+    String? senderName,
+    String? senderEmail,
+    String? receiverName,
+    String? receiverEmail,
+    double? amount,
+    String? currency,
+    String? paymentMethod,
+    String? receivingMethod,
+    String? status,
+    DateTime? createdAt,
+    DateTime? completedAt,
+    Map<String, dynamic>? metadata,
+  }) {
     return TransactionModel(
-      id: json['id'] ?? '',
-      type: TransactionType.values.firstWhere(
-        (e) => e.toString().split('.').last == json['type'],
-        orElse: () => TransactionType.send,
-      ),
-      amount: (json['amount'] ?? 0).toDouble(),
-      currency: json['currency'] ?? '',
-      recipient: json['recipient'] ?? '',
-      sender: json['sender'],
-      date: DateTime.parse(json['date'] ?? DateTime.now().toIso8601String()),
-      status: TransactionStatus.values.firstWhere(
-        (e) => e.toString().split('.').last == json['status'],
-        orElse: () => TransactionStatus.pending,
-      ),
-      avatar: json['avatar'],
-      fee: json['fee']?.toDouble(),
-      reference: json['reference'],
-      description: json['description'],
-      trackingNumber: json['trackingNumber'],
-      currencyType: CurrencyType.values.firstWhere(
-        (e) => e.toString().split('.').last == json['currencyType'],
-        orElse: () => CurrencyType.fiat,
-      ),
+      id: id ?? this.id,
+      trackingNumber: trackingNumber ?? this.trackingNumber,
+      senderName: senderName ?? this.senderName,
+      senderEmail: senderEmail ?? this.senderEmail,
+      receiverName: receiverName ?? this.receiverName,
+      receiverEmail: receiverEmail ?? this.receiverEmail,
+      amount: amount ?? this.amount,
+      currency: currency ?? this.currency,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      receivingMethod: receivingMethod ?? this.receivingMethod,
+      status: status ?? this.status,
+      createdAt: createdAt ?? this.createdAt,
+      completedAt: completedAt ?? this.completedAt,
+      metadata: metadata ?? this.metadata,
     );
   }
 
   @override
-  List<Object?> get props => [
-    id, type, amount, currency, recipient, sender, date, status,
-    avatar, fee, reference, description, trackingNumber, currencyType
-  ];
+  String toString() {
+    return 'TransactionModel(id: $id, trackingNumber: $trackingNumber, amount: $amount $currency)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is TransactionModel && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
 }
 
 // Recipient Model
