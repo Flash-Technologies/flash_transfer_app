@@ -37,12 +37,17 @@ import 'package:flash_transfer_app/presentation/settings/language_screen.dart';
 import 'package:flash_transfer_app/presentation/settings/privacy_screen.dart';
 import 'package:flash_transfer_app/presentation/settings/contact_us_screen.dart';
 
+import '../core/models/nft_model.dart';
+import '../presentation/nft/nft_screen.dart';
+// import '../presentation/nft/nft_detail_screen.dart';
+// import '../presentation/nft/nft_benefits_screen.dart';
+
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 final splashCompletedProvider = StateProvider<bool>((ref) => false);
 
 final isLoggedInProvider = StateProvider<bool>((ref) => false);
-
+ 
 final routerProvider = Provider<GoRouter>((ref) {
   final authService = ref.watch(authServiceProvider);
   final splashCompleted = ref.watch(splashCompletedProvider);
@@ -54,7 +59,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     navigatorKey: navigatorKey,
     debugLogDiagnostics: true,
-    initialLocation: '/card/enter',
+    initialLocation: '/',
     redirect: (context, state) {
       final isLoggedIn = ref.read(isLoggedInProvider);
 
@@ -307,6 +312,32 @@ final routerProvider = Provider<GoRouter>((ref) {
           return EnterCardScreen(existingCard: existingCard);
         },
       ),
+
+      // nft screen routes: 
+      GoRoute(
+        path: '/nft', 
+        name: 'nft',
+        builder: (context, state) => const NFTScreen(),
+      ),
+      GoRoute(
+        path: '/nft-detail',
+        name: 'nftDetail',
+        builder: (context, state) {
+          final nft = state.extra as NFTModel?;
+          if (nft == null) {
+            return const Scaffold(
+              body: Center(child: Text('NFT not found'),
+              ),
+            );
+          }
+        },
+      ),
+      GoRoute(
+        path: '/nft-benefits',
+        name: 'nftBenefits',
+        builder: (context, state) => const NFTBenefitsScreen(),
+      ),
+      
     ],
   );
 });

@@ -38,8 +38,14 @@ class AppSizes {
 class AppColors {
   // Primary colors
   static const Color primary = Color(0xFFFFC000); // AppTheme.primaryColor
+  static const Color primaryDark = Color(0xFF181F30); // Darker version for text
   static const Color secondary = Color(0xFF2475FF); // AppTheme.secondaryColor
   static const Color accent = Color(0xFFFFC000); // AppTheme.accentColor
+
+  // Background colors
+  static const Color backgroundGray = Color(
+    0xFFF8F9FA,
+  ); // Light gray background
 
   // Status colors
   static const Color success = Color(0xFF00C735); // AppTheme.successColor

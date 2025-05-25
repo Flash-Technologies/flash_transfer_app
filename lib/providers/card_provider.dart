@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:credit_card_scanner/credit_card_scanner.dart';
+import 'package:flutter_credit_card/flutter_credit_card.dart'
+    hide CardScanResult, CardType;
 import '../core/models/credit_card_model.dart';
 import '../core/services/card_service.dart';
 
-// Card state
 class CardState {
   final List<CreditCard> cards;
   final CreditCard? currentCard;
@@ -203,42 +203,35 @@ class CardNotifier extends StateNotifier<CardState> {
     );
   }
 
-  // Start card scanning
+  // Start card scanning - Placeholder since flutter_credit_card doesn't support scanning
   Future<void> startCardScanning() async {
     state = state.copyWith(isScanning: true, clearError: true);
 
     try {
-      final scanResult = await CardScanner.scanCard();
+      // Since flutter_credit_card doesn't provide scanning functionality,
+      // you would need to integrate a separate scanning package or camera plugin
+      // For now, this is a placeholder that simulates scanning
 
-      if (scanResult != null) {
-        // Convert scanner result to our model
-        final cardScanResult = CardScanResult(
-          cardNumber: scanResult.cardNumber,
-          expiryDate: scanResult.expiryDate,
-          cardHolderName: scanResult.cardHolderName,
-          detectedType: CardValidation.detectCardType(
-            scanResult.cardNumber ?? '',
-          ),
-          confidence: 0.9, // Scanner provides high confidence
-        );
+      await Future.delayed(
+        const Duration(seconds: 2),
+      ); // Simulate scanning delay
 
-        // Create a new card from scan result
-        if (cardScanResult.isValid) {
-          final scannedCard = _createCardFromScanResult(cardScanResult);
-          state = state.copyWith(
-            currentCard: scannedCard,
-            scanResult: cardScanResult,
-            isScanning: false,
-          );
-        } else {
-          state = state.copyWith(
-            isScanning: false,
-            error: 'Scan quality too low. Please try again or enter manually.',
-          );
-        }
-      } else {
-        state = state.copyWith(isScanning: false, error: 'Scan cancelled');
-      }
+      // For demo purposes, create a mock scan result
+      // In production, you would integrate a real scanning solution
+      final mockScanResult = CardScanResult(
+        cardNumber: '', // Empty for now
+        expiryDate: '',
+        cardHolderName: '',
+        detectedType: CardType.unknown,
+        confidence: 0.0,
+      );
+
+      state = state.copyWith(
+        isScanning: false,
+        error:
+            'Card scanning is not available. Please enter card details manually.',
+        scanResult: mockScanResult,
+      );
     } catch (e) {
       state = state.copyWith(
         isScanning: false,
