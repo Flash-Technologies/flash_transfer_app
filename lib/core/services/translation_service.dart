@@ -3,8 +3,9 @@ import 'package:flutter/services.dart';
 
 class TranslationService {
   static TranslationService? _instance;
-  static TranslationService get instance => _instance ??= TranslationService._();
-  
+  static TranslationService get instance =>
+      _instance ??= TranslationService._();
+
   TranslationService._();
 
   Map<String, dynamic>? _translations;
@@ -14,7 +15,9 @@ class TranslationService {
 
   Future<void> loadTranslations(String locale) async {
     try {
-      final String jsonString = await rootBundle.loadString('assets/locales/$locale/language.json');
+      final String jsonString = await rootBundle.loadString(
+        'assets/locales/$locale/language.json',
+      );
       _translations = json.decode(jsonString);
       _currentLocale = locale;
     } catch (e) {
@@ -58,36 +61,90 @@ class TranslationService {
     "screen": {
       "title": "Language",
       "searchPlaceholder": "Search Language",
-      "back": "Back"
+      "back": "Back",
     },
     "confirmation": {
       "title": "Language Change Confirmation",
-      "message": "Are you sure you want to change the language to {languageName}? We are happy to assist you with that.",
+      "message":
+          "Are you sure you want to change the language to {languageName}? We are happy to assist you with that.",
       "subtitle": "This will update the entire app interface.",
-      "buttons": {
-        "yes": "Yes, Change Language",
-        "no": "Cancel"
-      },
+      "buttons": {"yes": "Yes, Change Language", "no": "Cancel"},
       "success": "Language changed successfully to {languageName}",
       "loading": "Applying language changes...",
-      "error": "Failed to change language. Please try again."
+      "error": "Failed to change language. Please try again.",
     },
     "languages": {
       "ar": "Arabic",
-      "de": "German", 
+      "de": "German",
       "en": "English",
       "es": "Spanish",
       "fr": "French",
       "hi": "Hindi",
       "nl": "Dutch",
       "pt": "Portuguese",
-      "vi": "Vietnamese"
+      "vi": "Vietnamese",
     },
     "errors": {
       "loadFailed": "Error loading languages",
       "noLanguagesFound": "No languages found",
       "tryAdjustingSearch": "Try adjusting your search query",
-      "retry": "Retry"
-    }
+      "retry": "Retry",
+    },
+    "recipients": {
+      "screen": {
+        "title": "Recipients",
+        "subtitle": "Choose who to send money to",
+        "back": "Back",
+        "search": "Search recipients...",
+        "addNew": "Add New Recipient",
+        "emptyState": "No recipients yet",
+        "emptyDescription": "Add a recipient to start sending money",
+      },
+      "promo": {
+        "title": "Refer & Earn!",
+        "subtitle": "Get \$25 for each friend",
+        "description":
+            "Invite friends and earn money when they make their first transfer",
+        "button": "Invite Now",
+      },
+      "sorting": {
+        "recentlyAdded": "Recent",
+        "alphabetical": "A-Z",
+        "mostUsed": "Most Used",
+      },
+      "filters": {"favorites": "Favorites"},
+      "recipient": {
+        "lastSent": "Last sent",
+        "never": "Never sent",
+        "send": "Send",
+      },
+    },
+    "transaction": {
+      "screen": {
+        "title": "Transactions",
+        "back": "Back",
+        "loading": "Loading transactions...",
+        "emptyState": "No transactions yet",
+        "emptyDescription": "Your transaction history will appear here",
+      },
+      "filters": {
+        "all": "All",
+        "sent": "Sent",
+        "received": "Received",
+        "thisMonth": "This Month",
+        "lastMonth": "Last Month",
+      },
+      "recipient": "Recipient",
+      "date": "Date",
+      "reference": "Reference",
+      "transactionId": "Transaction ID",
+      "fee": "Fee",
+      "send": "Sent",
+      "receive": "Received",
+      "actions": {
+        "download": "Download Receipt",
+        "repeatTransaction": "Send Again",
+      },
+    },
   };
 }

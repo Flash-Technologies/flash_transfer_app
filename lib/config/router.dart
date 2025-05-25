@@ -9,6 +9,7 @@ import 'package:flash_transfer_app/presentation/payment/add_new_screen.dart';
 import 'package:flash_transfer_app/presentation/payment/payment_complete_screen.dart';
 import 'package:flash_transfer_app/presentation/payment/select_payment_screen.dart';
 import 'package:flash_transfer_app/presentation/review/review_details_screen.dart';
+import 'package:flash_transfer_app/presentation/transaction/invite_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -47,7 +48,7 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final splashCompletedProvider = StateProvider<bool>((ref) => false);
 
 final isLoggedInProvider = StateProvider<bool>((ref) => false);
- 
+
 final routerProvider = Provider<GoRouter>((ref) {
   final authService = ref.watch(authServiceProvider);
   final splashCompleted = ref.watch(splashCompletedProvider);
@@ -59,7 +60,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     navigatorKey: navigatorKey,
     debugLogDiagnostics: true,
-    initialLocation: '/nft',
+    initialLocation: '/privacy',
     redirect: (context, state) {
       final isLoggedIn = ref.read(isLoggedInProvider);
 
@@ -199,15 +200,15 @@ final routerProvider = Provider<GoRouter>((ref) {
       // ),
 
       // Transaction related screens
-      // GoRoute(
-      //   path: '/transaction',
-      //   builder: (context, state) => const TransactionScreen(),
-      // ),
+      GoRoute(
+        path: '/transaction',
+        builder: (context, state) => const TransactionScreen(),
+      ),
 
-      // GoRoute(
-      //   path: '/recipients',
-      //   builder: (context, state) => const RecipientsScreen(),
-      // ),
+      GoRoute(
+        path: '/recipients',
+        builder: (context, state) => const RecipientsScreen(),
+      ),
 
       // GoRoute(
       //   path: '/track-transfer',
@@ -223,11 +224,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       //   path: '/my-card',
       //   builder: (context, state) => const MyCardScreen(),
       // ),
-
-      // GoRoute(
-      //   path: '/invite',
-      //   builder: (context, state) => const InviteScreen(),
-      // ),
+      GoRoute(
+        path: '/invite',
+        builder: (context, state) => const InviteScreen(),
+      ),
 
       // // Settings and support screens
       // GoRoute(
@@ -243,11 +243,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       //   path: '/settings',
       //   builder: (context, state) => const SettingsScreen(),
       // ),
-
-      // GoRoute(
-      //   path: '/privacy',
-      //   builder: (context, state) => const PrivacyScreen(),
-      // ),
+      GoRoute(
+        path: '/privacy',
+        builder: (context, state) => const PrivacyScreen(),
+      ),
 
       // GoRoute(
       //   path: '/contact-us',
@@ -266,9 +265,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       //   builder: (context, state) => const TrackTransferScreen(),
       // ),
 
-
-
-      // card routes  
+      // card routes
       GoRoute(
         path: '/card/enter',
         name: 'enterCard',
@@ -277,14 +274,14 @@ final routerProvider = Provider<GoRouter>((ref) {
           return EnterCardScreen(existingCard: existingCard);
         },
       ),
-      
+
       // Scan card with camera
       GoRoute(
         path: '/card/scan',
         name: 'scanCard',
         builder: (context, state) => const ScanCardScreen(),
       ),
-      
+
       // Confirm card details before saving
       GoRoute(
         path: '/card/confirm',
@@ -294,14 +291,14 @@ final routerProvider = Provider<GoRouter>((ref) {
           return ConfirmCardScreen(card: card);
         },
       ),
-      
+
       // Card added success screen
       GoRoute(
         path: '/card/success',
         name: 'cardSuccess',
         builder: (context, state) => const CardAddedSuccessScreen(),
       ),
-      
+
       // Edit existing card
       GoRoute(
         path: '/card/edit/:cardId',
@@ -313,20 +310,22 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
 
-      // nft screen routes: 
+      // nft screen routes:
       GoRoute(path: '/nft', builder: (context, state) => const NFTScreen()),
-      GoRoute(path: '/nft-detail', builder: (context, state) {
-        final nft = state.extra as NFTModel?;
-        if (nft == null) {
-          return const Scaffold(
-            body: Center(child: Text('NFT not found'),
-            ),
-          );
-        }
-        return NFTDetailScreen(nft: nft);
-      }),
-      GoRoute(path: '/nft-benefits', builder: (context, state) => const NFTBenefitsScreen()),
-
+      GoRoute(
+        path: '/nft-detail',
+        builder: (context, state) {
+          final nft = state.extra as NFTModel?;
+          if (nft == null) {
+            return const Scaffold(body: Center(child: Text('NFT not found')));
+          }
+          return NFTDetailScreen(nft: nft);
+        },
+      ),
+      GoRoute(
+        path: '/nft-benefits',
+        builder: (context, state) => const NFTBenefitsScreen(),
+      ),
     ],
   );
 });

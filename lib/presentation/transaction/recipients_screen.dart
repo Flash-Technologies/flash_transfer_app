@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/services/translation_service.dart';
@@ -27,7 +28,7 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
 
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
-  
+
   bool _isLoading = false;
   String _searchQuery = '';
   List<RecipientModel> _filteredRecipients = [];
@@ -60,10 +61,12 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
     _headerSlideAnimation = Tween<Offset>(
       begin: const Offset(0, -1),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _headerAnimationController,
-      curve: Curves.easeOutBack,
-    ));
+    ).animate(
+      CurvedAnimation(
+        parent: _headerAnimationController,
+        curve: Curves.easeOutBack,
+      ),
+    );
 
     _contentFadeAnimation = CurvedAnimation(
       parent: _contentAnimationController,
@@ -88,9 +91,11 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
   void _setupScrollListener() {
     _scrollController.addListener(() {
       // Hide/show FAB based on scroll direction
-      if (_scrollController.position.userScrollDirection == ScrollDirection.reverse) {
+      if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
         _fabAnimationController.reverse();
-      } else if (_scrollController.position.userScrollDirection == ScrollDirection.forward) {
+      } else if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
         _fabAnimationController.forward();
       }
     });
@@ -133,10 +138,15 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
 
     // Apply search filter
     if (_searchQuery.isNotEmpty) {
-      filtered = filtered.where((recipient) {
-        return recipient.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-               recipient.country.toLowerCase().contains(_searchQuery.toLowerCase());
-      }).toList();
+      filtered =
+          filtered.where((recipient) {
+            return recipient.name.toLowerCase().contains(
+                  _searchQuery.toLowerCase(),
+                ) ||
+                recipient.country.toLowerCase().contains(
+                  _searchQuery.toLowerCase(),
+                );
+          }).toList();
     }
 
     // Apply sorting
@@ -145,7 +155,9 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
         filtered.sort((a, b) => a.name.compareTo(b.name));
         break;
       case 'mostUsed':
-        filtered.sort((a, b) => b.totalTransactions.compareTo(a.totalTransactions));
+        filtered.sort(
+          (a, b) => b.totalTransactions.compareTo(a.totalTransactions),
+        );
         break;
       case 'lastSent':
         filtered.sort((a, b) {
@@ -182,7 +194,7 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
     });
 
     await Future.delayed(const Duration(milliseconds: 1000));
-    
+
     if (mounted) {
       setState(() {
         _filteredRecipients = SampleData.sampleRecipients;
@@ -205,7 +217,7 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
   @override
   Widget build(BuildContext context) {
     final translationService = TranslationService.instance;
-    
+
     return Scaffold(
       backgroundColor: const Color(0xFFEFF0F1),
       body: Column(
@@ -225,7 +237,7 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
           ),
         ],
       ),
-      
+
       // Floating Action Button
       floatingActionButton: ScaleTransition(
         scale: _fabScaleAnimation,
@@ -238,19 +250,18 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
             translationService.translate('recipients.screen.addNew'),
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
-        ).animate()
-         .shimmer(
-           delay: const Duration(seconds: 2),
-           duration: const Duration(seconds: 2),
-           color: Colors.white.withOpacity(0.3),
-         ),
+        ).animate().shimmer(
+          delay: const Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
+          color: Colors.white.withOpacity(0.3),
+        ),
       ),
     );
   }
 
   Widget _buildHeader() {
     final translationService = TranslationService.instance;
-    
+
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 56, 16, 24),
       decoration: BoxDecoration(
@@ -303,9 +314,9 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
                 delay: const Duration(milliseconds: 400),
                 duration: const Duration(milliseconds: 400),
               ),
-              
+
               const SizedBox(width: 16),
-              
+
               // Title and subtitle
               Expanded(
                 child: Column(
@@ -322,11 +333,13 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
                       delay: const Duration(milliseconds: 500),
                       duration: const Duration(milliseconds: 400),
                     ),
-                    
+
                     const SizedBox(height: 4),
-                    
+
                     Text(
-                      translationService.translate('recipients.screen.subtitle'),
+                      translationService.translate(
+                        'recipients.screen.subtitle',
+                      ),
                       style: const TextStyle(
                         fontSize: 12,
                         color: Color(0xFF6E757D),
@@ -346,6 +359,8 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
   }
 
   Widget _buildContent() {
+    final translationService = TranslationService.instance;
+
     return Column(
       children: [
         // Promotional Banner
@@ -371,7 +386,9 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
               RecipientSearchWidget(
                 controller: _searchController,
                 onChanged: _searchRecipients,
-                hintText: translationService.translate('recipients.screen.search'),
+                hintText: translationService.translate(
+                  'recipients.screen.search',
+                ),
               ).animate().slideX(
                 begin: 1,
                 duration: const Duration(milliseconds: 600),
@@ -389,9 +406,7 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
         const SizedBox(height: 20),
 
         // Recipients List
-        Expanded(
-          child: _buildRecipientsList(),
-        ),
+        Expanded(child: _buildRecipientsList()),
       ],
     );
   }
@@ -399,41 +414,65 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
   Widget _buildSortOptions() {
     final translationService = TranslationService.instance;
     final sortOptions = [
-      {'key': 'recent', 'label': translationService.translate('recipients.sorting.recentlyAdded')},
-      {'key': 'alphabetical', 'label': translationService.translate('recipients.sorting.alphabetical')},
-      {'key': 'mostUsed', 'label': translationService.translate('recipients.sorting.mostUsed')},
-      {'key': 'favorites', 'label': translationService.translate('recipients.filters.favorites')},
+      {
+        'key': 'recent',
+        'label': translationService.translate(
+          'recipients.sorting.recentlyAdded',
+        ),
+      },
+      {
+        'key': 'alphabetical',
+        'label': translationService.translate(
+          'recipients.sorting.alphabetical',
+        ),
+      },
+      {
+        'key': 'mostUsed',
+        'label': translationService.translate('recipients.sorting.mostUsed'),
+      },
+      {
+        'key': 'favorites',
+        'label': translationService.translate('recipients.filters.favorites'),
+      },
     ];
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
-        children: sortOptions.map((option) {
-          final isSelected = _sortBy == option['key'];
-          return GestureDetector(
-            onTap: () => _sortRecipients(option['key']!),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              margin: const EdgeInsets.only(right: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: isSelected ? const Color(0xFF2475FF) : Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: isSelected ? const Color(0xFF2475FF) : const Color(0xFFEBECED),
+        children:
+            sortOptions.map((option) {
+              final isSelected = _sortBy == option['key'];
+              return GestureDetector(
+                onTap: () => _sortRecipients(option['key']!),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  margin: const EdgeInsets.only(right: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isSelected ? const Color(0xFF2475FF) : Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color:
+                          isSelected
+                              ? const Color(0xFF2475FF)
+                              : const Color(0xFFEBECED),
+                    ),
+                  ),
+                  child: Text(
+                    option['label']!,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color:
+                          isSelected ? Colors.white : const Color(0xFF6E757D),
+                    ),
+                  ),
                 ),
-              ),
-              child: Text(
-                option['label']!,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: isSelected ? Colors.white : const Color(0xFF6E757D),
-                ),
-              ),
-            ),
-          );
-        }).toList(),
+              );
+            }).toList(),
       ),
     ).animate().fadeIn(
       delay: const Duration(milliseconds: 700),
@@ -442,8 +481,6 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
   }
 
   Widget _buildRecipientsList() {
-    final translationService = TranslationService.instance;
-
     if (_isLoading) {
       return _buildLoadingState();
     }
@@ -463,13 +500,14 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
         itemBuilder: (context, index) {
           final recipient = _filteredRecipients[index];
           return RecipientCardWidget(
-            recipient: recipient,
-            onSendTap: () => _onSendMoney(recipient),
-            onFavoriteTap: () => _onToggleFavorite(recipient),
-            onMoreTap: () => _onShowMoreOptions(recipient),
-          ).animate(delay: Duration(milliseconds: 100 * index))
-           .fadeIn(duration: const Duration(milliseconds: 400))
-           .slideX(begin: 1, curve: Curves.easeOutBack);
+                recipient: recipient,
+                onSendTap: () => _onSendMoney(recipient),
+                onFavoriteTap: () => _onToggleFavorite(recipient),
+                onMoreTap: () => _onShowMoreOptions(recipient),
+              )
+              .animate(delay: Duration(milliseconds: 100 * index))
+              .fadeIn(duration: const Duration(milliseconds: 400))
+              .slideX(begin: 1, curve: Curves.easeOutBack);
         },
       ),
     );
@@ -477,30 +515,28 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
 
   Widget _buildLoadingState() {
     return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2475FF)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2475FF)),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Loading recipients...',
+                style: const TextStyle(color: Color(0xFF6E757D), fontSize: 14),
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
-          Text(
-            'Loading recipients...',
-            style: const TextStyle(
-              color: Color(0xFF6E757D),
-              fontSize: 14,
-            ),
-          ),
-        ],
-      ),
-    ).animate()
-     .fadeIn(duration: const Duration(milliseconds: 300))
-     .scale(begin: const Offset(0.8, 0.8));
+        )
+        .animate()
+        .fadeIn(duration: const Duration(milliseconds: 300))
+        .scale(begin: const Offset(0.8, 0.8));
   }
 
   Widget _buildEmptyState() {
     final translationService = TranslationService.instance;
-    
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -519,66 +555,75 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
                 size: 60,
                 color: Color(0xFF6E757D),
               ),
-            ).animate()
-             .scale(
-               duration: const Duration(milliseconds: 600),
-               curve: Curves.elasticOut,
-             ),
-            
+            ).animate().scale(
+              duration: const Duration(milliseconds: 600),
+              curve: Curves.elasticOut,
+            ),
+
             const SizedBox(height: 24),
-            
+
             Text(
-              _searchQuery.isNotEmpty 
-                  ? 'No recipients found'
-                  : translationService.translate('recipients.screen.emptyState'),
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF181F30),
-              ),
-              textAlign: TextAlign.center,
-            ).animate(delay: const Duration(milliseconds: 200))
-             .fadeIn(duration: const Duration(milliseconds: 400))
-             .slideY(begin: 0.3),
-            
+                  _searchQuery.isNotEmpty
+                      ? 'No recipients found'
+                      : translationService.translate(
+                        'recipients.screen.emptyState',
+                      ),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF181F30),
+                  ),
+                  textAlign: TextAlign.center,
+                )
+                .animate(delay: const Duration(milliseconds: 200))
+                .fadeIn(duration: const Duration(milliseconds: 400))
+                .slideY(begin: 0.3),
+
             const SizedBox(height: 12),
-            
+
             Text(
-              _searchQuery.isNotEmpty
-                  ? 'Try adjusting your search terms'
-                  : translationService.translate('recipients.screen.emptyDescription'),
-              style: const TextStyle(
-                fontSize: 14,
-                color: Color(0xFF6E757D),
-              ),
-              textAlign: TextAlign.center,
-            ).animate(delay: const Duration(milliseconds: 400))
-             .fadeIn(duration: const Duration(milliseconds: 400))
-             .slideY(begin: 0.3),
-            
+                  _searchQuery.isNotEmpty
+                      ? 'Try adjusting your search terms'
+                      : translationService.translate(
+                        'recipients.screen.emptyDescription',
+                      ),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF6E757D),
+                  ),
+                  textAlign: TextAlign.center,
+                )
+                .animate(delay: const Duration(milliseconds: 400))
+                .fadeIn(duration: const Duration(milliseconds: 400))
+                .slideY(begin: 0.3),
+
             const SizedBox(height: 32),
-            
+
             ElevatedButton(
-              onPressed: _onAddNewRecipient,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2475FF),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 0,
-              ),
-              child: Text(
-                translationService.translate('recipients.screen.addNew'),
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                ),
-              ),
-            ).animate(delay: const Duration(milliseconds: 600))
-             .fadeIn(duration: const Duration(milliseconds: 400))
-             .scale(begin: const Offset(0.8, 0.8), curve: Curves.elasticOut),
+                  onPressed: _onAddNewRecipient,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF2475FF),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 16,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    elevation: 0,
+                  ),
+                  child: Text(
+                    translationService.translate('recipients.screen.addNew'),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                    ),
+                  ),
+                )
+                .animate(delay: const Duration(milliseconds: 600))
+                .fadeIn(duration: const Duration(milliseconds: 400))
+                .scale(begin: const Offset(0.8, 0.8), curve: Curves.elasticOut),
           ],
         ),
       ),
@@ -587,7 +632,7 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
 
   void _onSendMoney(RecipientModel recipient) {
     HapticFeedback.mediumImpact();
-    
+
     // Show send money modal or navigate to send screen
     showModalBottomSheet(
       context: context,
@@ -619,7 +664,7 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          
+
           // Content
           Expanded(
             child: Padding(
@@ -634,9 +679,9 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
                       color: Color(0xFF181F30),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Quick amount buttons
                   Text(
                     'Quick amounts',
@@ -646,33 +691,34 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
                       color: Color(0xFF181F30),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   Wrap(
                     spacing: 12,
                     runSpacing: 12,
-                    children: [50, 100, 200, 500].map((amount) {
-                      return ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          // Navigate to send screen with preset amount
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFFF4F5F7),
-                          foregroundColor: const Color(0xFF181F30),
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: Text('\$$amount'),
-                      );
-                    }).toList(),
+                    children:
+                        [50, 100, 200, 500].map((amount) {
+                          return ElevatedButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              // Navigate to send screen with preset amount
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color(0xFFF4F5F7),
+                              foregroundColor: const Color(0xFF181F30),
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: Text('\$$amount'),
+                          );
+                        }).toList(),
                   ),
-                  
+
                   const Spacer(),
-                  
+
                   // Action buttons
                   Row(
                     children: [
@@ -682,9 +728,9 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
                           child: const Text('Cancel'),
                         ),
                       ),
-                      
+
                       const SizedBox(width: 12),
-                      
+
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
@@ -706,13 +752,16 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
           ),
         ],
       ),
-    ).animate()
-     .slideY(begin: 1, duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+    ).animate().slideY(
+      begin: 1,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
   }
 
   void _onToggleFavorite(RecipientModel recipient) {
     HapticFeedback.selectionClick();
-    
+
     // Update favorite status (in real app, this would update via provider/API)
     setState(() {
       final index = _filteredRecipients.indexWhere((r) => r.id == recipient.id);
@@ -739,7 +788,7 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
 
   void _onShowMoreOptions(RecipientModel recipient) {
     HapticFeedback.lightImpact();
-    
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -749,10 +798,26 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
 
   Widget _buildMoreOptionsModal(RecipientModel recipient) {
     final options = [
-      {'icon': Icons.edit, 'title': 'Edit Recipient', 'color': const Color(0xFF2475FF)},
-      {'icon': Icons.history, 'title': 'View History', 'color': const Color(0xFF6E757D)},
-      {'icon': Icons.share, 'title': 'Share Contact', 'color': const Color(0xFF6E757D)},
-      {'icon': Icons.block, 'title': 'Block Recipient', 'color': const Color(0xFFFF3E24)},
+      {
+        'icon': Icons.edit,
+        'title': 'Edit Recipient',
+        'color': const Color(0xFF2475FF),
+      },
+      {
+        'icon': Icons.history,
+        'title': 'View History',
+        'color': const Color(0xFF6E757D),
+      },
+      {
+        'icon': Icons.share,
+        'title': 'Share Contact',
+        'color': const Color(0xFF6E757D),
+      },
+      {
+        'icon': Icons.block,
+        'title': 'Block Recipient',
+        'color': const Color(0xFFFF3E24),
+      },
     ];
 
     return Container(
@@ -776,9 +841,9 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          
+
           const SizedBox(height: 20),
-          
+
           // Header
           Text(
             recipient.name,
@@ -788,9 +853,9 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
               color: Color(0xFF181F30),
             ),
           ),
-          
+
           const SizedBox(height: 20),
-          
+
           // Options
           ...options.map((option) {
             return ListTile(
@@ -812,12 +877,15 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
               },
             );
           }).toList(),
-          
+
           const SizedBox(height: 20),
         ],
       ),
-    ).animate()
-     .slideY(begin: 1, duration: const Duration(milliseconds: 300), curve: Curves.easeOut);
+    ).animate().slideY(
+      begin: 1,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeOut,
+    );
   }
 
   void _onAddNewRecipient() {
