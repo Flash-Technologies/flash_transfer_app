@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/theme.dart';
@@ -20,15 +19,11 @@ class NFTBenefitsScreen extends StatelessWidget {
           icon: const Icon(Icons.arrow_back),
         ),
       ),
-      body: const Center(
+      body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.star_outline,
-              size: 64,
-              color: Colors.grey,
-            ),
+            Icon(Icons.star_outline, size: 64, color: Colors.grey),
             SizedBox(height: 16),
             Text(
               'NFT Benefits',
@@ -42,10 +37,7 @@ class NFTBenefitsScreen extends StatelessWidget {
             Text(
               'Detailed benefits screen\ncoming soon',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-              ),
+              style: TextStyle(fontSize: 16, color: Colors.grey),
             ),
           ],
         ),

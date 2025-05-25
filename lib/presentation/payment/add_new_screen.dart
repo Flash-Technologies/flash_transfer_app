@@ -542,7 +542,7 @@ Widget _buildIconButton({required IconData icon, required VoidCallback onTap}) {
         child: Container(
           padding: EdgeInsets.all(AppSpacing.paddingM),
           decoration: BoxDecoration(
-            color: AppColors.cardBackground,
+            color: Colors.grey.shade200,
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(

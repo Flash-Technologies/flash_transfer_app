@@ -1,0 +1,76 @@
+{
+    "screen": {
+      "title": "My Transaction",
+      "subtitle": "View and manage your transaction history",
+      "emptyState": "No transactions yet",
+      "emptyDescription": "Your transaction history will appear here once you start sending money",
+      "pullToRefresh": "Pull to refresh",
+      "loading": "Loading transactions...",
+      "back": "Back"
+    },
+    "transaction": {
+      "send": "Send",
+      "receive": "Receive",
+      "pending": "Pending",
+      "completed": "Completed",
+      "failed": "Failed",
+      "cancelled": "Cancelled",
+      "processing": "Processing",
+      "amount": "Amount",
+      "date": "Date",
+      "recipient": "Recipient",
+      "sender": "Sender",
+      "transactionId": "Transaction ID",
+      "fee": "Fee",
+      "total": "Total",
+      "reference": "Reference"
+    },
+    "status": {
+      "success": "Success",
+      "failed": "Failed",
+      "pending": "Pending",
+      "processing": "Processing",
+      "cancelled": "Cancelled"
+    },
+    "filters": {
+      "all": "All",
+      "sent": "Sent",
+      "received": "Received",
+      "thisMonth": "This Month",
+      "lastMonth": "Last Month",
+      "last7Days": "Last 7 Days",
+      "last30Days": "Last 30 Days",
+      "customRange": "Custom Range"
+    },
+    "actions": {
+      "viewDetails": "View Details",
+      "download": "Download Receipt",
+      "share": "Share",
+      "repeatTransaction": "Repeat Transaction",
+      "cancel": "Cancel Transaction",
+      "retry": "Retry",
+      "trackTransfer": "Track Transfer"
+    },
+    "currencies": {
+      "usd": "USD",
+      "eur": "EUR",
+      "gbp": "GBP",
+      "cad": "CAD",
+      "btc": "BTC",
+      "eth": "ETH",
+      "usdt": "USDT"
+    },
+    "time": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "thisWeek": "This Week",
+      "lastWeek": "Last Week",
+      "older": "Older"
+    },
+    "errors": {
+      "loadFailed": "Failed to load transactions",
+      "networkError": "Network error occurred",
+      "retry": "Retry",
+      "noConnection": "No internet connection"
+    }
+  }

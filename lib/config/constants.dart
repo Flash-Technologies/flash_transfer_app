@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'ui_constants.dart';
-import 'theme.dart';
 
 // App sizes for spacing and padding
 class AppSizes {

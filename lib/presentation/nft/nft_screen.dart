@@ -286,7 +286,7 @@ class _NFTScreenState extends State<NFTScreen> with TickerProviderStateMixin {
                 ),
               ),
               const SizedBox(width: 12),
-              const Text(
+              Text(
                 'Back',
                 style: TextStyle(
                   color: AppColors.primaryDark,
@@ -305,7 +305,7 @@ class _NFTScreenState extends State<NFTScreen> with TickerProviderStateMixin {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'My NFT Collection',
                     style: TextStyle(
                       color: AppColors.primaryDark,
@@ -350,13 +350,13 @@ class _NFTScreenState extends State<NFTScreen> with TickerProviderStateMixin {
         children: [
           Text(
             '${totalDiscount.toStringAsFixed(1)}%',
-            style: const TextStyle(
+            style: TextStyle(
               color: AppColors.primary,
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const Text(
+          Text(
             'Total Discount',
             style: TextStyle(
               color: AppColors.primaryDark,
@@ -460,7 +460,7 @@ class _NFTScreenState extends State<NFTScreen> with TickerProviderStateMixin {
   Widget _buildBenefitsButton() {
     return Container(
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: [AppColors.primary, AppColors.secondary],
         ),
         borderRadius: BorderRadius.circular(28),

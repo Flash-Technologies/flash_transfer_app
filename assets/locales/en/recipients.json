@@ -1,0 +1,101 @@
+{
+    "screen": {
+      "title": "My Recipients",
+      "subtitle": "Manage your frequent recipients and send money quickly",
+      "addNew": "Add New Recipient",
+      "search": "Search recipients",
+      "emptyState": "No recipients yet",
+      "emptyDescription": "Add recipients to send money quickly and easily",
+      "back": "Back"
+    },
+    "promo": {
+      "title": "GET 5% FOR",
+      "subtitle": "SENDING REFERRAL", 
+      "description": "Invite friends and earn 5% on every transaction they make",
+      "button": "Send Now",
+      "learnMore": "Learn More",
+      "terms": "Terms & Conditions Apply"
+    },
+    "recipient": {
+      "send": "Send",
+      "sendMoney": "Send Money",
+      "lastSent": "Last sent",
+      "totalSent": "Total sent",
+      "never": "Never",
+      "favorite": "Favorite",
+      "addToFavorites": "Add to Favorites",
+      "removeFromFavorites": "Remove from Favorites", 
+      "remove": "Remove",
+      "edit": "Edit",
+      "viewHistory": "View History",
+      "block": "Block",
+      "unblock": "Unblock"
+    },
+    "countries": {
+      "usa": "USA",
+      "france": "France",
+      "uk": "United Kingdom",
+      "canada": "Canada",
+      "germany": "Germany",
+      "spain": "Spain",
+      "italy": "Italy",
+      "nigeria": "Nigeria",
+      "kenya": "Kenya",
+      "ghana": "Ghana"
+    },
+    "actions": {
+      "sendAgain": "Send Again",
+      "quickSend": "Quick Send",
+      "scheduleSend": "Schedule Send",
+      "requestMoney": "Request Money",
+      "shareContact": "Share Contact",
+      "copyDetails": "Copy Details"
+    },
+    "sorting": {
+      "recentlyAdded": "Recently Added",
+      "alphabetical": "Alphabetical",
+      "mostUsed": "Most Used",
+      "lastSent": "Last Sent",
+      "country": "Country"
+    },
+    "filters": {
+      "all": "All Recipients",
+      "favorites": "Favorites",
+      "recent": "Recent",
+      "blocked": "Blocked",
+      "byCountry": "By Country"
+    },
+    "stats": {
+      "totalRecipients": "Total Recipients",
+      "totalSent": "Total Sent",
+      "averageAmount": "Average Amount",
+      "thisMonth": "This Month"
+    },
+    "confirmations": {
+      "removeTitle": "Remove Recipient",
+      "removeMessage": "Are you sure you want to remove {name} from your recipients?",
+      "blockTitle": "Block Recipient", 
+      "blockMessage": "Are you sure you want to block {name}? You won't be able to send them money.",
+      "unblockTitle": "Unblock Recipient",
+      "unblockMessage": "Are you sure you want to unblock {name}?",
+      "yes": "Yes",
+      "no": "No",
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
+    "success": {
+      "recipientAdded": "Recipient added successfully",
+      "recipientRemoved": "Recipient removed",
+      "recipientBlocked": "Recipient blocked",
+      "recipientUnblocked": "Recipient unblocked",
+      "addedToFavorites": "Added to favorites",
+      "removedFromFavorites": "Removed from favorites"
+    },
+    "errors": {
+      "loadFailed": "Failed to load recipients",
+      "removeFailed": "Failed to remove recipient",
+      "blockFailed": "Failed to block recipient",
+      "networkError": "Network error occurred",
+      "retry": "Retry"
+    }
+  }
