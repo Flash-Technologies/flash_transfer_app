@@ -176,9 +176,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       final accessToken = googleAuth.accessToken;
 
       print("🔑 [SIGN_IN_SCREEN] Getting authentication tokens");
-      print(
-        "📱 [SIGN_IN_SCREEN] Access token: ${accessToken}...",
-      );
+      print("📱 [SIGN_IN_SCREEN] Access token: ${accessToken}...");
 
       // Print the complete token with clear separators
       print("🎯 ==========================================");
@@ -316,62 +314,17 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
     try {
-      setState(() {
+      _safeSetState(() {
         _isLoading = true;
       });
 
-      // Trigger Facebook login with required permissions
-      final result = await FacebookAuth.instance.login(
-        permissions: ['email', 'public_profile'],
-      );
+      debugPrint('🚀 [SIGN_IN_SCREEN] Starting enhanced Facebook login');
 
-      if (result.status != LoginStatus.success) {
-        setState(() {
-          _isLoading = false;
-        });
+      // Use the enhanced Facebook login method
+      final success =
+          await ref.read(authProvider.notifier).loginWithFacebookNative();
 
-        if (result.status == LoginStatus.cancelled) {
-          scaffoldMessenger.showSnackBar(
-            const SnackBar(content: Text('Facebook login cancelled')),
-          );
-          return;
-        } else {
-          scaffoldMessenger.showSnackBar(
-            SnackBar(content: Text('Facebook login failed: ${result.message}')),
-          );
-          return;
-        }
-      }
-
-      // Get the Facebook access token
-      final accessToken = result.accessToken?.token;
-
-      if (accessToken == null) {
-        setState(() {
-          _isLoading = false;
-        });
-
-        scaffoldMessenger.showSnackBar(
-          const SnackBar(content: Text('Failed to get Facebook access token')),
-        );
-        return;
-      }
-
-      if (_userCountry == null) {
-        await _fetchUserCountry();
-      }
-
-      // Show loading indicator
-      scaffoldMessenger.showSnackBar(
-        const SnackBar(content: Text('Signing in with Facebook...')),
-      );
-
-      // Call the auth provider to authenticate with the backend
-      final success = await ref
-          .read(authProvider.notifier)
-          .loginWithFacebook(accessToken, _userCountry ?? 'Unknown');
-
-      setState(() {
+      _safeSetState(() {
         _isLoading = false;
       });
 
@@ -380,15 +333,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         ref.read(isLoggedInProvider.notifier).state = true;
 
         if (mounted) {
-          scaffoldMessenger.showSnackBar(
-            const SnackBar(
-              content: Text('Facebook login successful! Redirecting...'),
-              backgroundColor: Colors.green,
-            ),
+          _showAnimatedSnackBar(
+            '✅ Facebook login successful! Redirecting...',
+            true,
           );
 
           // Add a small delay to see the success message
-          await Future.delayed(const Duration(milliseconds: 1000));
+          await Future.delayed(const Duration(milliseconds: 1500));
 
           if (mounted) {
             context.go('/home');
@@ -398,27 +349,20 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         if (mounted) {
           final errorMessage =
               ref.read(authProvider).message ?? 'Facebook login failed';
-          scaffoldMessenger.showSnackBar(
-            SnackBar(
-              content: Text(errorMessage),
-              backgroundColor: Colors.red,
-              duration: const Duration(seconds: 3),
-            ),
-          );
+          debugPrint('❌ [SIGN_IN_SCREEN] Facebook login failed: $errorMessage');
+          _showAnimatedSnackBar('❌ $errorMessage', false);
         }
       }
     } catch (e) {
-      setState(() {
+      _safeSetState(() {
         _isLoading = false;
       });
 
       if (mounted) {
-        debugPrint('Facebook sign in error: $e');
-        scaffoldMessenger.showSnackBar(
-          SnackBar(
-            content: Text('Failed to sign in with Facebook: $e'),
-            backgroundColor: Colors.red,
-          ),
+        debugPrint('💥 [SIGN_IN_SCREEN] Facebook sign in error: $e');
+        _showAnimatedSnackBar(
+          '❌ Facebook login failed: ${e.toString()}',
+          false,
         );
       }
     }

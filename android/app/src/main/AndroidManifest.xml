@@ -15,6 +15,25 @@
         <meta-data
             android:name="com.facebook.sdk.ClientToken"
             android:value="@string/facebook_client_token" />
+        
+        <!-- Facebook Custom Tab Activity for native login -->
+        <activity
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
+        
+        <!-- Facebook Chrome Custom Tab Activity -->
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name"
+            android:exported="false" />
             
         <activity
             android:name=".MainActivity"
@@ -106,10 +125,14 @@
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
-         <package android:name="io.metamask" />
-    <package android:name="com.wallet.crypto.trustapp" />
-    <package android:name="app.phantom" />
-    <package android:name="com.binance.dev" />
-    <package android:name="org.toshi" />
+        <!-- Facebook Package Query -->
+        <package android:name="com.facebook.katana" />
+        <package android:name="com.facebook.orca" />
+        <!-- Wallet Packages -->
+        <package android:name="io.metamask" />
+        <package android:name="com.wallet.crypto.trustapp" />
+        <package android:name="app.phantom" />
+        <package android:name="com.binance.dev" />
+        <package android:name="org.toshi" />
     </queries>
 </manifest>

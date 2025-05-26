@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/material.dart';
 import '../api/api_client.dart';
 import '../api/endpoints.dart';
 import '../models/api_response.dart';
 import '../models/auth_models.dart';
 import '../models/user.dart';
 import 'package:http/http.dart' as http;
+import 'facebook_service.dart';
 
 class AuthService {
   final ApiClient _apiClient;
@@ -99,6 +101,57 @@ class AuthService {
       );
     } catch (e) {
       return ApiResponse<User>(success: false, message: e.toString());
+    }
+  }
+
+  Future<ApiResponse<User>> loginWithFacebookNative() async {
+    try {
+      debugPrint('🚀 Starting enhanced Facebook login flow');
+
+      final facebookResult = await FacebookService.login();
+
+      if (!facebookResult.isSuccess) {
+        if (facebookResult.isCancelled) {
+          return ApiResponse<User>(
+            success: false,
+            message: 'Facebook login was cancelled',
+          );
+        } else {
+          return ApiResponse<User>(
+            success: false,
+            message: facebookResult.errorMessage ?? 'Facebook login failed',
+          );
+        }
+      }
+
+      final countryName = await FacebookService.getUserCountry();
+
+      final response = await _apiClient.post(
+        Endpoints.facebookAuth,
+        data: {
+          'accessToken': facebookResult.accessToken!,
+          'countryName': countryName,
+        },
+      );
+
+      final apiResponse = ApiResponse<User>.fromJson(
+        response.data,
+        (json) => User.fromJson(json),
+      );
+
+      // Step 4: Save user data if successful
+      if (apiResponse.success && apiResponse.data != null) {
+        await saveUserData(apiResponse.data!);
+        debugPrint('✅ Facebook login completed successfully');
+      }
+
+      return apiResponse;
+    } catch (e) {
+      debugPrint('💥 Facebook login error in AuthService: $e');
+      return ApiResponse<User>(
+        success: false,
+        message: 'Facebook authentication failed: ${e.toString()}',
+      );
     }
   }
 

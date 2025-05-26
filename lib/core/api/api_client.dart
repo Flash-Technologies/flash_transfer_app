@@ -11,12 +11,11 @@ class ApiClient {
     _dio.options.connectTimeout = const Duration(seconds: 15);
     _dio.options.receiveTimeout = const Duration(seconds: 15);
     _dio.options.responseType = ResponseType.json;
-    
+
     if (kDebugMode) {
-      _dio.interceptors.add(LogInterceptor(
-        requestBody: true,
-        responseBody: true,
-      ));
+      _dio.interceptors.add(
+        LogInterceptor(requestBody: true, responseBody: true),
+      );
     }
   }
 
@@ -42,7 +41,6 @@ class ApiClient {
     }
   }
 
-// lib/core/api/api_client.dart (continued)
   Future<Response> post(
     String path, {
     dynamic data,
@@ -114,16 +112,17 @@ class ApiClient {
       case DioExceptionType.badResponse:
         final statusCode = e.response?.statusCode;
         final responseData = e.response?.data;
-        
+
         if (responseData is Map<String, dynamic>) {
           final message = responseData['message'] ?? 'An error occurred';
-          final errorDetails = responseData['errors'] is Map<String, dynamic>
-              ? responseData['errors']['details']
-              : null;
-          
+          final errorDetails =
+              responseData['errors'] is Map<String, dynamic>
+                  ? responseData['errors']['details']
+                  : null;
+
           return Exception(errorDetails ?? message);
         }
-        
+
         if (statusCode == 401) {
           return Exception('Unauthorized. Please log in again.');
         } else if (statusCode == 404) {
@@ -131,7 +130,7 @@ class ApiClient {
         } else if (statusCode == 500) {
           return Exception('Server error. Please try again later.');
         }
-        
+
         return Exception('Request failed with status: $statusCode');
       case DioExceptionType.cancel:
         return Exception('Request was cancelled');

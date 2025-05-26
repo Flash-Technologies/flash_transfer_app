@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'config/router.dart';
 import 'config/theme.dart';
 import 'core/services/storage_service.dart';
+import 'core/services/facebook_service.dart';
 
 class FlashTransferApp extends StatelessWidget {
   const FlashTransferApp({Key? key}) : super(key: key);
@@ -29,4 +30,7 @@ class FlashTransferApp extends StatelessWidget {
 Future<void> initApp() async {
   // Initialize services
   await StorageService.init();
+
+  // Initialize Facebook SDK
+  await FacebookService.initialize();
 }

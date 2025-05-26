@@ -18,28 +18,55 @@ enum WalletConnectionStatus { disconnected, connecting, connected, error }
 class WalletState {
   final WalletConnectionStatus status;
   final String? walletAddress;
+  final String? walletType;
   final String? errorMessage;
   final bool isLoading;
+  final String? signature;
+  final Map<String, dynamic>? metadata;
+  final DateTime? connectedAt;
 
   WalletState({
     required this.status,
     this.walletAddress,
+    this.walletType,
     this.errorMessage,
     this.isLoading = false,
+    this.signature,
+    this.metadata,
+    this.connectedAt,
   });
 
   WalletState copyWith({
     WalletConnectionStatus? status,
     String? walletAddress,
+    String? walletType,
     String? errorMessage,
     bool? isLoading,
+    String? signature,
+    Map<String, dynamic>? metadata,
+    DateTime? connectedAt,
   }) {
     return WalletState(
       status: status ?? this.status,
       walletAddress: walletAddress ?? this.walletAddress,
+      walletType: walletType ?? this.walletType,
       errorMessage: errorMessage ?? this.errorMessage,
       isLoading: isLoading ?? this.isLoading,
+      signature: signature ?? this.signature,
+      metadata: metadata ?? this.metadata,
+      connectedAt: connectedAt ?? this.connectedAt,
     );
+  }
+
+  // Helper methods
+  bool get isConnected => status == WalletConnectionStatus.connected && walletAddress != null;
+  bool get isConnecting => status == WalletConnectionStatus.connecting;
+  bool get hasError => status == WalletConnectionStatus.error;
+  
+  String get displayAddress {
+    if (walletAddress == null) return '';
+    if (walletAddress!.length <= 10) return walletAddress!;
+    return '${walletAddress!.substring(0, 6)}...${walletAddress!.substring(walletAddress!.length - 4)}';
   }
 }
 

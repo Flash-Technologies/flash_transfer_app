@@ -155,51 +155,15 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     }
 
     try {
-      // For Facebook sign in, we'll use the SocialLoginButtons implementation
       _safeSetState(() {
         _isLoading = true;
       });
 
-      _showAnimatedSnackBar('Signing in with Facebook...', true);
+      _showAnimatedSnackBar('Signing up with Facebook...', true);
 
-      // Implement actual Facebook login here if available
-      final result = await FacebookAuth.instance.login(
-        permissions: ['email', 'public_profile'],
-      );
-
-      if (result.status != LoginStatus.success) {
-        _safeSetState(() {
-          _isLoading = false;
-        });
-
-        if (result.status == LoginStatus.cancelled) {
-          _showAnimatedSnackBar('Facebook login was cancelled', false);
-          return;
-        } else {
-          _showAnimatedSnackBar(
-            'Facebook login failed: ${result.message}',
-            false,
-          );
-          return;
-        }
-      }
-
-      // Get the access token
-      final accessToken = result.accessToken?.token;
-
-      if (accessToken == null) {
-        _safeSetState(() {
-          _isLoading = false;
-        });
-
-        _showAnimatedSnackBar('Failed to get Facebook access token', false);
-        return;
-      }
-
-      // Call auth provider with the country from selection
-      final success = await ref
-          .read(authProvider.notifier)
-          .loginWithFacebook(accessToken, _selectedCountry!.name);
+      // Use enhanced Facebook login method
+      final success =
+          await ref.read(authProvider.notifier).loginWithFacebookNative();
 
       // Check if still mounted
       if (!mounted) return;
@@ -213,12 +177,12 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         ref.read(isLoggedInProvider.notifier).state = true;
 
         _showAnimatedSnackBar(
-          'Facebook sign up successful! Redirecting...',
+          '✅ Facebook sign up successful! Redirecting...',
           true,
         );
 
         // Wait for snackbar to be visible
-        await Future.delayed(const Duration(milliseconds: 1000));
+        await Future.delayed(const Duration(milliseconds: 1500));
 
         // Check again if still mounted
         if (!mounted) return;
@@ -227,7 +191,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       } else {
         final errorMessage =
             ref.read(authProvider).message ?? 'Facebook sign up failed';
-        _showAnimatedSnackBar(errorMessage, false);
+        _showAnimatedSnackBar('❌ $errorMessage', false);
       }
     } catch (e) {
       // Check if still mounted
@@ -237,8 +201,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         _isLoading = false;
       });
 
-      debugPrint('Facebook sign up error: $e');
-      _showAnimatedSnackBar('Failed to sign up with Facebook: $e', false);
+      debugPrint('💥 Facebook sign up error: $e');
+      _showAnimatedSnackBar(
+        '❌ Failed to sign up with Facebook: ${e.toString()}',
+        false,
+      );
     }
   }
 

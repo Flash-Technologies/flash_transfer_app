@@ -10,6 +10,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/direct_wallet_provider.dart';
 import '../../config/router.dart';
 import '../../main.dart' show googleSignIn;
+import '../../core/services/facebook_service.dart';
 
 class SocialLoginButtons extends ConsumerWidget {
   final Function()? onGoogleLogin;
@@ -337,55 +338,35 @@ class SocialLoginButtons extends ConsumerWidget {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
     try {
-      // Trigger Facebook login with required permissions
-      final result = await FacebookAuth.instance.login(
-        permissions: ['email', 'public_profile'],
-      );
+      debugPrint('🚀 Starting enhanced Facebook login from social buttons');
 
-      if (result.status != LoginStatus.success) {
-        if (result.status == LoginStatus.cancelled) {
-          scaffoldMessenger.showSnackBar(
-            const SnackBar(content: Text('Facebook login cancelled')),
-          );
-        } else {
-          scaffoldMessenger.showSnackBar(
-            SnackBar(content: Text('Facebook login failed: ${result.message}')),
-          );
-        }
-        return;
-      }
-
-      // Get the access token from the result
-      final accessToken = result.accessToken?.token;
-
-      if (accessToken == null) {
-        scaffoldMessenger.showSnackBar(
-          const SnackBar(content: Text('Failed to get Facebook access token')),
-        );
-        return;
-      }
-
-      // Show loading indicator
+      // Show loading indicator immediately
       scaffoldMessenger.showSnackBar(
-        const SnackBar(content: Text('Signing in with Facebook...')),
+        const SnackBar(
+          content: Row(
+            children: [
+              SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              ),
+              SizedBox(width: 16),
+              Text('Signing in with Facebook...'),
+            ],
+          ),
+          duration: Duration(seconds: 30),
+        ),
       );
 
-      // Get user country
-      String countryName = 'Unknown';
-      try {
-        final response = await http.get(Uri.parse('https://ipapi.co/json/'));
-        if (response.statusCode == 200) {
-          final data = json.decode(response.body);
-          countryName = data['country_name'] ?? 'Unknown';
-        }
-      } catch (e) {
-        debugPrint('Failed to fetch user country: $e');
-      }
+      // Use the enhanced Facebook login from auth provider
+      final success =
+          await ref.read(authProvider.notifier).loginWithFacebookNative();
 
-      // Call the auth provider to authenticate with the backend
-      final success = await ref
-          .read(authProvider.notifier)
-          .loginWithFacebook(accessToken, countryName);
+      // Clear the loading snackbar
+      scaffoldMessenger.hideCurrentSnackBar();
 
       if (success) {
         // Update logged in state
@@ -393,25 +374,43 @@ class SocialLoginButtons extends ConsumerWidget {
 
         scaffoldMessenger.showSnackBar(
           const SnackBar(
-            content: Text('Facebook login successful! Redirecting...'),
+            content: Text('✅ Facebook login successful! Redirecting...'),
             backgroundColor: Colors.green,
+            duration: Duration(seconds: 2),
           ),
         );
 
         // Add a small delay for the snackbar to be visible
-        await Future.delayed(const Duration(milliseconds: 1000));
+        await Future.delayed(const Duration(milliseconds: 1500));
 
         if (!context.mounted) return;
         context.go('/home');
       } else {
         final errorMessage =
             ref.read(authProvider).message ?? 'Facebook login failed';
-        scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
+
+        debugPrint('❌ Facebook login failed: $errorMessage');
+
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text('❌ $errorMessage'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 4),
+          ),
+        );
       }
     } catch (e) {
-      debugPrint('Facebook sign in error: $e');
+      debugPrint('💥 Facebook sign in error in social buttons: $e');
+
+      // Clear any existing snackbar
+      scaffoldMessenger.hideCurrentSnackBar();
+
       scaffoldMessenger.showSnackBar(
-        SnackBar(content: Text('Failed to sign in with Facebook: $e')),
+        SnackBar(
+          content: Text('❌ Facebook login error: ${e.toString()}'),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 4),
+        ),
       );
     }
   }

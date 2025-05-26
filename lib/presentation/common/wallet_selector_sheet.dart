@@ -231,7 +231,7 @@ class _WalletSelectorSheetState extends State<WalletSelectorSheet> {
   Future<bool> _isWalletInstalled(WalletApp wallet) async {
     try {
       if (Platform.isAndroid) {
-        // First attempt: Check using package manager via Java channel
+        // Primary method: Use native package manager detection
         try {
           final MethodChannel channel = const MethodChannel(
             'com.flash_transfer_app.wallet_channel',
@@ -242,55 +242,48 @@ class _WalletSelectorSheetState extends State<WalletSelectorSheet> {
               }) ??
               false;
 
-          if (isInstalled) return true;
+          debugPrint("Native detection for ${wallet.name}: $isInstalled");
+          return isInstalled;
         } catch (e) {
-          debugPrint("Error checking package with native channel: $e");
-        }
-
-        // Second attempt: Try with URI scheme
-        try {
-          final canLaunchScheme = await canLaunchUrl(Uri.parse(wallet.scheme));
-          if (canLaunchScheme) return true;
-        } catch (e) {
-          debugPrint("Error checking scheme: $e");
-        }
-
-        // Third attempt: Try using android intent
-        try {
-          final androidIntent = Uri.parse(
-            'android-app://${wallet.androidPackage}',
-          );
-          return await canLaunchUrl(androidIntent);
-        } catch (e) {
-          debugPrint("Error checking android intent: $e");
-          return false;
-        }
-      } else if (Platform.isIOS) {
-        // iOS method: Try multiple approaches
-
-        // First: Try universal link if available
-        if (wallet.universalLink.isNotEmpty) {
+          debugPrint("Native detection failed for ${wallet.name}: $e");
+          
+          // Fallback: Try URL scheme detection (less reliable)
           try {
-            final canLaunchUniversal = await canLaunchUrl(
-              Uri.parse(wallet.universalLink),
-            );
-            if (canLaunchUniversal) return true;
-          } catch (e) {
-            debugPrint("Error checking universal link: $e");
+            final canLaunchScheme = await canLaunchUrl(Uri.parse(wallet.scheme));
+            debugPrint("Scheme detection for ${wallet.name}: $canLaunchScheme");
+            return canLaunchScheme;
+          } catch (e2) {
+            debugPrint("Scheme detection failed for ${wallet.name}: $e2");
+            return false;
           }
         }
-
-        // Second: Try URL scheme - most reliable for iOS
+      } else if (Platform.isIOS) {
+        // iOS: URL scheme detection is most reliable
         try {
-          return await canLaunchUrl(Uri.parse(wallet.scheme));
+          final canLaunchScheme = await canLaunchUrl(Uri.parse(wallet.scheme));
+          debugPrint("iOS scheme detection for ${wallet.name}: $canLaunchScheme");
+          return canLaunchScheme;
         } catch (e) {
-          debugPrint("Error checking URL scheme: $e");
+          debugPrint("iOS detection failed for ${wallet.name}: $e");
+          
+          // Fallback: Try universal link
+          if (wallet.universalLink.isNotEmpty) {
+            try {
+              final canLaunchUniversal = await canLaunchUrl(
+                Uri.parse(wallet.universalLink),
+              );
+              debugPrint("iOS universal link for ${wallet.name}: $canLaunchUniversal");
+              return canLaunchUniversal;
+            } catch (e2) {
+              debugPrint("iOS universal link failed for ${wallet.name}: $e2");
+            }
+          }
           return false;
         }
       }
       return false;
     } catch (e) {
-      debugPrint("Error checking if ${wallet.name} is installed: $e");
+      debugPrint("Critical error checking ${wallet.name} installation: $e");
       return false;
     }
   }

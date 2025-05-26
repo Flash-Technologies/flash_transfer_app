@@ -1,3 +1,4 @@
+// lib/core/services/enhanced_direct_wallet_service.dart
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -14,6 +15,7 @@ class WalletConnectionResponse {
   final String? walletType;
   final String? error;
   final String? signature;
+  final Map<String, dynamic>? metadata;
 
   WalletConnectionResponse({
     required this.connected,
@@ -21,29 +23,31 @@ class WalletConnectionResponse {
     this.walletType,
     this.error,
     this.signature,
+    this.metadata,
   });
+
+  @override
+  String toString() {
+    return 'WalletConnectionResponse(connected: $connected, address: $walletAddress, type: $walletType, error: $error)';
+  }
 }
 
-class DirectWalletService {
+class EnhancedDirectWalletService {
   Completer<WalletConnectionResponse>? _connectCompleter;
-
   Timer? _connectionTimeoutTimer;
-
   bool _isConnectionInProgress = false;
-
   WalletApp? _selectedWallet;
-
   String? _currentNonce;
+  String? _currentSessionId;
 
   final String _appPackageName;
-
   final String _appUniversalLink;
 
   static const _channel = MethodChannel(
     'com.flash_transfer_app.wallet_channel',
   );
 
-  DirectWalletService({
+  EnhancedDirectWalletService({
     required String appPackageName,
     required String appUniversalLink,
   }) : _appPackageName = appPackageName,
@@ -53,6 +57,7 @@ class DirectWalletService {
 
   Future<WalletConnectionResponse> connectWallet(BuildContext context) async {
     if (_isConnectionInProgress) {
+      debugPrint('⚠️ Connection already in progress');
       return WalletConnectionResponse(
         connected: false,
         error: 'A wallet connection is already in progress',
@@ -60,12 +65,16 @@ class DirectWalletService {
     }
 
     _isConnectionInProgress = true;
+    _currentSessionId = _generateSessionId();
 
     try {
+      debugPrint('🔄 Enhanced wallet service: Starting connection process');
+      
       final selectedWallet = await WalletSelectorSheet.show(context);
 
       if (selectedWallet == null) {
         _isConnectionInProgress = false;
+        debugPrint('❌ No wallet selected by user');
         return WalletConnectionResponse(
           connected: false,
           error: 'No wallet selected',
@@ -73,177 +82,397 @@ class DirectWalletService {
       }
 
       _selectedWallet = selectedWallet;
-
       _currentNonce = _generateNonce();
-
       _connectCompleter = Completer<WalletConnectionResponse>();
 
       _startConnectionTimeoutTimer();
 
-      final launchResult = await _launchWalletApp(selectedWallet);
+      debugPrint('🔄 Starting connection to ${selectedWallet.name}');
+      debugPrint('📱 Session ID: $_currentSessionId');
+      debugPrint('🔑 Nonce: $_currentNonce');
+
+      // Use enhanced launch strategy based on wallet type
+      final launchResult = await _launchWalletWithCorrectFormat(selectedWallet);
 
       if (!launchResult) {
         _isConnectionInProgress = false;
         _cancelTimeoutTimer();
+        debugPrint('❌ Failed to launch ${selectedWallet.name}');
         return WalletConnectionResponse(
           connected: false,
-          error: 'Failed to launch ${selectedWallet.name}',
+          error: 'Failed to launch ${selectedWallet.name}. Please ensure it is installed.',
         );
       }
 
+      // Show user guidance
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text('Please connect your wallet in ${selectedWallet.name}'),
+                ),
+              ],
+            ),
+            duration: const Duration(seconds: 8),
+            backgroundColor: selectedWallet.color,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
+        );
+      }
+
+      // Set up fallback manual input for problematic wallets
       if (selectedWallet.id == 'metamask') {
-        Future.delayed(const Duration(seconds: 15), () {
+        Timer(const Duration(seconds: 25), () {
           if (_isConnectionInProgress &&
               _connectCompleter != null &&
-              !_connectCompleter!.isCompleted) {
+              !_connectCompleter!.isCompleted &&
+              context.mounted) {
+            debugPrint('⏰ MetaMask manual input timeout reached');
             _showManualAddressInputDialog(context);
           }
         });
       }
 
-      return await _connectCompleter!.future.timeout(
-        const Duration(minutes: 2),
+      final result = await _connectCompleter!.future.timeout(
+        const Duration(minutes: 3),
         onTimeout: () {
+          debugPrint('⏰ Connection timeout after 3 minutes');
           _isConnectionInProgress = false;
+          _cancelTimeoutTimer();
           return WalletConnectionResponse(
             connected: false,
             error: 'Connection timed out. Please try again.',
           );
         },
       );
+
+      debugPrint('✅ Connection process completed: $result');
+      return result;
     } catch (e) {
+      debugPrint('❌ Exception in connectWallet: $e');
       _isConnectionInProgress = false;
       _cancelTimeoutTimer();
       return WalletConnectionResponse(
         connected: false,
-        error: 'Error: ${e.toString()}',
+        error: 'Connection error: ${e.toString()}',
       );
     }
   }
 
-  Future<void> handleDeepLink(Uri uri) async {
-    debugPrint('Handling deep link from wallet: ${uri.toString()}');
+  Future<bool> _launchWalletWithCorrectFormat(WalletApp wallet) async {
+    try {
+      debugPrint('🚀 Launching ${wallet.name} with enhanced format');
 
-    if (!_isConnectionInProgress || _connectCompleter == null) {
-      debugPrint(
-        'Received deep link but no connection is in progress. Checking for wallet data anyway.',
-      );
+      // Try native channel first for Android
+      if (Platform.isAndroid) {
+        try {
+          debugPrint('📱 Trying Android native channel launch');
+          final result = await _channel.invokeMethod('launchWallet', {
+            'wallet_id': wallet.id,
+            'wallet_package': wallet.androidPackage,
+            'wallet_scheme': wallet.scheme,
+            'params': jsonEncode(_getConnectionParams()),
+          });
 
-      try {
-        String? walletAddressNullable = _extractAddressFromUri(uri);
-        if (walletAddressNullable != null) {
-          String walletAddress = walletAddressNullable;
-          if (_isValidWalletAddress(walletAddress)) {
-            debugPrint(
-              'Found valid wallet address from passive connection: $walletAddress',
-            );
-
-            final prefs = await SharedPreferences.getInstance();
-            await prefs.setString('wallet_address', walletAddress);
-
-            String? walletType;
-            if (uri.scheme == 'metamask' ||
-                uri.toString().contains('metamask')) {
-              walletType = 'metamask';
-            } else if (uri.scheme == 'trust' ||
-                uri.toString().contains('trust')) {
-              walletType = 'trust';
-            } else if (uri.scheme == 'phantom' ||
-                uri.toString().contains('phantom')) {
-              walletType = 'phantom';
-            }
-
-            if (walletType != null) {
-              await prefs.setString('wallet_type', walletType);
-            }
+          if (result == true) {
+            debugPrint('✅ Native channel launch successful for ${wallet.name}');
+            return true;
+          } else {
+            debugPrint('❌ Native channel returned false for ${wallet.name}');
           }
+        } catch (e) {
+          debugPrint('❌ Native channel failed for ${wallet.name}: $e');
         }
-      } catch (e) {
-        debugPrint('Error handling passive wallet connection: $e');
       }
 
+      // Fallback to URL-based launching with corrected formats
+      debugPrint('🔄 Falling back to URL scheme launch');
+      return await _launchWithUrlScheme(wallet);
+    } catch (e) {
+      debugPrint('❌ Error launching ${wallet.name}: $e');
+      return false;
+    }
+  }
+
+  Future<bool> _launchWithUrlScheme(WalletApp wallet) async {
+    final callbackUrl = Platform.isAndroid 
+        ? 'flashtransferapp://connect' 
+        : _appUniversalLink;
+
+    debugPrint('🔗 Using callback URL: $callbackUrl');
+
+    switch (wallet.id) {
+      case 'metamask':
+        return await _launchMetaMaskWithCorrectFormat(wallet, callbackUrl);
+      case 'trust':
+        return await _launchTrustWalletWithCorrectFormat(wallet, callbackUrl);
+      case 'phantom':
+        return await _launchPhantomWithCorrectFormat(wallet, callbackUrl);
+      case 'coinbase':
+        return await _launchCoinbaseWithCorrectFormat(wallet, callbackUrl);
+      case 'binance':
+        return await _launchBinanceWithCorrectFormat(wallet, callbackUrl);
+      default:
+        return await _launchGenericWallet(wallet, callbackUrl);
+    }
+  }
+
+  Future<bool> _launchMetaMaskWithCorrectFormat(WalletApp wallet, String callbackUrl) async {
+    final encodedCallback = Uri.encodeComponent(callbackUrl);
+    
+    final formats = [
+      // Primary format: dApp connection with address request
+      'metamask://dapp/flashtransfer.app?address_request=true&callback=$encodedCallback&app_name=Flash%20Transfer&session=${_currentSessionId}',
+      
+      // Alternative format for different MetaMask versions
+      'metamask://wc?uri=${Uri.encodeComponent('https://flashtransfer.app/connect?callback=$callbackUrl&session=${_currentSessionId}')}',
+      
+      // Simplified dApp format
+      'metamask://dapp/flashtransfer.app',
+      
+      // Minimal format that opens MetaMask
+      'metamask://dapp',
+    ];
+
+    for (int i = 0; i < formats.length; i++) {
+      final format = formats[i];
+      debugPrint('🦊 Trying MetaMask format ${i + 1}/${formats.length}: $format');
+      
+      try {
+        final launched = await launchUrl(
+          Uri.parse(format),
+          mode: LaunchMode.externalApplication,
+        );
+
+        if (launched) {
+          debugPrint('✅ MetaMask launched with format ${i + 1}: $format');
+          return true;
+        } else {
+          debugPrint('❌ MetaMask format ${i + 1} launch returned false');
+        }
+      } catch (e) {
+        debugPrint('❌ MetaMask format ${i + 1} failed: $e');
+      }
+    }
+
+    debugPrint('❌ All MetaMask formats failed');
+    return false;
+  }
+
+  Future<bool> _launchTrustWalletWithCorrectFormat(WalletApp wallet, String callbackUrl) async {
+    final connectUrl = 'https://flashtransfer.app/connect?callback=${Uri.encodeComponent(callbackUrl)}&session=${_currentSessionId}&wallet=trust';
+    final encodedConnectUrl = Uri.encodeComponent(connectUrl);
+    
+    final formats = [
+      'trust://open_url?url=$encodedConnectUrl',
+      'trust://dapp_connect?url=$encodedConnectUrl',
+      'trust://connect?callback=${Uri.encodeComponent(callbackUrl)}&app=Flash%20Transfer',
+    ];
+
+    for (int i = 0; i < formats.length; i++) {
+      final format = formats[i];
+      debugPrint('🛡️ Trying Trust Wallet format ${i + 1}/${formats.length}: $format');
+      
+      try {
+        final launched = await launchUrl(
+          Uri.parse(format),
+          mode: LaunchMode.externalApplication,
+        );
+
+        if (launched) {
+          debugPrint('✅ Trust Wallet launched with format ${i + 1}');
+          return true;
+        }
+      } catch (e) {
+        debugPrint('❌ Trust Wallet format ${i + 1} failed: $e');
+      }
+    }
+
+    return false;
+  }
+
+  Future<bool> _launchPhantomWithCorrectFormat(WalletApp wallet, String callbackUrl) async {
+    final encodedCallback = Uri.encodeComponent(callbackUrl);
+    
+    final formats = [
+      'phantom://connect?ref=$encodedCallback&app=Flash%20Transfer&redirect=$encodedCallback&session=${_currentSessionId}',
+      'phantom://dapp/flashtransfer.app?callback=$encodedCallback',
+      'phantom://connect?callback=$encodedCallback',
+    ];
+
+    for (int i = 0; i < formats.length; i++) {
+      final format = formats[i];
+      debugPrint('👻 Trying Phantom format ${i + 1}/${formats.length}: $format');
+      
+      try {
+        final launched = await launchUrl(
+          Uri.parse(format),
+          mode: LaunchMode.externalApplication,
+        );
+
+        if (launched) {
+          debugPrint('✅ Phantom launched with format ${i + 1}');
+          return true;
+        }
+      } catch (e) {
+        debugPrint('❌ Phantom format ${i + 1} failed: $e');
+      }
+    }
+
+    return false;
+  }
+
+  Future<bool> _launchCoinbaseWithCorrectFormat(WalletApp wallet, String callbackUrl) async {
+    final encodedCallback = Uri.encodeComponent(callbackUrl);
+    
+    final formats = [
+      'cbwallet://dapp/flashtransfer.app?callback=$encodedCallback&session=${_currentSessionId}',
+      'cbwallet://connect?callback=$encodedCallback&app=Flash%20Transfer',
+      'https://go.cb-w.com/dapp?cb_url=${Uri.encodeComponent('https://flashtransfer.app/connect?callback=$callbackUrl')}',
+    ];
+
+    for (int i = 0; i < formats.length; i++) {
+      final format = formats[i];
+      debugPrint('🔵 Trying Coinbase format ${i + 1}/${formats.length}: $format');
+      
+      try {
+        final launched = await launchUrl(
+          Uri.parse(format),
+          mode: LaunchMode.externalApplication,
+        );
+
+        if (launched) {
+          debugPrint('✅ Coinbase launched with format ${i + 1}');
+          return true;
+        }
+      } catch (e) {
+        debugPrint('❌ Coinbase format ${i + 1} failed: $e');
+      }
+    }
+
+    return false;
+  }
+
+  Future<bool> _launchBinanceWithCorrectFormat(WalletApp wallet, String callbackUrl) async {
+    final encodedCallback = Uri.encodeComponent(callbackUrl);
+    
+    final formats = [
+      'bnc://dapp?url=${Uri.encodeComponent('https://flashtransfer.app/connect?callback=$callbackUrl&session=${_currentSessionId}')}',
+      'bnc://connect?callback=$encodedCallback&app=Flash%20Transfer',
+    ];
+
+    for (int i = 0; i < formats.length; i++) {
+      final format = formats[i];
+      debugPrint('🟡 Trying Binance format ${i + 1}/${formats.length}: $format');
+      
+      try {
+        final launched = await launchUrl(
+          Uri.parse(format),
+          mode: LaunchMode.externalApplication,
+        );
+
+        if (launched) {
+          debugPrint('✅ Binance launched with format ${i + 1}');
+          return true;
+        }
+      } catch (e) {
+        debugPrint('❌ Binance format ${i + 1} failed: $e');
+      }
+    }
+
+    return false;
+  }
+
+  Future<bool> _launchGenericWallet(WalletApp wallet, String callbackUrl) async {
+    final encodedCallback = Uri.encodeComponent(callbackUrl);
+    
+    final formats = [
+      '${wallet.scheme}connect?callback=$encodedCallback&app=Flash%20Transfer&session=${_currentSessionId}',
+      '${wallet.scheme}dapp/flashtransfer.app?callback=$encodedCallback',
+      '${wallet.scheme}open?url=${Uri.encodeComponent('https://flashtransfer.app/connect?callback=$callbackUrl')}',
+    ];
+
+    for (int i = 0; i < formats.length; i++) {
+      final format = formats[i];
+      debugPrint('🔗 Trying ${wallet.name} format ${i + 1}/${formats.length}: $format');
+      
+      try {
+        final launched = await launchUrl(
+          Uri.parse(format),
+          mode: LaunchMode.externalApplication,
+        );
+
+        if (launched) {
+          debugPrint('✅ ${wallet.name} launched with format ${i + 1}');
+          return true;
+        }
+      } catch (e) {
+        debugPrint('❌ ${wallet.name} format ${i + 1} failed: $e');
+      }
+    }
+
+    return false;
+  }
+
+  Map<String, dynamic> _getConnectionParams() {
+    return {
+      'action': 'connect',
+      'nonce': _currentNonce,
+      'session_id': _currentSessionId,
+      'app_name': 'Flash Transfer',
+      'app_id': _appPackageName,
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
+      'request_address': true,
+      'callback_url': Platform.isAndroid 
+          ? 'flashtransferapp://connect' 
+          : _appUniversalLink,
+    };
+  }
+
+  Future<void> handleDeepLink(Uri uri) async {
+    debugPrint('🔗 Enhanced deep link handler: ${uri.toString()}');
+    debugPrint('📋 Query parameters: ${uri.queryParameters}');
+    debugPrint('📋 Fragment: ${uri.fragment}');
+    debugPrint('📋 Path segments: ${uri.pathSegments}');
+
+    if (!_isConnectionInProgress || _connectCompleter == null) {
+      debugPrint('⚠️ No active connection, but checking for passive wallet data');
+      await _handlePassiveWalletData(uri);
       return;
     }
 
     try {
-      String? walletAddressNullable = _extractAddressFromUri(uri);
-      String? signature;
-
-      if (walletAddressNullable != null) {
-        final possibleSignatureParams = [
-          'signature',
-          'sig',
-          'signed',
-          'message',
-        ];
-        for (final param in possibleSignatureParams) {
-          final value = uri.queryParameters[param];
-          if (value != null && value.isNotEmpty) {
-            signature = value;
-            debugPrint('Found signature in param "$param": $signature');
-            break;
-          }
-        }
-      }
-
-      String? walletAddress;
-      if (walletAddressNullable != null) {
-        walletAddress = walletAddressNullable;
-      } else {
-        debugPrint(
-          'No wallet address found in response. URI: ${uri.toString()}',
-        );
-
-        if (uri.toString().contains('metamask') ||
-            (_selectedWallet?.id == 'metamask')) {
-          debugPrint(
-            'MetaMask detected, trying to retrieve address via clipboard fallback...',
-          );
-
-          ClipboardData? clipboardData = await Clipboard.getData(
-            Clipboard.kTextPlain,
-          );
-          if (clipboardData?.text != null) {
-            String clipText = clipboardData!.text!;
-
-            if (clipText.startsWith('0x') && clipText.length == 42) {
-              walletAddress = clipText;
-              debugPrint(
-                'Found potential wallet address in clipboard: $walletAddress',
-              );
-            }
-          }
-
-          if (walletAddress == null) {
-            _completeWithError(
-              'No wallet address found from MetaMask. Please try connecting again or enter address manually.',
-            );
-            return;
-          }
-        } else {
-          _completeWithError(
-            'No wallet address found in response. URI: ${uri.toString()}',
-          );
-          return;
-        }
-      }
-
-      if (walletAddress == null) {
-        _completeWithError('Wallet address is null');
+      final extractedData = _extractWalletDataFromUri(uri);
+      
+      if (extractedData == null) {
+        debugPrint('❌ No wallet data extracted from URI');
+        _completeWithError('No wallet address found in response');
         return;
       }
 
-      if (!_isValidWalletAddress(walletAddress)) {
-        _completeWithError('Invalid wallet address format: $walletAddress');
+      final walletAddress = extractedData['address'];
+      final signature = extractedData['signature'];
+      final metadata = extractedData['metadata'];
+
+      if (walletAddress == null || !_isValidWalletAddress(walletAddress)) {
+        debugPrint('❌ Invalid wallet address: $walletAddress');
+        _completeWithError('Invalid wallet address format');
         return;
       }
 
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('wallet_address', walletAddress);
-      if (_selectedWallet != null) {
-        await prefs.setString('wallet_type', _selectedWallet!.id);
-      }
+      // Save wallet data
+      await _saveWalletData(walletAddress, _selectedWallet?.id, signature, metadata);
 
+      // Complete connection
       if (!_connectCompleter!.isCompleted) {
         _connectCompleter!.complete(
           WalletConnectionResponse(
@@ -251,247 +480,404 @@ class DirectWalletService {
             walletAddress: walletAddress,
             walletType: _selectedWallet?.id,
             signature: signature,
+            metadata: metadata,
           ),
         );
       }
 
       _isConnectionInProgress = false;
       _cancelTimeoutTimer();
+      
+      debugPrint('✅ Wallet connection completed successfully');
     } catch (e) {
+      debugPrint('❌ Error handling deep link: $e');
       _completeWithError('Error processing wallet response: ${e.toString()}');
     }
   }
 
+  Map<String, dynamic>? _extractWalletDataFromUri(Uri uri) {
+    try {
+      Map<String, dynamic> extractedData = {};
+
+      // Enhanced address extraction patterns
+      final addressParams = [
+        'address', 'wallet_address', 'account', 'accounts', 
+        'publicAddress', 'public_address', 'accountId',
+        'selectedAddress', 'walletaddress', 'eth_address',
+        'solana_address', 'result', 'data', 'response'
+      ];
+
+      // Check query parameters
+      for (final param in addressParams) {
+        final value = uri.queryParameters[param];
+        if (value != null && value.isNotEmpty) {
+          extractedData['address'] = value;
+          debugPrint('✅ Found address in query param "$param": $value');
+          break;
+        }
+      }
+
+      // Check fragment parameters
+      if (extractedData['address'] == null && uri.fragment.isNotEmpty) {
+        final fragmentParams = Uri.splitQueryString(uri.fragment);
+        for (final param in addressParams) {
+          final value = fragmentParams[param];
+          if (value != null && value.isNotEmpty) {
+            extractedData['address'] = value;
+            debugPrint('✅ Found address in fragment param "$param": $value');
+            break;
+          }
+        }
+
+        // Check if fragment itself is an address
+        if (extractedData['address'] == null) {
+          if (_isValidWalletAddress(uri.fragment)) {
+            extractedData['address'] = uri.fragment;
+            debugPrint('✅ Fragment is wallet address: ${uri.fragment}');
+          }
+        }
+      }
+
+      // Check path segments for addresses
+      if (extractedData['address'] == null) {
+        for (final segment in uri.pathSegments) {
+          if (_isValidWalletAddress(segment)) {
+            extractedData['address'] = segment;
+            debugPrint('✅ Found address in path segment: $segment');
+            break;
+          }
+        }
+      }
+
+      // Look for address patterns in the entire URI string
+      if (extractedData['address'] == null) {
+        final addressPatterns = [
+          RegExp(r'0x[a-fA-F0-9]{40}'), // Ethereum
+          RegExp(r'[1-9A-HJ-NP-Za-km-z]{32,44}'), // Solana/Bitcoin
+        ];
+
+        for (final pattern in addressPatterns) {
+          final match = pattern.firstMatch(uri.toString());
+          if (match != null) {
+            extractedData['address'] = match.group(0);
+            debugPrint('✅ Found address pattern: ${match.group(0)}');
+            break;
+          }
+        }
+      }
+
+      // Extract signature if present
+      final signatureParams = ['signature', 'sig', 'signed', 'message', 'sign'];
+      for (final param in signatureParams) {
+        final value = uri.queryParameters[param];
+        if (value != null && value.isNotEmpty) {
+          extractedData['signature'] = value;
+          debugPrint('✅ Found signature: $value');
+          break;
+        }
+      }
+
+      // Extract session validation
+      final sessionId = uri.queryParameters['session'] ?? uri.queryParameters['session_id'];
+      if (sessionId == _currentSessionId) {
+        debugPrint('✅ Session ID validated');
+      } else if (sessionId != null) {
+        debugPrint('⚠️ Session ID mismatch: expected $_currentSessionId, got $sessionId');
+      }
+
+      // Extract metadata
+      extractedData['metadata'] = {
+        'wallet_type': _identifyWalletFromUri(uri),
+        'session_id': sessionId,
+        'timestamp': DateTime.now().toIso8601String(),
+        'uri': uri.toString(),
+      };
+
+      return extractedData.isNotEmpty ? extractedData : null;
+    } catch (e) {
+      debugPrint('❌ Error extracting wallet data: $e');
+      return null;
+    }
+  }
+
+  String? _identifyWalletFromUri(Uri uri) {
+    final uriString = uri.toString().toLowerCase();
+    
+    if (uriString.contains('metamask') || uri.scheme == 'metamask') return 'metamask';
+    if (uriString.contains('trust') || uri.scheme == 'trust') return 'trust';
+    if (uriString.contains('phantom') || uri.scheme == 'phantom') return 'phantom';
+    if (uriString.contains('coinbase') || uri.scheme == 'cbwallet') return 'coinbase';
+    if (uriString.contains('binance') || uri.scheme == 'bnc') return 'binance';
+    
+    return _selectedWallet?.id;
+  }
+
   bool _isValidWalletAddress(String address) {
+    // Ethereum address
     if (address.startsWith('0x') && address.length == 42) {
       return RegExp(r'^0x[0-9a-fA-F]{40}$').hasMatch(address);
     }
-
-    if (address.length >= 32) {
-      return RegExp(r'^[1-9A-HJ-NP-Za-km-z]{32,44}$').hasMatch(address);
+    
+    // Solana/Bitcoin address (more flexible validation)
+    if (address.length >= 26 && address.length <= 44) {
+      return RegExp(r'^[1-9A-HJ-NP-Za-km-z]{26,44}$').hasMatch(address);
     }
-
-    debugPrint('Warning: Wallet address has unexpected format: $address');
-    return true;
+    
+    return false;
   }
 
-  Future<bool> isWalletInstalled(WalletApp wallet) async {
-    try {
-      if (Platform.isAndroid) {
-        final canLaunchScheme = await canLaunchUrl(Uri.parse(wallet.scheme));
-        if (canLaunchScheme) return true;
-
-        final androidIntent = Uri.parse(
-          'android-app://${wallet.androidPackage}',
-        );
-        return await canLaunchUrl(androidIntent);
-      } else if (Platform.isIOS) {
-        return await canLaunchUrl(Uri.parse(wallet.scheme));
-      }
-      return false;
-    } catch (e) {
-      debugPrint("Error checking if ${wallet.name} is installed: $e");
-      return false;
-    }
-  }
-
-  Future<Map<String, bool>> getInstalledWallets(List<WalletApp> wallets) async {
-    Map<String, bool> results = {};
-
-    for (var wallet in wallets) {
-      final isInstalled = await isWalletInstalled(wallet);
-      results[wallet.id] = isInstalled;
-    }
-
-    return results;
-  }
-
-  Future<bool> disconnectWallet() async {
+  Future<void> _saveWalletData(String address, String? walletType, String? signature, Map<String, dynamic>? metadata) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.remove('wallet_address');
-      await prefs.remove('wallet_type');
-
-      return true;
+      await prefs.setString('wallet_address', address);
+      
+      if (walletType != null) {
+        await prefs.setString('wallet_type', walletType);
+      }
+      
+      if (signature != null) {
+        await prefs.setString('wallet_signature', signature);
+      }
+      
+      if (metadata != null) {
+        await prefs.setString('wallet_metadata', jsonEncode(metadata));
+      }
+      
+      debugPrint('💾 Wallet data saved successfully');
     } catch (e) {
-      debugPrint('Error disconnecting wallet: $e');
-      return false;
+      debugPrint('❌ Error saving wallet data: $e');
     }
   }
 
-  Future<bool> _launchWalletApp(WalletApp wallet) async {
+  Future<void> _handlePassiveWalletData(Uri uri) async {
     try {
-      final nonce = _currentNonce;
-      final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-
-      final callbackUrl =
-          Platform.isAndroid ? 'flashtransferapp://connect' : _appUniversalLink;
-
-      Map<String, dynamic> params = {
-        'action': 'connect',
-        'nonce': nonce,
-        'callback': callbackUrl,
-        'timestamp': timestamp,
-        'app_id': 'com.flash_transfer_app',
-        'app_name': 'Flash Transfer',
-      };
-
-      debugPrint(
-        'Attempting to launch ${wallet.name} with params: ${jsonEncode(params)}',
-      );
-
-      bool launched = false;
-
-      if (wallet.id == 'metamask') {
-        try {
-          if (Platform.isAndroid) {
-            final String uri = '${wallet.scheme}dapp/https://flashtransfer.app';
-            debugPrint('Launching MetaMask with correct URI format: $uri');
-
-            launched = await launchUrl(
-              Uri.parse(uri),
-              mode: LaunchMode.externalApplication,
-            );
-            debugPrint('MetaMask launch result: $launched');
-
-            if (launched) {
-              return true;
-            }
-
-            final String minimalUri = '${wallet.scheme}dapp';
-            debugPrint('Trying minimal URI format: $minimalUri');
-
-            launched = await launchUrl(
-              Uri.parse(minimalUri),
-              mode: LaunchMode.externalApplication,
-            );
-
-            if (launched) {
-              debugPrint('Minimal URI launch successful');
-              return true;
-            }
-          } else if (Platform.isIOS) {
-            final String uri = '${wallet.scheme}dapp/flashtransfer.app';
-            debugPrint('Launching MetaMask iOS with URI: $uri');
-
-            launched = await launchUrl(
-              Uri.parse(uri),
-              mode: LaunchMode.externalApplication,
-            );
-
-            if (launched) {
-              return true;
-            }
-          }
-        } catch (e) {
-          debugPrint('MetaMask specific launch failed: $e');
-        }
-      } else if (wallet.id == 'trust') {
-        try {
-          final String uri =
-              '${wallet.scheme}open_url?url=${Uri.encodeComponent('https://flashtransfer.app/connect?params=${Uri.encodeComponent(jsonEncode(params))}')}';
-
-          launched = await launchUrl(
-            Uri.parse(uri),
-            mode: LaunchMode.externalApplication,
-          );
-
-          if (launched) {
-            return true;
-          }
-        } catch (e) {
-          debugPrint('Trust wallet specific launch failed: $e');
-        }
-      } else if (wallet.id == 'phantom') {
-        try {
-          params['solana'] = true;
-
-          final String uri =
-              '${wallet.scheme}connect?ref=${Uri.encodeComponent(callbackUrl)}&app=Flash%20Transfer&redirect=${Uri.encodeComponent(callbackUrl)}';
-
-          launched = await launchUrl(
-            Uri.parse(uri),
-            mode: LaunchMode.externalApplication,
-          );
-
-          if (launched) {
-            return true;
-          }
-        } catch (e) {
-          debugPrint('Phantom specific launch failed: $e');
-        }
-      }
-
-      if (!launched) {
-        final paramsJson = jsonEncode(params);
-
-        try {
-          String scheme = wallet.scheme;
-          if (!scheme.endsWith('/') && !scheme.endsWith('//')) {
-            scheme += '//';
-          }
-
-          final schemeUri = Uri.parse(
-            '${scheme}connect?${Uri.encodeQueryComponent(paramsJson)}',
-          );
-          launched = await launchUrl(
-            schemeUri,
-            mode: LaunchMode.externalApplication,
-          );
-          debugPrint('Wallet-specific scheme launch result: $launched');
-        } catch (e) {
-          debugPrint('Wallet-specific scheme failed: $e');
-        }
-      }
-
-      if (!launched) {
-        try {
-          final Map<String, dynamic> args = {
-            'wallet_id': wallet.id,
-            'wallet_package': wallet.androidPackage,
-            'wallet_scheme': wallet.scheme,
-            'params': jsonEncode(params),
-          };
-
-          final result = await _channel.invokeMethod('launchWallet', args);
-          launched = result == true;
-          debugPrint('Native channel launch result: $launched');
-        } catch (e) {
-          debugPrint('Native channel launch failed: $e');
-        }
-      }
-
-      if (!launched) {
-        final clipboardData =
-            'Flash Transfer Wallet Connect Request:\n'
-            'Nonce: $_currentNonce\n'
-            'Please connect your wallet and enter this address manually in the app.';
-
-        await Clipboard.setData(ClipboardData(text: clipboardData));
-        debugPrint(
-          'All wallet launch attempts failed. Copied data to clipboard.',
+      final extractedData = _extractWalletDataFromUri(uri);
+      if (extractedData != null && extractedData['address'] != null) {
+        await _saveWalletData(
+          extractedData['address'],
+          extractedData['metadata']?['wallet_type'],
+          extractedData['signature'],
+          extractedData['metadata'],
         );
+        debugPrint('💾 Passive wallet data saved');
       }
-
-      return launched;
     } catch (e) {
-      debugPrint('Error launching wallet: $e');
-      return false;
+      debugPrint('❌ Error handling passive wallet data: $e');
+    }
+  }
+
+  Future<void> _showManualAddressInputDialog(BuildContext context) async {
+    if (!_isConnectionInProgress || 
+        _connectCompleter == null || 
+        _connectCompleter!.isCompleted ||
+        !context.mounted) {
+      return;
+    }
+
+    debugPrint('📝 Showing manual address input dialog for ${_selectedWallet?.name}');
+
+    final TextEditingController controller = TextEditingController();
+    bool isValidating = false;
+
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: Row(
+                children: [
+                  Icon(
+                    Icons.account_balance_wallet,
+                    color: _selectedWallet?.color ?? Colors.blue,
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text('Connect ${_selectedWallet?.name ?? 'Wallet'}'),
+                  ),
+                ],
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${_selectedWallet?.name ?? 'Your wallet'} didn\'t return your address automatically.',
+                    style: const TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Please copy your wallet address and paste it below:',
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  const SizedBox(height: 16),
+                  TextField(
+                    controller: controller,
+                    decoration: InputDecoration(
+                      hintText: _selectedWallet?.id == 'phantom' 
+                          ? 'Solana address...' 
+                          : '0x... (Ethereum address)',
+                      border: const OutlineInputBorder(),
+                      prefixIcon: const Icon(Icons.account_balance_wallet),
+                      suffixIcon: isValidating
+                          ? const Padding(
+                              padding: EdgeInsets.all(12),
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              ),
+                            )
+                          : null,
+                    ),
+                    onChanged: (value) {
+                      if (value.length > 10) {
+                        setState(() {
+                          isValidating = true;
+                        });
+                        
+                        // Simulate validation delay
+                        Timer(const Duration(milliseconds: 500), () {
+                          if (context.mounted) {
+                            setState(() {
+                              isValidating = false;
+                            });
+                          }
+                        });
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.blue.shade200),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.info_outline, 
+                             color: Colors.blue.shade600, 
+                             size: 16),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Open ${_selectedWallet?.name ?? 'your wallet'} app, copy your address, and paste it here.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.blue.shade700,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: isValidating || controller.text.trim().isEmpty
+                      ? null
+                      : () {
+                          if (controller.text.trim().isNotEmpty) {
+                            Navigator.of(context).pop(true);
+                          }
+                        },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _selectedWallet?.color ?? Colors.blue,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('Connect'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+
+    if (result == true && controller.text.trim().isNotEmpty) {
+      final address = controller.text.trim();
+      
+      if (_isValidWalletAddress(address)) {
+        debugPrint('✅ Manual address validated: $address');
+        
+        await _saveWalletData(address, _selectedWallet?.id, null, {
+          'manual_entry': true,
+          'timestamp': DateTime.now().toIso8601String(),
+        });
+
+        if (!_connectCompleter!.isCompleted) {
+          _connectCompleter!.complete(
+            WalletConnectionResponse(
+              connected: true,
+              walletAddress: address,
+              walletType: _selectedWallet?.id,
+              metadata: {'manual_entry': true},
+            ),
+          );
+        }
+
+        _isConnectionInProgress = false;
+        _cancelTimeoutTimer();
+      } else {
+        debugPrint('❌ Invalid manual address: $address');
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Row(
+                children: [
+                  Icon(Icons.error_outline, color: Colors.white),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: Text('Invalid wallet address format. Please try again.'),
+                  ),
+                ],
+              ),
+              backgroundColor: Colors.red.shade600,
+              behavior: SnackBarBehavior.floating,
+              margin: const EdgeInsets.all(16),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+          );
+          // Show dialog again
+          await _showManualAddressInputDialog(context);
+        }
+      }
+    } else {
+      debugPrint('❌ Manual address input cancelled');
+      _completeWithError('Connection cancelled by user');
     }
   }
 
   String _generateNonce() {
     final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-    final random = (1000 + DateTime.now().millisecond).toString();
-    final data = utf8.encode('$timestamp:$random');
-    final hash = sha256.convert(data);
-    return hash.toString().substring(0, 16);
+    final random = (DateTime.now().microsecond % 10000).toString();
+    final data = utf8.encode('$timestamp:$random:${_currentSessionId}');
+    return sha256.convert(data).toString().substring(0, 16);
+  }
+
+  String _generateSessionId() {
+    final timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+    final random = (DateTime.now().microsecond % 10000).toString();
+    final data = utf8.encode('flash_transfer:$timestamp:$random');
+    return sha256.convert(data).toString().substring(0, 12);
   }
 
   void _startConnectionTimeoutTimer() {
     _cancelTimeoutTimer();
-    _connectionTimeoutTimer = Timer(const Duration(minutes: 2), () {
-      _completeWithError('Connection timed out. Please try again.');
+    debugPrint('⏰ Starting connection timeout timer (3 minutes)');
+    _connectionTimeoutTimer = Timer(const Duration(minutes: 3), () {
+      if (_isConnectionInProgress) {
+        debugPrint('⏰ Connection timeout reached');
+        _completeWithError('Connection timed out after 3 minutes. Please try again.');
+      }
     });
   }
 
@@ -499,10 +885,12 @@ class DirectWalletService {
     if (_connectionTimeoutTimer != null && _connectionTimeoutTimer!.isActive) {
       _connectionTimeoutTimer!.cancel();
       _connectionTimeoutTimer = null;
+      debugPrint('⏰ Connection timeout timer cancelled');
     }
   }
 
   void _completeWithError(String error) {
+    debugPrint('❌ Connection error: $error');
     _isConnectionInProgress = false;
     _cancelTimeoutTimer();
 
@@ -513,143 +901,31 @@ class DirectWalletService {
     }
   }
 
-  void dispose() {
-    _cancelTimeoutTimer();
-  }
-
-  String? _extractAddressFromUri(Uri uri) {
+  Future<bool> disconnectWallet() async {
     try {
-      final possibleAddressParams = [
-        'address',
-        'wallet_address',
-        'account',
-        'accountId',
-        'publicAddress',
-        'public_address',
-      ];
-
-      for (final param in possibleAddressParams) {
-        final value = uri.queryParameters[param];
-        if (value != null && value.isNotEmpty) {
-          debugPrint('Found wallet address in param "$param": $value');
-          return value;
-        }
-      }
-
-      if (uri.fragment.isNotEmpty) {
-        final fragmentParams = Uri.splitQueryString(uri.fragment);
-        for (final param in possibleAddressParams) {
-          final value = fragmentParams[param];
-          if (value != null && value.isNotEmpty) {
-            debugPrint(
-              'Found wallet address in fragment param "$param": $value',
-            );
-            return value;
-          }
-        }
-      }
-
-      if (uri.pathSegments.isNotEmpty) {
-        for (final segment in uri.pathSegments) {
-          if (segment.startsWith('0x') && segment.length >= 40) {
-            debugPrint('Found wallet address in path segment: $segment');
-            return segment;
-          }
-        }
-      }
-
-      return null;
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('wallet_address');
+      await prefs.remove('wallet_type');
+      await prefs.remove('wallet_signature');
+      await prefs.remove('wallet_metadata');
+      
+      debugPrint('✅ Wallet disconnected and data cleared');
+      return true;
     } catch (e) {
-      debugPrint('Error extracting address from URI: $e');
-      return null;
+      debugPrint('❌ Error disconnecting wallet: $e');
+      return false;
     }
   }
 
-  Future<void> _showManualAddressInputDialog(BuildContext context) async {
-    if (!_isConnectionInProgress ||
-        _connectCompleter == null ||
-        _connectCompleter!.isCompleted) {
-      return;
-    }
-
-    final TextEditingController controller = TextEditingController();
-
-    final addressEntered = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Enter Wallet Address'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'It seems MetaMask didn\'t redirect back automatically.\n\n'
-                'Please copy your wallet address from MetaMask and paste it below:',
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: controller,
-                decoration: const InputDecoration(
-                  hintText: '0x...',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                if (controller.text.isNotEmpty) {
-                  Navigator.of(context).pop(true);
-                }
-              },
-              child: const Text('Connect'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (addressEntered == true && controller.text.isNotEmpty) {
-      final walletAddress = controller.text.trim();
-
-      if (_isValidWalletAddress(walletAddress)) {
-        if (!_connectCompleter!.isCompleted) {
-          _connectCompleter!.complete(
-            WalletConnectionResponse(
-              connected: true,
-              walletAddress: walletAddress,
-              walletType: _selectedWallet?.id,
-            ),
-          );
-        }
-
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('wallet_address', walletAddress);
-        if (_selectedWallet != null) {
-          await prefs.setString('wallet_type', _selectedWallet!.id);
-        }
-
-        _isConnectionInProgress = false;
-        _cancelTimeoutTimer();
-      } else {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Invalid wallet address format')),
-          );
-
-          _showManualAddressInputDialog(context);
-        }
-      }
-    } else {
-      _completeWithError('Wallet connection cancelled by user');
+  void dispose() {
+    debugPrint('🧹 Disposing EnhancedDirectWalletService');
+    _cancelTimeoutTimer();
+    _isConnectionInProgress = false;
+    
+    if (_connectCompleter != null && !_connectCompleter!.isCompleted) {
+      _connectCompleter!.complete(
+        WalletConnectionResponse(connected: false, error: 'Service disposed'),
+      );
     }
   }
 }

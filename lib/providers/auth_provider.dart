@@ -26,7 +26,7 @@ enum AuthStatus {
   unauthenticated,
   registering,
   verifying,
-  registration_failed
+  registration_failed,
 }
 
 class AuthState {
@@ -112,56 +112,56 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<bool> register(RegisterRequest request) async {
-  state = state.copyWith(
-    isLoading: true,
-    fieldErrors: null,
-    status: AuthStatus.registering,
-  );
+    state = state.copyWith(
+      isLoading: true,
+      fieldErrors: null,
+      status: AuthStatus.registering,
+    );
 
-  try {
-    final response = await _authService.register(request);
+    try {
+      final response = await _authService.register(request);
 
-    if (response.success) {
-      state = state.copyWith(
-        message: response.message,
-        isLoading: false,
-        status: AuthStatus.registering,
-      );
-      return true;
-    } else {
-      Map<String, String>? fieldErrors;
-      
-      if (response.errors != null && 
-          response.errors!.rawErrors != null && 
-          response.errors!.rawErrors!.containsKey('FV')) {
-          
-        final fvErrors = response.errors!.rawErrors!['FV'] as Map<String, dynamic>;
-        fieldErrors = {};
-        
-        fvErrors.forEach((field, errorList) {
-          if (errorList is List && errorList.isNotEmpty) {
-            fieldErrors![field] = errorList.first.toString();
-          }
-        });
+      if (response.success) {
+        state = state.copyWith(
+          message: response.message,
+          isLoading: false,
+          status: AuthStatus.registering,
+        );
+        return true;
+      } else {
+        Map<String, String>? fieldErrors;
+
+        if (response.errors != null &&
+            response.errors!.rawErrors != null &&
+            response.errors!.rawErrors!.containsKey('FV')) {
+          final fvErrors =
+              response.errors!.rawErrors!['FV'] as Map<String, dynamic>;
+          fieldErrors = {};
+
+          fvErrors.forEach((field, errorList) {
+            if (errorList is List && errorList.isNotEmpty) {
+              fieldErrors![field] = errorList.first.toString();
+            }
+          });
+        }
+
+        state = state.copyWith(
+          status: AuthStatus.registration_failed,
+          message: response.message,
+          isLoading: false,
+          fieldErrors: fieldErrors,
+        );
+        return false;
       }
-      
+    } catch (e) {
       state = state.copyWith(
         status: AuthStatus.registration_failed,
-        message: response.message,
+        message: 'Registration error: ${e.toString()}',
         isLoading: false,
-        fieldErrors: fieldErrors,
       );
       return false;
     }
-  } catch (e) {
-    state = state.copyWith(
-      status: AuthStatus.registration_failed,
-      message: 'Registration error: ${e.toString()}',
-      isLoading: false,
-    );
-    return false;
   }
-}
 
   String _extractErrorMessage(ApiResponse<dynamic> response) {
     String errorMessage = response.message ?? 'An error occurred';
@@ -354,6 +354,45 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
+  // Enhanced Facebook Login using native SDK
+  Future<bool> loginWithFacebookNative() async {
+    _updateState(state.copyWith(isLoading: true));
+    try {
+      final response = await _authService.loginWithFacebookNative();
+
+      if (response.success && response.data != null) {
+        _updateState(
+          state.copyWith(
+            status: AuthStatus.authenticated,
+            user: response.data,
+            message: response.message,
+            isLoading: false,
+          ),
+        );
+        return true;
+      } else {
+        final errorMessage = _extractErrorMessage(response);
+        _updateState(
+          state.copyWith(
+            status: AuthStatus.unauthenticated,
+            message: errorMessage,
+            isLoading: false,
+          ),
+        );
+        return false;
+      }
+    } catch (e) {
+      _updateState(
+        state.copyWith(
+          status: AuthStatus.unauthenticated,
+          message: 'Enhanced Facebook login error: ${e.toString()}',
+          isLoading: false,
+        ),
+      );
+      return false;
+    }
+  }
+
   Future<bool> loginWithApple(String idToken, String countryName) async {
     _updateState(state.copyWith(isLoading: true));
     try {
@@ -399,7 +438,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     _updateState(state.copyWith(isLoading: true));
     try {
       final response = await _authService.authenticateWithWallet(
-        WalletAuthRequest(walletAddress: walletAddress, signature: signature),
+        WalletAuthRequest(walletAddress: walletAddress),
       );
 
       if (response.success && response.data != null) {
@@ -446,8 +485,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       // We'll use a placeholder for signature requirement
       final response = await _authService.authenticateWithWallet(
         WalletAuthRequest(
-          walletAddress: walletAddress,
-          signature: "wallet_auth", // Placeholder signature as per requirements
+          walletAddress: walletAddress
         ),
       );
 
