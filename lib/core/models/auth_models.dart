@@ -62,13 +62,10 @@ class LoginRequest {
 }
 
 class RegistrationResponse {
-  final String email;
+  final String? email;
   final bool verificationRequired;
 
-  RegistrationResponse({
-    required this.email,
-    required this.verificationRequired,
-  });
+  RegistrationResponse({this.email, required this.verificationRequired});
 
   factory RegistrationResponse.fromJson(Map<String, dynamic> json) {
     return RegistrationResponse(

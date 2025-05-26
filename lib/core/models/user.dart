@@ -1,6 +1,6 @@
 class User {
   final int? id;
-  final String email;
+  final String? email;
   final String? firstName;
   final String? lastName;
   final String? phoneNumber;
@@ -36,14 +36,16 @@ class User {
       return firstName!;
     } else if (walletAddress != null) {
       return '${walletAddress!.substring(0, 6)}...${walletAddress!.substring(walletAddress!.length - 4)}';
+    } else if (email != null) {
+      return email!.split('@')[0];
     } else {
-      return email.split('@')[0];
+      return 'User';
     }
   }
 
   User({
     this.id,
-    required this.email,
+    this.email,
     this.firstName,
     this.lastName,
     this.phoneNumber,

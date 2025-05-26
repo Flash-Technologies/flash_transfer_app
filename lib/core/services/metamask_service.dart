@@ -18,7 +18,7 @@ class MetaMaskService {
   final String _callbackUrl =
       Platform.isAndroid
           ? 'flashtransferapp://connect'
-          : 'https://flashtransfer.app/connect';
+          : 'https://flash.closedsource.in/connect';
 
   // Completer to handle async wallet connection flow
   Completer<String?>? _connectCompleter;
@@ -150,7 +150,7 @@ class MetaMaskService {
         // Try with web3 specific format that explicitly requests connection
         // This format is specifically for connecting to a dapp, which is what we need
         final web3ConnectUri =
-            'metamask://wc?uri=https://flashtransfer.app/connect';
+            'metamask://wc?uri=https://flash.closedsource.in/connect';
 
         debugPrint('🚀 Trying web3 connection format: $web3ConnectUri');
 
@@ -173,7 +173,8 @@ class MetaMaskService {
         }
 
         // Try format with explicit ethereum uri
-        final ethereumUri = 'ethereum:wc?uri=https://flashtransfer.app/connect';
+        final ethereumUri =
+            'ethereum:wc?uri=https://flash.closedsource.in/connect';
 
         debugPrint('🚀 Trying ethereum URI scheme: $ethereumUri');
 
@@ -195,7 +196,7 @@ class MetaMaskService {
         }
 
         // Try with basic scheme (should at least open MetaMask)
-        final simpleUri = 'metamask://dapp/https://flashtransfer.app';
+        final simpleUri = 'metamask://dapp/https://flash.closedsource.in';
 
         debugPrint('🚀 Trying simplified format: $simpleUri');
 
@@ -218,7 +219,7 @@ class MetaMaskService {
 
         // Try format with explicit chain ID
         final chainSpecificUri =
-            'metamask://dapp/https://flashtransfer.app?chainId=1';
+            'metamask://dapp/https://flash.closedsource.in?chainId=1';
 
         debugPrint('🚀 Trying with chain specification: $chainSpecificUri');
 
@@ -241,7 +242,7 @@ class MetaMaskService {
 
         // Try Web-Connect compatible format (works with newer MetaMask versions)
         final wcUri =
-            'metamask://wc?uri=wc:00e46b69-d0cc-4b3e-b6a2-cee442f97188@1?bridge=https://flashtransfer.app&key=123456789';
+            'metamask://wc?uri=wc:00e46b69-d0cc-4b3e-b6a2-cee442f97188@1?bridge=https://flash.closedsource.in&key=123456789';
 
         debugPrint('🚀 Trying WalletConnect format: $wcUri');
 
@@ -305,9 +306,9 @@ class MetaMaskService {
         // iOS deep linking to MetaMask - try multiple formats
         final formats = [
           'metamask://dapp/flashtransfer.app',
-          'metamask://wc?uri=https://flashtransfer.app/connect',
+          'metamask://wc?uri=https://flash.closedsource.in/connect',
           'https://metamask.app.link/dapp/flashtransfer.app',
-          'ethereum:wc?uri=https://flashtransfer.app/connect',
+          'ethereum:wc?uri=https://flash.closedsource.in/connect',
         ];
 
         for (final uri in formats) {

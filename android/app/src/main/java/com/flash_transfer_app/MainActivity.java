@@ -124,7 +124,7 @@ public class MainActivity extends FlutterActivity {
                     try {
                         // Extract callback URL from params
                         String callbackUrl = "flashtransferapp://connect";
-                        String dappUrl = "https://flashtransfer.app";
+                        String dappUrl = "https://flash.closedsource.in";
 
                         try {
                             // Parse the JSON to extract parameters
@@ -155,7 +155,7 @@ public class MainActivity extends FlutterActivity {
                         Log.e(TAG, "Error creating MetaMask URI: " + e.getMessage());
                         // Fallback to basic format - less likely to work
                         uri = Uri.parse(walletScheme + "dapp?url=" +
-                                Uri.encode("https://flashtransfer.app") +
+                                Uri.encode("https://flash.closedsource.in") +
                                 "&redirect=" + Uri.encode("flashtransferapp://connect"));
                     }
                     break;
@@ -163,7 +163,7 @@ public class MainActivity extends FlutterActivity {
                 case "trust":
                     // Trust Wallet format - may need specific parameters
                     uri = Uri.parse(walletScheme + "open_url?url="
-                            + Uri.encode("https://flashtransfer.app/connect?params=" + Uri.encode(params)));
+                            + Uri.encode("https://flash.closedsource.in/connect?params=" + Uri.encode(params)));
                     break;
 
                 case "phantom":

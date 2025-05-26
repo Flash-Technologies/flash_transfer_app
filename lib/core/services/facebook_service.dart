@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class FacebookService {
-  static const String _appId = '967460942254022';
+  static const String _appId = '1230478931949955';
 
   /// Initialize Facebook SDK for the current platform
   static Future<void> initialize() async {
@@ -45,14 +45,15 @@ class FacebookService {
           if (result.accessToken != null) {
             debugPrint('✅ Facebook login successful');
             debugPrint(
-              '🔑 Access Token: ${result.accessToken!.token}',
+              '🔑 Access Token: ${result.accessToken}',
             );
 
             // Get user data
-            final userData = await _getUserData(result.accessToken!.token);
+            final userData =
+                await _getUserData(result.accessToken!.tokenString);
 
             return FacebookLoginResult.success(
-              accessToken: result.accessToken!.token,
+              accessToken: result.accessToken!.tokenString,
               userData: userData,
             );
           } else {
@@ -102,12 +103,10 @@ class FacebookService {
   /// Get user's country using IP geolocation
   static Future<String> getUserCountry() async {
     try {
-      final response = await http
-          .get(
-            Uri.parse('https://ipapi.co/json/'),
-            headers: {'Accept': 'application/json'},
-          )
-          .timeout(const Duration(seconds: 10));
+      final response = await http.get(
+        Uri.parse('https://ipapi.co/json/'),
+        headers: {'Accept': 'application/json'},
+      ).timeout(const Duration(seconds: 10));
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -128,7 +127,7 @@ class FacebookService {
   static Future<bool> isLoggedIn() async {
     try {
       final accessToken = await FacebookAuth.instance.accessToken;
-      return accessToken != null && !accessToken.isExpired;
+      return accessToken != null;
     } catch (e) {
       debugPrint('❌ Error checking Facebook login status: $e');
       return false;
@@ -149,7 +148,7 @@ class FacebookService {
   static Future<String?> getCurrentAccessToken() async {
     try {
       final accessToken = await FacebookAuth.instance.accessToken;
-      return accessToken?.token;
+      return accessToken?.tokenString;
     } catch (e) {
       debugPrint('❌ Error getting Facebook access token: $e');
       return null;

@@ -64,7 +64,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb967460942254022</string>
+				<string>fb1230478931949955</string>
 			</array>
 		</dict>
 		<!-- App's custom URL scheme for wallet callbacks -->
@@ -102,9 +102,9 @@
 	
 	<!-- Facebook Sign In -->
 	<key>FacebookAppID</key>
-	<string>967460942254022</string>
+	<string>1230478931949955</string>
 	<key>FacebookClientToken</key>
-	<string>967460942254022abcdef0123456789</string>
+	<string>1230478931949955abcdef0123456789</string>
 	<key>FacebookDisplayName</key>
 	<string>Flash Transfer</string>
 	

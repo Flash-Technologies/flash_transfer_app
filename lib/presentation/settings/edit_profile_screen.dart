@@ -123,7 +123,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
 
     _firstNameController.text = user.firstName ?? '';
     _lastNameController.text = user.lastName ?? '';
-    _emailController.text = user.email;
+    _emailController.text = user.email ?? '';
     _permanentAddressController.text = user.permanentAddress ?? '';
     _presentAddressController.text = user.presentAddress ?? '';
     _cityController.text = user.city ?? '';

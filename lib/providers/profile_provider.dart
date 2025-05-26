@@ -410,6 +410,20 @@ class UserNotifier extends StateNotifier<User?> {
         presentAddress: state!.presentAddress,
         state: state!.state,
         token: state!.token,
+        twoFactorEnabled: state!.twoFactorEnabled,
+        loyaltyPoints: state!.loyaltyPoints,
+        loyaltyRank: state!.loyaltyRank,
+        walletAddress: state!.walletAddress,
+        createdAt: state!.createdAt,
+        updatedAt: state!.updatedAt,
+        isAdmin: state!.isAdmin,
+        isKycVerified: state!.isKycVerified,
+        authMethod: state!.authMethod,
+        emailVerified: state!.emailVerified,
+        isActive: state!.isActive,
+        lastLoginAt: state!.lastLoginAt,
+        lastLoginIp: state!.lastLoginIp,
+        socialProvider: state!.socialProvider,
       );
     }
   }

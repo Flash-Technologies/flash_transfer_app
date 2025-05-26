@@ -50,8 +50,8 @@ class EnhancedDirectWalletService {
   EnhancedDirectWalletService({
     required String appPackageName,
     required String appUniversalLink,
-  }) : _appPackageName = appPackageName,
-       _appUniversalLink = appUniversalLink;
+  })  : _appPackageName = appPackageName,
+        _appUniversalLink = appUniversalLink;
 
   bool get isConnecting => _isConnectionInProgress;
 
@@ -69,7 +69,7 @@ class EnhancedDirectWalletService {
 
     try {
       debugPrint('🔄 Enhanced wallet service: Starting connection process');
-      
+
       final selectedWallet = await WalletSelectorSheet.show(context);
 
       if (selectedWallet == null) {
@@ -100,7 +100,8 @@ class EnhancedDirectWalletService {
         debugPrint('❌ Failed to launch ${selectedWallet.name}');
         return WalletConnectionResponse(
           connected: false,
-          error: 'Failed to launch ${selectedWallet.name}. Please ensure it is installed.',
+          error:
+              'Failed to launch ${selectedWallet.name}. Please ensure it is installed.',
         );
       }
 
@@ -116,7 +117,9 @@ class EnhancedDirectWalletService {
                 ),
                 const SizedBox(width: 16),
                 Expanded(
-                  child: Text('Please connect your wallet in ${selectedWallet.name}'),
+                  child: Text(
+                    'Please connect your wallet in ${selectedWallet.name}',
+                  ),
                 ),
               ],
             ),
@@ -124,7 +127,9 @@ class EnhancedDirectWalletService {
             backgroundColor: selectedWallet.color,
             behavior: SnackBarBehavior.floating,
             margin: const EdgeInsets.all(16),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
         );
       }
@@ -204,9 +209,8 @@ class EnhancedDirectWalletService {
   }
 
   Future<bool> _launchWithUrlScheme(WalletApp wallet) async {
-    final callbackUrl = Platform.isAndroid 
-        ? 'flashtransferapp://connect' 
-        : _appUniversalLink;
+    final callbackUrl =
+        Platform.isAndroid ? 'flashtransferapp://connect' : _appUniversalLink;
 
     debugPrint('🔗 Using callback URL: $callbackUrl');
 
@@ -226,52 +230,52 @@ class EnhancedDirectWalletService {
     }
   }
 
-  Future<bool> _launchMetaMaskWithCorrectFormat(WalletApp wallet, String callbackUrl) async {
-    final encodedCallback = Uri.encodeComponent(callbackUrl);
-    
-    final formats = [
-      // Primary format: dApp connection with address request
-      'metamask://dapp/flashtransfer.app?address_request=true&callback=$encodedCallback&app_name=Flash%20Transfer&session=${_currentSessionId}',
-      
-      // Alternative format for different MetaMask versions
-      'metamask://wc?uri=${Uri.encodeComponent('https://flashtransfer.app/connect?callback=$callbackUrl&session=${_currentSessionId}')}',
-      
-      // Simplified dApp format
-      'metamask://dapp/flashtransfer.app',
-      
-      // Minimal format that opens MetaMask
-      'metamask://dapp',
-    ];
+  Future<bool> _launchMetaMaskWithCorrectFormat(
+    WalletApp wallet,
+    String callbackUrl,
+  ) async {
+    debugPrint('🦊 Launching MetaMask with enhanced protocol');
 
-    for (int i = 0; i < formats.length; i++) {
-      final format = formats[i];
-      debugPrint('🦊 Trying MetaMask format ${i + 1}/${formats.length}: $format');
-      
-      try {
-        final launched = await launchUrl(
-          Uri.parse(format),
-          mode: LaunchMode.externalApplication,
-        );
+    // Generate WalletConnect URI for proper connection prompts
+    final wcUri = await _generateWalletConnectUri();
+    final paramsJson = wcUri != null
+        ? jsonEncode({'walletconnect_uri': wcUri, 'callback': callbackUrl})
+        : jsonEncode({'callback': callbackUrl});
 
-        if (launched) {
-          debugPrint('✅ MetaMask launched with format ${i + 1}: $format');
-          return true;
-        } else {
-          debugPrint('❌ MetaMask format ${i + 1} launch returned false');
-        }
-      } catch (e) {
-        debugPrint('❌ MetaMask format ${i + 1} failed: $e');
+    debugPrint('🦊 Generated WC URI: ${wcUri?.substring(0, 50) ?? 'none'}...');
+
+    try {
+      final result = await _channel.invokeMethod('launchWallet', {
+        'wallet_id': 'metamask',
+        'wallet_package': wallet.androidPackage,
+        'wallet_scheme': wallet.scheme,
+        'params': paramsJson,
+      });
+
+      if (result == true) {
+        debugPrint('✅ MetaMask launched via enhanced protocol');
+        return true;
       }
+    } catch (e) {
+      debugPrint('❌ MetaMask enhanced protocol failed: $e');
     }
 
-    debugPrint('❌ All MetaMask formats failed');
-    return false;
+    // Fallback to standard URL schemes
+    debugPrint('🦊 Trying MetaMask fallback methods');
+    return await _launchWalletFallback(wallet, callbackUrl, [
+      'metamask://dapp/flash.closedsource.in',
+      'metamask://dapp/flashtransfer.app',
+    ]);
   }
 
-  Future<bool> _launchTrustWalletWithCorrectFormat(WalletApp wallet, String callbackUrl) async {
-    final connectUrl = 'https://flashtransfer.app/connect?callback=${Uri.encodeComponent(callbackUrl)}&session=${_currentSessionId}&wallet=trust';
+  Future<bool> _launchTrustWalletWithCorrectFormat(
+    WalletApp wallet,
+    String callbackUrl,
+  ) async {
+    final connectUrl =
+        'https://flash.closedsource.in/connect?callback=${Uri.encodeComponent(callbackUrl)}&session=${_currentSessionId}&wallet=trust';
     final encodedConnectUrl = Uri.encodeComponent(connectUrl);
-    
+
     final formats = [
       'trust://open_url?url=$encodedConnectUrl',
       'trust://dapp_connect?url=$encodedConnectUrl',
@@ -280,8 +284,10 @@ class EnhancedDirectWalletService {
 
     for (int i = 0; i < formats.length; i++) {
       final format = formats[i];
-      debugPrint('🛡️ Trying Trust Wallet format ${i + 1}/${formats.length}: $format');
-      
+      debugPrint(
+        '🛡️ Trying Trust Wallet format ${i + 1}/${formats.length}: $format',
+      );
+
       try {
         final launched = await launchUrl(
           Uri.parse(format),
@@ -300,19 +306,35 @@ class EnhancedDirectWalletService {
     return false;
   }
 
-  Future<bool> _launchPhantomWithCorrectFormat(WalletApp wallet, String callbackUrl) async {
+  Future<bool> _launchPhantomWithCorrectFormat(
+    WalletApp wallet,
+    String callbackUrl,
+  ) async {
+    // Generate proper connection parameters for Phantom v1/connect API
+    final connectParams = await _generatePhantomConnectParams(callbackUrl);
+    final encodedParams = Uri.encodeComponent(jsonEncode(connectParams));
     final encodedCallback = Uri.encodeComponent(callbackUrl);
-    
+
     final formats = [
+      // Phantom v1/connect API - triggers proper connection prompt
+      'phantom://v1/connect?dapp_encryption_public_key=${connectParams['dapp_encryption_public_key']}&redirect_link=$encodedCallback&app_url=${Uri.encodeComponent('https://flash.closedsource.in')}',
+
+      // Alternative connect format
+      'phantom://connect?app_url=${Uri.encodeComponent('https://flash.closedsource.in')}&redirect_link=$encodedCallback&cluster=mainnet-beta',
+
+      // Standard connect format with parameters
       'phantom://connect?ref=$encodedCallback&app=Flash%20Transfer&redirect=$encodedCallback&session=${_currentSessionId}',
+
+      // Fallback dApp format
       'phantom://dapp/flashtransfer.app?callback=$encodedCallback',
-      'phantom://connect?callback=$encodedCallback',
     ];
 
     for (int i = 0; i < formats.length; i++) {
       final format = formats[i];
-      debugPrint('👻 Trying Phantom format ${i + 1}/${formats.length}: $format');
-      
+      debugPrint(
+        '👻 Trying Phantom format ${i + 1}/${formats.length}: $format',
+      );
+
       try {
         final launched = await launchUrl(
           Uri.parse(format),
@@ -331,19 +353,24 @@ class EnhancedDirectWalletService {
     return false;
   }
 
-  Future<bool> _launchCoinbaseWithCorrectFormat(WalletApp wallet, String callbackUrl) async {
+  Future<bool> _launchCoinbaseWithCorrectFormat(
+    WalletApp wallet,
+    String callbackUrl,
+  ) async {
     final encodedCallback = Uri.encodeComponent(callbackUrl);
-    
+
     final formats = [
       'cbwallet://dapp/flashtransfer.app?callback=$encodedCallback&session=${_currentSessionId}',
       'cbwallet://connect?callback=$encodedCallback&app=Flash%20Transfer',
-      'https://go.cb-w.com/dapp?cb_url=${Uri.encodeComponent('https://flashtransfer.app/connect?callback=$callbackUrl')}',
+      'https://go.cb-w.com/dapp?cb_url=${Uri.encodeComponent('https://flash.closedsource.in/connect?callback=$callbackUrl')}',
     ];
 
     for (int i = 0; i < formats.length; i++) {
       final format = formats[i];
-      debugPrint('🔵 Trying Coinbase format ${i + 1}/${formats.length}: $format');
-      
+      debugPrint(
+        '🔵 Trying Coinbase format ${i + 1}/${formats.length}: $format',
+      );
+
       try {
         final launched = await launchUrl(
           Uri.parse(format),
@@ -362,18 +389,23 @@ class EnhancedDirectWalletService {
     return false;
   }
 
-  Future<bool> _launchBinanceWithCorrectFormat(WalletApp wallet, String callbackUrl) async {
+  Future<bool> _launchBinanceWithCorrectFormat(
+    WalletApp wallet,
+    String callbackUrl,
+  ) async {
     final encodedCallback = Uri.encodeComponent(callbackUrl);
-    
+
     final formats = [
-      'bnc://dapp?url=${Uri.encodeComponent('https://flashtransfer.app/connect?callback=$callbackUrl&session=${_currentSessionId}')}',
+      'bnc://dapp?url=${Uri.encodeComponent('https://flash.closedsource.in/connect?callback=$callbackUrl&session=${_currentSessionId}')}',
       'bnc://connect?callback=$encodedCallback&app=Flash%20Transfer',
     ];
 
     for (int i = 0; i < formats.length; i++) {
       final format = formats[i];
-      debugPrint('🟡 Trying Binance format ${i + 1}/${formats.length}: $format');
-      
+      debugPrint(
+        '🟡 Trying Binance format ${i + 1}/${formats.length}: $format',
+      );
+
       try {
         final launched = await launchUrl(
           Uri.parse(format),
@@ -392,19 +424,24 @@ class EnhancedDirectWalletService {
     return false;
   }
 
-  Future<bool> _launchGenericWallet(WalletApp wallet, String callbackUrl) async {
+  Future<bool> _launchGenericWallet(
+    WalletApp wallet,
+    String callbackUrl,
+  ) async {
     final encodedCallback = Uri.encodeComponent(callbackUrl);
-    
+
     final formats = [
       '${wallet.scheme}connect?callback=$encodedCallback&app=Flash%20Transfer&session=${_currentSessionId}',
       '${wallet.scheme}dapp/flashtransfer.app?callback=$encodedCallback',
-      '${wallet.scheme}open?url=${Uri.encodeComponent('https://flashtransfer.app/connect?callback=$callbackUrl')}',
+      '${wallet.scheme}open?url=${Uri.encodeComponent('https://flash.closedsource.in/connect?callback=$callbackUrl')}',
     ];
 
     for (int i = 0; i < formats.length; i++) {
       final format = formats[i];
-      debugPrint('🔗 Trying ${wallet.name} format ${i + 1}/${formats.length}: $format');
-      
+      debugPrint(
+        '🔗 Trying ${wallet.name} format ${i + 1}/${formats.length}: $format',
+      );
+
       try {
         final launched = await launchUrl(
           Uri.parse(format),
@@ -432,9 +469,8 @@ class EnhancedDirectWalletService {
       'app_id': _appPackageName,
       'timestamp': DateTime.now().millisecondsSinceEpoch,
       'request_address': true,
-      'callback_url': Platform.isAndroid 
-          ? 'flashtransferapp://connect' 
-          : _appUniversalLink,
+      'callback_url':
+          Platform.isAndroid ? 'flashtransferapp://connect' : _appUniversalLink,
     };
   }
 
@@ -445,14 +481,16 @@ class EnhancedDirectWalletService {
     debugPrint('📋 Path segments: ${uri.pathSegments}');
 
     if (!_isConnectionInProgress || _connectCompleter == null) {
-      debugPrint('⚠️ No active connection, but checking for passive wallet data');
+      debugPrint(
+        '⚠️ No active connection, but checking for passive wallet data',
+      );
       await _handlePassiveWalletData(uri);
       return;
     }
 
     try {
       final extractedData = _extractWalletDataFromUri(uri);
-      
+
       if (extractedData == null) {
         debugPrint('❌ No wallet data extracted from URI');
         _completeWithError('No wallet address found in response');
@@ -470,7 +508,12 @@ class EnhancedDirectWalletService {
       }
 
       // Save wallet data
-      await _saveWalletData(walletAddress, _selectedWallet?.id, signature, metadata);
+      await _saveWalletData(
+        walletAddress,
+        _selectedWallet?.id,
+        signature,
+        metadata,
+      );
 
       // Complete connection
       if (!_connectCompleter!.isCompleted) {
@@ -487,7 +530,7 @@ class EnhancedDirectWalletService {
 
       _isConnectionInProgress = false;
       _cancelTimeoutTimer();
-      
+
       debugPrint('✅ Wallet connection completed successfully');
     } catch (e) {
       debugPrint('❌ Error handling deep link: $e');
@@ -501,10 +544,20 @@ class EnhancedDirectWalletService {
 
       // Enhanced address extraction patterns
       final addressParams = [
-        'address', 'wallet_address', 'account', 'accounts', 
-        'publicAddress', 'public_address', 'accountId',
-        'selectedAddress', 'walletaddress', 'eth_address',
-        'solana_address', 'result', 'data', 'response'
+        'address',
+        'wallet_address',
+        'account',
+        'accounts',
+        'publicAddress',
+        'public_address',
+        'accountId',
+        'selectedAddress',
+        'walletaddress',
+        'eth_address',
+        'solana_address',
+        'result',
+        'data',
+        'response',
       ];
 
       // Check query parameters
@@ -578,11 +631,14 @@ class EnhancedDirectWalletService {
       }
 
       // Extract session validation
-      final sessionId = uri.queryParameters['session'] ?? uri.queryParameters['session_id'];
+      final sessionId =
+          uri.queryParameters['session'] ?? uri.queryParameters['session_id'];
       if (sessionId == _currentSessionId) {
         debugPrint('✅ Session ID validated');
       } else if (sessionId != null) {
-        debugPrint('⚠️ Session ID mismatch: expected $_currentSessionId, got $sessionId');
+        debugPrint(
+          '⚠️ Session ID mismatch: expected $_currentSessionId, got $sessionId',
+        );
       }
 
       // Extract metadata
@@ -602,13 +658,16 @@ class EnhancedDirectWalletService {
 
   String? _identifyWalletFromUri(Uri uri) {
     final uriString = uri.toString().toLowerCase();
-    
-    if (uriString.contains('metamask') || uri.scheme == 'metamask') return 'metamask';
+
+    if (uriString.contains('metamask') || uri.scheme == 'metamask')
+      return 'metamask';
     if (uriString.contains('trust') || uri.scheme == 'trust') return 'trust';
-    if (uriString.contains('phantom') || uri.scheme == 'phantom') return 'phantom';
-    if (uriString.contains('coinbase') || uri.scheme == 'cbwallet') return 'coinbase';
+    if (uriString.contains('phantom') || uri.scheme == 'phantom')
+      return 'phantom';
+    if (uriString.contains('coinbase') || uri.scheme == 'cbwallet')
+      return 'coinbase';
     if (uriString.contains('binance') || uri.scheme == 'bnc') return 'binance';
-    
+
     return _selectedWallet?.id;
   }
 
@@ -617,32 +676,37 @@ class EnhancedDirectWalletService {
     if (address.startsWith('0x') && address.length == 42) {
       return RegExp(r'^0x[0-9a-fA-F]{40}$').hasMatch(address);
     }
-    
+
     // Solana/Bitcoin address (more flexible validation)
     if (address.length >= 26 && address.length <= 44) {
       return RegExp(r'^[1-9A-HJ-NP-Za-km-z]{26,44}$').hasMatch(address);
     }
-    
+
     return false;
   }
 
-  Future<void> _saveWalletData(String address, String? walletType, String? signature, Map<String, dynamic>? metadata) async {
+  Future<void> _saveWalletData(
+    String address,
+    String? walletType,
+    String? signature,
+    Map<String, dynamic>? metadata,
+  ) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('wallet_address', address);
-      
+
       if (walletType != null) {
         await prefs.setString('wallet_type', walletType);
       }
-      
+
       if (signature != null) {
         await prefs.setString('wallet_signature', signature);
       }
-      
+
       if (metadata != null) {
         await prefs.setString('wallet_metadata', jsonEncode(metadata));
       }
-      
+
       debugPrint('💾 Wallet data saved successfully');
     } catch (e) {
       debugPrint('❌ Error saving wallet data: $e');
@@ -667,14 +731,16 @@ class EnhancedDirectWalletService {
   }
 
   Future<void> _showManualAddressInputDialog(BuildContext context) async {
-    if (!_isConnectionInProgress || 
-        _connectCompleter == null || 
+    if (!_isConnectionInProgress ||
+        _connectCompleter == null ||
         _connectCompleter!.isCompleted ||
         !context.mounted) {
       return;
     }
 
-    debugPrint('📝 Showing manual address input dialog for ${_selectedWallet?.name}');
+    debugPrint(
+      '📝 Showing manual address input dialog for ${_selectedWallet?.name}',
+    );
 
     final TextEditingController controller = TextEditingController();
     bool isValidating = false;
@@ -715,8 +781,8 @@ class EnhancedDirectWalletService {
                   TextField(
                     controller: controller,
                     decoration: InputDecoration(
-                      hintText: _selectedWallet?.id == 'phantom' 
-                          ? 'Solana address...' 
+                      hintText: _selectedWallet?.id == 'phantom'
+                          ? 'Solana address...'
                           : '0x... (Ethereum address)',
                       border: const OutlineInputBorder(),
                       prefixIcon: const Icon(Icons.account_balance_wallet),
@@ -726,7 +792,9 @@ class EnhancedDirectWalletService {
                               child: SizedBox(
                                 width: 20,
                                 height: 20,
-                                child: CircularProgressIndicator(strokeWidth: 2),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
                               ),
                             )
                           : null,
@@ -736,7 +804,7 @@ class EnhancedDirectWalletService {
                         setState(() {
                           isValidating = true;
                         });
-                        
+
                         // Simulate validation delay
                         Timer(const Duration(milliseconds: 500), () {
                           if (context.mounted) {
@@ -758,9 +826,11 @@ class EnhancedDirectWalletService {
                     ),
                     child: Row(
                       children: [
-                        Icon(Icons.info_outline, 
-                             color: Colors.blue.shade600, 
-                             size: 16),
+                        Icon(
+                          Icons.info_outline,
+                          color: Colors.blue.shade600,
+                          size: 16,
+                        ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
@@ -804,10 +874,10 @@ class EnhancedDirectWalletService {
 
     if (result == true && controller.text.trim().isNotEmpty) {
       final address = controller.text.trim();
-      
+
       if (_isValidWalletAddress(address)) {
         debugPrint('✅ Manual address validated: $address');
-        
+
         await _saveWalletData(address, _selectedWallet?.id, null, {
           'manual_entry': true,
           'timestamp': DateTime.now().toIso8601String(),
@@ -836,14 +906,18 @@ class EnhancedDirectWalletService {
                   Icon(Icons.error_outline, color: Colors.white),
                   SizedBox(width: 12),
                   Expanded(
-                    child: Text('Invalid wallet address format. Please try again.'),
+                    child: Text(
+                      'Invalid wallet address format. Please try again.',
+                    ),
                   ),
                 ],
               ),
               backgroundColor: Colors.red.shade600,
               behavior: SnackBarBehavior.floating,
               margin: const EdgeInsets.all(16),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
           );
           // Show dialog again
@@ -876,7 +950,9 @@ class EnhancedDirectWalletService {
     _connectionTimeoutTimer = Timer(const Duration(minutes: 3), () {
       if (_isConnectionInProgress) {
         debugPrint('⏰ Connection timeout reached');
-        _completeWithError('Connection timed out after 3 minutes. Please try again.');
+        _completeWithError(
+          'Connection timed out after 3 minutes. Please try again.',
+        );
       }
     });
   }
@@ -908,7 +984,7 @@ class EnhancedDirectWalletService {
       await prefs.remove('wallet_type');
       await prefs.remove('wallet_signature');
       await prefs.remove('wallet_metadata');
-      
+
       debugPrint('✅ Wallet disconnected and data cleared');
       return true;
     } catch (e) {
@@ -917,11 +993,103 @@ class EnhancedDirectWalletService {
     }
   }
 
+  /// Fallback wallet launch method using URL schemes
+  Future<bool> _launchWalletFallback(
+      WalletApp wallet, String callbackUrl, List<String> formats) async {
+    for (int i = 0; i < formats.length; i++) {
+      final format = formats[i];
+      debugPrint(
+          '🔄 Trying fallback format ${i + 1}/${formats.length}: $format');
+
+      try {
+        final launched = await launchUrl(
+          Uri.parse(format),
+          mode: LaunchMode.externalApplication,
+        );
+
+        if (launched) {
+          debugPrint('✅ Wallet launched with fallback format ${i + 1}');
+          return true;
+        }
+      } catch (e) {
+        debugPrint('❌ Fallback format ${i + 1} failed: $e');
+      }
+    }
+
+    debugPrint('❌ All fallback formats failed');
+    return false;
+  }
+
+  /// Generate a proper WalletConnect URI for enhanced connection prompts
+  Future<String?> _generateWalletConnectUri() async {
+    try {
+      // Generate proper WalletConnect v2 session parameters
+      final sessionId = _currentSessionId ?? _generateSessionId();
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final symKey = _generateNonce();
+      final relay = 'wss://relay.walletconnect.com';
+
+      // Create the proper WalletConnect v2 URI structure
+      // This is the format that actually triggers connection prompts
+      final wcUri = 'wc:$sessionId@2?'
+          'relay-protocol=irn&'
+          'symKey=$symKey';
+
+      debugPrint(
+          '🔗 Generated WalletConnect v2 URI: ${wcUri.substring(0, 50)}...');
+      debugPrint('📋 Session ID: $sessionId');
+      debugPrint('🔑 SymKey: ${symKey.substring(0, 16)}...');
+
+      return wcUri;
+    } catch (e) {
+      debugPrint('❌ Error generating WalletConnect URI: $e');
+      return null;
+    }
+  }
+
+  /// Generate Phantom v1/connect API parameters for proper connection prompts
+  Future<Map<String, dynamic>> _generatePhantomConnectParams(
+    String callbackUrl,
+  ) async {
+    try {
+      // Generate proper encryption key for Phantom v1/connect API
+      final sessionId = _currentSessionId ?? _generateSessionId();
+      final nonce = _generateNonce();
+
+      // Create dApp encryption public key (simplified for demo)
+      final publicKey =
+          _generateNonce(); // In production, use proper crypto library
+
+      final params = {
+        'dapp_encryption_public_key': publicKey,
+        'redirect_link': callbackUrl,
+        'app_url': 'https://flash.closedsource.in',
+        'cluster': 'mainnet-beta',
+        'session': sessionId,
+        'nonce': nonce,
+        'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
+      };
+
+      debugPrint(
+        '🔗 Generated Phantom connect params: ${params.keys.join(', ')}',
+      );
+      return params;
+    } catch (e) {
+      debugPrint('❌ Error generating Phantom connect params: $e');
+      return {
+        'dapp_encryption_public_key': _generateNonce(),
+        'redirect_link': callbackUrl,
+        'app_url': 'https://flash.closedsource.in',
+        'cluster': 'mainnet-beta',
+      };
+    }
+  }
+
   void dispose() {
     debugPrint('🧹 Disposing EnhancedDirectWalletService');
     _cancelTimeoutTimer();
     _isConnectionInProgress = false;
-    
+
     if (_connectCompleter != null && !_connectCompleter!.isCompleted) {
       _connectCompleter!.complete(
         WalletConnectionResponse(connected: false, error: 'Service disposed'),

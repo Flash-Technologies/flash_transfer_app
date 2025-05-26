@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.flash_transfer_app"
-    compileSdk = 34  // Updated
+    compileSdk = 35  // Updated to fix dependency compatibility
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -22,7 +22,7 @@ android {
     defaultConfig {
         applicationId = "com.example.flash_transfer_app"
         minSdk = 21
-        targetSdk = 34  // Updated
+        targetSdk = 35  // Updated to match compileSdk
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }

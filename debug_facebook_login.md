@@ -12,7 +12,7 @@
 
 2. **strings.xml Updates:**
 
-   - Added proper fb_login_protocol_scheme: `fb967460942254022`
+   - Added proper fb_login_protocol_scheme: `fb1230478931949955`
    - Fixed Facebook client token format
    - Added app_name for Facebook activities
 
@@ -44,7 +44,7 @@
 1. **Facebook Console Verification:**
 
    ```
-   App ID: 967460942254022
+   App ID: 1230478931949955
    Android Package: com.example.flash_transfer_app
    Key Hash: oTKDQLYtpB1/UJlf3NnuuD4JAoA=
    ```
