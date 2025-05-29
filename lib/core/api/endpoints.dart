@@ -29,6 +29,12 @@ class Endpoints {
   // beneficiary endpoints
   static const String beneficiaries = '$baseUrl/api/beneficiary';
 
+  // transaction endpoints
+  static const String transactionEstimate =
+      '$baseUrl/api/transaction/estimate-mobile-money-to-crypto';
+  static const String createCashToCryptoTransaction =
+      '$baseUrl/api/transaction/cash-to-crypto-mobile-money';
+
   // External API
   static const String countries = 'https://restcountries.com/v3.1/all';
 }

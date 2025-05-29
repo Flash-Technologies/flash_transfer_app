@@ -4,6 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flash_transfer_app/config/theme.dart';
 import 'package:flash_transfer_app/presentation/common/app_button.dart';
+import 'package:flash_transfer_app/providers/payment_provider.dart';
+import 'package:flash_transfer_app/providers/exchange_provider.dart';
+import 'package:flash_transfer_app/providers/auth_provider.dart';
 
 class CryptoAddressScreen extends ConsumerStatefulWidget {
   const CryptoAddressScreen({Key? key}) : super(key: key);
@@ -41,7 +44,7 @@ class _CryptoAddressScreenState extends ConsumerState<CryptoAddressScreen> {
   @override
   void initState() {
     super.initState();
-    // Set default blockchain
+    // Set default blockchain to ethereum mainnet to match working payload
     _selectedBlockchain = 'ethereum';
   }
 
@@ -74,33 +77,112 @@ class _CryptoAddressScreenState extends ConsumerState<CryptoAddressScreen> {
       return;
     }
 
-    setState(() {
-      _isValidating = true;
-      _validationError = null;
-    });
-
-    // Simulate address validation
-    await Future.delayed(const Duration(milliseconds: 800));
-
     if (!_isValidEthereumAddress(address)) {
       setState(() {
         _validationError =
             'Invalid address format for the selected network. Please check and try again.';
-        _isValidating = false;
+      });
+      return;
+    }
+
+    // Check if user is authenticated
+    final authState = ref.read(authProvider);
+    if (authState.status != AuthStatus.authenticated ||
+        authState.user?.token == null) {
+      setState(() {
+        _validationError = 'Please log in to continue with the transaction';
       });
       return;
     }
 
     setState(() {
-      _isValidating = false;
+      _isValidating = true;
+      _validationError = null;
     });
 
-    // Navigate to review screen
-    context.push('/review-details/crypto');
+    try {
+      // Get exchange data from the form (this would come from previous screens)
+      final exchangeForm = ref.read(exchangeFormProvider);
+      final paymentState = ref.read(paymentProvider);
+
+      // Validate that we have the required form data
+      if (exchangeForm.fromCurrency == null ||
+          exchangeForm.toCurrency == null ||
+          exchangeForm.sendAmount.isEmpty) {
+        setState(() {
+          _validationError = 'Please complete the exchange form first';
+        });
+        return;
+      }
+
+      final double? amount = double.tryParse(exchangeForm.sendAmount);
+      if (amount == null || amount <= 0) {
+        setState(() {
+          _validationError = 'Please enter a valid amount';
+        });
+        return;
+      }
+
+      // Get transaction estimate from API with real user data
+      final success = await ref
+          .read(paymentProvider.notifier)
+          .getTransactionEstimate(
+            amount: amount,
+            sourceCurrency: exchangeForm.fromCurrency!.code,
+            destinationCurrency: exchangeForm.toCurrency!.code,
+            blockchainNetwork: _selectedBlockchain!,
+            countryCode: 'ci', // TODO: Get from user location or selection
+            paymentMethod:
+                'orange', // TODO: Get from mobile money provider selection
+            phoneNumber: '1231231232', // TODO: Get from mobile money details
+            provider: 'orange', // TODO: Get from provider selection
+            walletAddress: address,
+          );
+
+      setState(() {
+        _isValidating = false;
+      });
+
+      if (success) {
+        // Store the wallet address and navigate to review screen
+        ref.read(paymentProvider.notifier).setSelectedWalletAddress(address);
+        context.push('/review-details/crypto');
+      } else {
+        // Show error from API
+        final paymentError = ref.read(paymentProvider).errorMessage;
+        setState(() {
+          _validationError = _parseApiError(
+              paymentError ?? 'Failed to validate transaction details');
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _isValidating = false;
+        _validationError = _parseApiError(e.toString());
+      });
+    }
+  }
+
+  String _parseApiError(String error) {
+    // Parse common API errors and provide user-friendly messages
+    if (error.contains('Unauthorized')) {
+      return 'Please log in again to continue';
+    } else if (error.contains('Authentication Error')) {
+      return 'Authentication failed. Please log in again';
+    } else if (error.contains('Network error')) {
+      return 'Network error. Please check your connection';
+    } else if (error.contains('Connection timed out')) {
+      return 'Request timed out. Please try again';
+    } else {
+      return 'Transaction validation failed. Please try again';
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Watch payment state for loading/error handling
+    final paymentState = ref.watch(paymentProvider);
+
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       body: SafeArea(
@@ -146,6 +228,12 @@ class _CryptoAddressScreenState extends ConsumerState<CryptoAddressScreen> {
                           .animate()
                           .fadeIn(duration: 300.ms)
                           .slideY(begin: -0.1, end: 0),
+
+                    // API Loading state
+                    if (paymentState.isEstimateLoading)
+                      _buildLoadingIndicator()
+                          .animate()
+                          .fadeIn(duration: 300.ms),
                   ],
                 ),
               ),
@@ -173,11 +261,11 @@ class _CryptoAddressScreenState extends ConsumerState<CryptoAddressScreen> {
           ],
         ),
         // Add subtle pattern background
-        image: const DecorationImage(
-          image: AssetImage('assets/images/pattern_bg.png'),
-          fit: BoxFit.cover,
-          opacity: 0.05,
-        ),
+        // image: const DecorationImage(
+        //   image: AssetImage('assets/images/pattern_bg.png'),
+        //   fit: BoxFit.cover,
+        //   opacity: 0.05,
+        // ),
       ),
       child: Column(
         children: [
@@ -429,6 +517,40 @@ class _CryptoAddressScreenState extends ConsumerState<CryptoAddressScreen> {
               style: TextStyle(
                 color: Colors.red.shade700,
                 fontSize: 14,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoadingIndicator() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppTheme.primaryColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppTheme.primaryColor.withOpacity(0.3)),
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 20,
+            height: 20,
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryColor),
+            ),
+          ),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Text(
+              'Getting transaction estimate...',
+              style: TextStyle(
+                color: AppTheme.textDarkColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),

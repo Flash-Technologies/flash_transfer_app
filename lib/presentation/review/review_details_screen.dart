@@ -7,6 +7,7 @@ import 'package:lottie/lottie.dart';
 import 'package:flash_transfer_app/config/theme.dart';
 import 'package:flash_transfer_app/presentation/common/app_button.dart';
 import 'package:flash_transfer_app/providers/payment_provider.dart';
+import 'package:flash_transfer_app/providers/exchange_provider.dart';
 import 'package:flash_transfer_app/providers/review_details_provider.dart';
 import 'package:flash_transfer_app/presentation/review/components/user_detail_card.dart';
 import 'package:flash_transfer_app/presentation/review/components/transaction_summary.dart';
@@ -17,12 +18,13 @@ class ReviewDetailsScreen extends ConsumerWidget {
   final PaymentType paymentType;
 
   const ReviewDetailsScreen({Key? key, required this.paymentType})
-    : super(key: key);
+      : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Get transaction details from provider
     final transactionDetails = ref.watch(reviewDetailsProvider(paymentType));
+    final paymentState = ref.watch(paymentProvider);
 
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
@@ -56,11 +58,11 @@ class ReviewDetailsScreen extends ConsumerWidget {
 
                       // Sender Details Card
                       UserDetailCard(
-                            title: "Sender Details",
-                            user: transactionDetails.sender,
-                            showKycBadge: true,
-                            onEdit: () => context.push('/sender-details'),
-                          )
+                        title: "Sender Details",
+                        user: transactionDetails.sender,
+                        showKycBadge: true,
+                        onEdit: () => context.push('/sender-details'),
+                      )
                           .animate()
                           .fadeIn(duration: 500.ms, delay: 100.ms)
                           .slideY(begin: 0.1, end: 0),
@@ -69,9 +71,9 @@ class ReviewDetailsScreen extends ConsumerWidget {
 
                       // Payment Method Details (factory pattern)
                       PaymentDetailsFactory.create(
-                            paymentType: paymentType,
-                            paymentDetails: transactionDetails.paymentDetails,
-                          )
+                        paymentType: paymentType,
+                        paymentDetails: transactionDetails.paymentDetails,
+                      )
                           .animate()
                           .fadeIn(duration: 500.ms, delay: 200.ms)
                           .slideY(begin: 0.1, end: 0),
@@ -80,11 +82,11 @@ class ReviewDetailsScreen extends ConsumerWidget {
 
                       // Receiver Details Card
                       UserDetailCard(
-                            title: "Receiver details",
-                            user: transactionDetails.receiver,
-                            showKycBadge: false,
-                            onEdit: () => context.push('/receiver-info'),
-                          )
+                        title: "Receiver details",
+                        user: transactionDetails.receiver,
+                        showKycBadge: false,
+                        onEdit: () => context.push('/receiver-info'),
+                      )
                           .animate()
                           .fadeIn(duration: 500.ms, delay: 300.ms)
                           .slideY(begin: 0.1, end: 0),
@@ -103,7 +105,7 @@ class ReviewDetailsScreen extends ConsumerWidget {
             ),
 
             // Action Buttons
-            _buildActionButtons(context),
+            _buildActionButtons(context, ref, paymentState),
           ],
         ),
       ),
@@ -131,7 +133,10 @@ class ReviewDetailsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context) {
+  Widget _buildActionButtons(
+      BuildContext context, WidgetRef ref, PaymentState paymentState) {
+    final isLoading = paymentState.isTransactionLoading;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
@@ -147,22 +152,24 @@ class ReviewDetailsScreen extends ConsumerWidget {
       child: Column(
         children: [
           AppButton(
-            text: "Confirm",
-            onPressed: () => _handleConfirm(context),
+            text: isLoading ? "Creating Transaction..." : "Confirm",
+            onPressed: () {
+              if (!isLoading) {
+                _handleConfirm(context, ref);
+              }
+            },
             backgroundColor: AppTheme.primaryColor,
             textColor: AppTheme.textDarkColor,
-            isDisabled: false,
+            isDisabled: isLoading,
           ).animate().scale(
-            duration: 200.ms,
-            curve: Curves.easeInOut,
-            alignment: Alignment.center,
-            begin: const Offset(1.0, 1.0),
-            end: const Offset(1.03, 1.03),
-            delay: 200.ms,
-          ),
-
+                duration: 200.ms,
+                curve: Curves.easeInOut,
+                alignment: Alignment.center,
+                begin: const Offset(1.0, 1.0),
+                end: const Offset(1.03, 1.03),
+                delay: 200.ms,
+              ),
           const SizedBox(height: 12),
-
           AppButton(
             text: "Cancel",
             onPressed: () => context.pop(),
@@ -174,22 +181,112 @@ class ReviewDetailsScreen extends ConsumerWidget {
       ),
     );
   }
-void _handleConfirm(BuildContext context) {
-  switch (paymentType) {
-    case PaymentType.card:
-      context.push('/payment-done');
-      break;
-    case PaymentType.crypto:
-    case PaymentType.cryptoReceive:
-    case PaymentType.cryptoSendMobile:
-      context.push('/crypto-payment');
-      break;
-    case PaymentType.bank:
-    case PaymentType.cash:
-    case PaymentType.mobile:
-    case PaymentType.wallet:
-      context.push('/receipt');
-      break;
+
+  Future<void> _handleConfirm(BuildContext context, WidgetRef ref) async {
+    switch (paymentType) {
+      case PaymentType.card:
+        context.push('/payment-done');
+        break;
+      case PaymentType.crypto:
+      case PaymentType.cryptoReceive:
+      case PaymentType.cryptoSendMobile:
+        await _handleCryptoTransactionConfirm(context, ref);
+        break;
+      case PaymentType.bank:
+      case PaymentType.cash:
+      case PaymentType.mobile:
+      case PaymentType.wallet:
+        context.push('/receipt');
+        break;
+    }
   }
-}
+
+  Future<void> _handleCryptoTransactionConfirm(
+      BuildContext context, WidgetRef ref) async {
+    final paymentState = ref.read(paymentProvider);
+    final exchangeForm = ref.read(exchangeFormProvider);
+
+    // Check if we have estimate data (wallet address, etc.)
+    if (!paymentState.hasEstimateData ||
+        paymentState.selectedWalletAddress == null) {
+      // Show error - user needs to go back and validate address
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please go back and confirm your crypto address first'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    try {
+      // Get real user data from exchange form
+      final exchangeForm = ref.read(exchangeFormProvider);
+
+      // Validate that we have the required form data
+      if (exchangeForm.fromCurrency == null ||
+          exchangeForm.toCurrency == null ||
+          exchangeForm.sendAmount.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+                'Missing exchange form data. Please go back to the home screen.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      final double? amount = double.tryParse(exchangeForm.sendAmount);
+      if (amount == null || amount <= 0) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Invalid amount. Please check your exchange form.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      // Create transaction using real user data
+      final success = await ref
+          .read(paymentProvider.notifier)
+          .createTransaction(
+            amount: amount,
+            sourceCurrency: exchangeForm.fromCurrency!.code,
+            destinationCurrency: exchangeForm.toCurrency!.code,
+            blockchainNetwork:
+                'ethereum', // TODO: Get from blockchain selection
+            countryCode: 'ci', // TODO: Get from user location or selection
+            paymentMethod:
+                'orange', // TODO: Get from mobile money provider selection
+            language: 'en', // TODO: Get from app language setting
+            phoneNumber: '1231231232', // TODO: Get from mobile money details
+            provider: 'orange', // TODO: Get from provider selection
+            walletAddress: paymentState.selectedWalletAddress!,
+          );
+
+      if (success) {
+        // Navigate to payment completion screen with pending status
+        context.push('/payment-done?status=pending');
+      } else {
+        // Show error message
+        final errorMessage = ref.read(paymentProvider).errorMessage;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(errorMessage ?? 'Failed to create transaction'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      // Show generic error
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('An error occurred. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 }

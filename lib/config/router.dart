@@ -8,6 +8,7 @@ import 'package:flash_transfer_app/presentation/method/select_method_screen.dart
 import 'package:flash_transfer_app/presentation/payment/add_new_screen.dart';
 import 'package:flash_transfer_app/presentation/payment/components/crypto_address_screen.dart';
 import 'package:flash_transfer_app/presentation/payment/payment_complete_screen.dart';
+import 'package:flash_transfer_app/presentation/payment/components/payment_completion_screen.dart';
 import 'package:flash_transfer_app/presentation/payment/select_payment_screen.dart';
 import 'package:flash_transfer_app/presentation/review/review_details_screen.dart';
 import 'package:flash_transfer_app/presentation/transaction/invite_screen.dart';
@@ -189,6 +190,18 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/payment-complete',
         builder: (context, state) => const PaymentCompleteScreen(),
+      ),
+
+      GoRoute(
+        path: '/payment-done',
+        builder: (context, state) {
+          final status = state.uri.queryParameters['status'] ?? 'pending';
+          final transactionId = state.uri.queryParameters['transactionId'];
+          return PaymentDoneScreen(
+            status: status,
+            transactionId: transactionId,
+          );
+        },
       ),
 
       // Profile and related screens

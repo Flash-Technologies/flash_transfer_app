@@ -3,7 +3,8 @@ class ExchangeCalculation {
   final String toCurrency;
   final double rate;
   final double amount;
-  final double convertedAmount; // API returns this as convertedAmount, not receivedAmount
+  final double
+      convertedAmount; // API returns this as convertedAmount, not receivedAmount
   final double fee;
   final String feeCurrency;
   final double totalAmount;
@@ -28,18 +29,29 @@ class ExchangeCalculation {
 
   factory ExchangeCalculation.fromJson(Map<String, dynamic> json) {
     return ExchangeCalculation(
-      fromCurrency: json['fromCurrency'] ?? '',
-      toCurrency: json['toCurrency'] ?? '',
+      fromCurrency: json['fromCurrency'] ?? json['from'] ?? '',
+      toCurrency: json['toCurrency'] ?? json['to'] ?? '',
       rate: (json['rate'] ?? 0.0).toDouble(),
       amount: (json['amount'] ?? 0.0).toDouble(),
       convertedAmount: (json['convertedAmount'] ?? 0.0).toDouble(),
-      fee: (json['fee'] ?? 0.0).toDouble(),
-      feeCurrency: json['feeCurrency'] ?? '',
-      totalAmount: (json['totalAmount'] ?? 0.0).toDouble(),
+      fee: (json['fee'] ?? json['gasFeeDetails']?['gasFeeAmount'] ?? 0.0)
+          .toDouble(),
+      feeCurrency: json['feeCurrency'] ??
+          json['gasFeeDetails']?['gasFeeCurrency'] ??
+          json['from'] ??
+          json['fromCurrency'] ??
+          '',
+      totalAmount: (json['totalAmount'] ??
+              (json['amount'] ?? 0.0).toDouble() +
+                  (json['fee'] ?? json['gasFeeDetails']?['gasFeeAmount'] ?? 0.0)
+                      .toDouble())
+          .toDouble(),
       timestamp: json['timestamp'] ?? 0,
-      networkInfo: json['networkInfo'] != null 
-          ? NetworkInfo.fromJson(json['networkInfo']) 
-          : null,
+      networkInfo: json['networkInfo'] != null
+          ? NetworkInfo.fromJson(json['networkInfo'])
+          : json['gasFeeDetails'] != null
+              ? NetworkInfo.fromGasFeeDetails(json['gasFeeDetails'])
+              : null,
     );
   }
 }
@@ -66,6 +78,16 @@ class NetworkInfo {
       estimatedTimeSeconds: json['estimatedTimeSeconds'] ?? 0,
       networkCongestion: (json['networkCongestion'] ?? 0.0).toDouble(),
       humanReadableTime: json['humanReadableTime'] ?? '',
+    );
+  }
+
+  factory NetworkInfo.fromGasFeeDetails(Map<String, dynamic> gasFeeDetails) {
+    return NetworkInfo(
+      fee: (gasFeeDetails['gasFeeAmount'] ?? 0.0).toDouble(),
+      feeUSD: (gasFeeDetails['gasFeeUSD'] ?? 0.0).toDouble(),
+      estimatedTimeSeconds: gasFeeDetails['estimatedTimeSeconds'] ?? 0,
+      networkCongestion: (gasFeeDetails['networkCongestion'] ?? 0.0).toDouble(),
+      humanReadableTime: gasFeeDetails['humanReadableTime'] ?? '',
     );
   }
 }
