@@ -761,115 +761,124 @@ class _CashScreenState extends ConsumerState<CashScreen> {
     }
   }
 
-  Widget _buildActionButtons() {
-    return Column(
-      children: [
-        SizedBox(height: AppSpacing.marginL),
+  
+Widget _buildActionButtons() {
+  return Column(
+    children: [
+      SizedBox(height: AppSpacing.marginL),
 
-        // Add New button
-        ElevatedButton(
-          onPressed: () => context.push('/add-new'),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.primaryYellow,
-            foregroundColor: AppColors.textPrimary,
-            elevation: 0,
-            padding: EdgeInsets.symmetric(vertical: AppSpacing.paddingM),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.buttonRadius),
-            ),
-            minimumSize: const Size(double.infinity, 56),
+      // Add New button - Updated
+      ElevatedButton(
+        onPressed: () {
+          // Navigate to add new contact, then to receiver info
+          context.push('/add-new').then((_) {
+            // After adding new contact, you might want to navigate to receiver info
+            // This depends on your flow
+          });
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.primaryYellow,
+          foregroundColor: AppColors.textPrimary,
+          elevation: 0,
+          padding: EdgeInsets.symmetric(vertical: AppSpacing.paddingM),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.buttonRadius),
           ),
-          child: Text('Add New', style: AppTextStyles.buttonMedium),
-        ).animate().fadeIn(duration: AppAnimations.normalAnimation).slideY(
-              begin: 0.2,
-              end: 0,
-              duration: AppAnimations.normalAnimation,
-              curve: AppAnimations.standardCurve,
-            ),
-
-        SizedBox(height: AppSpacing.marginM),
-
-        OutlinedButton(
-          onPressed: _showContactSelectionModal,
-          style: OutlinedButton.styleFrom(
-            foregroundColor: AppColors.primaryBlue,
-            side: BorderSide(color: AppColors.primaryBlue),
-            padding: EdgeInsets.symmetric(vertical: AppSpacing.paddingM),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.buttonRadius),
-            ),
-            minimumSize: const Size(double.infinity, 56),
+          minimumSize: const Size(double.infinity, 56),
+        ),
+        child: Text('Add New Contact', style: AppTextStyles.buttonMedium),
+      ).animate().fadeIn(duration: AppAnimations.normalAnimation).slideY(
+            begin: 0.2,
+            end: 0,
+            duration: AppAnimations.normalAnimation,
+            curve: AppAnimations.standardCurve,
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (selectedContact != null) ...[
-                Icon(Icons.check_circle,
-                    size: 20, color: AppColors.primaryBlue),
-                SizedBox(width: AppSpacing.marginS),
-                Expanded(
-                  child: Text(
-                    selectedContact!.displayName,
-                    style: AppTextStyles.buttonMedium.copyWith(
-                      color: AppColors.primaryBlue,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ] else
-                Text(
-                  'Add From Contact',
+
+      SizedBox(height: AppSpacing.marginM),
+
+      // Add From Contact button
+      OutlinedButton(
+        onPressed: _showContactSelectionModal,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: AppColors.primaryBlue,
+          side: BorderSide(color: AppColors.primaryBlue),
+          padding: EdgeInsets.symmetric(vertical: AppSpacing.paddingM),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.buttonRadius),
+          ),
+          minimumSize: const Size(double.infinity, 56),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (selectedContact != null) ...[
+              Icon(Icons.check_circle, size: 20, color: AppColors.primaryBlue),
+              SizedBox(width: AppSpacing.marginS),
+              Expanded(
+                child: Text(
+                  selectedContact!.displayName,
                   style: AppTextStyles.buttonMedium.copyWith(
                     color: AppColors.primaryBlue,
                   ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
                 ),
-            ],
-          ),
-        ).animate().fadeIn(duration: AppAnimations.normalAnimation).slideY(
-              begin: 0.2,
-              end: 0,
-              duration: AppAnimations.normalAnimation,
-              curve: AppAnimations.standardCurve,
-              delay: Duration(milliseconds: 50),
-            ),
-      ],
-    );
-  }
-
-  void _showContactSelectionModal() {
-    // FIXED: Properly initialize the selected contact in provider
-    Future.microtask(() {
-      ref.read(selectedBeneficiaryProvider.notifier).state = selectedContact;
-    });
-
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      barrierColor: Colors.transparent,
-      builder: (context) => SelectContactModal(
-        onContactSelected: (Beneficiary? contact) {
-          setState(() {
-            selectedContact = contact;
-          });
-
-          if (contact != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('Selected: ${contact.displayName}'),
-                backgroundColor: AppColors.success,
-                duration: const Duration(seconds: 2),
               ),
-            );
-          }
-        },
-        onClose: () {
-          Navigator.of(context).pop();
-        },
-      ),
-    );
-  }
+            ] else
+              Text(
+                'Select From Contacts',
+                style: AppTextStyles.buttonMedium.copyWith(
+                  color: AppColors.primaryBlue,
+                ),
+              ),
+          ],
+        ),
+      ).animate().fadeIn(duration: AppAnimations.normalAnimation).slideY(
+            begin: 0.2,
+            end: 0,
+            duration: AppAnimations.normalAnimation,
+            curve: AppAnimations.standardCurve,
+            delay: Duration(milliseconds: 50),
+          ),
+    ],
+  );
+}
+
+void _showContactSelectionModal() {
+  ref.read(selectedBeneficiaryProvider.notifier).state = selectedContact;
+  
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    barrierColor: Colors.transparent,
+    builder: (context) => SelectContactModal(
+      onContactSelected: (Beneficiary? contact) {
+        setState(() {
+          selectedContact = contact;
+        });
+        
+        // Navigate to receiver info screen with selected contact
+        if (contact != null) {
+          // Navigate to the receiver info screen
+          context.push('/receiver-info', extra: contact);
+          
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Selected: ${contact.displayName}'),
+              backgroundColor: AppColors.success,
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        }
+      },
+      onClose: () {
+        Navigator.of(context).pop();
+      },
+    ),
+  );
+}
 
   Widget _buildNotificationModal() {
     return Material(

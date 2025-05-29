@@ -6,6 +6,7 @@ import 'package:flash_transfer_app/presentation/card/scan_card_screen.dart';
 import 'package:flash_transfer_app/presentation/home/cash_screen.dart';
 import 'package:flash_transfer_app/presentation/method/select_method_screen.dart';
 import 'package:flash_transfer_app/presentation/payment/add_new_screen.dart';
+import 'package:flash_transfer_app/presentation/payment/components/crypto_address_screen.dart';
 import 'package:flash_transfer_app/presentation/payment/payment_complete_screen.dart';
 import 'package:flash_transfer_app/presentation/payment/select_payment_screen.dart';
 import 'package:flash_transfer_app/presentation/review/review_details_screen.dart';
@@ -37,6 +38,7 @@ import 'package:flash_transfer_app/presentation/settings/contact_us_screen.dart'
 import 'package:flash_transfer_app/presentation/settings/language_screen.dart';
 // import 'package:flash_transfer_app/presentation/settings/settings_screen.dart';
 import 'package:flash_transfer_app/presentation/settings/privacy_screen.dart';
+import 'package:flash_transfer_app/presentation/payment/receiver_info_screen.dart';
 
 import '../core/models/nft_model.dart';
 import '../presentation/nft/nft_screen.dart';
@@ -130,11 +132,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/select-payment',
         builder: (context, state) => const SelectPaymentScreen(),
       ),
-
       GoRoute(
-        path: '/select-method',
-        builder: (context, state) => const SelectMethodScreen(),
+        path: '/crypto-address-confirmation',
+        name: 'cryptoAddressConfirmation',
+        builder: (context, state) => const CryptoAddressScreen(),
       ),
+
       GoRoute(
         path: '/review-details/:type',
         builder: (context, state) {
@@ -298,7 +301,10 @@ final routerProvider = Provider<GoRouter>((ref) {
         name: 'cardSuccess',
         builder: (context, state) => const CardAddedSuccessScreen(),
       ),
-
+      GoRoute(
+        path: '/receiver-info',
+        builder: (context, state) => const ReceiverInfoScreen(),
+      ),
       // Edit existing card
       GoRoute(
         path: '/card/edit/:cardId',

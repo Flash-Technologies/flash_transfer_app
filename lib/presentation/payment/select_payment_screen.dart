@@ -7,6 +7,9 @@ import 'package:flash_transfer_app/presentation/payment/components/provider_item
 import 'package:flash_transfer_app/presentation/common/app_button.dart';
 import 'package:flash_transfer_app/providers/payment_provider.dart';
 
+// Import the new modal
+import 'package:flash_transfer_app/presentation/payment/components/bizao_config_modal.dart';
+
 class SelectPaymentScreen extends ConsumerStatefulWidget {
   const SelectPaymentScreen({Key? key}) : super(key: key);
 
@@ -17,6 +20,8 @@ class SelectPaymentScreen extends ConsumerStatefulWidget {
 class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
   String? selectedProvider;
   bool showError = false;
+  bool _showModal = false;
+  BizaoConfigData? _bizaoConfigData;
 
   final providers = [
     {
@@ -49,10 +54,28 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
     setState(() {
       selectedProvider = id;
       if (showError) showError = false;
+      _showModal = true; // Show modal when provider is selected
     });
     
     // Update the provider state as well
     ref.read(paymentProvider.notifier).setSelectedProvider(id);
+  }
+
+  void _handleModalSubmit(BizaoConfigData configData) {
+    setState(() {
+      _bizaoConfigData = configData;
+      _showModal = false;
+    });
+
+    // Navigate to crypto address confirmation screen
+    context.push('/crypto-address-confirmation');
+  }
+
+  void _handleModalCancel() {
+    setState(() {
+      _showModal = false;
+      selectedProvider = null; // Reset selection
+    });
   }
 
   void _handleSubmit() {
@@ -61,17 +84,8 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
         showError = true;
       });
     } else {
-      final paymentState = ref.read(paymentProvider);
-      final activePay = paymentState.activePay;
-      final activeReceive = paymentState.activeReceive;
-
-      if (activePay == 'cash' && activeReceive == 'mobile') {
-        context.push('/review-details-mobile');
-      } else if (activePay == 'wallet' && activeReceive == 'mobile') {
-        context.push('/review-details-cryptosm');
-      } else {
-        context.push('/review-details-mobile');
-      }
+      // This will be handled by the modal now
+      _selectProvider(selectedProvider!);
     }
   }
 
@@ -87,71 +101,93 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
     
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Progress Header
-            _buildProgressHeader(),
-            
-            // Main Content
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 16),
-                    
-                    // Title
-                    const Text(
-                      'Select your mobile money',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.textDarkColor,
-                      ),
-                    ),
-                    
-                    const SizedBox(height: 24),
-                    
-                    // Error message (conditional)
-                    if (showError)
-                      _buildErrorMessage().animate().fadeIn(
-                            duration: const Duration(milliseconds: 300),
-                          ).slideY(
-                            begin: -0.2,
-                            end: 0,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeOutCubic,
+      body: Stack(
+        children: [
+          SafeArea(
+            child: Column(
+              children: [
+                // Progress Header
+                _buildProgressHeader(),
+                
+                // Main Content
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 16),
+                        
+                        // Title
+                        const Text(
+                          'Select your mobile money',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.textDarkColor,
                           ),
-                    
-                    // Provider list
-                    Expanded(
-                      child: ListView.builder(
-                        padding: const EdgeInsets.only(top: 12),
-                        itemCount: providers.length,
-                        itemBuilder: (context, index) {
-                          final provider = providers[index];
-                          return PaymentProviderItem(
-                            id: provider['id']!,
-                            name: provider['name']!,
-                            description: provider['description']!,
-                            imageAsset: provider['imageAsset']!,
-                            isSelected: selectedProvider == provider['id'],
-                            onTap: () => _selectProvider(provider['id']!),
-                          );
-                        },
-                      ),
+                        ),
+                        
+                        const SizedBox(height: 8),
+                        
+                        // Subtitle
+                        const Text(
+                          'How would you like the money delivered?',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: AppTheme.textGrayColor,
+                          ),
+                        ),
+                        
+                        const SizedBox(height: 24),
+                        
+                        // Error message (conditional)
+                        if (showError)
+                          _buildErrorMessage().animate().fadeIn(
+                                duration: const Duration(milliseconds: 300),
+                              ).slideY(
+                                begin: -0.2,
+                                end: 0,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeOutCubic,
+                              ),
+                        
+                        // Provider list
+                        Expanded(
+                          child: ListView.builder(
+                            padding: const EdgeInsets.only(top: 12),
+                            itemCount: providers.length,
+                            itemBuilder: (context, index) {
+                              final provider = providers[index];
+                              return PaymentProviderItem(
+                                id: provider['id']!,
+                                name: provider['name']!,
+                                description: provider['description']!,
+                                imageAsset: provider['imageAsset']!,
+                                isSelected: selectedProvider == provider['id'],
+                                onTap: () => _selectProvider(provider['id']!),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
+                
+                // Bottom Buttons
+                _buildBottomButtons(),
+              ],
             ),
-            
-            // Bottom Buttons
-            _buildBottomButtons(),
-          ],
-        ),
+          ),
+
+          // Modal Overlay
+          if (_showModal)
+            BizaoConfigModal(
+              onSubmit: _handleModalSubmit,
+              onCancel: _handleModalCancel,
+            ),
+        ],
       ),
     );
   }
@@ -212,6 +248,7 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
 
   Widget _buildErrorMessage() {
     return Container(
+      margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppTheme.errorLightColor,
@@ -265,7 +302,6 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
             onPressed: () => context.pop(),
             backgroundColor: Colors.transparent,
             textColor: AppTheme.textGrayColor,
-            // borderColor: AppTheme.textGrayColor,
           ),
         ],  
       ),

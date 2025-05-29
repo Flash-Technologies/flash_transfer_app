@@ -87,7 +87,14 @@ class Beneficiary {
 
   String get fullName => '$firstName $lastName';
   String get displayName => name.isNotEmpty ? name : fullName;
-  String get fullAddress => '$streetAddress, $city, $state $zipCode';
+  String get fullAddress {
+    List<String> addressParts = [];
+    if (streetAddress.isNotEmpty) addressParts.add(streetAddress);
+    if (city.isNotEmpty) addressParts.add(city);
+    if (state.isNotEmpty) addressParts.add(state);
+    if (zipCode.isNotEmpty) addressParts.add(zipCode);
+    return addressParts.join(', ');
+  }
 }
 
 class BeneficiaryResponse {

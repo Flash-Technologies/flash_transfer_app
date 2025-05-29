@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/metamask_provider.dart';
 
-/// A button specifically for connecting to MetaMask
 class MetaMaskConnectButton extends ConsumerWidget {
   final VoidCallback? onConnected;
   final VoidCallback? onError;
