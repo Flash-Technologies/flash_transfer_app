@@ -2,12 +2,11 @@ import 'dart:async';
 import '../api/api_client.dart';
 import '../models/api_response.dart';
 import '../models/transaction_model.dart';
-import '../../providers/tracking_provider.dart';
 import 'package:flutter/material.dart';
 
 class TrackingService {
   final ApiClient _apiClient;
-  final Map<String, StreamController<TransferDetails>> _watchStreams = {};
+  final Map<String, StreamController<Transaction>> _watchStreams = {};
 
   TrackingService(this._apiClient);
 
@@ -16,15 +15,21 @@ class TrackingService {
     String trackingNumber,
   ) async {
     try {
+      print('🔍 Tracking API: Calling /api/transaction/$trackingNumber/status');
+
       final response = await _apiClient.get(
-        '/api/transfers/track/$trackingNumber',
+        '/api/transaction/$trackingNumber/status',
       );
+
+      print('📞 API Response Status: ${response.statusCode}');
+      print('📦 API Response Data: ${response.data}');
 
       return ApiResponse<Map<String, dynamic>>.fromJson(
         response.data,
-        (json) => json as Map<String, dynamic>,
+        (json) => json,
       );
     } catch (e) {
+      print('❌ API Error: $e');
       return ApiResponse<Map<String, dynamic>>(
         success: false,
         message: 'Failed to track transfer: ${e.toString()}',
@@ -32,18 +37,18 @@ class TrackingService {
     }
   }
 
-  // Get recent transfers for the user
-  Future<List<TransferDetails>> getRecentTransfers({int limit = 10}) async {
+  // Get recent transactions for the user
+  Future<List<Transaction>> getRecentTransactions({int limit = 10}) async {
     try {
       final response = await _apiClient.get(
-        '/api/transfers/recent',
+        '/api/transactions/recent',
         queryParameters: {'limit': limit},
       );
 
       if (response.statusCode == 200 && response.data['success']) {
-        final List<dynamic> transfersData = response.data['data'];
-        return transfersData
-            .map((json) => TransferDetails.fromJson(json))
+        final List<dynamic> transactionsData = response.data['data'];
+        return transactionsData
+            .map((json) => Transaction.fromJson(json))
             .toList();
       }
 
@@ -53,19 +58,19 @@ class TrackingService {
     }
   }
 
-  // Search transfers by criteria
-  Future<List<TransferDetails>> searchTransfers({
+  // Search transactions by criteria
+  Future<List<Transaction>> searchTransactions({
     String? senderName,
     String? receiverName,
     DateTimeRange? dateRange,
-    TransferStatus? status,
+    String? status,
   }) async {
     try {
       final queryParams = <String, dynamic>{};
 
       if (senderName != null) queryParams['senderName'] = senderName;
       if (receiverName != null) queryParams['receiverName'] = receiverName;
-      if (status != null) queryParams['status'] = status.name;
+      if (status != null) queryParams['status'] = status;
 
       if (dateRange != null) {
         queryParams['startDate'] = dateRange.start.toIso8601String();
@@ -73,14 +78,14 @@ class TrackingService {
       }
 
       final response = await _apiClient.get(
-        '/api/transfers/search',
+        '/api/transactions/search',
         queryParameters: queryParams,
       );
 
       if (response.statusCode == 200 && response.data['success']) {
-        final List<dynamic> transfersData = response.data['data'];
-        return transfersData
-            .map((json) => TransferDetails.fromJson(json))
+        final List<dynamic> transactionsData = response.data['data'];
+        return transactionsData
+            .map((json) => Transaction.fromJson(json))
             .toList();
       }
 
@@ -90,10 +95,10 @@ class TrackingService {
     }
   }
 
-  // Get transfer statistics
-  Future<Map<String, dynamic>> getTransferStatistics() async {
+  // Get transaction statistics
+  Future<Map<String, dynamic>> getTransactionStatistics() async {
     try {
-      final response = await _apiClient.get('/api/transfers/statistics');
+      final response = await _apiClient.get('/api/transactions/statistics');
 
       if (response.statusCode == 200 && response.data['success']) {
         return response.data['data'] as Map<String, dynamic>;
@@ -105,12 +110,12 @@ class TrackingService {
     }
   }
 
-  // Watch transfer updates in real-time
-  Stream<TransferDetails> watchTransferUpdates(String trackingNumber) {
+  // Watch transaction updates in real-time
+  Stream<Transaction> watchTransactionUpdates(String trackingNumber) {
     // Close existing stream if any
     _watchStreams[trackingNumber]?.close();
 
-    final controller = StreamController<TransferDetails>.broadcast();
+    final controller = StreamController<Transaction>.broadcast();
     _watchStreams[trackingNumber] = controller;
 
     // Start polling for updates
@@ -119,21 +124,23 @@ class TrackingService {
     return controller.stream;
   }
 
-  // Start polling for transfer updates
+  // Start polling for transaction updates
   void _startPolling(
     String trackingNumber,
-    StreamController<TransferDetails> controller,
+    StreamController<Transaction> controller,
   ) {
     Timer.periodic(const Duration(seconds: 30), (timer) async {
       try {
         final response = await trackTransfer(trackingNumber);
 
         if (response.success && response.data != null) {
-          final transferDetails = TransferDetails.fromJson(response.data!);
-          controller.add(transferDetails);
+          final transactionData = TransactionData.fromJson(response.data!);
+          controller.add(transactionData.transaction);
 
-          // Stop polling if transfer is completed
-          if (!transferDetails.isActive) {
+          // Stop polling if transaction is completed
+          if (transactionData.transaction.status.toLowerCase() == 'completed' ||
+              transactionData.transaction.status.toLowerCase() == 'failed' ||
+              transactionData.transaction.status.toLowerCase() == 'cancelled') {
             timer.cancel();
             controller.close();
             _watchStreams.remove(trackingNumber);
@@ -156,25 +163,17 @@ class TrackingService {
     });
   }
 
-  // Ping service for connectivity check
-  Future<void> ping() async {
-    try {
-      await _apiClient.get('/api/health/ping');
-    } catch (e) {
-      throw Exception('Service unavailable');
-    }
-  }
-
-  // Get transfer timeline/events
-  Future<List<TrackingEvent>> getTransferTimeline(String trackingNumber) async {
+  // Get transaction timeline/events (status history)
+  Future<List<StatusHistory>> getTransactionTimeline(
+      String trackingNumber) async {
     try {
       final response = await _apiClient.get(
-        '/api/transfers/$trackingNumber/timeline',
+        '/api/transaction/$trackingNumber/timeline',
       );
 
       if (response.statusCode == 200 && response.data['success']) {
         final List<dynamic> eventsData = response.data['data'];
-        return eventsData.map((json) => TrackingEvent.fromJson(json)).toList();
+        return eventsData.map((json) => StatusHistory.fromJson(json)).toList();
       }
 
       return [];
@@ -183,15 +182,15 @@ class TrackingService {
     }
   }
 
-  // Report transfer issue
-  Future<bool> reportTransferIssue({
+  // Report transaction issue
+  Future<bool> reportTransactionIssue({
     required String trackingNumber,
     required String issueType,
     required String description,
   }) async {
     try {
       final response = await _apiClient.post(
-        '/api/transfers/$trackingNumber/report-issue',
+        '/api/transaction/$trackingNumber/report-issue',
         data: {'issueType': issueType, 'description': description},
       );
 
@@ -201,11 +200,11 @@ class TrackingService {
     }
   }
 
-  // Cancel transfer
-  Future<bool> cancelTransfer(String trackingNumber) async {
+  // Cancel transaction
+  Future<bool> cancelTransaction(String trackingNumber) async {
     try {
       final response = await _apiClient.post(
-        '/api/transfers/$trackingNumber/cancel',
+        '/api/transaction/$trackingNumber/cancel',
       );
 
       return response.statusCode == 200 && response.data['success'];
@@ -218,7 +217,7 @@ class TrackingService {
   Future<DateTime?> getEstimatedDelivery(String trackingNumber) async {
     try {
       final response = await _apiClient.get(
-        '/api/transfers/$trackingNumber/estimate',
+        '/api/transaction/$trackingNumber/estimate',
       );
 
       if (response.statusCode == 200 && response.data['success']) {

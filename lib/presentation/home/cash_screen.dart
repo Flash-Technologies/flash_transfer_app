@@ -3,12 +3,14 @@ import 'package:flash_transfer_app/presentation/common/icons/lottie_animations.d
 import 'package:flash_transfer_app/presentation/common/select_contact_modal.dart';
 import 'package:flash_transfer_app/providers/beneficiary_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flash_transfer_app/config/ui_constants.dart';
 import 'package:flash_transfer_app/presentation/common/icons/payment_icons.dart';
-import 'package:flash_transfer_app/presentation/home/components/receipts_section.dart';
+import 'package:flash_transfer_app/presentation/home/components/frequent_receipts_section.dart';
+import 'package:flash_transfer_app/presentation/home/components/recent_receipts_section.dart';
 import 'package:flash_transfer_app/providers/exchange_provider.dart';
 
 class CashScreen extends ConsumerStatefulWidget {
@@ -61,13 +63,13 @@ class _CashScreenState extends ConsumerState<CashScreen> {
   @override
   void initState() {
     super.initState();
-    // Initialize payment methods after the widget is built - FIXED
+    // Initialize payment methods after the widget is built
     Future.microtask(() => _initializePaymentMethods());
   }
 
   void _initializePaymentMethods() {
     if (!mounted) return;
-    
+
     final exchangeForm = ref.read(exchangeFormProvider);
     final sendingCurrency = exchangeForm.fromCurrency;
     final receivingCurrency = exchangeForm.toCurrency;
@@ -92,19 +94,45 @@ class _CashScreenState extends ConsumerState<CashScreen> {
     return Stack(
       children: [
         Scaffold(
-          backgroundColor: AppColors.background,
+          backgroundColor: const Color(0xFFF8F9FA),
           body: SafeArea(
             child: SingleChildScrollView(
-              padding: EdgeInsets.all(AppSpacing.paddingM),
+              physics: const BouncingScrollPhysics(),
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.04,
+                vertical: 16,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildHeader(),
-                  _buildBackButton(),
-                  _buildPaymentMethodSection(),
-                  _buildReceiverMethodSection(),
-                  _buildActionButtons(),
-                  const ReceiptsSection(),
+                  _buildHeader()
+                      .animate()
+                      .fadeIn(duration: 600.ms)
+                      .slideY(begin: -0.2, end: 0, curve: Curves.easeOutCubic),
+                  _buildBackButton()
+                      .animate()
+                      .fadeIn(duration: 500.ms, delay: 100.ms)
+                      .slideX(begin: -0.1, end: 0),
+                  const SizedBox(height: 24),
+                  _buildPaymentMethodSection()
+                      .animate()
+                      .fadeIn(duration: 600.ms, delay: 200.ms),
+                  const SizedBox(height: 32),
+                  _buildReceiverMethodSection()
+                      .animate()
+                      .fadeIn(duration: 600.ms, delay: 300.ms),
+                  const SizedBox(height: 32),
+                  _buildActionButtons()
+                      .animate()
+                      .fadeIn(duration: 600.ms, delay: 400.ms),
+                  const SizedBox(height: 32),
+                  const FrequentReceiptsSection()
+                      .animate()
+                      .fadeIn(duration: 600.ms, delay: 500.ms),
+                  const SizedBox(height: 24),
+                  const RecentReceiptsSection()
+                      .animate()
+                      .fadeIn(duration: 600.ms, delay: 600.ms),
                 ],
               ),
             ),
@@ -117,70 +145,107 @@ class _CashScreenState extends ConsumerState<CashScreen> {
 
   Widget _buildHeader() {
     return Padding(
-      padding: EdgeInsets.only(bottom: AppSpacing.paddingM),
+      padding: const EdgeInsets.only(bottom: 16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _buildIconButton(
-            icon: Icons.menu,
-            onTap: () => context.push('/profile'),
+            icon: Icons.menu_rounded,
+            onTap: () {
+              HapticFeedback.lightImpact();
+              context.push('/profile');
+            },
           ),
           _buildIconButton(
             icon: Icons.notifications_none_rounded,
-            onTap: () => setState(() => showNotifications = true),
+            onTap: () {
+              HapticFeedback.lightImpact();
+              setState(() => showNotifications = true);
+            },
+            showBadge: true,
           ),
         ],
       ),
-    ).animate().fadeIn(duration: AppAnimations.normalAnimation);
+    );
   }
 
   Widget _buildIconButton({
     required IconData icon,
     required VoidCallback onTap,
+    bool showBadge = false,
   }) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadius.radiusCircular),
+        borderRadius: BorderRadius.circular(20),
         child: Container(
-          padding: EdgeInsets.all(AppSpacing.paddingM),
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: AppColors.cardBackground,
+            color: Colors.white,
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
               ),
             ],
           ),
-          child: Icon(icon, size: 24),
+          child: Stack(
+            children: [
+              Icon(icon, size: 24, color: const Color(0xFF181F30)),
+              if (showBadge)
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: Container(
+                    width: 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFF3E24),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.white, width: 1.5),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
-    ).animate().scale(
-          duration: AppAnimations.quickAnimation,
-          curve: AppAnimations.emphasizedCurve,
-          begin: const Offset(0.95, 0.95),
-          end: const Offset(1.0, 1.0),
-        );
+    );
   }
 
   Widget _buildBackButton() {
     return InkWell(
-      onTap: () => context.push('/home'),
-      borderRadius: BorderRadius.circular(AppRadius.radiusM),
+      onTap: () {
+        HapticFeedback.lightImpact();
+        context.push('/home');
+      },
+      borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: AppSpacing.paddingM),
+        padding: const EdgeInsets.symmetric(vertical: 12),
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Image.asset('assets/images/back2.png', width: 40, height: 40),
-            SizedBox(width: AppSpacing.marginS),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: const Color(0xFFE3F2FD),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(
+                Icons.arrow_back_ios_new_rounded,
+                size: 18,
+                color: Color(0xFF1976D2),
+              ),
+            ),
+            const SizedBox(width: 8),
             Text(
               'Back',
               style: AppTextStyles.bodyLarge.copyWith(
                 fontWeight: FontWeight.w600,
+                color: const Color(0xFF181F30),
               ),
             ),
           ],
@@ -199,27 +264,33 @@ class _CashScreenState extends ConsumerState<CashScreen> {
       children: [
         Row(
           children: [
-            Text('How would you like to pay?', style: AppTextStyles.heading3),
+            Text(
+              'How would you like to pay?',
+              style: AppTextStyles.heading3.copyWith(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             if (sendingCurrency != null) ...[
-              SizedBox(width: AppSpacing.marginS),
+              const SizedBox(width: 8),
               Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppSpacing.paddingXS,
-                  vertical: 2,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
                 decoration: BoxDecoration(
-                  color: isSendingCrypto
-                      ? const Color(0xFFE3F2FD)
-                      : const Color(0xFFF4F5F7),
-                  borderRadius: BorderRadius.circular(AppRadius.radiusS),
+                  gradient: LinearGradient(
+                    colors: isSendingCrypto
+                        ? [const Color(0xFFE3F2FD), const Color(0xFFBBDEFB)]
+                        : [const Color(0xFFF5F5F5), const Color(0xFFEEEEEE)],
+                  ),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
-                  '${sendingCurrency.code} (${sendingCurrency.type})',
-                  style: AppTextStyles.caption.copyWith(
+                  '${sendingCurrency.code} • ${sendingCurrency.type}',
+                  style: TextStyle(
                     color: isSendingCrypto
                         ? const Color(0xFF1976D2)
-                        : AppColors.textSecondary,
-                    fontSize: 10,
+                        : const Color(0xFF616161),
+                    fontSize: 9,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
@@ -227,87 +298,95 @@ class _CashScreenState extends ConsumerState<CashScreen> {
           ],
         ),
 
-        // Helper text explaining validation rules
         if (sendingCurrency != null) ...[
-          SizedBox(height: AppSpacing.marginXS),
+          const SizedBox(height: 6),
           Text(
             isSendingCrypto
-                ? 'Sending cryptocurrency requires a Crypto Wallet'
-                : 'Sending fiat currency allows cash, card, bank, or mobile money',
-            style: AppTextStyles.caption.copyWith(
-              color: AppColors.textSecondary,
-              fontSize: 11,
+                ? '💡 Crypto payments require a crypto wallet'
+                : '💡 Multiple payment options available for fiat',
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontSize: 12,
+              fontStyle: FontStyle.italic,
             ),
           ),
         ],
 
-        SizedBox(height: AppSpacing.marginM),
+        const SizedBox(height: 20),
 
-        SizedBox(
-          height: MediaQuery.of(context).size.height * 0.25,
-          child: Row(
-            children: [
-              Expanded(
-                flex: 2,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: _buildPaymentOption(
-                        title: 'Cash Payment',
-                        value: 'cash',
-                        isCompact: true,
-                        isEnabled: !isSendingCrypto,
-                      ),
+        // Responsive payment grid
+        LayoutBuilder(
+          builder: (context, constraints) {
+            return SizedBox(
+              height: MediaQuery.of(context).size.height * 0.325,
+              child: Row(
+                children: [
+                  // Left column
+                  Expanded(
+                    flex: 4,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: _buildPaymentOption(
+                            title: 'Cash\nPayment',
+                            value: 'cash',
+                            isEnabled: !isSendingCrypto,
+                            isCompact: true,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Expanded(
+                          child: _buildPaymentOption(
+                            title: 'Credit\nCard',
+                            value: 'card',
+                            isEnabled: !isSendingCrypto,
+                            isCompact: true,
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(height: AppSpacing.marginS),
-                    Expanded(
-                      child: _buildPaymentOption(
-                        title: 'Credit   Card  ',
-                        value: 'card',
-                        isCompact: true,
-                        isEnabled: !isSendingCrypto,
-                      ),
+                  ),
+                  const SizedBox(width: 8),
+                  // Center column
+                  Expanded(
+                    flex: 4,
+                    child: _buildPaymentOption(
+                      title: 'Crypto Wallet',
+                      value: 'wallet',
+                      isEnabled: isSendingCrypto,
+                      isCenter: true,
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 8),
+                  // Right column
+                  Expanded(
+                    flex: 4,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: _buildPaymentOption(
+                            title: 'Bank\nTransfer',
+                            value: 'bank',
+                            isEnabled: !isSendingCrypto,
+                            isCompact: true,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Expanded(
+                          child: _buildPaymentOption(
+                            title: 'Mobile\nMoney',
+                            value: 'mobile',
+                            isEnabled: !isSendingCrypto,
+                            isCompact: true,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(width: AppSpacing.marginS),
-              Expanded(
-                flex: 2,
-                child: _buildPaymentOption(
-                  title: 'Crypto Wallet',
-                  value: 'wallet',
-                  isCenter: true,
-                  isEnabled: isSendingCrypto,
-                ),
-              ),
-              SizedBox(width: AppSpacing.marginS),
-              Expanded(
-                flex: 2,
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: _buildPaymentOption(
-                        title: 'Bank Transfer',
-                        value: 'bank',
-                        isCompact: true,
-                        isEnabled: !isSendingCrypto,
-                      ),
-                    ),
-                    SizedBox(height: AppSpacing.marginS),
-                    Expanded(
-                      child: _buildPaymentOption(
-                        title: 'Mobile Money',
-                        value: 'mobile',
-                        isCompact: true,
-                        isEnabled: !isSendingCrypto,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            );
+          },
         ),
       ],
     );
@@ -321,304 +400,308 @@ class _CashScreenState extends ConsumerState<CashScreen> {
     bool isEnabled = true,
   }) {
     final bool isActive = activePay == value && isEnabled;
-    final exchangeForm = ref.watch(exchangeFormProvider);
-    final sendingCurrency = exchangeForm.fromCurrency;
 
-    // FIXED: Removed provider modification during build
-    // Auto-selection is now handled in initState
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: isEnabled
-            ? () {
-                setState(() => activePay = value);
-              }
-            : null,
-        borderRadius: BorderRadius.circular(AppRadius.radiusL),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          decoration: BoxDecoration(
-            color: isEnabled ? Colors.white : Colors.grey.shade100,
-            borderRadius: BorderRadius.circular(AppRadius.radiusL),
-            border: Border.all(
-              color: isActive ? AppColors.primaryBlue : Colors.transparent,
-              width: 0.0,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: isActive
-                    ? AppColors.primaryBlue.withOpacity(0.2)
-                    : Colors.black.withOpacity(isEnabled ? 0.05 : 0.02),
-                blurRadius: isActive ? 8 : 4,
-                offset: const Offset(0, 2),
-                spreadRadius: isActive ? 1 : 0,
-              ),
-            ],
-          ),
-          padding: EdgeInsets.symmetric(
-            horizontal: isCompact ? AppSpacing.paddingS : AppSpacing.paddingS,
-            vertical: AppSpacing.paddingS,
-          ),
-          child: Stack(
-            children: [
-              Opacity(
-                opacity: isEnabled ? 1.0 : 0.4,
-                child: isCenter
-                    ? _buildCenterCardContent(title, value, isActive)
-                    : _buildCompactCardContent(
-                        title, value, isActive, isCompact),
-              ),
-              if (!isEnabled)
-                Positioned(
-                  top: 4,
-                  right: 4,
-                  child: Icon(
-                    Icons.lock,
-                    size: 16,
-                    color: Colors.grey.shade500,
-                  ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: isEnabled
+                ? () {
+                    HapticFeedback.lightImpact();
+                    setState(() => activePay = value);
+                  }
+                : null,
+            borderRadius: BorderRadius.circular(20),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOutCubic,
+              decoration: BoxDecoration(
+                color: isEnabled
+                    ? (isActive ? Colors.white : const Color(0xFFFAFAFA))
+                    : Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: isActive
+                      ? const Color(0xFF2475FF)
+                      : isEnabled
+                          ? Colors.grey.shade200
+                          : Colors.transparent,
+                  width: isActive ? 2 : 1,
                 ),
-            ],
+                boxShadow: [
+                  if (isActive)
+                    BoxShadow(
+                      color: const Color(0xFF2475FF).withOpacity(0.2),
+                      blurRadius: 16,
+                      offset: const Offset(0, 4),
+                    )
+                  else
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                ],
+              ),
+              padding: EdgeInsets.all(isCompact ? 12 : 16),
+              child: Stack(
+                children: [
+                  Opacity(
+                    opacity: isEnabled ? 1.0 : 0.4,
+                    child: isCenter
+                        ? _buildCenterContent(
+                            title, value, isActive, constraints)
+                        : _buildCompactContent(
+                            title, value, isActive, constraints),
+                  ),
+                  if (!isEnabled)
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Icon(
+                        Icons.lock_rounded,
+                        size: 16,
+                        color: Colors.grey.shade500,
+                      ),
+                    ),
+                  if (isActive)
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
+                        width: 20,
+                        height: 20,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF2475FF),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(Icons.check,
+                            color: Colors.white, size: 12),
+                      ),
+                    ),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
-    ).animate(target: isActive ? 1 : 0).scale(
-          duration: AppAnimations.quickAnimation,
-          curve: AppAnimations.emphasizedCurve,
-          begin: const Offset(0.97, 0.97),
-          end: const Offset(1.0, 1.0),
         );
+      },
+    );
   }
 
-  Widget _buildCenterCardContent(String title, String value, bool isActive) {
+  Widget _buildCenterContent(
+      String title, String value, bool isActive, BoxConstraints constraints) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Large Lottie animation for center card
         Container(
-          height: 80,
-          width: 80,
+          height: constraints.maxHeight * 0.4,
+          width: constraints.maxHeight * 0.4,
+          constraints: const BoxConstraints(maxWidth: 80, maxHeight: 80),
           decoration: BoxDecoration(
-            color: isActive
-                ? AppColors.primaryBlue.withOpacity(0.1)
-                : Colors.grey.withOpacity(0.05),
+            gradient: LinearGradient(
+              colors: isActive
+                  ? [const Color(0xFFE3F2FD), const Color(0xFFBBDEFB)]
+                  : [Colors.grey.shade100, Colors.grey.shade200],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
             shape: BoxShape.circle,
           ),
           child: Center(
-            child: _getLottieAnimationForPayment(value, isActive),
+            child: _getLottieAnimation(value, isActive, 60),
           ),
         ),
-
-        SizedBox(height: AppSpacing.marginM),
-
-        // Title text
-        Text(
-          title,
-          style: AppTextStyles.bodyLarge.copyWith(
-            color: isActive ? AppColors.primaryBlue : AppColors.textPrimary,
-            fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
+        const SizedBox(height: 12),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(
+            title,
+            style: TextStyle(
+              color:
+                  isActive ? const Color(0xFF2475FF) : const Color(0xFF424242),
+              fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
+              fontSize: 16,
+            ),
+            textAlign: TextAlign.center,
           ),
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
         ),
-
-        SizedBox(height: AppSpacing.marginS),
-
-        // Selection indicator for center card
-        if (isActive)
-          Container(
-            width: 24,
-            height: 24,
-            decoration: BoxDecoration(
-              color: AppColors.primaryBlue,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.check,
-              color: Colors.white,
-              size: 14,
-            ),
-          ),
       ],
     );
   }
 
-  Widget _buildCompactCardContent(
-      String title, String value, bool isActive, bool isCompact) {
+  Widget _buildCompactContent(
+      String title, String value, bool isActive, BoxConstraints constraints) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Smaller Lottie animation for compact cards
         Container(
-          height: isCompact ? 40 : 54,
-          width: isCompact ? 40 : 54,
+          height: constraints.maxHeight * 0.4,
+          width: constraints.maxHeight * 0.4,
+          constraints: const BoxConstraints(maxWidth: 60, maxHeight: 60),
           decoration: BoxDecoration(
-            color: isActive
-                ? AppColors.primaryBlue.withOpacity(0.1)
-                : Colors.grey.withOpacity(0.05),
+            gradient: LinearGradient(
+              colors: isActive
+                  ? [const Color(0xFFE3F2FD), const Color(0xFFBBDEFB)]
+                  : [Colors.grey.shade100, Colors.grey.shade200],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
             shape: BoxShape.circle,
           ),
           child: Center(
-            child: _getLottieAnimationForPayment(value, isActive),
+            child: _getLottieAnimation(value, isActive, 42),
           ),
         ),
-
-        SizedBox(height: AppSpacing.marginS),
-
-        // Title text
-        Text(
-          title,
-          style: AppTextStyles.bodySmall.copyWith(
-            color: isActive ? AppColors.primaryBlue : AppColors.textPrimary,
-            fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
-            fontSize: isCompact ? 12 : 14,
+        const SizedBox(height: 10),
+        Flexible(
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              title,
+              style: TextStyle(
+                color: isActive
+                    ? const Color(0xFF2475FF)
+                    : const Color(0xFF424242),
+                fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
+                fontSize: 13,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ),
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
         ),
-
-        SizedBox(height: AppSpacing.marginXS),
-
-        // Selection indicator for compact cards
-        if (isActive)
-          Container(
-            width: 18,
-            height: 18,
-            decoration: BoxDecoration(
-              color: AppColors.primaryBlue,
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.check,
-              color: Colors.white,
-              size: 10,
-            ),
-          ),
       ],
     );
   }
 
-  Widget _getLottieAnimationForPayment(String value, bool isActive) {
-    double size = 40;
-
+  Widget _getLottieAnimation(String value, bool isActive, double size) {
     switch (value) {
       case 'cash':
         return LottieAnimations.cashAnimation(
-          width: 78,
-          height: 78,
-          repeat: true,
-          animate: true,
+          width: size * 1.5,
+          height: size * 1.5,
+          repeat: isActive,
+          animate: isActive,
         );
       case 'wallet':
         return LottieAnimations.walletAnimation(
           width: size,
           height: size,
-          repeat: true,
-          animate: true,
+          repeat: isActive,
+          animate: isActive,
         );
       case 'card':
         return LottieAnimations.creditCardAnimation(
           width: size,
           height: size,
-          repeat: true,
-          animate: true,
+          repeat: isActive,
+          animate: isActive,
         );
       case 'bank':
         return LottieAnimations.bankAnimation(
           width: size,
           height: size,
-          repeat: true,
-          animate: true,
+          repeat: isActive,
+          animate: isActive,
+        );
+      case 'mobile':
+        return LottieAnimations.phoneAnimation(
+          width: size,
+          height: size,
+          repeat: isActive,
+          animate: isActive,
         );
       default:
         return LottieAnimations.cashAnimation(
           width: size,
           height: size,
-          repeat: true,
-          animate: true,
+          repeat: isActive,
+          animate: isActive,
         );
     }
   }
 
   Widget _buildReceiverMethodSection() {
     final exchangeForm = ref.watch(exchangeFormProvider);
-    final sendingCurrency = exchangeForm.fromCurrency;
     final receivingCurrency = exchangeForm.toCurrency;
-    final isSendingCrypto = sendingCurrency?.type == 'CRYPTO';
     final isReceivingCrypto = receivingCurrency?.type == 'CRYPTO';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: AppSpacing.marginL),
         Row(
           children: [
             Text(
               'How should they receive it?',
-              style: AppTextStyles.heading3,
+              style: AppTextStyles.heading3.copyWith(
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+              ),
             ),
             if (receivingCurrency != null) ...[
-              SizedBox(width: AppSpacing.marginS),
+              const SizedBox(width: 8),
               Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppSpacing.paddingXS,
-                  vertical: 2,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
                 decoration: BoxDecoration(
-                  color: isReceivingCrypto
-                      ? const Color(0xFFE3F2FD)
-                      : const Color(0xFFF4F5F7),
-                  borderRadius: BorderRadius.circular(AppRadius.radiusS),
+                  gradient: LinearGradient(
+                    colors: isReceivingCrypto
+                        ? [const Color(0xFFE3F2FD), const Color(0xFFBBDEFB)]
+                        : [const Color(0xFFF5F5F5), const Color(0xFFEEEEEE)],
+                  ),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child: Text(
-                  '${receivingCurrency.code} (${receivingCurrency.type})',
-                  style: AppTextStyles.caption.copyWith(
+                  '${receivingCurrency.code} • ${receivingCurrency.type}',
+                  style: TextStyle(
                     color: isReceivingCrypto
                         ? const Color(0xFF1976D2)
-                        : AppColors.textSecondary,
-                    fontSize: 10,
+                        : const Color(0xFF616161),
+                    fontSize: 9,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
             ],
           ],
         ),
-
-        // Helper text explaining validation rules
         if (receivingCurrency != null) ...[
-          SizedBox(height: AppSpacing.marginXS),
+          const SizedBox(height: 6),
           Text(
             isReceivingCrypto
-                ? 'Receiving cryptocurrency requires a Crypto Wallet'
-                : 'Receiving fiat currency allows cash pickup or mobile money',
-            style: AppTextStyles.caption.copyWith(
-              color: AppColors.textSecondary,
-              fontSize: 11,
+                ? '💡 Crypto must be received in a crypto wallet'
+                : '💡 Choose cash pickup or mobile money for fiat',
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontSize: 12,
+              fontStyle: FontStyle.italic,
             ),
           ),
         ],
-
-        SizedBox(height: AppSpacing.marginM),
+        const SizedBox(height: 20),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            _buildReceiverOption(
-              title: 'Cash\nPickup',
-              value: 'cash',
-              isEnabled: !isReceivingCrypto,
+            Expanded(
+              child: _buildReceiverOption(
+                title: 'Cash\nPickup',
+                value: 'cash',
+                isEnabled: !isReceivingCrypto,
+              ),
             ),
-            _buildReceiverOption(
-              title: 'Crypto\nWallet',
-              value: 'wallet', 
-              isEnabled: isReceivingCrypto,
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildReceiverOption(
+                title: 'Crypto\nWallet',
+                value: 'wallet',
+                isEnabled: isReceivingCrypto,
+              ),
             ),
-            _buildReceiverOption(
-              title: 'Mobile\nMoney',
-              value: 'mobile',
-              isEnabled: !isReceivingCrypto,
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildReceiverOption(
+                title: 'Mobile\nMoney',
+                value: 'mobile',
+                isEnabled: !isReceivingCrypto,
+              ),
             ),
           ],
         ),
@@ -632,40 +715,48 @@ class _CashScreenState extends ConsumerState<CashScreen> {
     bool isEnabled = true,
   }) {
     final bool isActive = activeReceive == value && isEnabled;
-    final double width =
-        (MediaQuery.of(context).size.width - (AppSpacing.paddingM * 4)) / 3;
-
-    // FIXED: Removed provider modification during build
 
     return Material(
       color: Colors.transparent,
       child: InkWell(
         onTap: isEnabled
             ? () {
+                HapticFeedback.lightImpact();
                 setState(() => activeReceive = value);
               }
             : null,
-        borderRadius: BorderRadius.circular(AppRadius.radiusL),
+        borderRadius: BorderRadius.circular(20),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
-          width: width,
-          padding: EdgeInsets.all(AppSpacing.paddingM),
+          curve: Curves.easeOutCubic,
+          height: MediaQuery.of(context).size.height * 0.20,
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: isEnabled ? Colors.white : Colors.grey.shade100,
-            borderRadius: BorderRadius.circular(AppRadius.radiusL),
+            color: isEnabled
+                ? (isActive ? Colors.white : const Color(0xFFFAFAFA))
+                : Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: isActive ? AppColors.primaryBlue : Colors.transparent,
-              width: 2.0,
+              color: isActive
+                  ? const Color(0xFF2475FF)
+                  : isEnabled
+                      ? Colors.grey.shade200
+                      : Colors.transparent,
+              width: isActive ? 2 : 1,
             ),
             boxShadow: [
-              BoxShadow(
-                color: isActive
-                    ? AppColors.primaryBlue.withOpacity(0.2)
-                    : Colors.black.withOpacity(isEnabled ? 0.05 : 0.02),
-                blurRadius: isActive ? 8 : 4,
-                offset: const Offset(0, 2),
-                spreadRadius: isActive ? 1 : 0,
-              ),
+              if (isActive)
+                BoxShadow(
+                  color: const Color(0xFF2475FF).withOpacity(0.2),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4),
+                )
+              else
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
             ],
           ),
           child: Stack(
@@ -676,28 +767,35 @@ class _CashScreenState extends ConsumerState<CashScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      height: 65,
-                      width: 65,
+                      height: 56,
+                      width: 56,
                       decoration: BoxDecoration(
-                        color: isActive
-                            ? AppColors.primaryBlue.withOpacity(0.1)
-                            : Colors.grey.withOpacity(0.05),
+                        gradient: LinearGradient(
+                          colors: isActive
+                              ? [
+                                  const Color(0xFFE3F2FD),
+                                  const Color(0xFFBBDEFB)
+                                ]
+                              : [Colors.grey.shade100, Colors.grey.shade200],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
                         shape: BoxShape.circle,
                       ),
                       child: Center(
-                        child: _getLottieAnimationForReceiver(value, isActive),
+                        child: _getLottieAnimation(value, isActive, 40),
                       ),
                     ),
-                    SizedBox(height: AppSpacing.marginS),
-                    // Title text
+                    const SizedBox(height: 12),
                     Text(
                       title,
-                      style: AppTextStyles.bodyMedium.copyWith(
+                      style: TextStyle(
                         color: isActive
-                            ? AppColors.primaryBlue
-                            : AppColors.textPrimary,
+                            ? const Color(0xFF2475FF)
+                            : const Color(0xFF424242),
                         fontWeight:
                             isActive ? FontWeight.w700 : FontWeight.w600,
+                        fontSize: 14,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -706,179 +804,157 @@ class _CashScreenState extends ConsumerState<CashScreen> {
               ),
               if (!isEnabled)
                 Positioned(
-                  top: 4,
-                  right: 4,
+                  top: 8,
+                  right: 8,
                   child: Icon(
-                    Icons.lock,
+                    Icons.lock_rounded,
                     size: 16,
                     color: Colors.grey.shade500,
+                  ),
+                ),
+              if (isActive)
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    width: 20,
+                    height: 20,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF2475FF),
+                      shape: BoxShape.circle,
+                    ),
+                    child:
+                        const Icon(Icons.check, color: Colors.white, size: 12),
                   ),
                 ),
             ],
           ),
         ),
       ),
-    ).animate(target: isActive ? 1 : 0).scale(
-          duration: AppAnimations.quickAnimation,
-          curve: AppAnimations.emphasizedCurve,
-          begin: const Offset(0.97, 0.97),
-          end: const Offset(1.0, 1.0),
-        );
+    );
   }
 
-  Widget _getLottieAnimationForReceiver(String value, bool isActive) {
-    double size = 48;
-
-    switch (value) {
-      case 'cash':
-        return LottieAnimations.cashAnimation(
-          width: 78,
-          height: 78,
-          repeat: true,
-          animate: true,
-        );
-      case 'wallet':
-        return LottieAnimations.walletAnimation(
-          width: size,
-          height: size,
-          repeat: true,
-          animate: true,
-        );
-      case 'mobile':
-        return LottieAnimations.phoneAnimation(
-          width: size,
-          height: size,
-          repeat: true,
-          animate: true,
-        );
-      default:
-        return LottieAnimations.cashAnimation(
-          width: size,
-          height: size,
-          repeat: true,
-          animate: true,
-        );
-    }
-  }
-
-  
-Widget _buildActionButtons() {
-  return Column(
-    children: [
-      SizedBox(height: AppSpacing.marginL),
-
-      // Add New button - Updated
-      ElevatedButton(
-        onPressed: () {
-          // Navigate to add new contact, then to receiver info
-          context.push('/add-new').then((_) {
-            // After adding new contact, you might want to navigate to receiver info
-            // This depends on your flow
-          });
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primaryYellow,
-          foregroundColor: AppColors.textPrimary,
-          elevation: 0,
-          padding: EdgeInsets.symmetric(vertical: AppSpacing.paddingM),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.buttonRadius),
-          ),
-          minimumSize: const Size(double.infinity, 56),
-        ),
-        child: Text('Add New Contact', style: AppTextStyles.buttonMedium),
-      ).animate().fadeIn(duration: AppAnimations.normalAnimation).slideY(
-            begin: 0.2,
-            end: 0,
-            duration: AppAnimations.normalAnimation,
-            curve: AppAnimations.standardCurve,
-          ),
-
-      SizedBox(height: AppSpacing.marginM),
-
-      // Add From Contact button
-      OutlinedButton(
-        onPressed: _showContactSelectionModal,
-        style: OutlinedButton.styleFrom(
-          foregroundColor: AppColors.primaryBlue,
-          side: BorderSide(color: AppColors.primaryBlue),
-          padding: EdgeInsets.symmetric(vertical: AppSpacing.paddingM),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppRadius.buttonRadius),
-          ),
-          minimumSize: const Size(double.infinity, 56),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (selectedContact != null) ...[
-              Icon(Icons.check_circle, size: 20, color: AppColors.primaryBlue),
-              SizedBox(width: AppSpacing.marginS),
-              Expanded(
-                child: Text(
-                  selectedContact!.displayName,
-                  style: AppTextStyles.buttonMedium.copyWith(
-                    color: AppColors.primaryBlue,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ] else
-              Text(
-                'Select From Contacts',
-                style: AppTextStyles.buttonMedium.copyWith(
-                  color: AppColors.primaryBlue,
-                ),
-              ),
-          ],
-        ),
-      ).animate().fadeIn(duration: AppAnimations.normalAnimation).slideY(
-            begin: 0.2,
-            end: 0,
-            duration: AppAnimations.normalAnimation,
-            curve: AppAnimations.standardCurve,
-            delay: Duration(milliseconds: 50),
-          ),
-    ],
-  );
-}
-
-void _showContactSelectionModal() {
-  ref.read(selectedBeneficiaryProvider.notifier).state = selectedContact;
-  
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    barrierColor: Colors.transparent,
-    builder: (context) => SelectContactModal(
-      onContactSelected: (Beneficiary? contact) {
-        setState(() {
-          selectedContact = contact;
-        });
-        
-        // Navigate to receiver info screen with selected contact
-        if (contact != null) {
-          // Navigate to the receiver info screen
-          context.push('/receiver-info', extra: contact);
-          
-          // Show success message
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Selected: ${contact.displayName}'),
-              backgroundColor: AppColors.success,
-              duration: const Duration(seconds: 2),
+  Widget _buildActionButtons() {
+    return Column(
+      children: [
+        // Add New button
+        ElevatedButton(
+          onPressed: () {
+            HapticFeedback.mediumImpact();
+            context.push('/add-new').then((_) {
+              // After adding new contact, you might want to navigate to receiver info
+            });
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFFFFC000),
+            foregroundColor: const Color(0xFF181F30),
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
             ),
-          );
-        }
-      },
-      onClose: () {
-        Navigator.of(context).pop();
-      },
-    ),
-  );
-}
+            minimumSize: const Size(double.infinity, 56),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.person_add_rounded, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                'Add New Contact',
+                style: AppTextStyles.buttonMedium.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 12),
+
+        // Add From Contact button
+        OutlinedButton(
+          onPressed: () {
+            HapticFeedback.lightImpact();
+            _showContactSelectionModal();
+          },
+          style: OutlinedButton.styleFrom(
+            foregroundColor: const Color(0xFF2475FF),
+            side: const BorderSide(color: Color(0xFF2475FF), width: 1.5),
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            minimumSize: const Size(double.infinity, 56),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (selectedContact != null) ...[
+                const Icon(Icons.check_circle_rounded, size: 20),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    selectedContact!.displayName,
+                    style: AppTextStyles.buttonMedium.copyWith(
+                      color: const Color(0xFF2475FF),
+                      fontWeight: FontWeight.w600,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ] else ...[
+                const Icon(Icons.contacts_rounded, size: 20),
+                const SizedBox(width: 8),
+                Text(
+                  'Select From Contacts',
+                  style: AppTextStyles.buttonMedium.copyWith(
+                    color: const Color(0xFF2475FF),
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _showContactSelectionModal() {
+    ref.read(selectedBeneficiaryProvider.notifier).state = selectedContact;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      builder: (context) => SelectContactModal(
+        onContactSelected: (Beneficiary? contact) {
+          setState(() {
+            selectedContact = contact;
+          });
+
+          if (contact != null) {
+            context.push('/receiver-info', extra: contact);
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Selected: ${contact.displayName}'),
+                backgroundColor: AppColors.success,
+                behavior: SnackBarBehavior.floating,
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          }
+        },
+        onClose: () {
+          Navigator.of(context).pop();
+        },
+      ),
+    );
+  }
 
   Widget _buildNotificationModal() {
     return Material(
@@ -889,7 +965,9 @@ void _showContactSelectionModal() {
           Positioned.fill(
             child: GestureDetector(
               onTap: () => setState(() => showNotifications = false),
-              child: Container(color: Colors.black.withOpacity(0.5)),
+              child: Container(
+                color: Colors.black.withOpacity(0.5),
+              ),
             ),
           ),
 
@@ -899,17 +977,15 @@ void _showContactSelectionModal() {
             left: 0,
             right: 0,
             child: Container(
-              padding: EdgeInsets.all(AppSpacing.paddingL),
-              decoration: BoxDecoration(
-                color: AppColors.background,
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(AppRadius.radiusXL),
-                ),
+              padding: const EdgeInsets.all(24),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, -5),
+                    color: Color(0x1A000000),
+                    blurRadius: 20,
+                    offset: Offset(0, -8),
                   ),
                 ],
               ),
@@ -924,17 +1000,25 @@ void _showContactSelectionModal() {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('Notifications', style: AppTextStyles.heading3),
+                      Text(
+                        'Notifications',
+                        style: AppTextStyles.heading3.copyWith(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                       IconButton(
-                        icon: Icon(Icons.close, color: AppColors.textSecondary),
+                        icon: const Icon(Icons.close_rounded),
                         onPressed: () =>
                             setState(() => showNotifications = false),
+                        style: IconButton.styleFrom(
+                          backgroundColor: Colors.grey.shade100,
+                        ),
                       ),
                     ],
                   ),
 
-                  Divider(color: AppColors.border),
-                  SizedBox(height: AppSpacing.marginM),
+                  const SizedBox(height: 16),
 
                   // Notifications list
                   Flexible(
@@ -957,8 +1041,8 @@ void _showContactSelectionModal() {
           ).animate().slide(
                 begin: const Offset(0, 1),
                 end: const Offset(0, 0),
-                duration: AppAnimations.normalAnimation,
-                curve: AppAnimations.standardCurve,
+                duration: 300.ms,
+                curve: Curves.easeOutCubic,
               ),
         ],
       ),
@@ -970,19 +1054,17 @@ void _showContactSelectionModal() {
     required int index,
   }) {
     return Container(
-      margin: EdgeInsets.only(bottom: AppSpacing.marginM),
-      padding: EdgeInsets.all(AppSpacing.paddingM),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.cardBackground,
-        borderRadius: BorderRadius.circular(AppRadius.radiusL),
-        border: Border.all(color: AppColors.border.withOpacity(0.5)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        color: const Color(0xFFF8F9FA),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: notification['isSuccess']
+              ? const Color(0xFF00C735).withOpacity(0.2)
+              : const Color(0xFFFF3E24).withOpacity(0.2),
+          width: 1,
+        ),
       ),
       child: Row(
         children: [
@@ -990,32 +1072,39 @@ void _showContactSelectionModal() {
             height: 40,
             width: 40,
             decoration: BoxDecoration(
-              color: AppColors.iconBackground,
+              color: notification['isSuccess']
+                  ? const Color(0xFF00C735).withOpacity(0.1)
+                  : const Color(0xFFFF3E24).withOpacity(0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
               notification['icon'],
               color: notification['isSuccess']
-                  ? AppColors.success
-                  : AppColors.error,
+                  ? const Color(0xFF00C735)
+                  : const Color(0xFFFF3E24),
               size: 20,
             ),
           ),
-          SizedBox(width: AppSpacing.marginM),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   notification['action'],
-                  style: AppTextStyles.bodyMedium.copyWith(
+                  style: const TextStyle(
+                    fontSize: 15,
                     fontWeight: FontWeight.w600,
+                    color: Color(0xFF181F30),
                   ),
                 ),
-                SizedBox(height: AppSpacing.marginXS),
+                const SizedBox(height: 4),
                 Text(
                   notification['desc'],
-                  style: AppTextStyles.caption,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: Color(0xFF6E757D),
+                  ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -1028,14 +1117,13 @@ void _showContactSelectionModal() {
         .animate()
         .fadeIn(
           delay: Duration(milliseconds: index * 50),
-          duration: AppAnimations.normalAnimation,
+          duration: 300.ms,
         )
-        .slideY(
+        .slideX(
           begin: 0.1,
           end: 0,
           delay: Duration(milliseconds: index * 50),
-          duration: AppAnimations.normalAnimation,
-          curve: AppAnimations.standardCurve,
+          duration: 300.ms,
         );
   }
 }

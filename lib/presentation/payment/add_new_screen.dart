@@ -4,7 +4,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flash_transfer_app/config/theme.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flash_transfer_app/config/theme.dart' as AppTheme;
 import 'package:flash_transfer_app/presentation/common/app_button.dart';
 import 'package:flash_transfer_app/presentation/common/app_text_field.dart';
 import 'package:flash_transfer_app/presentation/common/country_picker.dart';
@@ -13,16 +14,18 @@ import 'package:flash_transfer_app/core/services/auth_service.dart';
 import 'package:flash_transfer_app/presentation/common/dropdown_field.dart';
 import 'package:flash_transfer_app/core/api/api_client.dart';
 import 'package:flash_transfer_app/core/api/endpoints.dart';
+import 'package:flash_transfer_app/providers/beneficiary_provider.dart';
+import 'package:flash_transfer_app/providers/exchange_provider.dart';
 // import 'package:flash_transfer_app/presentation/common/notification_modal.dart';
 
-class AddNewScreen extends StatefulWidget {
+class AddNewScreen extends ConsumerStatefulWidget {
   const AddNewScreen({Key? key}) : super(key: key);
 
   @override
-  State<AddNewScreen> createState() => _AddNewScreenState();
+  ConsumerState<AddNewScreen> createState() => _AddNewScreenState();
 }
 
-class _AddNewScreenState extends State<AddNewScreen> {
+class _AddNewScreenState extends ConsumerState<AddNewScreen> {
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -33,6 +36,7 @@ class _AddNewScreenState extends State<AddNewScreen> {
   final _stateController = TextEditingController();
   final _zipController = TextEditingController();
   bool showNotifications = false;
+  bool _isLoading = false;
 
   CountryModel? _selectedCountry;
   String? _purpose;
@@ -99,7 +103,7 @@ class _AddNewScreenState extends State<AddNewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -124,15 +128,12 @@ class _AddNewScreenState extends State<AddNewScreen> {
         children: [
           // Back button
           InkWell(
-                onTap: () => context.pop(),
-                child: _buildIconButton(
-            icon: Icons.menu,
-            onTap: () => context.push('/profile'),
-          ),
-              )
-              .animate()
-              .fadeIn(duration: 300.ms, delay: 100.ms)
-              .moveX(
+            onTap: () => context.pop(),
+            child: _buildIconButton(
+              icon: Icons.menu,
+              onTap: () => context.push('/profile'),
+            ),
+          ).animate().fadeIn(duration: 300.ms, delay: 100.ms).moveX(
                 begin: -20,
                 end: 0,
                 duration: 300.ms,
@@ -141,19 +142,16 @@ class _AddNewScreenState extends State<AddNewScreen> {
 
           // Notification bell
           InkWell(
-                onTap: () {
-                  setState(() {
-                    _isNotificationModalVisible = true;
-                  });
-                },
-                child: _buildIconButton(
-            icon: Icons.notifications_none_rounded,
-            onTap: () => setState(() => showNotifications = true),
-          ),
-              )
-              .animate()
-              .fadeIn(duration: 300.ms, delay: 150.ms)
-              .moveX(
+            onTap: () {
+              setState(() {
+                _isNotificationModalVisible = true;
+              });
+            },
+            child: _buildIconButton(
+              icon: Icons.notifications_none_rounded,
+              onTap: () => setState(() => showNotifications = true),
+            ),
+          ).animate().fadeIn(duration: 300.ms, delay: 150.ms).moveX(
                 begin: 20,
                 end: 0,
                 duration: 300.ms,
@@ -166,33 +164,33 @@ class _AddNewScreenState extends State<AddNewScreen> {
 
   Widget _buildBackButton() {
     return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Row(
-            children: [
-              InkWell(
-                onTap: () => context.pop(),
-                child: Row(
-                  children: [
-                    Image.asset(
-                      'assets/images/back2.png',
-                      width: 40,
-                      height: 40,
-                    ),
-                    const SizedBox(width: 8),
-                    const Text(
-                      'Back',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ],
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          InkWell(
+            onTap: () => context.pop(),
+            child: Row(
+              children: [
+                Image.asset(
+                  'assets/images/back2.png',
+                  width: 40,
+                  height: 40,
                 ),
-              ),
-            ],
+                const SizedBox(width: 8),
+                const Text(
+                  'Back',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
+            ),
           ),
-        )
+        ],
+      ),
+    )
         .animate()
         .fadeIn(duration: 300.ms, delay: 200.ms)
         .moveY(begin: -10, end: 0, duration: 300.ms, curve: Curves.easeOutQuad);
@@ -208,7 +206,7 @@ class _AddNewScreenState extends State<AddNewScreen> {
           const SizedBox(height: 16),
 
           // Title
-          Text('Add New Contact', style: AppTheme.headingStyle)
+          Text('Add New Contact', style: AppTextStyles.heading3)
               .animate()
               .fadeIn(duration: 300.ms, delay: 250.ms)
               .moveY(begin: -10, end: 0),
@@ -220,9 +218,8 @@ class _AddNewScreenState extends State<AddNewScreen> {
             label: 'First Name*',
             controller: _firstNameController,
             hint: 'Enter your first name',
-            validator:
-                (value) =>
-                    value?.isEmpty ?? true ? 'First name is required' : null,
+            validator: (value) =>
+                value?.isEmpty ?? true ? 'First name is required' : null,
             delayMs: 300,
           ),
 
@@ -231,9 +228,8 @@ class _AddNewScreenState extends State<AddNewScreen> {
             label: 'Last Name*',
             controller: _lastNameController,
             hint: 'Enter your last name',
-            validator:
-                (value) =>
-                    value?.isEmpty ?? true ? 'Last name is required' : null,
+            validator: (value) =>
+                value?.isEmpty ?? true ? 'Last name is required' : null,
             delayMs: 350,
           ),
 
@@ -275,9 +271,8 @@ class _AddNewScreenState extends State<AddNewScreen> {
             label: 'Street Address*',
             controller: _addressController,
             hint: 'Enter your Street address',
-            validator:
-                (value) =>
-                    value?.isEmpty ?? true ? 'Address is required' : null,
+            validator: (value) =>
+                value?.isEmpty ?? true ? 'Address is required' : null,
             delayMs: 550,
           ),
 
@@ -286,8 +281,8 @@ class _AddNewScreenState extends State<AddNewScreen> {
             label: 'City*',
             controller: _cityController,
             hint: 'Enter your City',
-            validator:
-                (value) => value?.isEmpty ?? true ? 'City is required' : null,
+            validator: (value) =>
+                value?.isEmpty ?? true ? 'City is required' : null,
             delayMs: 600,
           ),
 
@@ -299,9 +294,8 @@ class _AddNewScreenState extends State<AddNewScreen> {
                   label: 'State*',
                   controller: _stateController,
                   hint: '',
-                  validator:
-                      (value) =>
-                          value?.isEmpty ?? true ? 'State is required' : null,
+                  validator: (value) =>
+                      value?.isEmpty ?? true ? 'State is required' : null,
                   delayMs: 650,
                 ),
               ),
@@ -312,9 +306,8 @@ class _AddNewScreenState extends State<AddNewScreen> {
                   controller: _zipController,
                   hint: '',
                   keyboardType: TextInputType.number,
-                  validator:
-                      (value) =>
-                          value?.isEmpty ?? true ? 'ZIP is required' : null,
+                  validator: (value) =>
+                      value?.isEmpty ?? true ? 'ZIP is required' : null,
                   delayMs: 700,
                 ),
               ),
@@ -352,18 +345,28 @@ class _AddNewScreenState extends State<AddNewScreen> {
           const SizedBox(height: 32),
 
           // Continue button
-          AppButton(
-                text: 'Continue',
-                backgroundColor: AppTheme.primaryColor,
-                onPressed: _submitForm,
-              )
-              .animate()
-              .fadeIn(duration: 400.ms, delay: 850.ms)
-              .scale(
-                begin: const Offset(0.9, 0.9),
-                end: const Offset(1, 1),
-                duration: 300.ms,
-              ),
+          _isLoading
+              ? Container(
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: AppColors.primaryYellow.withOpacity(0.6),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
+                )
+              : AppButton(
+                  text: 'Continue',
+                  backgroundColor: AppColors.primaryYellow,
+                  onPressed: _submitForm,
+                ).animate().fadeIn(duration: 400.ms, delay: 850.ms).scale(
+                    begin: const Offset(0.9, 0.9),
+                    end: const Offset(1, 1),
+                    duration: 300.ms,
+                  ),
         ],
       ),
     );
@@ -378,21 +381,23 @@ class _AddNewScreenState extends State<AddNewScreen> {
     required int delayMs,
   }) {
     return Padding(
-          padding: const EdgeInsets.only(bottom: 20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(label, style: AppTheme.labelStyle),
-              const SizedBox(height: 8),
-              AppTextField(
-                controller: controller,
-                hintText: hint,
-                keyboardType: keyboardType,
-                validator: validator,
-              ),
-            ],
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label,
+              style: AppTextStyles.bodyMedium
+                  .copyWith(fontWeight: FontWeight.w600)),
+          const SizedBox(height: 8),
+          AppTextField(
+            controller: controller,
+            hintText: hint,
+            keyboardType: keyboardType,
+            validator: validator,
           ),
-        )
+        ],
+      ),
+    )
         .animate()
         .fadeIn(duration: 300.ms, delay: Duration(milliseconds: delayMs))
         .moveY(begin: 20, end: 0, duration: 300.ms);
@@ -400,37 +405,39 @@ class _AddNewScreenState extends State<AddNewScreen> {
 
   Widget _buildCountryPicker({required int delayMs}) {
     return Padding(
-          padding: const EdgeInsets.only(bottom: 20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Country/Region', style: AppTheme.labelStyle),
-              const SizedBox(height: 8),
-              FutureBuilder<List<CountryModel>>(
-                future: _countriesFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return _buildCountryPickerSkeleton();
-                  } else if (snapshot.hasError) {
-                    return _buildCountryPickerError(snapshot.error.toString());
-                  } else if (snapshot.hasData) {
-                    return CountryPicker(
-                      countries: snapshot.data!,
-                      selectedCountry: _selectedCountry,
-                      onSelect: (country) {
-                        setState(() {
-                          _selectedCountry = country;
-                        });
-                      },
-                    );
-                  } else {
-                    return _buildCountryPickerError('No data available');
-                  }
-                },
-              ),
-            ],
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Country/Region',
+              style: AppTextStyles.bodyMedium
+                  .copyWith(fontWeight: FontWeight.w600)),
+          const SizedBox(height: 8),
+          FutureBuilder<List<CountryModel>>(
+            future: _countriesFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return _buildCountryPickerSkeleton();
+              } else if (snapshot.hasError) {
+                return _buildCountryPickerError(snapshot.error.toString());
+              } else if (snapshot.hasData) {
+                return CountryPicker(
+                  countries: snapshot.data!,
+                  selectedCountry: _selectedCountry,
+                  onSelect: (country) {
+                    setState(() {
+                      _selectedCountry = country;
+                    });
+                  },
+                );
+              } else {
+                return _buildCountryPickerError('No data available');
+              }
+            },
           ),
-        )
+        ],
+      ),
+    )
         .animate()
         .fadeIn(duration: 300.ms, delay: Duration(milliseconds: delayMs))
         .moveY(begin: 20, end: 0, duration: 300.ms);
@@ -482,44 +489,82 @@ class _AddNewScreenState extends State<AddNewScreen> {
     required int delayMs,
   }) {
     return Padding(
-          padding: const EdgeInsets.only(bottom: 20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(label, style: AppTheme.labelStyle),
-              const SizedBox(height: 8),
-              DropdownField(
-                hint: hint,
-                value: value,
-                items: items,
-                onChanged: onChanged,
-              ),
-            ],
+      padding: const EdgeInsets.only(bottom: 20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(label,
+              style: AppTextStyles.bodyMedium
+                  .copyWith(fontWeight: FontWeight.w600)),
+          const SizedBox(height: 8),
+          DropdownField(
+            hint: hint,
+            value: value,
+            items: items,
+            onChanged: onChanged,
           ),
-        )
+        ],
+      ),
+    )
         .animate()
         .fadeIn(duration: 300.ms, delay: Duration(milliseconds: delayMs))
         .moveY(begin: 20, end: 0, duration: 300.ms);
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     if (_formKey.currentState?.validate() ?? false) {
-      // Form is valid, handle submission
-      // This would typically involve an API call, but as per requirements
-      // we're focusing only on UI implementation
+      // Show loading state
+      setState(() => _isLoading = true);
 
-      // Show success animation
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Contact added successfully'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      try {
+        // Create beneficiary payload
+        final beneficiaryData = {
+          'firstName': _firstNameController.text,
+          'lastName': _lastNameController.text,
+          'email': _emailController.text,
+          'mobileNumber': _mobileController.text,
+          'country': _selectedCountry?.name ?? '',
+          'streetAddress': _addressController.text,
+          'city': _cityController.text,
+          'state': _stateController.text,
+          'zipCode': _zipController.text,
+          'purpose': _convertToApiFormat(_purpose),
+          'sourceOfFunds': _convertToApiFormat(_sourceOfFunds),
+          'accountType': _determineAccountType(),
+          'accountDetails': _buildAccountDetails(),
+        };
 
-      // Navigate back
-      Future.delayed(const Duration(seconds: 2), () {
-        context.pop();
-      });
+        // Call API through provider
+        final newBeneficiary = await ref
+            .read(beneficiariesProvider.notifier)
+            .createBeneficiary(beneficiaryData);
+
+        if (newBeneficiary != null) {
+          // Set the newly created beneficiary as selected
+          ref.read(selectedBeneficiaryProvider.notifier).state = newBeneficiary;
+
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                  'Contact "${newBeneficiary.displayName}" added successfully'),
+              backgroundColor: AppColors.success,
+              duration: const Duration(seconds: 2),
+            ),
+          );
+
+          // Navigate to receiver info with new beneficiary
+          context.push('/receiver-info', extra: newBeneficiary);
+        } else {
+          // Show error message
+          _showErrorSnackBar();
+        }
+      } catch (e) {
+        // Show error message
+        _showErrorSnackBar('Failed to create contact: $e');
+      }
+
+      setState(() => _isLoading = false);
     } else {
       // Show error shake animation for invalid form
       _formKey.currentState?.save();
@@ -532,34 +577,80 @@ class _AddNewScreenState extends State<AddNewScreen> {
       );
     }
   }
-}
-Widget _buildIconButton({required IconData icon, required VoidCallback onTap}) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadius.radiusCircular),
-        child: Container(
-          padding: EdgeInsets.all(AppSpacing.paddingM),
-          decoration: BoxDecoration(
-            color: Colors.grey.shade200,
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 4,
-                offset: const Offset(0, 2),
-              ),
-            ],
-          ),
-          child: Icon(icon, size: 24),
-        ),
+
+  String _convertToApiFormat(String? value) {
+    return value?.toUpperCase().replaceAll(' ', '_') ?? '';
+  }
+
+  String _determineAccountType() {
+    // Based on current transaction flow context
+    final exchangeForm = ref.read(exchangeFormProvider);
+    final receivingCurrency = exchangeForm.toCurrency;
+
+    if (receivingCurrency?.type == 'CRYPTO') {
+      return 'CRYPTO_WALLET';
+    } else {
+      return 'MOBILE_MONEY';
+    }
+  }
+
+  Map<String, dynamic> _buildAccountDetails() {
+    // Build account details based on transaction type
+    final exchangeForm = ref.read(exchangeFormProvider);
+    final receivingCurrency = exchangeForm.toCurrency;
+
+    if (receivingCurrency?.type == 'CRYPTO') {
+      // For crypto: include wallet address, network
+      return {
+        'walletAddress': '', // Will be filled later during transaction
+        'network': 'ethereum', // Default network
+      };
+    } else {
+      // For mobile money: include provider, phone number
+      return {
+        'provider': 'orange', // Default provider - could be made configurable
+        'accountNumber': _mobileController.text,
+      };
+    }
+  }
+
+  void _showErrorSnackBar([String? message]) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message ?? 'Failed to create contact. Please try again.'),
+        backgroundColor: AppColors.error,
+        duration: const Duration(seconds: 3),
       ),
-    ).animate()
-      .scale(
+    );
+  }
+}
+
+Widget _buildIconButton({required IconData icon, required VoidCallback onTap}) {
+  return Material(
+    color: Colors.transparent,
+    child: InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppRadius.radiusCircular),
+      child: Container(
+        padding: EdgeInsets.all(AppSpacing.paddingM),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Icon(icon, size: 24),
+      ),
+    ),
+  ).animate().scale(
         duration: AppAnimations.quickAnimation,
         curve: AppAnimations.emphasizedCurve,
         begin: const Offset(0.95, 0.95),
         end: const Offset(1.0, 1.0),
       );
-  }
+}

@@ -1,4 +1,3 @@
-
 import '../api/api_client.dart';
 import '../api/endpoints.dart';
 import '../models/beneficiary.dart';
@@ -54,6 +53,25 @@ class BeneficiaryService {
       return response.data['success'] == true;
     } catch (e) {
       throw Exception('Failed to delete beneficiary: $e');
+    }
+  }
+
+  Future<Beneficiary> createBeneficiary(
+      Map<String, dynamic> beneficiaryData) async {
+    try {
+      final response = await _apiClient.post(
+        Endpoints.createBeneficiary,
+        data: beneficiaryData,
+      );
+
+      if (response.data['success'] == true && response.data['data'] != null) {
+        return Beneficiary.fromJson(response.data['data']);
+      } else {
+        throw Exception(
+            response.data['message'] ?? 'Failed to create beneficiary');
+      }
+    } catch (e) {
+      throw Exception('Failed to create beneficiary: $e');
     }
   }
 }

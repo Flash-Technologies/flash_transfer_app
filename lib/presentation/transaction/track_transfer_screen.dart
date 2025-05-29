@@ -3,12 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart';
 import '../../providers/tracking_provider.dart';
+import 'transaction_details_screen.dart';
 
 class TrackTransferScreen extends ConsumerStatefulWidget {
   const TrackTransferScreen({super.key});
 
   @override
-  ConsumerState<TrackTransferScreen> createState() => _TrackTransferScreenState();
+  ConsumerState<TrackTransferScreen> createState() =>
+      _TrackTransferScreenState();
 }
 
 class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
@@ -17,7 +19,7 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
   late AnimationController _toggleAnimationController;
   late AnimationController _formAnimationController;
   late AnimationController _shakeAnimationController;
-  
+
   late Animation<Offset> _headerSlideAnimation;
   late Animation<double> _toggleScaleAnimation;
   late Animation<Offset> _formSlideAnimation;
@@ -93,7 +95,7 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
 
   void _startAnimations() {
     _headerAnimationController.forward();
-    
+
     Future.delayed(const Duration(milliseconds: 200), () {
       if (mounted) {
         _toggleAnimationController.forward();
@@ -124,26 +126,26 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
         _activeTab = tab;
         _validationError = null;
       });
-      
+
       HapticFeedback.selectionClick();
-      
+
       // Animate toggle
       _toggleAnimationController.reset();
       _toggleAnimationController.forward();
-      
+
       // Clear previous form
       _trackingController.clear();
-      
+
       // Update provider
       ref.read(trackingProvider.notifier).setTrackingType(
-        tab == 'Send' ? TrackingType.send : TrackingType.receive,
-      );
+            tab == 'Send' ? TrackingType.send : TrackingType.receive,
+          );
     }
   }
 
   void _validateAndSubmit() async {
     final trackingNumber = _trackingController.text.trim();
-    
+
     setState(() {
       _validationError = null;
     });
@@ -153,49 +155,63 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
       return;
     }
 
-    if (trackingNumber.length != 10) {
-      _showValidationError('Enter 10-Digit tracking number');
+    if (trackingNumber.length < 10) {
+      _showValidationError('Tracking number must be at least 10 characters');
       return;
     }
 
-    // Validate format (basic)
-    final isValidFormat = RegExp(r'^[A-Z0-9]{10}$').hasMatch(trackingNumber.toUpperCase());
+    // Validate format (enhanced for the new API format)
+    final isValidFormat =
+        RegExp(r'^[A-Z0-9-]{10,25}$').hasMatch(trackingNumber.toUpperCase());
     if (!isValidFormat) {
       _showValidationError('Invalid tracking number format');
       return;
     }
 
     HapticFeedback.lightImpact();
-    
+
     try {
       final result = await ref.read(trackingProvider.notifier).trackTransfer(
-        trackingNumber: trackingNumber.toUpperCase(),
-      );
+            trackingNumber: trackingNumber.toUpperCase(),
+          );
 
       if (result && mounted) {
         HapticFeedback.mediumImpact();
-        
-        // Navigate to results or show success
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                Icon(Icons.check_circle, color: Colors.white),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text('Transfer found! Loading details...'),
-                ),
-              ],
+
+        final transaction = ref.read(transactionProvider);
+        final statusDetails = ref.read(statusDetailsProvider);
+
+        if (transaction != null) {
+          // Navigate to transaction details screen
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => TransactionDetailsScreen(
+                transaction: transaction,
+                statusDetails: statusDetails,
+              ),
             ),
-            backgroundColor: Colors.green[600],
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            margin: const EdgeInsets.all(16),
-          ),
-        );
-        
-        // Here you would navigate to transfer details screen
-        // Navigator.pushNamed(context, '/transfer-details', arguments: trackingNumber);
+          );
+        } else {
+          // Show success message
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  Icon(Icons.check_circle, color: Colors.white),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text('Transfer found! Loading details...'),
+                  ),
+                ],
+              ),
+              backgroundColor: Colors.green[600],
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              margin: const EdgeInsets.all(16),
+            ),
+          );
+        }
       }
     } catch (e) {
       _showValidationError('Transfer not found or invalid tracking number');
@@ -206,9 +222,9 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
     setState(() {
       _validationError = message;
     });
-    
+
     HapticFeedback.heavyImpact();
-    
+
     // Trigger shake animation
     _shakeAnimationController.reset();
     _shakeAnimationController.forward();
@@ -273,9 +289,9 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                       ),
                     ),
                   ).animate().fadeIn(
-                    delay: const Duration(milliseconds: 400),
-                    duration: const Duration(milliseconds: 400),
-                  ),
+                        delay: const Duration(milliseconds: 400),
+                        duration: const Duration(milliseconds: 400),
+                      ),
                 ],
               ),
             ),
@@ -299,12 +315,10 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                           color: const Color(0xFF181F30),
                         ),
                       ).animate().fadeIn(
-                        delay: const Duration(milliseconds: 500),
-                        duration: const Duration(milliseconds: 600),
-                      ),
-                      
+                            delay: const Duration(milliseconds: 500),
+                            duration: const Duration(milliseconds: 600),
+                          ),
                       const SizedBox(height: 12),
-                      
                       Text(
                         'Home is behind, the world ahead and there are many paths to tread through shadows to the edge.',
                         style: theme.textTheme.bodyMedium?.copyWith(
@@ -312,9 +326,9 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                           height: 1.6,
                         ),
                       ).animate().fadeIn(
-                        delay: const Duration(milliseconds: 600),
-                        duration: const Duration(milliseconds: 600),
-                      ),
+                            delay: const Duration(milliseconds: 600),
+                            duration: const Duration(milliseconds: 600),
+                          ),
                     ],
                   ),
 
@@ -355,11 +369,11 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                         ],
                       ),
                     ).animate().slideY(
-                      begin: 0.5,
-                      delay: const Duration(milliseconds: 700),
-                      duration: const Duration(milliseconds: 600),
-                      curve: Curves.easeOutBack,
-                    ),
+                          begin: 0.5,
+                          delay: const Duration(milliseconds: 700),
+                          duration: const Duration(milliseconds: 600),
+                          curve: Curves.easeOutBack,
+                        ),
                   ),
 
                   const SizedBox(height: 24),
@@ -399,9 +413,9 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                                       color: const Color(0xFF181F30),
                                     ),
                                   ),
-                                  
+
                                   const SizedBox(height: 12),
-                                  
+
                                   // Input Field
                                   Focus(
                                     onFocusChange: (hasFocus) {
@@ -415,7 +429,8 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                                     child: TextFormField(
                                       controller: _trackingController,
                                       focusNode: _trackingFocus,
-                                      textCapitalization: TextCapitalization.characters,
+                                      textCapitalization:
+                                          TextCapitalization.characters,
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600,
@@ -433,7 +448,8 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                                         filled: true,
                                         fillColor: Colors.grey[50],
                                         border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(12),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
                                           borderSide: BorderSide(
                                             color: _validationError != null
                                                 ? Colors.red.shade400
@@ -441,7 +457,8 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                                           ),
                                         ),
                                         enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(12),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
                                           borderSide: BorderSide(
                                             color: _validationError != null
                                                 ? Colors.red.shade400
@@ -449,7 +466,8 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                                           ),
                                         ),
                                         focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(12),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
                                           borderSide: BorderSide(
                                             color: _validationError != null
                                                 ? Colors.red.shade400
@@ -457,10 +475,12 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                                             width: 2,
                                           ),
                                         ),
-                                        contentPadding: const EdgeInsets.all(16),
+                                        contentPadding:
+                                            const EdgeInsets.all(16),
                                         suffixIcon: _validationError != null
                                             ? Container(
-                                                margin: const EdgeInsets.all(12),
+                                                margin:
+                                                    const EdgeInsets.all(12),
                                                 width: 24,
                                                 height: 24,
                                                 decoration: BoxDecoration(
@@ -482,10 +502,11 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                                           });
                                         }
                                       },
-                                      onFieldSubmitted: (_) => _validateAndSubmit(),
+                                      onFieldSubmitted: (_) =>
+                                          _validateAndSubmit(),
                                     ),
                                   ),
-                                  
+
                                   // Error Message
                                   if (_validationError != null) ...[
                                     const SizedBox(height: 8),
@@ -498,23 +519,29 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                                       ),
                                     ).animate().fadeIn().shake(),
                                   ],
-                                  
+
                                   const SizedBox(height: 24),
-                                  
+
                                   // Submit Button
                                   SizedBox(
                                     width: double.infinity,
                                     height: 56,
                                     child: ElevatedButton(
-                                      onPressed: trackingState.isLoading ? null : _validateAndSubmit,
+                                      onPressed: trackingState.isLoading
+                                          ? null
+                                          : _validateAndSubmit,
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color(0xFFFFC000),
-                                        foregroundColor: const Color(0xFF181F30),
+                                        backgroundColor:
+                                            const Color(0xFFFFC000),
+                                        foregroundColor:
+                                            const Color(0xFF181F30),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(12),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
                                         ),
                                         elevation: 2,
-                                        disabledBackgroundColor: Colors.grey.shade300,
+                                        disabledBackgroundColor:
+                                            Colors.grey.shade300,
                                       ),
                                       child: trackingState.isLoading
                                           ? SizedBox(
@@ -522,7 +549,9 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                                               height: 24,
                                               child: CircularProgressIndicator(
                                                 strokeWidth: 2,
-                                                valueColor: AlwaysStoppedAnimation<Color>(
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                        Color>(
                                                   const Color(0xFF181F30),
                                                 ),
                                               ),
@@ -544,10 +573,10 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                       },
                     ),
                   ).animate().scale(
-                    delay: const Duration(milliseconds: 800),
-                    duration: const Duration(milliseconds: 600),
-                    curve: Curves.easeOutBack,
-                  ),
+                        delay: const Duration(milliseconds: 800),
+                        duration: const Duration(milliseconds: 600),
+                        curve: Curves.easeOutBack,
+                      ),
                 ],
               ),
             ),
@@ -585,7 +614,9 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
               child: Icon(
                 icon,
                 size: 20,
-                color: isActive ? const Color(0xFF181F30) : const Color(0xFF6E757D),
+                color: isActive
+                    ? const Color(0xFF181F30)
+                    : const Color(0xFF6E757D),
               ),
             ),
             const SizedBox(width: 8),
@@ -594,7 +625,9 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
               style: TextStyle(
                 fontSize: 14,
                 fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-                color: isActive ? const Color(0xFF181F30) : const Color(0xFF6E757D),
+                color: isActive
+                    ? const Color(0xFF181F30)
+                    : const Color(0xFF6E757D),
               ),
               child: Text(text),
             ),

@@ -28,6 +28,7 @@ class Endpoints {
 
   // beneficiary endpoints
   static const String beneficiaries = '$baseUrl/api/beneficiary';
+  static const String createBeneficiary = '/api/beneficiary';
 
   // transaction endpoints
   static const String transactionEstimate =

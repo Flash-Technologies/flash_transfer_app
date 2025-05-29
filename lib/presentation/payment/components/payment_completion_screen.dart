@@ -189,10 +189,10 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
                 SizedBox(height: AppSpacing.marginL),
 
                 // Payment Instructions if pending
-                if (isPending && paymentUrl != null) ...[
-                  _buildPaymentInstructions(paymentUrl),
-                  SizedBox(height: AppSpacing.marginL),
-                ],
+                // if (isPending && paymentUrl != null) ...[
+                //   _buildPaymentInstructions(paymentUrl),
+                //   SizedBox(height: AppSpacing.marginL),
+                // ],
 
                 // Action Buttons
                 _buildActionButtons(context, isPending, paymentUrl),

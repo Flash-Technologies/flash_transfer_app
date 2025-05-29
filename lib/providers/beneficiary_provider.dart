@@ -1,11 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/services/beneficiary_service.dart';
 import '../core/models/beneficiary.dart';
-import '../providers/auth_provider.dart';  
+import '../providers/auth_provider.dart';
 
 // Service provider - Updated to use authenticated API client
 final beneficiaryServiceProvider = Provider<BeneficiaryService>((ref) {
-  final apiClient = ref.watch(apiClientProvider); // Use the authenticated API client
+  final apiClient =
+      ref.watch(apiClientProvider); // Use the authenticated API client
   return BeneficiaryService(apiClient);
 });
 
@@ -16,6 +17,7 @@ class BeneficiariesState {
   final String? error;
   final String searchQuery;
   final BeneficiaryPagination? pagination;
+  final bool isCreating;
 
   BeneficiariesState({
     this.beneficiaries = const [],
@@ -23,6 +25,7 @@ class BeneficiariesState {
     this.error,
     this.searchQuery = '',
     this.pagination,
+    this.isCreating = false,
   });
 
   BeneficiariesState copyWith({
@@ -31,6 +34,7 @@ class BeneficiariesState {
     String? error,
     String? searchQuery,
     BeneficiaryPagination? pagination,
+    bool? isCreating,
   }) {
     return BeneficiariesState(
       beneficiaries: beneficiaries ?? this.beneficiaries,
@@ -38,6 +42,7 @@ class BeneficiariesState {
       error: error,
       searchQuery: searchQuery ?? this.searchQuery,
       pagination: pagination ?? this.pagination,
+      isCreating: isCreating ?? this.isCreating,
     );
   }
 
@@ -45,14 +50,14 @@ class BeneficiariesState {
     if (searchQuery.isEmpty) {
       return beneficiaries;
     }
-    
+
     return beneficiaries.where((beneficiary) {
       final query = searchQuery.toLowerCase();
       return beneficiary.displayName.toLowerCase().contains(query) ||
-             beneficiary.email.toLowerCase().contains(query) ||
-             beneficiary.mobileNumber.contains(query) ||
-             beneficiary.country.toLowerCase().contains(query) ||
-             beneficiary.city.toLowerCase().contains(query);
+          beneficiary.email.toLowerCase().contains(query) ||
+          beneficiary.mobileNumber.contains(query) ||
+          beneficiary.country.toLowerCase().contains(query) ||
+          beneficiary.city.toLowerCase().contains(query);
     }).toList();
   }
 }
@@ -111,10 +116,37 @@ class BeneficiariesNotifier extends StateNotifier<BeneficiariesState> {
   Future<void> refresh() async {
     await loadBeneficiaries(refresh: true);
   }
+
+  Future<Beneficiary?> createBeneficiary(
+      Map<String, dynamic> beneficiaryData) async {
+    state = state.copyWith(isCreating: true, error: null);
+
+    try {
+      final newBeneficiary = await _service.createBeneficiary(beneficiaryData);
+
+      // Add the new beneficiary to the list
+      final updatedBeneficiaries = [newBeneficiary, ...state.beneficiaries];
+
+      state = state.copyWith(
+        beneficiaries: updatedBeneficiaries,
+        isCreating: false,
+        error: null,
+      );
+
+      return newBeneficiary;
+    } catch (e) {
+      state = state.copyWith(
+        isCreating: false,
+        error: e.toString(),
+      );
+      return null;
+    }
+  }
 }
 
 // Provider for beneficiaries state
-final beneficiariesProvider = StateNotifierProvider<BeneficiariesNotifier, BeneficiariesState>((ref) {
+final beneficiariesProvider =
+    StateNotifierProvider<BeneficiariesNotifier, BeneficiariesState>((ref) {
   final service = ref.watch(beneficiaryServiceProvider);
   return BeneficiariesNotifier(service);
 });

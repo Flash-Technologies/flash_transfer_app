@@ -18,126 +18,6 @@ enum TransferStatus {
   cancelled,
 }
 
-// Transfer Details Model
-class TransferDetails {
-  final String trackingNumber;
-  final TransferStatus status;
-  final String senderName;
-  final String receiverName;
-  final double amount;
-  final String currency;
-  final String paymentMethod;
-  final String receivingMethod;
-  final DateTime createdAt;
-  final DateTime? estimatedDelivery;
-  final DateTime? actualDelivery;
-  final List<TrackingEvent> events;
-  final Map<String, dynamic>? metadata;
-
-  const TransferDetails({
-    required this.trackingNumber,
-    required this.status,
-    required this.senderName,
-    required this.receiverName,
-    required this.amount,
-    required this.currency,
-    required this.paymentMethod,
-    required this.receivingMethod,
-    required this.createdAt,
-    this.estimatedDelivery,
-    this.actualDelivery,
-    required this.events,
-    this.metadata,
-  });
-
-  factory TransferDetails.fromJson(Map<String, dynamic> json) {
-    return TransferDetails(
-      trackingNumber: json['trackingNumber'] ?? '',
-      status: TransferStatus.values.firstWhere(
-        (s) => s.name == json['status'],
-        orElse: () => TransferStatus.pending,
-      ),
-      senderName: json['senderName'] ?? '',
-      receiverName: json['receiverName'] ?? '',
-      amount: (json['amount'] ?? 0).toDouble(),
-      currency: json['currency'] ?? 'USD',
-      paymentMethod: json['paymentMethod'] ?? '',
-      receivingMethod: json['receivingMethod'] ?? '',
-      createdAt: DateTime.parse(json['createdAt']),
-      estimatedDelivery:
-          json['estimatedDelivery'] != null
-              ? DateTime.parse(json['estimatedDelivery'])
-              : null,
-      actualDelivery:
-          json['actualDelivery'] != null
-              ? DateTime.parse(json['actualDelivery'])
-              : null,
-      events:
-          (json['events'] as List<dynamic>?)
-              ?.map((e) => TrackingEvent.fromJson(e))
-              .toList() ??
-          [],
-      metadata: json['metadata'],
-    );
-  }
-
-  String get statusDisplayName {
-    switch (status) {
-      case TransferStatus.pending:
-        return 'Pending';
-      case TransferStatus.processing:
-        return 'Processing';
-      case TransferStatus.inTransit:
-        return 'In Transit';
-      case TransferStatus.delivered:
-        return 'Delivered';
-      case TransferStatus.completed:
-        return 'Completed';
-      case TransferStatus.failed:
-        return 'Failed';
-      case TransferStatus.cancelled:
-        return 'Cancelled';
-    }
-  }
-
-  bool get isActive =>
-      ![
-        TransferStatus.completed,
-        TransferStatus.failed,
-        TransferStatus.cancelled,
-      ].contains(status);
-}
-
-// Tracking Event Model
-class TrackingEvent {
-  final String id;
-  final String title;
-  final String description;
-  final DateTime timestamp;
-  final String location;
-  final bool isCompleted;
-
-  const TrackingEvent({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.timestamp,
-    required this.location,
-    required this.isCompleted,
-  });
-
-  factory TrackingEvent.fromJson(Map<String, dynamic> json) {
-    return TrackingEvent(
-      id: json['id'] ?? '',
-      title: json['title'] ?? '',
-      description: json['description'] ?? '',
-      timestamp: DateTime.parse(json['timestamp']),
-      location: json['location'] ?? '',
-      isCompleted: json['isCompleted'] ?? false,
-    );
-  }
-}
-
 // Enhanced Tracking State
 class TrackingState {
   final bool isLoading;
@@ -146,8 +26,9 @@ class TrackingState {
   final String? message;
   final TrackingType trackingType;
   final String? trackingNumber;
-  final TransferDetails? transferDetails;
-  final List<TransferDetails> recentTransfers;
+  final Transaction? transaction;
+  final StatusDetails? statusDetails;
+  final List<Transaction> recentTransactions;
   final Map<String, String>? validationErrors;
   final bool isNetworkAvailable;
 
@@ -158,8 +39,9 @@ class TrackingState {
     this.message,
     this.trackingType = TrackingType.send,
     this.trackingNumber,
-    this.transferDetails,
-    this.recentTransfers = const [],
+    this.transaction,
+    this.statusDetails,
+    this.recentTransactions = const [],
     this.validationErrors,
     this.isNetworkAvailable = true,
   });
@@ -171,8 +53,9 @@ class TrackingState {
     String? message,
     TrackingType? trackingType,
     String? trackingNumber,
-    TransferDetails? transferDetails,
-    List<TransferDetails>? recentTransfers,
+    Transaction? transaction,
+    StatusDetails? statusDetails,
+    List<Transaction>? recentTransactions,
     Map<String, String>? validationErrors,
     bool? isNetworkAvailable,
   }) {
@@ -183,8 +66,9 @@ class TrackingState {
       message: message,
       trackingType: trackingType ?? this.trackingType,
       trackingNumber: trackingNumber ?? this.trackingNumber,
-      transferDetails: transferDetails ?? this.transferDetails,
-      recentTransfers: recentTransfers ?? this.recentTransfers,
+      transaction: transaction ?? this.transaction,
+      statusDetails: statusDetails ?? this.statusDetails,
+      recentTransactions: recentTransactions ?? this.recentTransactions,
       validationErrors: validationErrors,
       isNetworkAvailable: isNetworkAvailable ?? this.isNetworkAvailable,
     );
@@ -192,11 +76,19 @@ class TrackingState {
 
   bool get hasValidationErrors => validationErrors?.isNotEmpty == true;
   bool get isProcessing => isLoading || isValidating;
+  bool get hasTransaction => transaction != null;
 }
 
 // Tracking Service Provider
 final trackingServiceProvider = Provider<TrackingService>((ref) {
   final apiClient = ref.watch(apiClientProvider);
+
+  // Ensure token is set if user is authenticated
+  final authState = ref.watch(authProvider);
+  if (authState.user?.token != null) {
+    apiClient.setToken(authState.user!.token!);
+  }
+
   return TrackingService(apiClient);
 });
 
@@ -206,8 +98,8 @@ class TrackingNotifier extends StateNotifier<TrackingState> {
   final Ref _ref;
 
   TrackingNotifier(this._trackingService, this._ref)
-    : super(const TrackingState()) {
-    _loadRecentTransfers();
+      : super(const TrackingState()) {
+    _loadRecentTransactions();
   }
 
   // Clear all states
@@ -236,14 +128,11 @@ class TrackingNotifier extends StateNotifier<TrackingState> {
 
     if (cleanNumber.isEmpty) {
       errors['trackingNumber'] = 'Tracking number is required';
-    } else if (cleanNumber.length != 10) {
+    } else if (cleanNumber.length < 10) {
       errors['trackingNumber'] =
-          'Tracking number must be exactly 10 characters';
-    } else if (!RegExp(r'^[A-Z0-9]{10}$').hasMatch(cleanNumber)) {
-      errors['trackingNumber'] =
-          'Tracking number can only contain letters and numbers';
-    } else if (!_isValidFTNFormat(cleanNumber)) {
-      errors['trackingNumber'] = 'Invalid Flash Tracking Number (FTN) format';
+          'Tracking number must be at least 10 characters';
+    } else if (!RegExp(r'^[A-Z0-9-]{10,25}$').hasMatch(cleanNumber)) {
+      errors['trackingNumber'] = 'Invalid tracking number format';
     }
 
     state = state.copyWith(
@@ -252,54 +141,55 @@ class TrackingNotifier extends StateNotifier<TrackingState> {
     );
   }
 
-  // Validate FTN format (Flash Tracking Number)
-  bool _isValidFTNFormat(String trackingNumber) {
-    // FTN format: 2 letters + 8 digits (example: FT12345678)
-    return RegExp(r'^[A-Z]{2}[0-9]{8}$').hasMatch(trackingNumber);
-  }
-
   // Track transfer with enhanced error handling
   Future<bool> trackTransfer({required String trackingNumber}) async {
     final cleanNumber = trackingNumber.trim().toUpperCase();
 
+    print('🎯 Starting tracking for: $cleanNumber');
+
     // Validate first
     validateTrackingNumber(cleanNumber);
     if (state.hasValidationErrors) {
+      print('❌ Validation failed: ${state.validationErrors}');
       return false;
     }
 
-    state = state.copyWith(isLoading: true, error: null, transferDetails: null);
+    state = state.copyWith(
+      isLoading: true,
+      error: null,
+      transaction: null,
+      statusDetails: null,
+    );
 
     try {
-      // Check network connectivity
-      final isConnected = await _checkNetworkConnectivity();
-      if (!isConnected) {
-        state = state.copyWith(
-          isLoading: false,
-          error: 'No internet connection. Please check your network settings.',
-          isNetworkAvailable: false,
-        );
-        return false;
-      }
-
-      // Call tracking API
+      // Call tracking API directly (removed problematic connectivity check)
+      print('📡 Calling tracking service...');
       final response = await _trackingService.trackTransfer(cleanNumber);
 
-      if (response.success && response.data != null) {
-        final transferDetails = TransferDetails.fromJson(response.data!);
+      print(
+          '✅ Got response: success=${response.success}, data=${response.data != null}');
 
-        // Add to recent transfers if not already present
-        _addToRecentTransfers(transferDetails);
+      if (response.success && response.data != null) {
+        print('📋 Parsing transaction data...');
+        final transactionData = TransactionData.fromJson(response.data!);
+
+        print(
+            '🎉 Transaction found: ${transactionData.transaction.trackingNumber}');
+
+        // Add to recent transactions if not already present
+        _addToRecentTransactions(transactionData.transaction);
 
         state = state.copyWith(
           isLoading: false,
-          transferDetails: transferDetails,
+          transaction: transactionData.transaction,
+          statusDetails: transactionData.statusDetails,
           message: 'Transfer found successfully',
           trackingNumber: cleanNumber,
         );
 
         return true;
       } else {
+        print('❌ Response not successful or no data');
         // Handle specific error codes
         String errorMessage = response.message ?? 'Transfer not found';
 
@@ -311,6 +201,7 @@ class TrackingNotifier extends StateNotifier<TrackingState> {
         return false;
       }
     } catch (e) {
+      print('💥 Exception in tracking: $e');
       state = state.copyWith(
         isLoading: false,
         error: 'Unable to track transfer. Please try again later.',
@@ -337,96 +228,40 @@ class TrackingNotifier extends StateNotifier<TrackingState> {
     }
   }
 
-  // Check network connectivity
-  Future<bool> _checkNetworkConnectivity() async {
+  // Load recent transactions
+  Future<void> _loadRecentTransactions() async {
     try {
-      // Simple connectivity check
-      await _trackingService.ping();
-      state = state.copyWith(isNetworkAvailable: true);
-      return true;
+      // This would be implemented with a proper API endpoint
+      // For now, we'll keep it empty
+      state = state.copyWith(recentTransactions: []);
     } catch (e) {
-      state = state.copyWith(isNetworkAvailable: false);
-      return false;
+      // Silently handle error for recent transactions
     }
   }
 
-  // Load recent transfers
-  Future<void> _loadRecentTransfers() async {
-    try {
-      final recentTransfers = await _trackingService.getRecentTransfers(
-        limit: 5,
-      );
-      state = state.copyWith(recentTransfers: recentTransfers);
-    } catch (e) {
-      // Silently handle error for recent transfers
-    }
-  }
-
-  // Add to recent transfers
-  void _addToRecentTransfers(TransferDetails transfer) {
-    final recent = List<TransferDetails>.from(state.recentTransfers);
+  // Add to recent transactions
+  void _addToRecentTransactions(Transaction transaction) {
+    final recent = List<Transaction>.from(state.recentTransactions);
 
     // Remove if already exists
-    recent.removeWhere((t) => t.trackingNumber == transfer.trackingNumber);
+    recent.removeWhere((t) => t.trackingNumber == transaction.trackingNumber);
 
     // Add to beginning
-    recent.insert(0, transfer);
+    recent.insert(0, transaction);
 
     // Keep only last 10
     if (recent.length > 10) {
       recent.removeRange(10, recent.length);
     }
 
-    state = state.copyWith(recentTransfers: recent);
+    state = state.copyWith(recentTransactions: recent);
   }
 
   // Refresh transfer details
-  Future<void> refreshTransferDetails() async {
+  Future<void> refreshTransactionDetails() async {
     if (state.trackingNumber == null) return;
 
     await trackTransfer(trackingNumber: state.trackingNumber!);
-  }
-
-  // Get transfer updates in real-time
-  Stream<TransferDetails> watchTransferUpdates(String trackingNumber) {
-    return _trackingService.watchTransferUpdates(trackingNumber);
-  }
-
-  // Search transfers by criteria
-  Future<List<TransferDetails>> searchTransfers({
-    String? senderName,
-    String? receiverName,
-    DateTimeRange? dateRange,
-    TransferStatus? status,
-  }) async {
-    state = state.copyWith(isLoading: true);
-
-    try {
-      final transfers = await _trackingService.searchTransfers(
-        senderName: senderName,
-        receiverName: receiverName,
-        dateRange: dateRange,
-        status: status,
-      );
-
-      state = state.copyWith(isLoading: false);
-      return transfers;
-    } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: 'Failed to search transfers',
-      );
-      return [];
-    }
-  }
-
-  // Get transfer statistics
-  Future<Map<String, dynamic>> getTransferStatistics() async {
-    try {
-      return await _trackingService.getTransferStatistics();
-    } catch (e) {
-      return {};
-    }
   }
 }
 
@@ -447,12 +282,16 @@ final trackingErrorProvider = Provider<String?>((ref) {
   return ref.watch(trackingProvider).error;
 });
 
-final transferDetailsProvider = Provider<TransferDetails?>((ref) {
-  return ref.watch(trackingProvider).transferDetails;
+final transactionProvider = Provider<Transaction?>((ref) {
+  return ref.watch(trackingProvider).transaction;
 });
 
-final recentTransfersProvider = Provider<List<TransferDetails>>((ref) {
-  return ref.watch(trackingProvider).recentTransfers;
+final statusDetailsProvider = Provider<StatusDetails?>((ref) {
+  return ref.watch(trackingProvider).statusDetails;
+});
+
+final recentTransactionsProvider = Provider<List<Transaction>>((ref) {
+  return ref.watch(trackingProvider).recentTransactions;
 });
 
 final trackingValidationErrorsProvider = Provider<Map<String, String>?>((ref) {
@@ -464,23 +303,22 @@ final isNetworkAvailableProvider = Provider<bool>((ref) {
 });
 
 // Transfer status color provider
-final transferStatusColorProvider = Provider.family<Color, TransferStatus>((
+final transferStatusColorProvider = Provider.family<Color, String>((
   ref,
   status,
 ) {
-  switch (status) {
-    case TransferStatus.pending:
+  switch (status.toLowerCase()) {
+    case 'pending':
       return Colors.orange;
-    case TransferStatus.processing:
+    case 'processing':
       return Colors.blue;
-    case TransferStatus.inTransit:
-      return Colors.purple;
-    case TransferStatus.delivered:
-    case TransferStatus.completed:
+    case 'completed':
       return Colors.green;
-    case TransferStatus.failed:
-    case TransferStatus.cancelled:
+    case 'failed':
+    case 'cancelled':
       return Colors.red;
+    default:
+      return Colors.grey;
   }
 });
 

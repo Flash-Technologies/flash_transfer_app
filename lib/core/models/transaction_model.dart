@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 enum TransactionType { send, receive }
 
@@ -73,32 +74,29 @@ class TransactionModel {
       receivingMethod: json['receivingMethod'] ?? '',
       status: json['status'] ?? 'pending',
       createdAt: DateTime.parse(json['createdAt']),
-      completedAt:
-          json['completedAt'] != null
-              ? DateTime.parse(json['completedAt'])
-              : null,
+      completedAt: json['completedAt'] != null
+          ? DateTime.parse(json['completedAt'])
+          : null,
       metadata: json['metadata'],
       // Additional UI properties
-      type:
-          json['type'] != null
-              ? TransactionType.values.firstWhere(
-                (e) => e.toString().split('.').last == json['type'],
-                orElse: () => TransactionType.send,
-              )
-              : null,
+      type: json['type'] != null
+          ? TransactionType.values.firstWhere(
+              (e) => e.toString().split('.').last == json['type'],
+              orElse: () => TransactionType.send,
+            )
+          : null,
       recipient: json['recipient'],
       date: json['date'] != null ? DateTime.parse(json['date']) : null,
       avatar: json['avatar'],
       fee: json['fee']?.toDouble(),
       reference: json['reference'],
       sender: json['sender'],
-      currencyType:
-          json['currencyType'] != null
-              ? CurrencyType.values.firstWhere(
-                (e) => e.toString().split('.').last == json['currencyType'],
-                orElse: () => CurrencyType.fiat,
-              )
-              : null,
+      currencyType: json['currencyType'] != null
+          ? CurrencyType.values.firstWhere(
+              (e) => e.toString().split('.').last == json['currencyType'],
+              orElse: () => CurrencyType.fiat,
+            )
+          : null,
     );
   }
 
@@ -285,10 +283,9 @@ class RecipientModel extends Equatable {
       flagAsset: json['flagAsset'] ?? '',
       avatar: json['avatar'],
       lastSentAmount: json['lastSentAmount']?.toDouble(),
-      lastSentDate:
-          json['lastSentDate'] != null
-              ? DateTime.parse(json['lastSentDate'])
-              : null,
+      lastSentDate: json['lastSentDate'] != null
+          ? DateTime.parse(json['lastSentDate'])
+          : null,
       isFavorite: json['isFavorite'] ?? false,
       isBlocked: json['isBlocked'] ?? false,
       email: json['email'],
@@ -300,20 +297,20 @@ class RecipientModel extends Equatable {
 
   @override
   List<Object?> get props => [
-    id,
-    name,
-    country,
-    flagAsset,
-    avatar,
-    lastSentAmount,
-    lastSentDate,
-    isFavorite,
-    isBlocked,
-    email,
-    phone,
-    totalTransactions,
-    totalAmountSent,
-  ];
+        id,
+        name,
+        country,
+        flagAsset,
+        avatar,
+        lastSentAmount,
+        lastSentDate,
+        isFavorite,
+        isBlocked,
+        email,
+        phone,
+        totalTransactions,
+        totalAmountSent,
+      ];
 }
 
 // Invite Model
@@ -382,20 +379,20 @@ class InviteModel extends Equatable {
 
   @override
   List<Object?> get props => [
-    id,
-    name,
-    email,
-    phone,
-    country,
-    flagAsset,
-    avatar,
-    status,
-    dateInvited,
-    dateAccepted,
-    dateCompleted,
-    rewardAmount,
-    referralCode,
-  ];
+        id,
+        name,
+        email,
+        phone,
+        country,
+        flagAsset,
+        avatar,
+        status,
+        dateInvited,
+        dateAccepted,
+        dateCompleted,
+        rewardAmount,
+        referralCode,
+      ];
 }
 
 enum InviteStatus { pending, accepted, completed, expired }
@@ -434,4 +431,364 @@ class PrivacySectionModel extends Equatable {
 
   @override
   List<Object?> get props => [id, title, content, subsections, isExpanded];
+}
+
+class Transaction {
+  final String id;
+  final String referenceId;
+  final String type;
+  final double amount;
+  final double? destinationAmount;
+  final double fee;
+  final double totalAmount;
+  final String currency;
+  final double? exchangeRate;
+  final String sourceType;
+  final String destinationType;
+  final String status;
+  final int userId;
+  final String? beneficiaryId;
+  final String? blockchainTxHash;
+  final String? destinationBlockchainTxHash;
+  final String trackingNumber;
+  final String? withdrawalStatus;
+  final bool? cryptoTransactionConfirmed;
+  final String? idempotencyKey;
+  final String? webhookUrl;
+  final String? kytVerificationId;
+  final String? kytVerificationStatus;
+  final Map<String, dynamic>? sourceDetails;
+  final Map<String, dynamic>? destinationDetails;
+  final Map<String, dynamic>? feeDetails;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? completedAt;
+  final int version;
+  final String? relatedTransactionId;
+  final String? retryTransactionId;
+  final String? blockchainNetwork;
+  final String? destinationBlockchainNetwork;
+  final String? paymentUrl;
+  final String? paymentToken;
+  final String? extTransactionId;
+  final String? intTransactionId;
+  final String? statusDescription;
+  final String orderId;
+  final bool isCrossChain;
+  final String? sourceTransactionStatus;
+  final String? destinationTransactionStatus;
+  final bool useSystemLiquidity;
+  final String? systemLiquidityWallet;
+  final bool isUserManagedSourceWallet;
+  final User? user;
+  final String? beneficiary;
+  final List<StatusHistory> statusHistory;
+
+  Transaction({
+    required this.id,
+    required this.referenceId,
+    required this.type,
+    required this.amount,
+    this.destinationAmount,
+    required this.fee,
+    required this.totalAmount,
+    required this.currency,
+    this.exchangeRate,
+    required this.sourceType,
+    required this.destinationType,
+    required this.status,
+    required this.userId,
+    this.beneficiaryId,
+    this.blockchainTxHash,
+    this.destinationBlockchainTxHash,
+    required this.trackingNumber,
+    this.withdrawalStatus,
+    this.cryptoTransactionConfirmed,
+    this.idempotencyKey,
+    this.webhookUrl,
+    this.kytVerificationId,
+    this.kytVerificationStatus,
+    this.sourceDetails,
+    this.destinationDetails,
+    this.feeDetails,
+    required this.createdAt,
+    required this.updatedAt,
+    this.completedAt,
+    required this.version,
+    this.relatedTransactionId,
+    this.retryTransactionId,
+    this.blockchainNetwork,
+    this.destinationBlockchainNetwork,
+    this.paymentUrl,
+    this.paymentToken,
+    this.extTransactionId,
+    this.intTransactionId,
+    this.statusDescription,
+    required this.orderId,
+    required this.isCrossChain,
+    this.sourceTransactionStatus,
+    this.destinationTransactionStatus,
+    required this.useSystemLiquidity,
+    this.systemLiquidityWallet,
+    required this.isUserManagedSourceWallet,
+    this.user,
+    this.beneficiary,
+    required this.statusHistory,
+  });
+
+  factory Transaction.fromJson(Map<String, dynamic> json) {
+    return Transaction(
+      id: json['id'] ?? '',
+      referenceId: json['referenceId'] ?? '',
+      type: json['type'] ?? '',
+      amount: (json['amount'] ?? 0).toDouble(),
+      destinationAmount: json['destinationAmount']?.toDouble(),
+      fee: (json['fee'] ?? 0).toDouble(),
+      totalAmount: (json['totalAmount'] ?? 0).toDouble(),
+      currency: json['currency'] ?? '',
+      exchangeRate: json['exchangeRate']?.toDouble(),
+      sourceType: json['sourceType'] ?? '',
+      destinationType: json['destinationType'] ?? '',
+      status: json['status'] ?? '',
+      userId: json['userId'] ?? 0,
+      beneficiaryId: json['beneficiaryId']?.toString(),
+      blockchainTxHash: json['blockchainTxHash'],
+      destinationBlockchainTxHash: json['destinationBlockchainTxHash'],
+      trackingNumber: json['trackingNumber'] ?? '',
+      withdrawalStatus: json['withdrawalStatus'],
+      cryptoTransactionConfirmed: json['cryptoTransactionConfirmed'],
+      idempotencyKey: json['idempotencyKey'],
+      webhookUrl: json['webhookUrl'],
+      kytVerificationId: json['kytVerificationId'],
+      kytVerificationStatus: json['kytVerificationStatus'],
+      sourceDetails: json['sourceDetails']?.cast<String, dynamic>(),
+      destinationDetails: json['destinationDetails']?.cast<String, dynamic>(),
+      feeDetails: json['feeDetails']?.cast<String, dynamic>(),
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: DateTime.parse(json['updatedAt']),
+      completedAt: json['completedAt'] != null
+          ? DateTime.parse(json['completedAt'])
+          : null,
+      version: json['version'] ?? 0,
+      relatedTransactionId: json['relatedTransactionId'],
+      retryTransactionId: json['retryTransactionId'],
+      blockchainNetwork: json['blockchainNetwork'],
+      destinationBlockchainNetwork: json['destinationBlockchainNetwork'],
+      paymentUrl: json['paymentUrl'],
+      paymentToken: json['paymentToken'],
+      extTransactionId: json['extTransactionId'],
+      intTransactionId: json['intTransactionId'],
+      statusDescription: json['statusDescription'],
+      orderId: json['orderId'] ?? '',
+      isCrossChain: json['isCrossChain'] ?? false,
+      sourceTransactionStatus: json['sourceTransactionStatus'],
+      destinationTransactionStatus: json['destinationTransactionStatus'],
+      useSystemLiquidity: json['useSystemLiquidity'] ?? false,
+      systemLiquidityWallet: json['systemLiquidityWallet'],
+      isUserManagedSourceWallet: json['isUserManagedSourceWallet'] ?? false,
+      user: json['user'] != null ? User.fromJson(json['user']) : null,
+      beneficiary: json['beneficiary'],
+      statusHistory: (json['statusHistory'] as List<dynamic>?)
+              ?.map((e) => StatusHistory.fromJson(e))
+              .toList() ??
+          [],
+    );
+  }
+
+  String get formattedType {
+    switch (type) {
+      case 'CASH_TO_CRYPTO':
+        return 'Crypto Purchase';
+      case 'CRYPTO_TO_CASH':
+        return 'Crypto Sale';
+      case 'CRYPTO_TO_CRYPTO':
+        return 'Crypto Exchange';
+      case 'CASH_TO_CASH':
+        return 'Cash Transfer';
+      default:
+        return type.replaceAll('_', ' ').toUpperCase();
+    }
+  }
+
+  Color get statusColor {
+    switch (status.toLowerCase()) {
+      case 'completed':
+        return Colors.green;
+      case 'processing':
+        return Colors.blue;
+      case 'pending':
+        return Colors.orange;
+      case 'failed':
+        return Colors.red;
+      case 'cancelled':
+        return Colors.grey;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  IconData get statusIcon {
+    switch (status.toLowerCase()) {
+      case 'completed':
+        return Icons.check_circle;
+      case 'processing':
+        return Icons.refresh;
+      case 'pending':
+        return Icons.schedule;
+      case 'failed':
+        return Icons.error;
+      case 'cancelled':
+        return Icons.cancel;
+      default:
+        return Icons.help_outline;
+    }
+  }
+}
+
+class StatusHistory {
+  final int id;
+  final String transactionId;
+  final String status;
+  final String notes;
+  final DateTime timestamp;
+
+  StatusHistory({
+    required this.id,
+    required this.transactionId,
+    required this.status,
+    required this.notes,
+    required this.timestamp,
+  });
+
+  factory StatusHistory.fromJson(Map<String, dynamic> json) {
+    return StatusHistory(
+      id: json['id'] ?? 0,
+      transactionId: json['transactionId'] ?? '',
+      status: json['status'] ?? '',
+      notes: json['notes'] ?? '',
+      timestamp: DateTime.parse(json['timestamp']),
+    );
+  }
+
+  Color get statusColor {
+    switch (status.toLowerCase()) {
+      case 'completed':
+        return Colors.green;
+      case 'processing':
+        return Colors.blue;
+      case 'pending':
+        return Colors.orange;
+      case 'failed':
+        return Colors.red;
+      case 'cancelled':
+        return Colors.grey;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  IconData get statusIcon {
+    switch (status.toLowerCase()) {
+      case 'completed':
+        return Icons.check_circle;
+      case 'processing':
+        return Icons.refresh;
+      case 'pending':
+        return Icons.schedule;
+      case 'failed':
+        return Icons.error;
+      case 'cancelled':
+        return Icons.cancel;
+      default:
+        return Icons.help_outline;
+    }
+  }
+}
+
+class User {
+  final int id;
+  final String email;
+  final String firstName;
+  final String lastName;
+  final String loyaltyRank;
+  final int loyaltyPoints;
+
+  User({
+    required this.id,
+    required this.email,
+    required this.firstName,
+    required this.lastName,
+    required this.loyaltyRank,
+    required this.loyaltyPoints,
+  });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'] ?? 0,
+      email: json['email'] ?? '',
+      firstName: json['firstName'] ?? '',
+      lastName: json['lastName'] ?? '',
+      loyaltyRank: json['loyaltyRank'] ?? '',
+      loyaltyPoints: json['loyaltyPoints'] ?? 0,
+    );
+  }
+
+  String get fullName => '$firstName $lastName'.trim();
+}
+
+class StatusDetails {
+  final DateTime lastChecked;
+  final String? blockchainStatus;
+  final Map<String, dynamic>? loyalty;
+
+  StatusDetails({
+    required this.lastChecked,
+    this.blockchainStatus,
+    this.loyalty,
+  });
+
+  factory StatusDetails.fromJson(Map<String, dynamic> json) {
+    return StatusDetails(
+      lastChecked: DateTime.parse(json['lastChecked']),
+      blockchainStatus: json['blockchainStatus'],
+      loyalty: json['loyalty']?.cast<String, dynamic>(),
+    );
+  }
+}
+
+class TransactionStatusResponse {
+  final bool success;
+  final TransactionData data;
+  final String message;
+
+  TransactionStatusResponse({
+    required this.success,
+    required this.data,
+    required this.message,
+  });
+
+  factory TransactionStatusResponse.fromJson(Map<String, dynamic> json) {
+    return TransactionStatusResponse(
+      success: json['success'] ?? false,
+      data: TransactionData.fromJson(json['data']),
+      message: json['message'] ?? '',
+    );
+  }
+}
+
+class TransactionData {
+  final Transaction transaction;
+  final StatusDetails statusDetails;
+
+  TransactionData({
+    required this.transaction,
+    required this.statusDetails,
+  });
+
+  factory TransactionData.fromJson(Map<String, dynamic> json) {
+    return TransactionData(
+      transaction: Transaction.fromJson(json['transaction']),
+      statusDetails: StatusDetails.fromJson(json['statusDetails']),
+    );
+  }
 }
