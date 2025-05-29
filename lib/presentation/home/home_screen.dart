@@ -91,8 +91,8 @@ class HomeScreen extends ConsumerWidget {
               'assets/image/icons/notification-bell.png',
               width: 24,
               height: 24,
-              errorBuilder:
-                  (context, error, _) => const Icon(Icons.notifications),
+              errorBuilder: (context, error, _) =>
+                  const Icon(Icons.notifications),
             ),
           ),
         ),
@@ -315,12 +315,11 @@ class HomeScreen extends ConsumerWidget {
                 'assets/image/icons/exchange-vertical.png',
                 width: 40,
                 height: 40,
-                errorBuilder:
-                    (context, error, _) => const Icon(
-                      Icons.swap_vert,
-                      color: Colors.black,
-                      size: 40,
-                    ),
+                errorBuilder: (context, error, _) => const Icon(
+                  Icons.swap_vert,
+                  color: Colors.black,
+                  size: 40,
+                ),
               ),
             ),
           ),
@@ -347,25 +346,23 @@ class HomeScreen extends ConsumerWidget {
               height: 36,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                image:
-                    selectedCurrency.logo != null
-                        ? DecorationImage(
-                          image: NetworkImage(selectedCurrency.logo!),
-                          fit: BoxFit.cover,
-                        )
-                        : null,
+                image: selectedCurrency.logo != null
+                    ? DecorationImage(
+                        image: NetworkImage(selectedCurrency.logo!),
+                        fit: BoxFit.cover,
+                      )
+                    : null,
                 color:
                     selectedCurrency.logo == null ? Colors.grey.shade200 : null,
               ),
-              child:
-                  selectedCurrency.logo == null
-                      ? Center(
-                        child: Text(
-                          selectedCurrency.code.substring(0, 1),
-                          style: const TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      )
-                      : null,
+              child: selectedCurrency.logo == null
+                  ? Center(
+                      child: Text(
+                        selectedCurrency.code.substring(0, 1),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    )
+                  : null,
             ),
             const SizedBox(width: 8),
             Text(
@@ -395,12 +392,11 @@ class HomeScreen extends ConsumerWidget {
             'assets/icons/arrow-short-down.png',
             width: 12,
             height: 6,
-            errorBuilder:
-                (context, error, _) => const Icon(
-                  Icons.keyboard_arrow_down,
-                  size: 12,
-                  color: Colors.black54,
-                ),
+            errorBuilder: (context, error, _) => const Icon(
+              Icons.keyboard_arrow_down,
+              size: 12,
+              color: Colors.black54,
+            ),
           ),
         ],
       ),
@@ -423,6 +419,7 @@ class HomeScreen extends ConsumerWidget {
         return StatefulBuilder(
           builder: (context, setState) {
             final currenciesAsync = ref.watch(currenciesProvider);
+            final exchangeForm = ref.watch(exchangeFormProvider);
             String searchQuery = '';
 
             return Padding(
@@ -485,20 +482,61 @@ class HomeScreen extends ConsumerWidget {
                   Expanded(
                     child: currenciesAsync.when(
                       data: (currencies) {
+                        // Filter currencies based on validation rules
+                        List<Currency> availableCurrencies = currencies;
+
+                        // Determine if this is for "from" or "to" currency selection
+                        bool isFromCurrencySelection =
+                            selectedCurrency == exchangeForm.fromCurrency;
+                        bool isToCurrencySelection =
+                            selectedCurrency == exchangeForm.toCurrency;
+
+                        // If selecting "to" currency and "from" is already selected
+                        if (!isFromCurrencySelection &&
+                            exchangeForm.fromCurrency != null) {
+                          if (exchangeForm.fromCurrency!.type == 'CRYPTO') {
+                            // If sending crypto, only show fiat currencies for receiving
+                            availableCurrencies = currencies
+                                .where((currency) => currency.type == 'FIAT')
+                                .toList();
+                          } else if (exchangeForm.fromCurrency!.type ==
+                              'FIAT') {
+                            // If sending fiat, only show crypto currencies for receiving
+                            availableCurrencies = currencies
+                                .where((currency) => currency.type == 'CRYPTO')
+                                .toList();
+                          }
+                        }
+                        // If selecting "from" currency and "to" is already selected
+                        else if (isFromCurrencySelection &&
+                            exchangeForm.toCurrency != null) {
+                          if (exchangeForm.toCurrency!.type == 'CRYPTO') {
+                            // If receiving crypto, only show fiat currencies for sending
+                            availableCurrencies = currencies
+                                .where((currency) => currency.type == 'FIAT')
+                                .toList();
+                          } else if (exchangeForm.toCurrency!.type == 'FIAT') {
+                            // If receiving fiat, only show crypto currencies for sending
+                            availableCurrencies = currencies
+                                .where((currency) => currency.type == 'CRYPTO')
+                                .toList();
+                          }
+                        }
+
                         // Filter currencies based on search
                         final filteredCurrencies =
-                            currencies.where((currency) {
-                              if (searchQuery.isEmpty) return true;
-                              return currency.code.toLowerCase().contains(
+                            availableCurrencies.where((currency) {
+                          if (searchQuery.isEmpty) return true;
+                          return currency.code.toLowerCase().contains(
                                     searchQuery.toLowerCase(),
                                   ) ||
-                                  currency.name.toLowerCase().contains(
+                              currency.name.toLowerCase().contains(
                                     searchQuery.toLowerCase(),
                                   ) ||
-                                  currency.type.toLowerCase().contains(
+                              currency.type.toLowerCase().contains(
                                     searchQuery.toLowerCase(),
                                   );
-                            }).toList();
+                        }).toList();
 
                         return ListView.builder(
                           itemCount: filteredCurrencies.length,
@@ -510,29 +548,26 @@ class HomeScreen extends ConsumerWidget {
                                 height: 32,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  image:
-                                      currency.logo != null
-                                          ? DecorationImage(
-                                            image: NetworkImage(currency.logo!),
-                                            fit: BoxFit.cover,
-                                          )
-                                          : null,
-                                  color:
-                                      currency.logo == null
-                                          ? Colors.grey.shade200
-                                          : null,
-                                ),
-                                child:
-                                    currency.logo == null
-                                        ? Center(
-                                          child: Text(
-                                            currency.code.substring(0, 1),
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
+                                  image: currency.logo != null
+                                      ? DecorationImage(
+                                          image: NetworkImage(currency.logo!),
+                                          fit: BoxFit.cover,
                                         )
-                                        : null,
+                                      : null,
+                                  color: currency.logo == null
+                                      ? Colors.grey.shade200
+                                      : null,
+                                ),
+                                child: currency.logo == null
+                                    ? Center(
+                                        child: Text(
+                                          currency.code.substring(0, 1),
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      )
+                                    : null,
                               ),
                               title: Text(
                                 currency.code,
@@ -555,14 +590,18 @@ class HomeScreen extends ConsumerWidget {
                                   vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFF4F5F7),
+                                  color: currency.type == 'CRYPTO'
+                                      ? const Color(0xFFE3F2FD)
+                                      : const Color(0xFFF4F5F7),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 child: Text(
                                   currency.type,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 12,
-                                    color: Color(0xFF6E757D),
+                                    color: currency.type == 'CRYPTO'
+                                        ? const Color(0xFF1976D2)
+                                        : const Color(0xFF6E757D),
                                   ),
                                 ),
                               ),
@@ -574,16 +613,14 @@ class HomeScreen extends ConsumerWidget {
                           },
                         );
                       },
-                      loading:
-                          () =>
-                              const Center(child: CircularProgressIndicator()),
-                      error:
-                          (error, stack) => Center(
-                            child: Text(
-                              'Error loading currencies: $error',
-                              style: const TextStyle(color: Colors.red),
-                            ),
-                          ),
+                      loading: () =>
+                          const Center(child: CircularProgressIndicator()),
+                      error: (error, stack) => Center(
+                        child: Text(
+                          'Error loading currencies: $error',
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -612,23 +649,39 @@ class HomeScreen extends ConsumerWidget {
   }
 
   Widget _buildContinueButton(BuildContext context, WidgetRef ref) {
+    final exchangeForm = ref.watch(exchangeFormProvider);
+
+    // Check if the form is ready for continuation
+    bool isFormReady = exchangeForm.fromCurrency != null &&
+        exchangeForm.toCurrency != null &&
+        exchangeForm.sendAmount.isNotEmpty &&
+        exchangeForm.calculation != null &&
+        !exchangeForm.isLoading &&
+        exchangeForm.error == null;
+
     return Container(
       width: double.infinity,
       height: 56,
       child: ElevatedButton(
-        onPressed: () => context.push('/cash'),
+        onPressed: isFormReady ? () => context.push('/cash') : null,
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFFFC000), // Always yellow (#FFC000)
-          foregroundColor: const Color(0xFF181F30), // Text color
+          backgroundColor:
+              isFormReady ? const Color(0xFFFFC000) : Colors.grey.shade300,
+          foregroundColor:
+              isFormReady ? const Color(0xFF181F30) : Colors.grey.shade500,
           padding: const EdgeInsets.symmetric(vertical: 16),
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        child: const Text(
-          'Continue',
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+        child: Text(
+          isFormReady ? 'Continue' : 'Please complete exchange details',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: isFormReady ? const Color(0xFF181F30) : Colors.grey.shade500,
+          ),
         ),
       ),
     );
@@ -799,11 +852,10 @@ class HomeScreen extends ConsumerWidget {
               'assets/images/wallets/metamask.png',
               width: 24,
               height: 24,
-              errorBuilder:
-                  (context, error, stackTrace) => const Icon(
-                    Icons.account_balance_wallet,
-                    color: Colors.white,
-                  ),
+              errorBuilder: (context, error, stackTrace) => const Icon(
+                Icons.account_balance_wallet,
+                color: Colors.white,
+              ),
             ),
             const SizedBox(width: 12),
             const Text(
@@ -943,18 +995,17 @@ class HomeScreen extends ConsumerWidget {
                   width: 40,
                   height: 40,
                   fit: BoxFit.cover,
-                  errorBuilder:
-                      (context, error, _) => CircleAvatar(
-                        backgroundColor: Colors.grey.shade200,
-                        radius: 20,
-                        child: Text(
-                          name.substring(0, 1),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                  errorBuilder: (context, error, _) => CircleAvatar(
+                    backgroundColor: Colors.grey.shade200,
+                    radius: 20,
+                    child: Text(
+                      name.substring(0, 1),
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
                       ),
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
@@ -989,10 +1040,9 @@ class HomeScreen extends ConsumerWidget {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color:
-                      isSend
-                          ? const Color(0xFFFF3E24)
-                          : const Color(0xFF00C735),
+                  color: isSend
+                      ? const Color(0xFFFF3E24)
+                      : const Color(0xFF00C735),
                 ),
               ),
               Text(

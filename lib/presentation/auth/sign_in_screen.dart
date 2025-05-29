@@ -484,32 +484,31 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
     showDialog(
       context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Forgot Password'),
-            content: const Text(
-              'We will send a password reset link to your email address.',
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-
-                  // In a real app, you would call an API to send a reset link
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Reset link sent to your email'),
-                    ),
-                  );
-                },
-                child: const Text('Send Reset Link'),
-              ),
-            ],
+      builder: (context) => AlertDialog(
+        title: const Text('Forgot Password'),
+        content: const Text(
+          'We will send a password reset link to your email address.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
           ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+
+              // In a real app, you would call an API to send a reset link
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Reset link sent to your email'),
+                ),
+              );
+            },
+            child: const Text('Send Reset Link'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -528,7 +527,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 48),
-
                 Center(
                   child: Column(
                     children: [
@@ -559,7 +557,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   ),
                 ),
                 const SizedBox(height: 48),
-
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -599,7 +596,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   ],
                 ),
                 const SizedBox(height: 16),
-
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -638,7 +634,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     ),
                   ],
                 ),
-
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
@@ -653,9 +648,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 16),
-
                 SizedBox(
                   width: double.infinity,
                   height: 56,
@@ -669,41 +662,38 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       ),
                       disabledBackgroundColor: Colors.grey.shade400,
                     ),
-                    child:
-                        isLoading
-                            ? Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: CircularProgressIndicator(
-                                    color: Color(0xFF181F30),
-                                    strokeWidth: 2,
-                                  ),
+                    child: isLoading
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  color: Color(0xFF181F30),
+                                  strokeWidth: 2,
                                 ),
-                                const SizedBox(width: 8),
-                                const Text(
-                                  'Logging in...',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            )
-                            : const Text(
-                              'Log in',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
                               ),
+                              const SizedBox(width: 8),
+                              const Text(
+                                'Logging in...',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          )
+                        : const Text(
+                            'Log in',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
                             ),
+                          ),
                   ),
                 ),
-
                 const SizedBox(height: 24),
-
                 const Row(
                   children: [
                     Expanded(
@@ -724,17 +714,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 24),
-
                 SocialLoginButtons(
                   onGoogleLogin: _handleGoogleLogin,
                   onFacebookLogin: () => _handleFacebookLogin(context, ref),
                   onAppleLogin: () => _handleAppleLogin(context, ref),
                 ),
-
                 const SizedBox(height: 48),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

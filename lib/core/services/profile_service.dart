@@ -8,12 +8,12 @@ class ProfileService {
   final ApiClient _apiClient;
 
   ProfileService({ApiClient? apiClient})
-    : _apiClient = apiClient ?? ApiClient(baseUrl: Endpoints.baseUrl);
+      : _apiClient = apiClient ?? ApiClient(baseUrl: Endpoints.baseUrl);
 
   // Get user preferences
   Future<Map<String, dynamic>> getUserPreferences() async {
     try {
-      final response = await _apiClient.get('/user/preferences');
+      final response = await _apiClient.get('/api/user/preferences');
 
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -44,7 +44,7 @@ class ProfileService {
       });
 
       final response = await _apiClient.post(
-        '/user/avatar',
+        '/api/user/avatar',
         data: formData,
         options: Options(headers: {'Content-Type': 'multipart/form-data'}),
       );
@@ -61,7 +61,7 @@ class ProfileService {
   Future<void> updatePreference(String key, dynamic value) async {
     try {
       final response = await _apiClient.put(
-        '/user/preferences',
+        '/api/user/preferences',
         data: {key: value},
       );
 
@@ -80,7 +80,8 @@ class ProfileService {
   // Update profile information
   Future<bool> updateProfile(Map<String, dynamic> profileData) async {
     try {
-      final response = await _apiClient.put('/user/profile', data: profileData);
+      final response =
+          await _apiClient.put(Endpoints.updateUserProfile, data: profileData);
       return response.statusCode == 200;
     } on DioException catch (e) {
       throw Exception('Network error updating profile: ${e.message}');
@@ -92,10 +93,16 @@ class ProfileService {
   // Get user profile
   Future<User> getUserProfile() async {
     try {
-      final response = await _apiClient.get('/user/profile');
+      final response = await _apiClient.get(Endpoints.getUserProfile);
 
       if (response.statusCode == 200) {
-        return User.fromJson(response.data);
+        // Parse the nested data structure: response.data.data
+        final userData = response.data['data'];
+        if (userData != null) {
+          return User.fromJson(userData);
+        } else {
+          throw Exception('Invalid response format: missing user data');
+        }
       } else {
         throw Exception('Failed to load profile: ${response.statusMessage}');
       }
@@ -113,7 +120,7 @@ class ProfileService {
   }) async {
     try {
       final response = await _apiClient.put(
-        '/user/password',
+        '/api/user/password',
         data: {'currentPassword': currentPassword, 'newPassword': newPassword},
       );
 
@@ -132,7 +139,7 @@ class ProfileService {
   Future<Map<String, dynamic>> toggleTwoFactorAuth(bool enable) async {
     try {
       final response = await _apiClient.post(
-        '/user/2fa/toggle',
+        '/api/user/2fa/toggle',
         data: {'enabled': enable},
       );
 
@@ -152,7 +159,7 @@ class ProfileService {
   Future<bool> deleteAccount({required String password}) async {
     try {
       final response = await _apiClient.delete(
-        '/user/account',
+        '/api/user/account',
         data: {'password': password},
       );
 
@@ -170,7 +177,7 @@ class ProfileService {
   // Get user statistics (transactions, etc.)
   Future<Map<String, dynamic>> getUserStats() async {
     try {
-      final response = await _apiClient.get('/user/stats');
+      final response = await _apiClient.get('/api/user/stats');
 
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -196,7 +203,7 @@ class ProfileService {
       });
 
       final response = await _apiClient.post(
-        '/user/profile-image',
+        '/api/user/profile-image',
         data: formData,
         options: Options(headers: {'Content-Type': 'multipart/form-data'}),
       );
@@ -216,7 +223,7 @@ class ProfileService {
   // Get notification settings
   Future<Map<String, bool>> getNotificationSettings() async {
     try {
-      final response = await _apiClient.get('/user/notification-settings');
+      final response = await _apiClient.get('/api/user/notification-settings');
 
       if (response.statusCode == 200) {
         final data = response.data as Map<String, dynamic>;
@@ -239,7 +246,7 @@ class ProfileService {
   Future<void> updateNotificationSettings(Map<String, bool> settings) async {
     try {
       final response = await _apiClient.put(
-        '/user/notification-settings',
+        '/api/user/notification-settings',
         data: settings,
       );
 
@@ -260,7 +267,7 @@ class ProfileService {
   // Get privacy settings
   Future<Map<String, dynamic>> getPrivacySettings() async {
     try {
-      final response = await _apiClient.get('/user/privacy-settings');
+      final response = await _apiClient.get('/api/user/privacy-settings');
 
       if (response.statusCode == 200) {
         return response.data as Map<String, dynamic>;
@@ -280,7 +287,7 @@ class ProfileService {
   Future<void> updatePrivacySettings(Map<String, dynamic> settings) async {
     try {
       final response = await _apiClient.put(
-        '/user/privacy-settings',
+        '/api/user/privacy-settings',
         data: settings,
       );
 

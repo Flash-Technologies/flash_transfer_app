@@ -14,6 +14,7 @@ class ExchangeService {
       final response = await _dio.get(Endpoints.currencies);
       if (response.statusCode == 200 && response.data['success']) {
         final List<dynamic> data = response.data['data'];
+        print("the data is ${data}");  
         return data.map((json) => Currency.fromJson(json)).toList();
       } else {
         throw Exception(response.data['message'] ?? 'Failed to load currencies');

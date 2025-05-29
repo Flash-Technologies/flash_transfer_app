@@ -7,6 +7,7 @@ import '../core/models/user.dart';
 import '../core/services/auth_service.dart';
 import 'dart:async';
 import 'dart:convert';
+import 'user_provider.dart';
 
 // API Client provider
 final apiClientProvider = Provider<ApiClient>((ref) {
@@ -64,13 +65,14 @@ class AuthState {
 // Auth notifier
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthService _authService;
+  final Ref _ref;
   final _controller = StreamController<AuthState>.broadcast();
 
   // Expose a stream of auth state changes
   Stream<AuthState> get stream => _controller.stream;
 
-  AuthNotifier(this._authService)
-    : super(AuthState(status: AuthStatus.initial, isLoading: true)) {
+  AuthNotifier(this._authService, this._ref)
+      : super(AuthState(status: AuthStatus.initial, isLoading: true)) {
     _initialize();
   }
 
@@ -237,6 +239,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
           message: response.message,
           isLoading: false,
         );
+
+        // Update user provider
+        _ref.read(userProvider.notifier).updateUser(response.data!);
+
         return true;
       } else {
         // Extract error message from the response
@@ -245,9 +251,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
             response.data is Map<String, dynamic> &&
             (response.data as Map<String, dynamic>)['errors']
                 is Map<String, dynamic>) {
-          final errors =
-              (response.data as Map<String, dynamic>)['errors']
-                  as Map<String, dynamic>;
+          final errors = (response.data as Map<String, dynamic>)['errors']
+              as Map<String, dynamic>;
           if (errors['CD'] is Map<String, dynamic>) {
             final cdErrors = errors['CD'] as Map<String, dynamic>;
             errorMessage = cdErrors['CD02']?.toString() ?? errorMessage;
@@ -289,6 +294,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
             isLoading: false,
           ),
         );
+
+        // Update user provider
+        _ref.read(userProvider.notifier).updateUser(response.data!);
+
         return true;
       } else {
         final errorMessage = _extractErrorMessage(response);
@@ -484,9 +493,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       // For this implementation, since we're just sending the wallet address
       // We'll use a placeholder for signature requirement
       final response = await _authService.authenticateWithWallet(
-        WalletAuthRequest(
-          walletAddress: walletAddress
-        ),
+        WalletAuthRequest(walletAddress: walletAddress),
       );
 
       if (response.success && response.data != null) {
@@ -543,7 +550,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 // Auth provider
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final authService = ref.watch(authServiceProvider);
-  return AuthNotifier(authService);
+  return AuthNotifier(authService, ref);
 });
 
 // Countries provider

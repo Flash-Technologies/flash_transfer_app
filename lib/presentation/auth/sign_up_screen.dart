@@ -56,10 +56,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   CountryModel _convertToCountryModel(auth_models.CountryModel authCountry) {
     return CountryModel(
       name: authCountry.name,
-      code:
-          authCountry.name
-              .substring(0, 2)
-              .toLowerCase(), // Use first 2 chars as code
+      code: authCountry.name
+          .substring(0, 2)
+          .toLowerCase(), // Use first 2 chars as code
       flagUrl: authCountry.flag,
     );
   }
@@ -294,19 +293,15 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
 
-        final countries =
-            data
-                .map(
-                  (country) => auth_models.CountryModel(
-                    name: country['name']['common'],
-                    flag:
-                        country['flags']['svg'] ??
-                        country['flags']['png'] ??
-                        '',
-                  ),
-                )
-                .toList()
-              ..sort((a, b) => a.name.compareTo(b.name));
+        final countries = data
+            .map(
+              (country) => auth_models.CountryModel(
+                name: country['name']['common'],
+                flag: country['flags']['svg'] ?? country['flags']['png'] ?? '',
+              ),
+            )
+            .toList()
+          ..sort((a, b) => a.name.compareTo(b.name));
 
         if (mounted) {
           setState(() {
@@ -425,45 +420,43 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder:
-          (context) => Container(
-            height: MediaQuery.of(context).size.height * 0.6,
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              children: [
-                const Text(
-                  'Select Country',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: _countries.length,
-                    itemBuilder: (context, index) {
-                      final country = _countries[index];
-                      return ListTile(
-                        leading: Image.network(
-                          country.flag,
-                          width: 32,
-                          height: 20,
-                          errorBuilder:
-                              (context, error, stackTrace) =>
-                                  const Icon(Icons.flag),
-                        ),
-                        title: Text(country.name),
-                        onTap: () {
-                          setState(() {
-                            _selectedCountry = country;
-                          });
-                          Navigator.pop(context);
-                        },
-                      );
-                    },
-                  ),
-                ),
-              ],
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.6,
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            const Text(
+              'Select Country',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-          ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _countries.length,
+                itemBuilder: (context, index) {
+                  final country = _countries[index];
+                  return ListTile(
+                    leading: Image.network(
+                      country.flag,
+                      width: 32,
+                      height: 20,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const Icon(Icons.flag),
+                    ),
+                    title: Text(country.name),
+                    onTap: () {
+                      setState(() {
+                        _selectedCountry = country;
+                      });
+                      Navigator.pop(context);
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -479,7 +472,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 24),
-
                 Center(
                   child: Column(
                     children: [
@@ -510,7 +502,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   ),
                 ),
                 const SizedBox(height: 32),
-
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -522,63 +513,55 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       ),
                     ),
                     InkWell(
-                      onTap:
-                          _loadingCountries
-                              ? null
-                              : () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  backgroundColor: Colors.transparent,
-                                  shape: const RoundedRectangleBorder(
+                      onTap: _loadingCountries
+                          ? null
+                          : () {
+                              showModalBottomSheet(
+                                context: context,
+                                isScrollControlled: true,
+                                backgroundColor: Colors.transparent,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(20),
+                                  ),
+                                ),
+                                builder: (context) => Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.7,
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
                                     borderRadius: BorderRadius.vertical(
                                       top: Radius.circular(20),
                                     ),
                                   ),
-                                  builder:
-                                      (context) => Container(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                            0.7,
-                                        decoration: const BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.vertical(
-                                            top: Radius.circular(20),
+                                  child: CountryPicker(
+                                    countries: _countries
+                                        .map(
+                                          (c) => _convertToCountryModel(
+                                            c,
                                           ),
-                                        ),
-                                        child: CountryPicker(
-                                          countries:
-                                              _countries
-                                                  .map(
-                                                    (c) =>
-                                                        _convertToCountryModel(
-                                                          c,
-                                                        ),
-                                                  )
-                                                  .toList(),
-                                          selectedCountry:
-                                              _selectedCountry != null
-                                                  ? _convertToCountryModel(
-                                                    _selectedCountry!,
-                                                  )
-                                                  : null,
-                                          onSelect: (country) {
-                                            // Find matching auth country model by name
-                                            final authCountry = _countries
-                                                .firstWhere(
-                                                  (c) => c.name == country.name,
-                                                  orElse:
-                                                      () => _countries.first,
-                                                );
-                                            setState(() {
-                                              _selectedCountry = authCountry;
-                                            });
-                                            Navigator.pop(context);
-                                          },
-                                        ),
-                                      ),
-                                );
-                              },
+                                        )
+                                        .toList(),
+                                    selectedCountry: _selectedCountry != null
+                                        ? _convertToCountryModel(
+                                            _selectedCountry!,
+                                          )
+                                        : null,
+                                    onSelect: (country) {
+                                      // Find matching auth country model by name
+                                      final authCountry = _countries.firstWhere(
+                                        (c) => c.name == country.name,
+                                        orElse: () => _countries.first,
+                                      );
+                                      setState(() {
+                                        _selectedCountry = authCountry;
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ),
+                              );
+                            },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
@@ -589,61 +572,58 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                           border: Border.all(color: const Color(0xFFEBECED)),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child:
-                            _loadingCountries
-                                ? const Row(
-                                  children: [
-                                    SizedBox(
-                                      width: 16,
-                                      height: 16,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                      ),
+                        child: _loadingCountries
+                            ? const Row(
+                                children: [
+                                  SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
                                     ),
-                                    SizedBox(width: 8),
-                                    Text('Loading countries...'),
-                                  ],
-                                )
-                                : Row(
-                                  children: [
-                                    if (_selectedCountry != null) ...[
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(4),
-                                        child: Image.network(
-                                          _selectedCountry!.flag,
-                                          width: 24,
-                                          height: 16,
-                                          errorBuilder:
-                                              (context, error, stackTrace) =>
-                                                  const Icon(
-                                                    Icons.flag,
-                                                    size: 24,
-                                                  ),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text('Loading countries...'),
+                                ],
+                              )
+                            : Row(
+                                children: [
+                                  if (_selectedCountry != null) ...[
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(4),
+                                      child: Image.network(
+                                        _selectedCountry!.flag,
+                                        width: 24,
+                                        height: 16,
+                                        errorBuilder:
+                                            (context, error, stackTrace) =>
+                                                const Icon(
+                                          Icons.flag,
+                                          size: 24,
                                         ),
                                       ),
-                                    ],
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      _selectedCountry?.name ??
-                                          'Select Country',
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        color: Color(0xFF181F30),
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    const Icon(
-                                      Icons.keyboard_arrow_down,
-                                      size: 16,
                                     ),
                                   ],
-                                ),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    _selectedCountry?.name ?? 'Select Country',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      color: Color(0xFF181F30),
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  const Icon(
+                                    Icons.keyboard_arrow_down,
+                                    size: 16,
+                                  ),
+                                ],
+                              ),
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 16),
-
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
@@ -653,7 +633,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-
                 TextFormField(
                   controller: _passwordController,
                   obscureText: true,
@@ -663,7 +642,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   ),
                 ),
                 const SizedBox(height: 16),
-
                 TextFormField(
                   controller: _confirmPasswordController,
                   obscureText: true,
@@ -673,7 +651,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   ),
                 ),
                 const SizedBox(height: 32),
-
                 SizedBox(
                   width: double.infinity,
                   height: 56,
@@ -687,31 +664,26 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                       ),
                       disabledBackgroundColor: Colors.grey.shade400,
                     ),
-                    child:
-                        _isLoading
-                            ? const CircularProgressIndicator(
-                              color: Color(0xFF181F30),
-                            )
-                            : const Text(
-                              'Continue',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                              ),
+                    child: _isLoading
+                        ? const CircularProgressIndicator(
+                            color: Color(0xFF181F30),
+                          )
+                        : const Text(
+                            'Continue',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
                             ),
+                          ),
                   ),
                 ),
-
                 const SizedBox(height: 24),
-
                 SocialLoginButtons(
                   onGoogleLogin: _handleGoogleSignUp,
                   onFacebookLogin: _handleFacebookSignUp,
                   onAppleLogin: _handleAppleSignUp,
                 ),
-
                 const SizedBox(height: 48),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

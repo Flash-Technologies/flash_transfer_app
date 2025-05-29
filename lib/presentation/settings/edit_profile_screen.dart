@@ -119,25 +119,28 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
   }
 
   void _populateUserData() {
-    final user = ref.read(userProvider);
+    final userState = ref.read(userProvider);
+    final user = userState.user;
 
-    _firstNameController.text = user.firstName ?? '';
-    _lastNameController.text = user.lastName ?? '';
-    _emailController.text = user.email ?? '';
-    _permanentAddressController.text = user.permanentAddress ?? '';
-    _presentAddressController.text = user.presentAddress ?? '';
-    _cityController.text = user.city ?? '';
-    _stateController.text = user.state ?? '';
-    _zipController.text = user.postalCode ?? '';
-    _selectedCountry = user.countryName;
+    if (user != null) {
+      _firstNameController.text = user.firstName ?? '';
+      _lastNameController.text = user.lastName ?? '';
+      _emailController.text = user.email ?? '';
+      _permanentAddressController.text = user.permanentAddress ?? '';
+      _presentAddressController.text = user.presentAddress ?? '';
+      _cityController.text = user.city ?? '';
+      _stateController.text = user.state ?? '';
+      _zipController.text = user.postalCode ?? '';
+      _selectedCountry = user.countryName;
 
-    // Parse date of birth
-    if (user.dob != null) {
-      try {
-        _selectedDate = DateTime.parse(user.dob!);
-      } catch (e) {
-        // Handle invalid date format
-        _selectedDate = null;
+      // Parse date of birth
+      if (user.dob != null) {
+        try {
+          _selectedDate = DateTime.parse(user.dob!);
+        } catch (e) {
+          // Handle invalid date format
+          _selectedDate = null;
+        }
       }
     }
   }
@@ -196,51 +199,50 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder:
-          (context) => Container(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  leading: Icon(
-                    Icons.camera_alt,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  title: Text('Take Photo'),
-                  onTap: () async {
-                    Navigator.pop(context);
-                    final image = await picker.pickImage(
-                      source: ImageSource.camera,
-                    );
-                    if (image != null) {
-                      setState(() {
-                        _selectedImage = image;
-                      });
-                    }
-                  },
-                ),
-                ListTile(
-                  leading: Icon(
-                    Icons.photo_library,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  title: Text('Choose from Gallery'),
-                  onTap: () async {
-                    Navigator.pop(context);
-                    final image = await picker.pickImage(
-                      source: ImageSource.gallery,
-                    );
-                    if (image != null) {
-                      setState(() {
-                        _selectedImage = image;
-                      });
-                    }
-                  },
-                ),
-              ],
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: Icon(
+                Icons.camera_alt,
+                color: Theme.of(context).primaryColor,
+              ),
+              title: Text('Take Photo'),
+              onTap: () async {
+                Navigator.pop(context);
+                final image = await picker.pickImage(
+                  source: ImageSource.camera,
+                );
+                if (image != null) {
+                  setState(() {
+                    _selectedImage = image;
+                  });
+                }
+              },
             ),
-          ),
+            ListTile(
+              leading: Icon(
+                Icons.photo_library,
+                color: Theme.of(context).primaryColor,
+              ),
+              title: Text('Choose from Gallery'),
+              onTap: () async {
+                Navigator.pop(context);
+                final image = await picker.pickImage(
+                  source: ImageSource.gallery,
+                );
+                if (image != null) {
+                  setState(() {
+                    _selectedImage = image;
+                  });
+                }
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -251,54 +253,52 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder:
-          (context) => Container(
-            height: MediaQuery.of(context).size.height * 0.7,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-            ),
-            child: Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    'Select Country',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.7,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              child: Text(
+                'Select Country',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
-                  ),
-                ),
-                Expanded(
-                  child: ListView(
-                    children:
-                        [
-                              'United States',
-                              'United Kingdom',
-                              'Canada',
-                              'France',
-                              'Germany',
-                              'Australia',
-                              'Japan',
-                              'South Korea',
-                            ]
-                            .map(
-                              (country) => ListTile(
-                                title: Text(country),
-                                onTap: () {
-                                  setState(() {
-                                    _selectedCountry = country;
-                                  });
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            )
-                            .toList(),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+            Expanded(
+              child: ListView(
+                children: [
+                  'United States',
+                  'United Kingdom',
+                  'Canada',
+                  'France',
+                  'Germany',
+                  'Australia',
+                  'Japan',
+                  'South Korea',
+                ]
+                    .map(
+                      (country) => ListTile(
+                        title: Text(country),
+                        onTap: () {
+                          setState(() {
+                            _selectedCountry = country;
+                          });
+                          Navigator.pop(context);
+                        },
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -342,7 +342,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
     final profileData = {
       'firstName': _firstNameController.text.trim(),
       'lastName': _lastNameController.text.trim(),
-      'email': _emailController.text.trim(),
+      // Email is excluded as it cannot be changed
       'permanentAddress': _permanentAddressController.text.trim(),
       'presentAddress': _presentAddressController.text.trim(),
       'city': _cityController.text.trim(),
@@ -358,9 +358,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
     }
 
     try {
-      final success = await ref
-          .read(profileProvider.notifier)
-          .updateProfile(profileData);
+      final success =
+          await ref.read(profileProvider.notifier).updateProfile(profileData);
 
       if (success && mounted) {
         HapticFeedback.mediumImpact();
@@ -380,13 +379,41 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
               borderRadius: BorderRadius.circular(12),
             ),
             margin: const EdgeInsets.all(16),
+            duration: const Duration(seconds: 3),
           ),
         );
 
-        // Navigate back after delay
-        Future.delayed(const Duration(seconds: 1), () {
-          if (mounted) Navigator.of(context).pop();
-        });
+        // Clear password field after successful update
+        _passwordController.clear();
+
+        // Don't navigate back immediately - let user see the updated values
+        // User can manually navigate back using the back button
+      } else {
+        // Handle failure case
+        if (mounted) {
+          final errorMessage =
+              ref.read(profileProvider).error ?? 'Failed to update profile';
+          HapticFeedback.heavyImpact();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Row(
+                children: [
+                  Icon(Icons.error, color: Colors.white),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(errorMessage),
+                  ),
+                ],
+              ),
+              backgroundColor: Colors.red[600],
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              margin: const EdgeInsets.all(16),
+            ),
+          );
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -417,8 +444,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
-    final user = ref.watch(userProvider);
+    final userState = ref.watch(userProvider);
+    final user = userState.user;
     final theme = Theme.of(context);
+
+    // Listen for user data changes and repopulate form
+    ref.listen<UserState>(userProvider, (previous, next) {
+      if (previous?.user != next.user && next.user != null) {
+        // User data has changed, repopulate the form
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _populateUserData();
+        });
+      }
+    });
 
     return Scaffold(
       backgroundColor: const Color(0xFFEFF0F1),
@@ -474,9 +512,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                       ),
                     ),
                   ).animate().fadeIn(
-                    delay: const Duration(milliseconds: 400),
-                    duration: const Duration(milliseconds: 400),
-                  ),
+                        delay: const Duration(milliseconds: 400),
+                        duration: const Duration(milliseconds: 400),
+                      ),
 
                   const SizedBox(width: 16),
 
@@ -490,9 +528,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                       ),
                       textAlign: TextAlign.center,
                     ).animate().fadeIn(
-                      delay: const Duration(milliseconds: 500),
-                      duration: const Duration(milliseconds: 400),
-                    ),
+                          delay: const Duration(milliseconds: 500),
+                          duration: const Duration(milliseconds: 400),
+                        ),
                   ),
 
                   const SizedBox(width: 40), // Balance the back button
@@ -544,13 +582,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                                     controller: _firstNameController,
                                     focusNode: _firstNameFocus,
                                     hintText: 'Alex',
-                                    validator:
-                                        (value) =>
-                                            value?.isEmpty == true
-                                                ? 'Required'
-                                                : null,
-                                    onFieldSubmitted:
-                                        (_) => _lastNameFocus.requestFocus(),
+                                    validator: (value) => value?.isEmpty == true
+                                        ? 'Required'
+                                        : null,
+                                    onFieldSubmitted: (_) =>
+                                        _lastNameFocus.requestFocus(),
                                     animationDelay: 600,
                                   ),
                                 ),
@@ -561,13 +597,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                                     controller: _lastNameController,
                                     focusNode: _lastNameFocus,
                                     hintText: 'Smith',
-                                    validator:
-                                        (value) =>
-                                            value?.isEmpty == true
-                                                ? 'Required'
-                                                : null,
-                                    onFieldSubmitted:
-                                        (_) => _passwordFocus.requestFocus(),
+                                    validator: (value) => value?.isEmpty == true
+                                        ? 'Required'
+                                        : null,
+                                    onFieldSubmitted: (_) =>
+                                        _passwordFocus.requestFocus(),
                                     animationDelay: 700,
                                   ),
                                 ),
@@ -583,24 +617,26 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                               focusNode: _passwordFocus,
                               hintText: 'Leave empty to keep current password',
                               isPassword: true,
-                              onFieldSubmitted:
-                                  (_) => _emailFocus.requestFocus(),
+                              onFieldSubmitted: (_) =>
+                                  _emailFocus.requestFocus(),
                               animationDelay: 800,
                             ),
 
                             const SizedBox(height: 20),
 
-                            // Email Field
+                            // Email Field (Read-only)
                             _buildFormField(
-                              label: 'Email Address',
+                              label: 'Email Address (Cannot be changed)',
                               controller: _emailController,
                               focusNode: _emailFocus,
                               hintText: 'alexsmith@gmail.com',
                               keyboardType: TextInputType.emailAddress,
-                              validator: _validateEmail,
-                              onFieldSubmitted:
-                                  (_) => _permanentAddressFocus.requestFocus(),
+                              validator:
+                                  null, // No validation needed for read-only field
+                              onFieldSubmitted: (_) =>
+                                  _permanentAddressFocus.requestFocus(),
                               animationDelay: 900,
+                              isReadOnly: true,
                             ),
 
                             const SizedBox(height: 20),
@@ -616,8 +652,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                               controller: _permanentAddressController,
                               focusNode: _permanentAddressFocus,
                               hintText: 'San Jose, California, USA',
-                              onFieldSubmitted:
-                                  (_) => _presentAddressFocus.requestFocus(),
+                              onFieldSubmitted: (_) =>
+                                  _presentAddressFocus.requestFocus(),
                               animationDelay: 1100,
                             ),
 
@@ -628,8 +664,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                               controller: _presentAddressController,
                               focusNode: _presentAddressFocus,
                               hintText: 'San Jose, California, USA',
-                              onFieldSubmitted:
-                                  (_) => _cityFocus.requestFocus(),
+                              onFieldSubmitted: (_) =>
+                                  _cityFocus.requestFocus(),
                               animationDelay: 1200,
                             ),
 
@@ -645,13 +681,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                               controller: _cityController,
                               focusNode: _cityFocus,
                               hintText: 'San Jose',
-                              validator:
-                                  (value) =>
-                                      value?.isEmpty == true
-                                          ? 'Required'
-                                          : null,
-                              onFieldSubmitted:
-                                  (_) => _stateFocus.requestFocus(),
+                              validator: (value) =>
+                                  value?.isEmpty == true ? 'Required' : null,
+                              onFieldSubmitted: (_) =>
+                                  _stateFocus.requestFocus(),
                               animationDelay: 1400,
                             ),
 
@@ -666,13 +699,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                                     controller: _stateController,
                                     focusNode: _stateFocus,
                                     hintText: 'CA',
-                                    validator:
-                                        (value) =>
-                                            value?.isEmpty == true
-                                                ? 'Required'
-                                                : null,
-                                    onFieldSubmitted:
-                                        (_) => _zipFocus.requestFocus(),
+                                    validator: (value) => value?.isEmpty == true
+                                        ? 'Required'
+                                        : null,
+                                    onFieldSubmitted: (_) =>
+                                        _zipFocus.requestFocus(),
                                     animationDelay: 1500,
                                   ),
                                 ),
@@ -684,11 +715,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                                     focusNode: _zipFocus,
                                     hintText: '24742',
                                     keyboardType: TextInputType.number,
-                                    validator:
-                                        (value) =>
-                                            value?.isEmpty == true
-                                                ? 'Required'
-                                                : null,
+                                    validator: (value) => value?.isEmpty == true
+                                        ? 'Required'
+                                        : null,
                                     onFieldSubmitted: (_) => _saveProfile(),
                                     animationDelay: 1600,
                                   ),
@@ -705,10 +734,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                                 width: double.infinity,
                                 height: 56,
                                 child: ElevatedButton(
-                                  onPressed:
-                                      profileState.isLoading
-                                          ? null
-                                          : _saveProfile,
+                                  onPressed: profileState.isLoading
+                                      ? null
+                                      : _saveProfile,
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: const Color(0xFFFFC000),
                                     foregroundColor: const Color(0xFF181F30),
@@ -719,41 +747,40 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                                     disabledBackgroundColor:
                                         Colors.grey.shade300,
                                   ),
-                                  child:
-                                      profileState.isLoading
-                                          ? SizedBox(
-                                            width: 24,
-                                            height: 24,
-                                            child: CircularProgressIndicator(
-                                              strokeWidth: 2,
-                                              valueColor:
-                                                  AlwaysStoppedAnimation<Color>(
-                                                    const Color(0xFF181F30),
-                                                  ),
-                                            ),
-                                          )
-                                          : Text(
-                                            'Save',
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
+                                  child: profileState.isLoading
+                                      ? SizedBox(
+                                          width: 24,
+                                          height: 24,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            valueColor:
+                                                AlwaysStoppedAnimation<Color>(
+                                              const Color(0xFF181F30),
                                             ),
                                           ),
+                                        )
+                                      : Text(
+                                          'Save',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
                                 ),
                               ),
                             ).animate().slideY(
-                              begin: 1,
-                              delay: const Duration(milliseconds: 1700),
-                              duration: const Duration(milliseconds: 600),
-                              curve: Curves.easeOutBack,
-                            ),
+                                  begin: 1,
+                                  delay: const Duration(milliseconds: 1700),
+                                  duration: const Duration(milliseconds: 600),
+                                  curve: Curves.easeOutBack,
+                                ),
                           ],
                         ),
                       ).animate().scale(
-                        delay: const Duration(milliseconds: 400),
-                        duration: const Duration(milliseconds: 800),
-                        curve: Curves.easeOutBack,
-                      ),
+                            delay: const Duration(milliseconds: 400),
+                            duration: const Duration(milliseconds: 800),
+                            curve: Curves.easeOutBack,
+                          ),
                     ],
                   ),
                 ),
@@ -766,7 +793,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
   }
 
   Widget _buildProfileAvatar() {
-    final user = ref.watch(userProvider);
+    final userState = ref.watch(userProvider);
+    final user = userState.user;
 
     return Stack(
       children: [
@@ -787,16 +815,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
           child: CircleAvatar(
             radius: 59,
             backgroundColor: Colors.grey[200],
-            backgroundImage:
-                _selectedImage != null
-                    ? FileImage(File(_selectedImage!.path))
-                    : user.profileImage != null
-                    ? NetworkImage(user.profileImage!)
+            backgroundImage: _selectedImage != null
+                ? FileImage(File(_selectedImage!.path))
+                : user?.profileImage != null
+                    ? NetworkImage(user!.profileImage!)
                     : null,
-            child:
-                _selectedImage == null && user.profileImage == null
-                    ? Icon(Icons.person, size: 60, color: Colors.grey[400])
-                    : null,
+            child: _selectedImage == null && user?.profileImage == null
+                ? Icon(Icons.person, size: 60, color: Colors.grey[400])
+                : null,
           ),
         ),
         Positioned(
@@ -840,6 +866,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
     String? Function(String?)? validator,
     TextInputType? keyboardType,
     bool isPassword = false,
+    bool isReadOnly = false,
     void Function(String)? onFieldSubmitted,
   }) {
     return Column(
@@ -865,7 +892,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
             keyboardType: keyboardType,
             obscureText: isPassword && !_passwordVisible,
             onFieldSubmitted: onFieldSubmitted,
-            style: TextStyle(fontSize: 14, color: const Color(0xFF181F30)),
+            readOnly: isReadOnly,
+            style: TextStyle(
+              fontSize: 14,
+              color: isReadOnly
+                  ? const Color(0xFF6E757D)
+                  : const Color(0xFF181F30),
+            ),
             decoration: InputDecoration(
               hintText: hintText,
               hintStyle: TextStyle(
@@ -898,32 +931,31 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                 borderSide: BorderSide(color: Colors.red.shade400, width: 2),
               ),
               contentPadding: const EdgeInsets.all(16),
-              suffixIcon:
-                  isPassword
-                      ? IconButton(
-                        icon: Icon(
-                          _passwordVisible
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                          color: Colors.grey[600],
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _passwordVisible = !_passwordVisible;
-                          });
-                        },
-                      )
-                      : null,
+              suffixIcon: isPassword
+                  ? IconButton(
+                      icon: Icon(
+                        _passwordVisible
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: Colors.grey[600],
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _passwordVisible = !_passwordVisible;
+                        });
+                      },
+                    )
+                  : null,
             ),
           ),
         ),
       ],
     ).animate().slideX(
-      begin: -1,
-      delay: Duration(milliseconds: animationDelay),
-      duration: const Duration(milliseconds: 600),
-      curve: Curves.easeOutBack,
-    );
+          begin: -1,
+          delay: Duration(milliseconds: animationDelay),
+          duration: const Duration(milliseconds: 600),
+          curve: Curves.easeOutBack,
+        );
   }
 
   Widget _buildDateField({required int animationDelay}) {
@@ -957,10 +989,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                         : 'Select Date of Birth',
                     style: TextStyle(
                       fontSize: 14,
-                      color:
-                          _selectedDate != null
-                              ? const Color(0xFF181F30)
-                              : const Color(0xFF6E757D),
+                      color: _selectedDate != null
+                          ? const Color(0xFF181F30)
+                          : const Color(0xFF6E757D),
                     ),
                   ),
                 ),
@@ -971,11 +1002,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
         ),
       ],
     ).animate().slideX(
-      begin: -1,
-      delay: Duration(milliseconds: animationDelay),
-      duration: const Duration(milliseconds: 600),
-      curve: Curves.easeOutBack,
-    );
+          begin: -1,
+          delay: Duration(milliseconds: animationDelay),
+          duration: const Duration(milliseconds: 600),
+          curve: Curves.easeOutBack,
+        );
   }
 
   Widget _buildCountryField({required int animationDelay}) {
@@ -1007,10 +1038,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                     _selectedCountry ?? 'Select Country',
                     style: TextStyle(
                       fontSize: 14,
-                      color:
-                          _selectedCountry != null
-                              ? const Color(0xFF181F30)
-                              : const Color(0xFF6E757D),
+                      color: _selectedCountry != null
+                          ? const Color(0xFF181F30)
+                          : const Color(0xFF6E757D),
                     ),
                   ),
                 ),
@@ -1025,11 +1055,11 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
         ),
       ],
     ).animate().slideX(
-      begin: -1,
-      delay: Duration(milliseconds: animationDelay),
-      duration: const Duration(milliseconds: 600),
-      curve: Curves.easeOutBack,
-    );
+          begin: -1,
+          delay: Duration(milliseconds: animationDelay),
+          duration: const Duration(milliseconds: 600),
+          curve: Curves.easeOutBack,
+        );
   }
 
   String? _validateEmail(String? value) {

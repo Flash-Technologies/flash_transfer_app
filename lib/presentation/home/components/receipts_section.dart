@@ -15,20 +15,20 @@ class _ReceiptsSectionState extends State<ReceiptsSection> {
   final Set<int> invitedUsers = {};
   String searchQuery = '';
 
-  // Sample data for demonstration
+  // FIXED: Sample data with proper image handling
   final List<Map<String, dynamic>> frequentReceipts = [
-    {'id': 1, 'name': 'Michael', 'image': 'assets/images/micheal.png'},
-    {'id': 2, 'name': 'Billy', 'image': 'assets/images/Billy.png'},
-    {'id': 3, 'name': 'Mark', 'image': 'assets/images/mark.png'},
-    {'id': 4, 'name': 'James', 'image': 'assets/images/james.png'},
-    {'id': 5, 'name': 'Alex', 'image': 'assets/images/alex.png'},
-    {'id': 6, 'name': 'Sarah', 'image': 'assets/images/Billy.png'},
+    {'id': 1, 'name': 'Michael', 'initial': 'M'},
+    {'id': 2, 'name': 'Billy', 'initial': 'B'},
+    {'id': 3, 'name': 'Mark', 'initial': 'M'},
+    {'id': 4, 'name': 'James', 'initial': 'J'},
+    {'id': 5, 'name': 'Alex', 'initial': 'A'},
+    {'id': 6, 'name': 'Sarah', 'initial': 'S'},
   ];
 
   final List<Map<String, dynamic>> recentReceipts = [
-    {'id': 1, 'name': 'Theresa Webb', 'country': 'USA', 'flag': '🇺🇸', 'image': 'assets/images/theresa.png'},
-    {'id': 2, 'name': 'Courtney Henry', 'country': 'France', 'flag': '🇫🇷', 'image': 'assets/images/courtney.png'},
-    {'id': 3, 'name': 'Robert Fox', 'country': 'USA', 'flag': '🇺🇸', 'image': 'assets/images/robert.png'},
+    {'id': 1, 'name': 'Theresa Webb', 'country': 'USA', 'flag': '🇺🇸', 'initial': 'T'},
+    {'id': 2, 'name': 'Courtney Henry', 'country': 'France', 'flag': '🇫🇷', 'initial': 'C'},
+    {'id': 3, 'name': 'Robert Fox', 'country': 'USA', 'flag': '🇺🇸', 'initial': 'R'},
   ];
 
   @override
@@ -83,10 +83,17 @@ class _ReceiptsSectionState extends State<ReceiptsSection> {
                 padding: EdgeInsets.only(right: AppSpacing.paddingM),
                 child: Column(
                   children: [
+                    // FIXED: Use CircleAvatar with initials instead of missing images
                     CircleAvatar(
                       radius: 24,
-                      backgroundImage: AssetImage(receipt['image']),
-                      backgroundColor: Colors.grey[200],
+                      backgroundColor: _getAvatarColor(index),
+                      child: Text(
+                        receipt['initial'],
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                     SizedBox(height: AppSpacing.marginXS),
                     Text(
@@ -158,10 +165,11 @@ class _ReceiptsSectionState extends State<ReceiptsSection> {
             ),
             child: Row(
               children: [
-                Image.asset(
-                  'assets/images/search.png',
-                  width: 24,
-                  height: 24,
+                // FIXED: Use Icon instead of missing image
+                Icon(
+                  Icons.search,
+                  size: 24,
+                  color: AppColors.textSecondary,
                 ),
                 SizedBox(width: AppSpacing.marginS),
                 Expanded(
@@ -229,9 +237,17 @@ class _ReceiptsSectionState extends State<ReceiptsSection> {
               children: [
                 Row(
                   children: [
+                    // FIXED: Use CircleAvatar with initials instead of missing images
                     CircleAvatar(
                       radius: 20,
-                      backgroundImage: AssetImage(receipt['image']),
+                      backgroundColor: _getAvatarColor(index + 10), // Different colors for recent
+                      child: Text(
+                        receipt['initial'],
+                        style: AppTextStyles.bodyMedium.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                     SizedBox(width: AppSpacing.marginM),
                     Column(
@@ -360,5 +376,20 @@ class _ReceiptsSectionState extends State<ReceiptsSection> {
         ],
       ),
     );
+  }
+
+  // Helper method to generate consistent avatar colors
+  Color _getAvatarColor(int index) {
+    final colors = [
+      AppColors.primaryBlue,
+      AppColors.success,
+      AppColors.primaryYellow.withOpacity(0.8),
+      AppColors.error,
+      const Color(0xFF9C27B0), // Purple
+      const Color(0xFF607D8B), // Blue Grey
+      const Color(0xFF795548), // Brown
+      const Color(0xFFFF5722), // Deep Orange
+    ];
+    return colors[index % colors.length];
   }
 }

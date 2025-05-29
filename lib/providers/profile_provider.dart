@@ -7,7 +7,7 @@ import '../core/services/profile_service.dart';
 import '../core/api/api_client.dart';
 import '../core/api/endpoints.dart';
 import 'auth_provider.dart';
-import 'user_provider.dart';
+import 'user_provider.dart' hide apiClientProvider;
 
 // Enhanced Profile State
 class ProfileState {
@@ -64,6 +64,13 @@ class ProfileState {
 // Profile Service Provider
 final profileServiceProvider = Provider<ProfileService>((ref) {
   final apiClient = ref.watch(apiClientProvider);
+
+  // Ensure token is set if user is authenticated
+  final authState = ref.watch(authProvider);
+  if (authState.user?.token != null) {
+    apiClient.setToken(authState.user!.token!);
+  }
+
   return ProfileService(apiClient: apiClient);
 });
 
@@ -73,7 +80,7 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
   final Ref _ref;
 
   ProfileNotifier(this._profileService, this._ref)
-    : super(const ProfileState());
+      : super(const ProfileState());
 
   // Clear all states
   void clearState() {
@@ -206,11 +213,31 @@ class ProfileNotifier extends StateNotifier<ProfileState> {
       final success = await _profileService.updateProfile(profileData);
 
       if (success) {
-        state = state.copyWith(
-          isLoading: false,
-          isSuccess: true,
-          message: 'Profile updated successfully',
-        );
+        // Fetch updated user profile
+        try {
+          final updatedUser = await _profileService.getUserProfile();
+
+          state = state.copyWith(
+            isLoading: false,
+            isSuccess: true,
+            message: 'Profile updated successfully',
+            updatedUser: updatedUser,
+          );
+
+          // Update user in the user provider
+          _ref.read(userProvider.notifier).updateUser(updatedUser);
+        } catch (e) {
+          // If fetching updated profile fails, still show success
+          state = state.copyWith(
+            isLoading: false,
+            isSuccess: true,
+            message: 'Profile updated successfully',
+          );
+
+          // Trigger user provider to fetch fresh data
+          _ref.read(userProvider.notifier).fetchUserProfile();
+        }
+
         return true;
       } else {
         state = state.copyWith(

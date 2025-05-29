@@ -46,12 +46,11 @@ class SocialLoginButtons extends ConsumerWidget {
                 'assets/images/google.png',
                 width: 24,
                 height: 24,
-                errorBuilder:
-                    (_, __, ___) => const Icon(
-                      Icons.g_mobiledata,
-                      size: 24,
-                      color: Color(0xFF4285F4),
-                    ),
+                errorBuilder: (_, __, ___) => const Icon(
+                  Icons.g_mobiledata,
+                  size: 24,
+                  color: Color(0xFF4285F4),
+                ),
               ),
               label: 'Google',
               onPressed:
@@ -62,12 +61,11 @@ class SocialLoginButtons extends ConsumerWidget {
                 'assets/images/facebook.png',
                 width: 24,
                 height: 24,
-                errorBuilder:
-                    (_, __, ___) => const Icon(
-                      Icons.facebook,
-                      size: 24,
-                      color: Color(0xFF1877F2),
-                    ),
+                errorBuilder: (_, __, ___) => const Icon(
+                  Icons.facebook,
+                  size: 24,
+                  color: Color(0xFF1877F2),
+                ),
               ),
               label: 'Facebook',
               onPressed:
@@ -78,43 +76,39 @@ class SocialLoginButtons extends ConsumerWidget {
                 'assets/images/apple.png',
                 width: 24,
                 height: 24,
-                errorBuilder:
-                    (_, __, ___) =>
-                        const Icon(Icons.apple, size: 24, color: Colors.black),
+                errorBuilder: (_, __, ___) =>
+                    const Icon(Icons.apple, size: 24, color: Colors.black),
               ),
               label: 'Apple',
               onPressed: onAppleLogin ?? () => _handleAppleLogin(context, ref),
             ),
             _buildSocialButton(
-              icon:
-                  isWalletConnecting
-                      ? const SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            Color(0xFF6E757D),
-                          ),
+              icon: isWalletConnecting
+                  ? const SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Color(0xFF6E757D),
                         ),
-                      )
-                      : Image.asset(
-                        'assets/images/wallet.png',
-                        width: 24,
-                        height: 24,
-                        errorBuilder:
-                            (_, __, ___) => const Icon(
-                              Icons.account_balance_wallet,
-                              size: 24,
-                              color: Colors.black,
-                            ),
                       ),
+                    )
+                  : Image.asset(
+                      'assets/images/wallet.png',
+                      width: 24,
+                      height: 24,
+                      errorBuilder: (_, __, ___) => const Icon(
+                        Icons.account_balance_wallet,
+                        size: 24,
+                        color: Colors.black,
+                      ),
+                    ),
               label: isWalletConnecting ? 'Connecting...' : 'Wallet',
-              onPressed:
-                  isWalletConnecting
-                      ? null
-                      : (onWalletLogin ??
-                          () => _handleDirectWalletLogin(context, ref)),
+              onPressed: isWalletConnecting
+                  ? null
+                  : (onWalletLogin ??
+                      () => _handleDirectWalletLogin(context, ref)),
             ),
           ],
         ),
@@ -515,8 +509,7 @@ class SocialLoginButtons extends ConsumerWidget {
       final connected = await walletNotifier.connectWallet(context);
 
       if (!connected) {
-        final errorMessage =
-            ref.read(directWalletProvider).errorMessage ??
+        final errorMessage = ref.read(directWalletProvider).errorMessage ??
             'Wallet connection failed';
         scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
         return;

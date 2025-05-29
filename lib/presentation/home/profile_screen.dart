@@ -8,6 +8,7 @@ import 'package:flash_transfer_app/providers/user_provider.dart';
 import 'package:flash_transfer_app/providers/auth_provider.dart';
 import 'package:flash_transfer_app/presentation/home/components/profile_menu_item.dart';
 import 'package:flash_transfer_app/config/constants.dart';
+import 'package:flash_transfer_app/core/models/user.dart';
 
 // Enhanced Profile Screen with modern UI/UX
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -86,33 +87,75 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     super.dispose();
   }
 
+  // Helper method to get display name based on available data
+  String _getDisplayName(User? user) {
+    if (user == null) return 'User';
+
+    if (user.firstName != null && user.firstName!.isNotEmpty) {
+      if (user.lastName != null && user.lastName!.isNotEmpty) {
+        return '${user.firstName} ${user.lastName}';
+      }
+      return user.firstName!;
+    }
+
+    // If no name available, show auth method
+    if (user.authMethod != null) {
+      return user.authMethod!.toUpperCase();
+    }
+
+    return 'User';
+  }
+
+  // Helper method to get display email/identifier
+  String _getDisplayIdentifier(User? user) {
+    if (user == null) return '';
+
+    // If email is available, show it
+    if (user.email != null && user.email!.isNotEmpty) {
+      return user.email!;
+    }
+
+    // If no email but wallet address available, show wallet address
+    if (user.walletAddress != null && user.walletAddress!.isNotEmpty) {
+      return user.walletAddress!;
+    }
+
+    return '';
+  }
+
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(userProvider);
+    final userState = ref.watch(userProvider);
+    final user = userState.user;
+    final isLoading = userState.isLoading;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: SafeArea(
         child: FadeTransition(
           opacity: _fadeAnimation,
-          child: Column(
-            children: [
-              _buildHeader(context),
-              Expanded(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  child: Column(
-                    children: [
-                      _buildProfileHeader(context, user),
-                      const SizedBox(height: AppSizes.spacingSmall),
-                      _buildMenuItems(context),
-                      const SizedBox(height: AppSizes.spacingXLarge),
-                    ],
-                  ),
+          child: isLoading && user == null
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Column(
+                  children: [
+                    _buildHeader(context),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Column(
+                          children: [
+                            _buildProfileHeader(context, user),
+                            const SizedBox(height: AppSizes.spacingSmall),
+                            _buildMenuItems(context),
+                            const SizedBox(height: AppSizes.spacingXLarge),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -255,38 +298,37 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                       ],
                     ),
                     child: ClipOval(
-                      child:
-                          user?.profileImage != null
-                              ? Image.network(
-                                user!.profileImage!,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  // Handle image load errors
-                                  return const Icon(
-                                    Icons.person,
-                                    size: 40,
+                      child: user?.profileImage != null
+                          ? Image.network(
+                              user!.profileImage!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                // Handle image load errors
+                                return const Icon(
+                                  Icons.person,
+                                  size: 40,
+                                  color: Colors.white,
+                                );
+                              },
+                              loadingBuilder: (
+                                context,
+                                child,
+                                loadingProgress,
+                              ) {
+                                if (loadingProgress == null) return child;
+                                return const Center(
+                                  child: CircularProgressIndicator(
                                     color: Colors.white,
-                                  );
-                                },
-                                loadingBuilder: (
-                                  context,
-                                  child,
-                                  loadingProgress,
-                                ) {
-                                  if (loadingProgress == null) return child;
-                                  return const Center(
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                      strokeWidth: 2,
-                                    ),
-                                  );
-                                },
-                              )
-                              : const Icon(
-                                Icons.person,
-                                size: 40,
-                                color: Colors.white,
-                              ),
+                                    strokeWidth: 2,
+                                  ),
+                                );
+                              },
+                            )
+                          : const Icon(
+                              Icons.person,
+                              size: 40,
+                              color: Colors.white,
+                            ),
                     ),
                   ),
                 ),
@@ -315,18 +357,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
             ),
             const SizedBox(height: AppSizes.spacingMedium),
             Text(
-              user?.displayName ?? 'User Name',
+              _getDisplayName(user),
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.5,
-              ),
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.5,
+                  ),
             ),
             const SizedBox(height: AppSizes.spacingSmall),
             Text(
-              user?.email ?? 'user@example.com',
+              _getDisplayIdentifier(user),
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-              ),
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.7),
+                  ),
             ),
           ],
         ),
@@ -352,77 +397,86 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         ),
         child: Column(
           children: [
-            _buildMenuSection('Account', [
-              ProfileMenuItemData(
-                icon: Icons.person_outline,
-                title: 'My Profile',
-                onTap: () => context.push('/edit-profile'),
-              ),
-              ProfileMenuItemData(
-                icon: Icons.receipt_long_outlined,
-                title: 'My Transactions',
-                onTap: () => context.push('/transaction'),
-              ),
-              ProfileMenuItemData(
-                icon: Icons.people_outline,
-                title: 'My Recipients',
-                onTap: () => context.push('/recipients'),
-              ),
-              ProfileMenuItemData(
-                icon: Icons.track_changes_outlined,
-                title: 'Track a Transfer',
-                onTap: () => context.push('/track-transfer'),
-              ),
-            ], 0),
-            _buildMenuSection('Features', [
-              ProfileMenuItemData(
-                icon: Icons.view_in_ar_outlined,
-                title: 'NFT',
-                onTap: () => context.push('/nft'),
-              ),
-              ProfileMenuItemData(
-                icon: Icons.emoji_events_outlined,
-                title: 'My Rank',
-                onTap: () => context.push('/rank'),
-              ),
-              ProfileMenuItemData(
-                icon: Icons.credit_card_outlined,
-                title: 'My Cards',
-                onTap: () => context.push('/my-card'),
-              ),
-              ProfileMenuItemData(
-                icon: Icons.share_outlined,
-                title: 'Refer a Friend',
-                onTap: () => context.push('/invite'),
-              ),
-            ], 200),
-            _buildMenuSection('Settings', [
-              ProfileMenuItemData(
-                icon: Icons.notifications_outlined,
-                title: 'Notifications',
-                onTap: () => context.push('/notification'),
-              ),
-              ProfileMenuItemData(
-                icon: Icons.language_outlined,
-                title: 'Language',
-                onTap: () => context.push('/language'),
-              ),
-              ProfileMenuItemData(
-                icon: Icons.settings_outlined,
-                title: 'Settings',
-                onTap: () => context.push('/settings'),
-              ),
-              ProfileMenuItemData(
-                icon: Icons.privacy_tip_outlined,
-                title: 'Privacy Policy',
-                onTap: () => context.push('/privacy'),
-              ),
-              ProfileMenuItemData(
-                icon: Icons.contact_support_outlined,
-                title: 'Contact Us',
-                onTap: () => context.push('/contact-us'),
-              ),
-            ], 400),
+            _buildMenuSection(
+                'Account',
+                [
+                  ProfileMenuItemData(
+                    icon: Icons.person_outline,
+                    title: 'My Profile',
+                    onTap: () => context.push('/edit-profile'),
+                  ),
+                  ProfileMenuItemData(
+                    icon: Icons.receipt_long_outlined,
+                    title: 'My Transactions',
+                    onTap: () => context.push('/transaction'),
+                  ),
+                  ProfileMenuItemData(
+                    icon: Icons.people_outline,
+                    title: 'My Recipients',
+                    onTap: () => context.push('/recipients'),
+                  ),
+                  ProfileMenuItemData(
+                    icon: Icons.track_changes_outlined,
+                    title: 'Track a Transfer',
+                    onTap: () => context.push('/track-transfer'),
+                  ),
+                ],
+                0),
+            _buildMenuSection(
+                'Features',
+                [
+                  ProfileMenuItemData(
+                    icon: Icons.view_in_ar_outlined,
+                    title: 'NFT',
+                    onTap: () => context.push('/nft'),
+                  ),
+                  ProfileMenuItemData(
+                    icon: Icons.emoji_events_outlined,
+                    title: 'My Rank',
+                    onTap: () => context.push('/rank'),
+                  ),
+                  ProfileMenuItemData(
+                    icon: Icons.credit_card_outlined,
+                    title: 'My Cards',
+                    onTap: () => context.push('/my-card'),
+                  ),
+                  ProfileMenuItemData(
+                    icon: Icons.share_outlined,
+                    title: 'Refer a Friend',
+                    onTap: () => context.push('/invite'),
+                  ),
+                ],
+                200),
+            _buildMenuSection(
+                'Settings',
+                [
+                  ProfileMenuItemData(
+                    icon: Icons.notifications_outlined,
+                    title: 'Notifications',
+                    onTap: () => context.push('/notification'),
+                  ),
+                  ProfileMenuItemData(
+                    icon: Icons.language_outlined,
+                    title: 'Language',
+                    onTap: () => context.push('/language'),
+                  ),
+                  ProfileMenuItemData(
+                    icon: Icons.settings_outlined,
+                    title: 'Settings',
+                    onTap: () => context.push('/settings'),
+                  ),
+                  ProfileMenuItemData(
+                    icon: Icons.privacy_tip_outlined,
+                    title: 'Privacy Policy',
+                    onTap: () => context.push('/privacy'),
+                  ),
+                  ProfileMenuItemData(
+                    icon: Icons.contact_support_outlined,
+                    title: 'Contact Us',
+                    onTap: () => context.push('/contact-us'),
+                  ),
+                ],
+                400),
             const Divider(height: 1),
             ProfileMenuItem(
               data: ProfileMenuItemData(
@@ -453,10 +507,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           child: Text(
             title,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.primary,
-              letterSpacing: 0.8,
-            ),
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).colorScheme.primary,
+                  letterSpacing: 0.8,
+                ),
           ),
         ),
         ...items.asMap().entries.map((entry) {
@@ -475,11 +529,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder:
-          (context) => NotificationModal(
-            notifications: [],
-            onClose: () => Navigator.pop(context),
-          ),
+      builder: (context) => NotificationModal(
+        notifications: [],
+        onClose: () => Navigator.pop(context),
+      ),
     );
   }
 
@@ -515,35 +568,34 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   Future<bool> _showLogoutConfirmation(BuildContext context) async {
     return await showDialog<bool>(
           context: context,
-          builder:
-              (context) => AlertDialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+          builder: (context) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            title: const Text('Log Out'),
+            content: const Text('Are you sure you want to log out?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text(
+                  'Cancel',
+                  style: TextStyle(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withOpacity(0.7),
+                  ),
                 ),
-                title: const Text('Log Out'),
-                content: const Text('Are you sure you want to log out?'),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    child: Text(
-                      'Cancel',
-                      style: TextStyle(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSurface.withOpacity(0.7),
-                      ),
-                    ),
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.error,
-                      foregroundColor: Colors.white,
-                    ),
-                    onPressed: () => Navigator.of(context).pop(true),
-                    child: const Text('Log Out'),
-                  ),
-                ],
               ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                  foregroundColor: Colors.white,
+                ),
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Log Out'),
+              ),
+            ],
+          ),
         ) ??
         false;
   }

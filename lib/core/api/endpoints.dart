@@ -4,6 +4,8 @@ class Endpoints {
   // Auth endpoints
   static const String register = '/api/user/register-email';
   static const String login = '/api/user/sign-in';
+  static const String getUserProfile = '/api/user/profile';
+  static const String updateUserProfile = '/api/user/profile';
   static const String verifyEmail = '/api/user/verify-email';
   static const String resendVerification = '/api/user/resend-verification';
   static const String googleAuth = '/api/user/login-google';
@@ -23,6 +25,9 @@ class Endpoints {
   static const String exchangeCalculate = '$baseUrl/api/exchange/calculate';
   static const String exchangePairs = '$baseUrl/api/exchange/pairs';
   static const String currencies = '$baseUrl/api/exchange/currencies';
+
+  // beneficiary endpoints
+  static const String beneficiaries = '$baseUrl/api/beneficiary';
 
   // External API
   static const String countries = 'https://restcountries.com/v3.1/all';
