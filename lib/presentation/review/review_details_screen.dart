@@ -80,7 +80,6 @@ class ReviewDetailsScreen extends ConsumerWidget {
 
                       const SizedBox(height: 24),
 
-                      // Receiver Details Card
                       UserDetailCard(
                         title: "Receiver details",
                         user: transactionDetails.receiver,
@@ -206,9 +205,27 @@ class ReviewDetailsScreen extends ConsumerWidget {
     final paymentState = ref.read(paymentProvider);
     final exchangeForm = ref.read(exchangeFormProvider);
 
-    // Check if we have estimate data (wallet address, etc.)
-    if (!paymentState.hasEstimateData ||
-        paymentState.selectedWalletAddress == null) {
+    // Get transaction flow type
+    final fromCurrency = exchangeForm.fromCurrency;
+    final toCurrency = exchangeForm.toCurrency;
+    final isCryptoToCash =
+        fromCurrency?.type == 'CRYPTO' && toCurrency?.type == 'FIAT';
+
+    // For crypto-to-cash, we should already have the wallet address from the crypto payment screen
+    if (isCryptoToCash && paymentState.selectedWalletAddress == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please go back and confirm your wallet address first'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // For cash-to-crypto, check if we have estimate data
+    if (!isCryptoToCash &&
+        (!paymentState.hasEstimateData ||
+            paymentState.selectedWalletAddress == null)) {
       // Show error - user needs to go back and validate address
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -220,9 +237,6 @@ class ReviewDetailsScreen extends ConsumerWidget {
     }
 
     try {
-      // Get real user data from exchange form
-      final exchangeForm = ref.read(exchangeFormProvider);
-
       // Validate that we have the required form data
       if (exchangeForm.fromCurrency == null ||
           exchangeForm.toCurrency == null ||
@@ -248,23 +262,43 @@ class ReviewDetailsScreen extends ConsumerWidget {
         return;
       }
 
-      // Create transaction using real user data
-      final success = await ref
-          .read(paymentProvider.notifier)
-          .createTransaction(
-            amount: amount,
-            sourceCurrency: exchangeForm.fromCurrency!.code,
-            destinationCurrency: exchangeForm.toCurrency!.code,
-            blockchainNetwork:
-                'ethereum', // TODO: Get from blockchain selection
-            countryCode: 'ci', // TODO: Get from user location or selection
-            paymentMethod:
-                'orange', // TODO: Get from mobile money provider selection
-            language: 'en', // TODO: Get from app language setting
-            phoneNumber: '1231231232', // TODO: Get from mobile money details
-            provider: 'orange', // TODO: Get from provider selection
-            walletAddress: paymentState.selectedWalletAddress!,
-          );
+      bool success;
+
+      if (isCryptoToCash) {
+        // Create crypto-to-cash transaction
+        success = await ref
+            .read(paymentProvider.notifier)
+            .createCryptoToCashTransaction(
+              amount: amount,
+              sourceCurrency: exchangeForm.fromCurrency!.code,
+              destinationCurrency: exchangeForm.toCurrency!.code,
+              blockchainNetwork:
+                  'ethereum', // TODO: Get from blockchain selection
+              walletAddress: paymentState.selectedWalletAddress!,
+              countryCode: 'ci', // TODO: Get from user location or selection
+              paymentMethod:
+                  'orange', // TODO: Get from mobile money provider selection
+              language: 'en', // TODO: Get from app language setting
+              phoneNumber: '1231231232', // TODO: Get from mobile money details
+              provider: 'orange', // TODO: Get from provider selection
+            );
+      } else {
+        // Create cash-to-crypto transaction (existing flow)
+        success = await ref.read(paymentProvider.notifier).createTransaction(
+              amount: amount,
+              sourceCurrency: exchangeForm.fromCurrency!.code,
+              destinationCurrency: exchangeForm.toCurrency!.code,
+              blockchainNetwork:
+                  'ethereum', // TODO: Get from blockchain selection
+              countryCode: 'ci', // TODO: Get from user location or selection
+              paymentMethod:
+                  'orange', // TODO: Get from mobile money provider selection
+              language: 'en', // TODO: Get from app language setting
+              phoneNumber: '1231231232', // TODO: Get from mobile money details
+              provider: 'orange', // TODO: Get from provider selection
+              walletAddress: paymentState.selectedWalletAddress!,
+            );
+      }
 
       if (success) {
         // Navigate to payment completion screen with pending status

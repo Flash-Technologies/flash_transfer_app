@@ -36,6 +36,7 @@ class PaymentState {
   final PaymentStatus estimateStatus;
   final PaymentStatus transactionStatus;
   final String? errorMessage;
+  final Map<String, dynamic>? mobileMoneyDetails;
 
   PaymentState({
     this.activePay = 'cash',
@@ -48,6 +49,7 @@ class PaymentState {
     this.estimateStatus = PaymentStatus.idle,
     this.transactionStatus = PaymentStatus.idle,
     this.errorMessage,
+    this.mobileMoneyDetails,
   });
 
   PaymentState copyWith({
@@ -62,6 +64,7 @@ class PaymentState {
     PaymentStatus? transactionStatus,
     String? errorMessage,
     bool clearError = false,
+    Map<String, dynamic>? mobileMoneyDetails,
   }) {
     return PaymentState(
       activePay: activePay ?? this.activePay,
@@ -75,6 +78,7 @@ class PaymentState {
       estimateStatus: estimateStatus ?? this.estimateStatus,
       transactionStatus: transactionStatus ?? this.transactionStatus,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
+      mobileMoneyDetails: mobileMoneyDetails ?? this.mobileMoneyDetails,
     );
   }
 
@@ -108,6 +112,10 @@ class PaymentNotifier extends StateNotifier<PaymentState> {
 
   void setSelectedWalletAddress(String walletAddress) {
     state = state.copyWith(selectedWalletAddress: walletAddress);
+  }
+
+  void setMobileMoneyDetails(Map<String, dynamic> details) {
+    state = state.copyWith(mobileMoneyDetails: details);
   }
 
   /// Get transaction estimate for fiat to crypto flow
@@ -223,6 +231,139 @@ class PaymentNotifier extends StateNotifier<PaymentState> {
       return true;
     } catch (e) {
       print('PaymentProvider: Error in createTransaction: $e');
+
+      // Parse error message for better user feedback
+      String errorMessage = e.toString();
+      if (errorMessage.contains('503')) {
+        errorMessage =
+            'Service temporarily unavailable. Please try again in a few minutes.';
+      } else if (errorMessage.contains('401')) {
+        errorMessage = 'Authentication failed. Please log in again.';
+      } else if (errorMessage.contains('400')) {
+        errorMessage = 'Invalid transaction data. Please check your inputs.';
+      }
+
+      state = state.copyWith(
+        transactionStatus: PaymentStatus.error,
+        errorMessage: errorMessage,
+      );
+      return false;
+    }
+  }
+
+  /// Get transaction estimate for crypto to cash flow
+  Future<bool> getCryptoToCashEstimate({
+    required double amount,
+    required String sourceCurrency,
+    required String destinationCurrency,
+    required String blockchainNetwork,
+    required String walletAddress,
+    required String countryCode,
+    required String paymentMethod,
+  }) async {
+    print('PaymentProvider: Starting getCryptoToCashEstimate');
+    print(
+        'PaymentProvider: Parameters - amount: $amount, sourceCurrency: $sourceCurrency, destinationCurrency: $destinationCurrency');
+
+    state = state.copyWith(
+      estimateStatus: PaymentStatus.loading,
+      clearError: true,
+    );
+
+    try {
+      // Get phone number from mobile money details
+      final phoneNumber = state.mobileMoneyDetails?['phoneNumber'];
+
+      final estimate = await _transactionService.getCryptoToCashEstimate(
+        amount: amount,
+        sourceCurrency: sourceCurrency,
+        destinationCurrency: destinationCurrency,
+        blockchainNetwork: blockchainNetwork,
+        walletAddress: walletAddress,
+        countryCode: countryCode,
+        paymentMethod: paymentMethod,
+        phoneNumber: phoneNumber,
+      );
+
+      print(
+          'PaymentProvider: Successfully got crypto-to-cash estimate: ${estimate.toString()}');
+
+      state = state.copyWith(
+        estimateData: estimate,
+        estimateStatus: PaymentStatus.success,
+        selectedWalletAddress: walletAddress,
+      );
+
+      print('PaymentProvider: State updated, returning true');
+      return true;
+    } catch (e) {
+      print('PaymentProvider: Error in getCryptoToCashEstimate: $e');
+      state = state.copyWith(
+        estimateStatus: PaymentStatus.error,
+        errorMessage: e.toString(),
+      );
+      return false;
+    }
+  }
+
+  /// Create crypto to cash transaction
+  Future<bool> createCryptoToCashTransaction({
+    required double amount,
+    required String sourceCurrency,
+    required String destinationCurrency,
+    required String blockchainNetwork,
+    required String walletAddress,
+    required String countryCode,
+    required String paymentMethod,
+    required String language,
+    required String phoneNumber,
+    required String provider,
+  }) async {
+    print('PaymentProvider: Starting createCryptoToCashTransaction');
+    print(
+        'PaymentProvider: Data - amount: $amount, sourceCurrency: $sourceCurrency, destinationCurrency: $destinationCurrency');
+    print(
+        'PaymentProvider: Network: $blockchainNetwork, Wallet: $walletAddress');
+
+    state = state.copyWith(
+      transactionStatus: PaymentStatus.loading,
+      clearError: true,
+    );
+
+    try {
+      // Use mobile money details from state if available
+      final mobileDetails = state.mobileMoneyDetails ??
+          {
+            'phoneNumber': phoneNumber,
+            'provider': provider,
+            'country': countryCode,
+          };
+
+      final transaction =
+          await _transactionService.createCryptoToCashTransaction(
+        amount: amount,
+        sourceCurrency: sourceCurrency,
+        destinationCurrency: destinationCurrency,
+        blockchainNetwork: blockchainNetwork,
+        walletAddress: walletAddress,
+        countryCode: countryCode,
+        paymentMethod: paymentMethod,
+        language: language,
+        paymentChannel: 'web',
+        mobileMoneyDetails: mobileDetails,
+      );
+
+      print(
+          'PaymentProvider: Crypto-to-cash transaction created successfully: ${transaction.transactionId}');
+
+      state = state.copyWith(
+        transactionData: transaction,
+        transactionStatus: PaymentStatus.success,
+      );
+
+      return true;
+    } catch (e) {
+      print('PaymentProvider: Error in createCryptoToCashTransaction: $e');
 
       // Parse error message for better user feedback
       String errorMessage = e.toString();

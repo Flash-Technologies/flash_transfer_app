@@ -4,6 +4,8 @@ import 'package:flash_transfer_app/core/models/transaction_details.dart';
 import 'package:flash_transfer_app/core/models/payment_details.dart';
 import 'package:flash_transfer_app/providers/payment_provider.dart';
 import 'package:flash_transfer_app/providers/exchange_provider.dart';
+import 'package:flash_transfer_app/providers/user_provider.dart';
+import 'package:flash_transfer_app/providers/beneficiary_provider.dart';
 
 /// Provider for transaction details based on payment type
 final reviewDetailsProvider =
@@ -11,28 +13,55 @@ final reviewDetailsProvider =
   final exchangeForm = ref.watch(exchangeFormProvider);
   final paymentState = ref.watch(paymentProvider);
 
-  // Create dynamic sender based on current app user (you might have a user provider)
-  final sender = User(
-    id: 1,
-    email: 'john.doe@example.com', // TODO: Get from current user
-    firstName: 'John', // TODO: Get from current user
-    lastName: 'Doe', // TODO: Get from current user
-    countryName: 'USA',
-    profileImage: 'assets/images/profile.png',
-    isKycVerified: true,
-  );
+  // Get current user data for sender
+  final currentUser = ref.watch(currentUserProvider);
+  final selectedBeneficiary = ref.watch(selectedBeneficiaryProvider);
 
-  // Create dynamic receiver - this should come from selected beneficiary
-  // TODO: Replace with actual selected beneficiary from beneficiary provider
-  final receiver = User(
-    id: 2,
-    email: 'jane.smith@example.com', // TODO: Get from selected beneficiary
-    firstName: 'Jane', // TODO: Get from selected beneficiary
-    lastName: 'Smith', // TODO: Get from selected beneficiary
-    countryName: 'International',
-    profileImage: 'assets/images/profile.png',
-    isKycVerified: false,
-  );
+  // Create sender from current user data
+  final sender = currentUser != null
+      ? User(
+          id: currentUser.id,
+          email: currentUser.email,
+          firstName: currentUser.firstName,
+          lastName: currentUser.lastName,
+          phoneNumber: currentUser.phoneNumber,
+          countryName: currentUser.countryName,
+          profileImage: currentUser.profileImage,
+          isKycVerified: currentUser.isKycVerified ?? false,
+          walletAddress: currentUser.walletAddress,
+          authMethod: currentUser.authMethod,
+        )
+      : User(
+          id: 0,
+          email: 'user@flashtransfer.com',
+          firstName: 'Flash',
+          lastName: 'User',
+          countryName: 'Unknown',
+          profileImage: 'assets/images/profile.png',
+          isKycVerified: false,
+        );
+
+  // Create receiver from selected beneficiary or use fallback
+  final receiver = selectedBeneficiary != null
+      ? User(
+          id: selectedBeneficiary.id,
+          email: selectedBeneficiary.email,
+          firstName: selectedBeneficiary.firstName,
+          lastName: selectedBeneficiary.lastName,
+          phoneNumber: selectedBeneficiary.mobileNumber,
+          countryName: selectedBeneficiary.country,
+          profileImage: 'assets/images/profile.png',
+          isKycVerified: false,
+        )
+      : User(
+          id: 0,
+          email: 'receiver@example.com',
+          firstName: 'Select',
+          lastName: 'Beneficiary',
+          countryName: 'Unknown',
+          profileImage: 'assets/images/profile.png',
+          isKycVerified: false,
+        );
 
   // Get dynamic amounts from exchange form
   final sendAmount = double.tryParse(exchangeForm.sendAmount) ?? 100.0;
@@ -51,6 +80,12 @@ final reviewDetailsProvider =
     totalAmount = paymentState.estimateData!.results.totalAmountToPay;
   }
 
+  // Get mobile money details from payment state if available
+  final mobileDetails = paymentState.mobileMoneyDetails;
+  final phoneNumber = mobileDetails?['phoneNumber']?.toString() ??
+      currentUser?.phoneNumber ??
+      '+1234567890';
+
   switch (paymentType) {
     case PaymentType.card:
       return TransactionDetails(
@@ -60,7 +95,7 @@ final reviewDetailsProvider =
           methodName: 'Credit Card',
           methodIcon: 'assets/images/credit_card.png',
           fundSource: 'Credit',
-          purpose: 'Family Support',
+          purpose: selectedBeneficiary?.purpose ?? 'Family Support',
         ),
         sendAmount: sendAmount,
         sendCurrency: sendCurrency,
@@ -69,7 +104,7 @@ final reviewDetailsProvider =
         fee: fee,
         feeCurrency: feeCurrency,
         totalAmount: totalAmount,
-        receiverCountry: 'International',
+        receiverCountry: receiver.countryName ?? 'Unknown',
       );
 
     case PaymentType.bank:
@@ -79,8 +114,8 @@ final reviewDetailsProvider =
         paymentDetails: PaymentDetails(
           methodName: 'Bank Transfer',
           methodIcon: 'assets/images/dollar.png',
-          fundSource: 'Saving',
-          purpose: 'Family Support',
+          fundSource: selectedBeneficiary?.sourceOfFunds ?? 'Saving',
+          purpose: selectedBeneficiary?.purpose ?? 'Family Support',
         ),
         sendAmount: sendAmount,
         sendCurrency: sendCurrency,
@@ -89,7 +124,7 @@ final reviewDetailsProvider =
         fee: fee,
         feeCurrency: feeCurrency,
         totalAmount: totalAmount,
-        receiverCountry: 'International',
+        receiverCountry: receiver.countryName ?? 'Unknown',
       );
 
     case PaymentType.cash:
@@ -99,10 +134,9 @@ final reviewDetailsProvider =
         paymentDetails: PaymentDetails(
           methodName: 'Mobile Money',
           methodIcon: 'assets/images/omoney.png',
-          fundSource: 'Cash',
-          purpose: 'Family Support',
-          phoneNumber:
-              '+1234567890', // TODO: Get from user's mobile money details
+          fundSource: selectedBeneficiary?.sourceOfFunds ?? 'Cash',
+          purpose: selectedBeneficiary?.purpose ?? 'Family Support',
+          phoneNumber: phoneNumber,
         ),
         sendAmount: sendAmount,
         sendCurrency: sendCurrency,
@@ -111,7 +145,7 @@ final reviewDetailsProvider =
         fee: fee,
         feeCurrency: feeCurrency,
         totalAmount: totalAmount,
-        receiverCountry: 'International',
+        receiverCountry: receiver.countryName ?? 'Unknown',
       );
 
     case PaymentType.crypto:
@@ -125,8 +159,8 @@ final reviewDetailsProvider =
           methodIcon: _getCryptoIcon(receiveCurrency),
           networkName: 'Ethereum', // TODO: Get from selected blockchain
           networkIcon: 'assets/images/ethereum.png',
-          fundSource: 'Mobile Money',
-          purpose: 'Investment',
+          fundSource: selectedBeneficiary?.sourceOfFunds ?? 'Mobile Money',
+          purpose: selectedBeneficiary?.purpose ?? 'Investment',
           cryptoAddress: paymentState.selectedWalletAddress ?? '0x1234...5678',
         ),
         sendAmount: sendAmount,
@@ -136,7 +170,7 @@ final reviewDetailsProvider =
         fee: fee,
         feeCurrency: feeCurrency,
         totalAmount: totalAmount,
-        receiverCountry: 'International',
+        receiverCountry: receiver.countryName ?? 'Unknown',
       );
 
     case PaymentType.wallet:
@@ -146,8 +180,8 @@ final reviewDetailsProvider =
         paymentDetails: PaymentDetails(
           methodName: 'Wallet',
           methodIcon: 'assets/images/wallet.png',
-          fundSource: 'Wallet',
-          purpose: 'Transfer',
+          fundSource: selectedBeneficiary?.sourceOfFunds ?? 'Wallet',
+          purpose: selectedBeneficiary?.purpose ?? 'Transfer',
         ),
         sendAmount: sendAmount,
         sendCurrency: sendCurrency,
@@ -156,7 +190,7 @@ final reviewDetailsProvider =
         fee: fee,
         feeCurrency: feeCurrency,
         totalAmount: totalAmount,
-        receiverCountry: 'International',
+        receiverCountry: receiver.countryName ?? 'Unknown',
       );
 
     case PaymentType.mobile:
@@ -166,10 +200,9 @@ final reviewDetailsProvider =
         paymentDetails: PaymentDetails(
           methodName: 'Mobile Money',
           methodIcon: 'assets/images/omoney.png',
-          fundSource: 'Mobile Account',
-          purpose: 'Transfer',
-          phoneNumber:
-              '+1234567890', // TODO: Get from user's mobile money details
+          fundSource: selectedBeneficiary?.sourceOfFunds ?? 'Mobile Account',
+          purpose: selectedBeneficiary?.purpose ?? 'Transfer',
+          phoneNumber: phoneNumber,
         ),
         sendAmount: sendAmount,
         sendCurrency: sendCurrency,
@@ -178,7 +211,7 @@ final reviewDetailsProvider =
         fee: fee,
         feeCurrency: feeCurrency,
         totalAmount: totalAmount,
-        receiverCountry: 'International',
+        receiverCountry: receiver.countryName ?? 'Unknown',
       );
   }
 });

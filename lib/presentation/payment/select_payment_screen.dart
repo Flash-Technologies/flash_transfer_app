@@ -6,6 +6,7 @@ import 'package:flash_transfer_app/config/theme.dart';
 import 'package:flash_transfer_app/presentation/payment/components/provider_item.dart';
 import 'package:flash_transfer_app/presentation/common/app_button.dart';
 import 'package:flash_transfer_app/providers/payment_provider.dart';
+import 'package:flash_transfer_app/providers/exchange_provider.dart';
 
 // Import the new modal
 import 'package:flash_transfer_app/presentation/payment/components/bizao_config_modal.dart';
@@ -14,7 +15,8 @@ class SelectPaymentScreen extends ConsumerStatefulWidget {
   const SelectPaymentScreen({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<SelectPaymentScreen> createState() => _SelectPaymentScreenState();
+  ConsumerState<SelectPaymentScreen> createState() =>
+      _SelectPaymentScreenState();
 }
 
 class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
@@ -56,7 +58,7 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
       if (showError) showError = false;
       _showModal = true; // Show modal when provider is selected
     });
-    
+
     // Update the provider state as well
     ref.read(paymentProvider.notifier).setSelectedProvider(id);
   }
@@ -67,8 +69,29 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
       _showModal = false;
     });
 
-    // Navigate to crypto address confirmation screen
-    context.push('/crypto-address-confirmation');
+    // Check transaction type to determine navigation
+    final exchangeForm = ref.read(exchangeFormProvider);
+    final fromCurrency = exchangeForm.fromCurrency;
+    final toCurrency = exchangeForm.toCurrency;
+
+    final isCryptoToCash =
+        fromCurrency?.type == 'CRYPTO' && toCurrency?.type == 'FIAT';
+
+    if (isCryptoToCash) {
+      // For crypto-to-cash, go directly to review details
+      // Store the mobile money details first
+      ref.read(paymentProvider.notifier).setMobileMoneyDetails({
+        'phoneNumber': configData.phoneNumber,
+        'provider': selectedProvider!,
+        'country': configData.countryCode,
+      });
+
+      // Get crypto-to-cash estimate and navigate to review
+      _getCryptoToCashEstimate(configData);
+    } else {
+      // For cash-to-crypto, go to crypto address confirmation screen
+      context.push('/crypto-address-confirmation');
+    }
   }
 
   void _handleModalCancel() {
@@ -76,6 +99,72 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
       _showModal = false;
       selectedProvider = null; // Reset selection
     });
+  }
+
+  Future<void> _getCryptoToCashEstimate(BizaoConfigData configData) async {
+    final exchangeForm = ref.read(exchangeFormProvider);
+    final paymentState = ref.read(paymentProvider);
+
+    final amount = double.tryParse(exchangeForm.sendAmount) ?? 0;
+
+    if (amount <= 0 || paymentState.selectedWalletAddress == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+              'Missing transaction data. Please go back and complete the form.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Store mobile money details with phone number from config
+    ref.read(paymentProvider.notifier).setMobileMoneyDetails({
+      'phoneNumber': configData.phoneNumber,
+      'provider': selectedProvider!,
+      'country': configData.countryCode,
+    });
+
+    // Determine blockchain network based on source currency
+    String blockchainNetwork;
+    switch (exchangeForm.fromCurrency!.code.toUpperCase()) {
+      case 'SOL':
+        blockchainNetwork = 'solana';
+        break;
+      case 'ETH':
+        blockchainNetwork = 'ethereum';
+        break;
+      case 'BTC':
+        blockchainNetwork = 'bitcoin';
+        break;
+      default:
+        blockchainNetwork = 'ethereum'; // Default fallback
+    }
+
+    // Get crypto-to-cash estimate
+    final success =
+        await ref.read(paymentProvider.notifier).getCryptoToCashEstimate(
+              amount: amount,
+              sourceCurrency: exchangeForm.fromCurrency!.code,
+              destinationCurrency: exchangeForm.toCurrency!.code,
+              blockchainNetwork: blockchainNetwork,
+              walletAddress: paymentState.selectedWalletAddress!,
+              countryCode: configData.countryCode,
+              paymentMethod: selectedProvider!,
+            );
+
+    if (success) {
+      // Navigate to review details
+      context.push('/review-details/crypto');
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content:
+              Text('Failed to get transaction estimate. Please try again.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   void _handleSubmit() {
@@ -93,12 +182,12 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
   Widget build(BuildContext context) {
     // Listen to the payment provider state
     final paymentState = ref.watch(paymentProvider);
-    
+
     // If provider already has a selected payment method, use it
     if (paymentState.selectedProvider != null && selectedProvider == null) {
       selectedProvider = paymentState.selectedProvider;
     }
-    
+
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       body: Stack(
@@ -108,7 +197,7 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
               children: [
                 // Progress Header
                 _buildProgressHeader(),
-                
+
                 // Main Content
                 Expanded(
                   child: Padding(
@@ -117,7 +206,7 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 16),
-                        
+
                         // Title
                         const Text(
                           'Select your mobile money',
@@ -127,9 +216,9 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
                             color: AppTheme.textDarkColor,
                           ),
                         ),
-                        
+
                         const SizedBox(height: 8),
-                        
+
                         // Subtitle
                         const Text(
                           'How would you like the money delivered?',
@@ -138,20 +227,23 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
                             color: AppTheme.textGrayColor,
                           ),
                         ),
-                        
+
                         const SizedBox(height: 24),
-                        
+
                         // Error message (conditional)
                         if (showError)
-                          _buildErrorMessage().animate().fadeIn(
+                          _buildErrorMessage()
+                              .animate()
+                              .fadeIn(
                                 duration: const Duration(milliseconds: 300),
-                              ).slideY(
+                              )
+                              .slideY(
                                 begin: -0.2,
                                 end: 0,
                                 duration: const Duration(milliseconds: 300),
                                 curve: Curves.easeOutCubic,
                               ),
-                        
+
                         // Provider list
                         Expanded(
                           child: ListView.builder(
@@ -174,7 +266,7 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
                     ),
                   ),
                 ),
-                
+
                 // Bottom Buttons
                 _buildBottomButtons(),
               ],
@@ -216,9 +308,9 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
               ),
             ),
           ),
-          
+
           const SizedBox(width: 12),
-          
+
           // Text section
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -226,7 +318,7 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
               Text(
                 "Payment Method",
                 style: TextStyle(
-                  fontSize: 18, 
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: AppTheme.textDarkColor,
                 ),
@@ -303,7 +395,7 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
             backgroundColor: Colors.transparent,
             textColor: AppTheme.textGrayColor,
           ),
-        ],  
+        ],
       ),
     );
   }
@@ -320,25 +412,25 @@ class ProgressCirclePainter extends CustomPainter {
     // Calculate center and radius
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2 - 2;
-    
+
     // Background circle
     final backgroundPaint = Paint()
       ..color = const Color(0xFFE0E0E0)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4.0;
-    
+
     canvas.drawCircle(center, radius, backgroundPaint);
-    
+
     // Progress arc
     final progressPaint = Paint()
       ..color = AppTheme.primaryColor
       ..style = PaintingStyle.stroke
       ..strokeWidth = 4.0
       ..strokeCap = StrokeCap.round;
-    
+
     const startAngle = -90.0 * (3.14159 / 180); // -90 degrees in radians
     final sweepAngle = 360.0 * progress * (3.14159 / 180); // Convert to radians
-    
+
     canvas.drawArc(
       Rect.fromCircle(center: center, radius: radius),
       startAngle,

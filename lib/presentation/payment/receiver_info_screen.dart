@@ -49,7 +49,7 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
 
     _pulseAnimation = Tween<double>(
       begin: 1.0,
-      end: 1.05,
+      end: 1.02,
     ).animate(CurvedAnimation(
       parent: _pulseController,
       curve: Curves.easeInOut,
@@ -81,7 +81,7 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
     final exchangeForm = ref.watch(exchangeFormProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: const Color(0xFFF8F9FA),
       body: SafeArea(
         child: Column(
           children: [
@@ -89,18 +89,21 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
             Expanded(
               child: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.all(AppSpacing.paddingM),
+                padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width * 0.04,
+                  vertical: 16,
+                ),
                 child: SlideTransition(
                   position: _slideAnimation,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildTitleSection(),
-                      SizedBox(height: AppSpacing.marginL),
+                      const SizedBox(height: 24),
                       _buildBeneficiaryCard(selectedBeneficiary),
-                      SizedBox(height: AppSpacing.marginL),
+                      const SizedBox(height: 24),
                       _buildTransactionDetails(exchangeForm),
-                      SizedBox(height: AppSpacing.marginXL),
+                      const SizedBox(height: 32),
                       _buildActionButtons(),
                     ],
                   ),
@@ -115,59 +118,71 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
 
   Widget _buildProgressHeader() {
     return Container(
-      padding: EdgeInsets.fromLTRB(
-        AppSpacing.paddingM,
-        AppSpacing.paddingL,
-        AppSpacing.paddingM,
-        AppSpacing.paddingL,
-      ),
-      decoration: const BoxDecoration(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+      decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Color(0x0A000000),
-            blurRadius: 4,
-            offset: Offset(0, 2),
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Row(
         children: [
-          // Progress Circle
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: AppColors.border, width: 4),
-            ),
-            child: Stack(
-              children: [
-                // Progress arc
-                Positioned.fill(
-                  child: CircularProgressIndicator(
-                    value: 0.25, // 1/4 progress
-                    strokeWidth: 4,
-                    backgroundColor: Colors.transparent,
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(AppColors.primaryBlue),
-                  ),
+          // Back button
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                HapticFeedback.lightImpact();
+                context.pop();
+              },
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE3F2FD),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                // Center text
-                Center(
-                  child: Text(
-                    '1/4',
-                    style: AppTextStyles.bodySmall.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
+                child: const Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  size: 20,
+                  color: Color(0xFF1976D2),
                 ),
-              ],
+              ),
             ),
           ),
+          
+          const SizedBox(width: 16),
+          
+          // Progress indicator
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              SizedBox(
+                width: 48,
+                height: 48,
+                child: CircularProgressIndicator(
+                  value: 0.25,
+                  strokeWidth: 4,
+                  backgroundColor: Colors.grey.shade200,
+                  valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF2475FF)),
+                ),
+              ),
+              Text(
+                '1',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: const Color(0xFF2475FF),
+                ),
+              ),
+            ],
+          ),
 
-          SizedBox(width: AppSpacing.marginM),
+          const SizedBox(width: 16),
 
           // Title and subtitle
           Expanded(
@@ -176,51 +191,82 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
               children: [
                 Text(
                   "Receiver's Info",
-                  style: AppTextStyles.heading3.copyWith(
-                    fontWeight: FontWeight.bold,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF181F30),
                   ),
                 ),
-                SizedBox(height: AppSpacing.marginXS),
+                const SizedBox(height: 2),
                 Text(
                   'Review receiver details',
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.textSecondary,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey[600],
                   ),
                 ),
               ],
+            ),
+          ),
+          
+          // Step indicator
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFFE3F2FD), Color(0xFFBBDEFB)],
+              ),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Text(
+              'Step 1/4',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1976D2),
+              ),
             ),
           ),
         ],
       ),
     )
         .animate()
-        .fadeIn(duration: AppAnimations.normalAnimation)
-        .slideY(begin: -0.1, end: 0, duration: AppAnimations.normalAnimation);
+        .fadeIn(duration: 600.ms)
+        .slideY(begin: -0.2, end: 0, curve: Curves.easeOutCubic);
   }
 
   Widget _buildTitleSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          "Receiver's Information",
-          style: AppTextStyles.heading2.copyWith(
-            fontWeight: FontWeight.bold,
+        ShaderMask(
+          shaderCallback: (bounds) => const LinearGradient(
+            colors: [Color(0xFF181F30), Color(0xFF2475FF)],
+          ).createShader(bounds),
+          child: Text(
+            "Receiver's Information",
+            style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
+              letterSpacing: -0.5,
+            ),
           ),
         ),
-        SizedBox(height: AppSpacing.marginS),
+        const SizedBox(height: 8),
         Text(
           'Review all the details of your transaction. Make sure everything is correct before proceeding.',
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.textSecondary,
-            height: 1.4,
+          style: TextStyle(
+            fontSize: 15,
+            color: Colors.grey[600],
+            height: 1.5,
           ),
         ),
       ],
     )
         .animate()
-        .fadeIn(duration: AppAnimations.normalAnimation, delay: 200.ms)
-        .slideY(begin: 0.1, end: 0, duration: AppAnimations.normalAnimation);
+        .fadeIn(duration: 600.ms, delay: 200.ms)
+        .slideX(begin: -0.1, end: 0);
   }
 
   Widget _buildBeneficiaryCard(Beneficiary? beneficiary) {
@@ -229,8 +275,7 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
         onSelectReceiver: () => context.pop(),
       )
           .animate()
-          .fadeIn(duration: AppAnimations.normalAnimation, delay: 400.ms)
-          .slideY(begin: 0.1, end: 0, duration: AppAnimations.normalAnimation)
+          .fadeIn(duration: 600.ms, delay: 400.ms)
           .scale(begin: const Offset(0.95, 0.95), end: const Offset(1, 1));
     }
 
@@ -241,158 +286,168 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
           scale: _pulseAnimation.value,
           child: Container(
             width: double.infinity,
-            padding: EdgeInsets.all(AppSpacing.paddingL),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
                   Colors.white,
-                  AppColors.primaryBlue.withOpacity(0.02),
+                  const Color(0xFF2475FF).withOpacity(0.02),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(AppRadius.radiusL),
-              border: Border.all(
-                color: AppColors.primaryBlue.withOpacity(0.1),
-                width: 1,
-              ),
+              borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primaryBlue.withOpacity(0.1),
+                  color: const Color(0xFF2475FF).withOpacity(0.1),
                   blurRadius: 20,
                   offset: const Offset(0, 8),
-                  spreadRadius: 2,
                 ),
               ],
             ),
             child: Column(
               children: [
-                // Receiver avatar and name
-                Row(
-                  children: [
-                    Hero(
-                      tag: 'receiver-avatar-${beneficiary.id}',
-                      child: Container(
-                        width: 70,
-                        height: 70,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: [
-                              AppColors.primaryBlue,
-                              AppColors.primaryBlue.withOpacity(0.7),
+                // Header section with avatar
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        const Color(0xFF2475FF).withOpacity(0.05),
+                        const Color(0xFF2475FF).withOpacity(0.02),
+                      ],
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                    ),
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(20),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Hero(
+                        tag: 'receiver-avatar-${beneficiary.id}',
+                        child: Container(
+                          width: 72,
+                          height: 72,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF2475FF), Color(0xFF1565C0)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFF2475FF).withOpacity(0.3),
+                                blurRadius: 16,
+                                offset: const Offset(0, 6),
+                              ),
                             ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
                           ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.primaryBlue.withOpacity(0.3),
-                              blurRadius: 12,
-                              offset: const Offset(0, 6),
+                          child: Center(
+                            child: Text(
+                              beneficiary.firstName.isNotEmpty
+                                  ? beneficiary.firstName[0].toUpperCase()
+                                  : 'R',
+                              style: const TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 20),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              beneficiary.displayName,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF181F30),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.location_on_rounded,
+                                  size: 16,
+                                  color: Colors.grey[600],
+                                ),
+                                const SizedBox(width: 4),
+                                Expanded(
+                                  child: Text(
+                                    '${beneficiary.city}, ${beneficiary.country}',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey[600],
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                        child: Center(
-                          child: Text(
-                            beneficiary.firstName.isNotEmpty
-                                ? beneficiary.firstName[0].toUpperCase()
-                                : 'R',
-                            style: AppTextStyles.heading2.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF00C735).withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.verified_rounded,
+                          color: Color(0xFF00C735),
+                          size: 24,
                         ),
                       ),
-                    ),
-                    SizedBox(width: AppSpacing.marginL),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            beneficiary.displayName,
-                            style: AppTextStyles.heading3.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.textPrimary,
-                            ),
-                          ),
-                          SizedBox(height: AppSpacing.marginXS),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.location_on_outlined,
-                                size: 16,
-                                color: AppColors.textSecondary,
-                              ),
-                              SizedBox(width: AppSpacing.marginXS),
-                              Text(
-                                '${beneficiary.city}, ${beneficiary.country}',
-                                style: AppTextStyles.bodyMedium.copyWith(
-                                  color: AppColors.textSecondary,
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: AppSpacing.marginXS),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.email_outlined,
-                                size: 16,
-                                color: AppColors.textSecondary,
-                              ),
-                              SizedBox(width: AppSpacing.marginXS),
-                              Expanded(
-                                child: Text(
-                                  beneficiary.email,
-                                  style: AppTextStyles.bodySmall.copyWith(
-                                    color: AppColors.textSecondary,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
 
-                SizedBox(height: AppSpacing.marginL),
-
-                // Receiver details
-                Container(
-                  padding: EdgeInsets.all(AppSpacing.paddingM),
-                  decoration: BoxDecoration(
-                    color: AppColors.background.withOpacity(0.5),
-                    borderRadius: BorderRadius.circular(AppRadius.radiusM),
-                    border: Border.all(
-                      color: AppColors.border.withOpacity(0.3),
-                    ),
-                  ),
+                // Details section
+                Padding(
+                  padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
-                      _buildDetailRow(
-                        'Full Name',
-                        beneficiary.displayName,
-                        Icons.person_outline,
+                      _buildDetailItem(
+                        icon: Icons.person_rounded,
+                        label: 'Full Name',
+                        value: beneficiary.displayName,
+                        iconColor: const Color(0xFF2475FF),
                       ),
-                      SizedBox(height: AppSpacing.marginM),
-                      _buildDetailRow(
-                        'Mobile Number',
-                        beneficiary.mobileNumber.isNotEmpty
+                      const SizedBox(height: 16),
+                      _buildDetailItem(
+                        icon: Icons.phone_rounded,
+                        label: 'Mobile Number',
+                        value: beneficiary.mobileNumber.isNotEmpty
                             ? beneficiary.mobileNumber
                             : 'Not provided',
-                        Icons.phone_outlined,
+                        iconColor: const Color(0xFF00C735),
                       ),
-                      SizedBox(height: AppSpacing.marginM),
-                      _buildDetailRow(
-                        'Address',
-                        beneficiary.fullAddress,
-                        Icons.location_on_outlined,
+                      const SizedBox(height: 16),
+                      _buildDetailItem(
+                        icon: Icons.email_rounded,
+                        label: 'Email Address',
+                        value: beneficiary.email,
+                        iconColor: const Color(0xFFF57C00),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildDetailItem(
+                        icon: Icons.location_on_rounded,
+                        label: 'Address',
+                        value: beneficiary.fullAddress,
+                        iconColor: const Color(0xFF7B1FA2),
+                        isAddress: true,
                       ),
                     ],
                   ),
@@ -404,65 +459,104 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
       },
     )
         .animate()
-        .fadeIn(duration: AppAnimations.normalAnimation, delay: 400.ms)
-        .slideY(begin: 0.1, end: 0, duration: AppAnimations.normalAnimation)
+        .fadeIn(duration: 600.ms, delay: 400.ms)
+        .slideY(begin: 0.1, end: 0)
         .scale(begin: const Offset(0.95, 0.95), end: const Offset(1, 1));
   }
 
-  Widget _buildDetailRow(String label, String value, IconData icon) {
-    return Row(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: AppColors.primaryBlue.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(AppRadius.radiusS),
-          ),
-          child: Icon(
-            icon,
-            size: 16,
-            color: AppColors.primaryBlue,
-          ),
+  Widget _buildDetailItem({
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color iconColor,
+    bool isAddress = false,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8F9FA),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Colors.grey.shade200,
+          width: 1,
         ),
-        SizedBox(width: AppSpacing.marginM),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: AppColors.textSecondary,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(height: AppSpacing.marginXS),
-              Text(
-                value,
-                style: AppTextStyles.bodyMedium.copyWith(
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ],
+      ),
+      child: Row(
+        crossAxisAlignment: isAddress ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: iconColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(
+              icon,
+              size: 20,
+              color: iconColor,
+            ),
           ),
-        ),
-      ],
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey[600],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                if (isAddress)
+                  SizedBox(
+                    height: 40,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Text(
+                        value,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          color: Color(0xFF181F30),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  )
+                else
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      value,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        color: Color(0xFF181F30),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget _buildTransactionDetails(ExchangeFormState exchangeForm) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(AppSpacing.paddingL),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(AppRadius.radiusL),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.08),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
@@ -472,111 +566,143 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryYellow.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(AppRadius.radiusS),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFFFF3E0), Color(0xFFFFECB3)],
+                  ),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(
-                  Icons.swap_horiz,
-                  color: AppColors.primaryYellow.withOpacity(0.8),
+                child: const Icon(
+                  Icons.swap_horiz_rounded,
+                  color: Color(0xFFF57C00),
                   size: 20,
                 ),
               ),
-              SizedBox(width: AppSpacing.marginM),
+              const SizedBox(width: 12),
               Text(
                 'Transaction Details',
-                style: AppTextStyles.heading3.copyWith(
-                  fontWeight: FontWeight.bold,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: const Color(0xFF181F30),
                 ),
               ),
             ],
           ),
 
-          SizedBox(height: AppSpacing.marginL),
+          const SizedBox(height: 20),
 
-          // Currency and amounts
+          // Currency exchange cards
           Row(
             children: [
               Expanded(
-                child: _buildTransactionCard(
-                  'You Send',
-                  exchangeForm.fromCurrency?.code ?? 'USD',
-                  exchangeForm.sendAmount.isNotEmpty
+                child: _buildCurrencyCard(
+                  label: 'You Send',
+                  currency: exchangeForm.fromCurrency?.code ?? 'USD',
+                  currencyLogo: exchangeForm.fromCurrency?.logo,
+                  amount: exchangeForm.sendAmount.isNotEmpty
                       ? exchangeForm.sendAmount
-                      : '100.00',
-                  AppColors.error.withOpacity(0.1),
-                  AppColors.error,
-                  Icons.north_east,
+                      : '0.00',
+                  gradientColors: [
+                    const Color(0xFFFFEBEE),
+                    const Color(0xFFFFCDD2),
+                  ],
+                  iconColor: const Color(0xFFFF3E24),
+                  icon: Icons.arrow_upward_rounded,
                 ),
               ),
 
-              SizedBox(width: AppSpacing.marginM),
-
-              // Arrow
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppColors.primaryBlue.withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.arrow_forward,
-                  color: AppColors.primaryBlue,
-                  size: 20,
-                ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF2475FF).withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.arrow_forward_rounded,
+                    color: Color(0xFF2475FF),
+                    size: 20,
+                  ),
+                ).animate(onPlay: (controller) => controller.repeat())
+                  .moveX(begin: -3, end: 3, duration: 2.seconds)
+                  .then()
+                  .moveX(begin: 3, end: -3, duration: 2.seconds),
               ),
-
-              SizedBox(width: AppSpacing.marginM),
 
               Expanded(
-                child: _buildTransactionCard(
-                  'They Receive',
-                  exchangeForm.toCurrency?.code ?? 'EUR',
-                  exchangeForm.receiveAmount.isNotEmpty
+                child: _buildCurrencyCard(
+                  label: 'They Receive',
+                  currency: exchangeForm.toCurrency?.code ?? 'EUR',
+                  currencyLogo: exchangeForm.toCurrency?.logo,
+                  amount: exchangeForm.receiveAmount.isNotEmpty
                       ? exchangeForm.receiveAmount
-                      : '85.50',
-                  AppColors.success.withOpacity(0.1),
-                  AppColors.success,
-                  Icons.south_west,
+                      : '0.00',
+                  gradientColors: [
+                    const Color(0xFFE8F5E9),
+                    const Color(0xFFC8E6C9),
+                  ],
+                  iconColor: const Color(0xFF00C735),
+                  icon: Icons.arrow_downward_rounded,
                 ),
               ),
             ],
           ),
 
-          SizedBox(height: AppSpacing.marginL),
+          const SizedBox(height: 20),
 
-          // Exchange rate info
+          // Exchange info
           Container(
-            padding: EdgeInsets.all(AppSpacing.paddingM),
+            padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppColors.background.withOpacity(0.5),
-              borderRadius: BorderRadius.circular(AppRadius.radiusM),
+              gradient: LinearGradient(
+                colors: [
+                  const Color(0xFFF8F9FA),
+                  Colors.grey.shade50,
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: AppColors.border.withOpacity(0.3),
+                color: Colors.grey.shade200,
+                width: 1,
               ),
             ),
             child: Column(
               children: [
-                _buildExchangeInfoRow(
-                  'Exchange Rate',
-                  exchangeForm.exchangeRate != null
+                _buildInfoRow(
+                  icon: Icons.currency_exchange_rounded,
+                  label: 'Exchange Rate',
+                  value: exchangeForm.exchangeRate != null
                       ? '1 ${exchangeForm.fromCurrency?.code} = ${exchangeForm.exchangeRate?.rate.toStringAsFixed(4)} ${exchangeForm.toCurrency?.code}'
-                      : '1 USD = 0.855 EUR',
+                      : 'Calculating...',
+                  valueColor: const Color(0xFF2475FF),
                 ),
-                SizedBox(height: AppSpacing.marginS),
-                _buildExchangeInfoRow(
-                  'Transfer Fee',
-                  exchangeForm.calculation?.fee != null
+                const SizedBox(height: 12),
+                Divider(color: Colors.grey.shade200, height: 1),
+                const SizedBox(height: 12),
+                _buildInfoRow(
+                  icon: Icons.attach_money_rounded,
+                  label: 'Transfer Fee',
+                  value: exchangeForm.calculation?.fee != null
                       ? '${exchangeForm.calculation?.fee} ${exchangeForm.calculation?.feeCurrency}'
-                      : '2.50 USD',
+                      : 'Calculating...',
+                  valueColor: const Color(0xFFF57C00),
                 ),
-                SizedBox(height: AppSpacing.marginS),
-                _buildExchangeInfoRow(
-                  'Total Cost',
-                  exchangeForm.calculation?.totalAmount != null
+                const SizedBox(height: 12),
+                Divider(color: Colors.grey.shade200, height: 1),
+                const SizedBox(height: 12),
+                _buildInfoRow(
+                  icon: Icons.calculate_rounded,
+                  label: 'Total Cost',
+                  value: exchangeForm.calculation?.totalAmount != null
                       ? '${exchangeForm.calculation?.totalAmount} ${exchangeForm.fromCurrency?.code}'
-                      : '102.50 USD',
+                      : 'Calculating...',
+                  valueColor: const Color(0xFF181F30),
+                  isBold: true,
                 ),
               ],
             ),
@@ -585,84 +711,143 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
       ),
     )
         .animate()
-        .fadeIn(duration: AppAnimations.normalAnimation, delay: 600.ms)
-        .slideY(begin: 0.1, end: 0, duration: AppAnimations.normalAnimation)
+        .fadeIn(duration: 600.ms, delay: 600.ms)
+        .slideY(begin: 0.1, end: 0)
         .scale(begin: const Offset(0.95, 0.95), end: const Offset(1, 1));
   }
 
-  Widget _buildTransactionCard(
-    String label,
-    String currency,
-    String amount,
-    Color backgroundColor,
-    Color accentColor,
-    IconData icon,
-  ) {
+  Widget _buildCurrencyCard({
+    required String label,
+    required String currency,
+    String? currencyLogo,
+    required String amount,
+    required List<Color> gradientColors,
+    required Color iconColor,
+    required IconData icon,
+  }) {
     return Container(
-      padding: EdgeInsets.all(AppSpacing.paddingM),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(AppRadius.radiusM),
-        border: Border.all(
-          color: accentColor.withOpacity(0.2),
+        gradient: LinearGradient(
+          colors: gradientColors,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(
-                icon,
-                size: 16,
-                color: accentColor,
-              ),
-              SizedBox(width: AppSpacing.marginXS),
+              Icon(icon, size: 16, color: iconColor),
+              const SizedBox(width: 4),
               Text(
                 label,
-                style: AppTextStyles.bodySmall.copyWith(
-                  color: accentColor,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: iconColor,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
-          SizedBox(height: AppSpacing.marginS),
-          Text(
-            amount,
-            style: AppTextStyles.heading3.copyWith(
-              fontWeight: FontWeight.bold,
-              color: AppColors.textPrimary,
+          const SizedBox(height: 12),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Text(
+              amount,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF181F30),
+              ),
             ),
           ),
-          SizedBox(height: AppSpacing.marginXS),
-          Text(
-            currency,
-            style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.textSecondary,
-              fontWeight: FontWeight.w500,
-            ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              if (currencyLogo != null)
+                Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: NetworkImage(currencyLogo),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                )
+              else
+                Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.grey.shade300,
+                  ),
+                  child: Center(
+                    child: Text(
+                      currency.substring(0, 1),
+                      style: const TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              const SizedBox(width: 6),
+              Text(
+                currency,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[700],
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildExchangeInfoRow(String label, String value) {
+  Widget _buildInfoRow({
+    required IconData icon,
+    required String label,
+    required String value,
+    required Color valueColor,
+    bool isBold = false,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.textSecondary,
-          ),
+        Row(
+          children: [
+            Icon(icon, size: 18, color: Colors.grey[600]),
+            const SizedBox(width: 8),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[600],
+              ),
+            ),
+          ],
         ),
-        Text(
-          value,
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.w600,
+        Flexible(
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            reverse: true,
+            child: Text(
+              value,
+              style: TextStyle(
+                fontSize: isBold ? 16 : 14,
+                color: valueColor,
+                fontWeight: isBold ? FontWeight.w700 : FontWeight.w600,
+              ),
+            ),
           ),
         ),
       ],
@@ -676,108 +861,119 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
 
     return Column(
       children: [
-        // Change Receiver button
-        OutlinedButton.icon(
-          onPressed: () {
-            // Go back to select different receiver
-            context.pop();
-          },
-          icon: Icon(
-            Icons.swap_horiz,
-            size: 20,
-            color: AppColors.primaryBlue,
-          ),
-          label: Text(
-            'Change Receiver',
-            style: AppTextStyles.buttonMedium.copyWith(
-              color: AppColors.primaryBlue,
-            ),
-          ),
-          style: OutlinedButton.styleFrom(
-            foregroundColor: AppColors.primaryBlue,
-            side: BorderSide(color: AppColors.primaryBlue),
-            padding: EdgeInsets.symmetric(vertical: AppSpacing.paddingM),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.buttonRadius),
-            ),
-            minimumSize: const Size(double.infinity, 56),
-          ),
-        )
-            .animate()
-            .fadeIn(duration: AppAnimations.normalAnimation, delay: 800.ms)
-            .slideY(begin: 0.1, end: 0, duration: AppAnimations.normalAnimation)
-            .scale(begin: const Offset(0.95, 0.95), end: const Offset(1, 1)),
-
-        SizedBox(height: AppSpacing.marginM),
-
         // Continue button
         ElevatedButton(
           onPressed: isEnabled
               ? () {
-                  HapticFeedback.lightImpact();
-                  context.push('/select-payment');
+                  HapticFeedback.mediumImpact();
+
+                  // Check if this is a crypto-to-cash transaction
+                  final exchangeForm = ref.read(exchangeFormProvider);
+                  final fromCurrency = exchangeForm.fromCurrency;
+                  final toCurrency = exchangeForm.toCurrency;
+
+                  final isCryptoToCash = fromCurrency?.type == 'CRYPTO' &&
+                      toCurrency?.type == 'FIAT';
+
+                  if (isCryptoToCash) {
+                    // Navigate to crypto payment screen for crypto-to-cash
+                    context.push('/send-crypto-payment');
+                  } else {
+                    // Navigate to regular payment selection for other flows
+                    context.push('/select-payment');
+                  }
                 }
               : null,
           style: ElevatedButton.styleFrom(
-            backgroundColor:
-                isEnabled ? AppColors.primaryYellow : AppColors.iconBackground,
-            foregroundColor:
-                isEnabled ? AppColors.textPrimary : AppColors.textSecondary,
+            backgroundColor: const Color(0xFFFFC000),
+            foregroundColor: const Color(0xFF181F30),
+            disabledBackgroundColor: Colors.grey.shade200,
+            disabledForegroundColor: Colors.grey.shade500,
             elevation: 0,
-            padding: EdgeInsets.symmetric(vertical: AppSpacing.paddingM),
+            padding: const EdgeInsets.symmetric(vertical: 16),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppRadius.buttonRadius),
+              borderRadius: BorderRadius.circular(16),
             ),
             minimumSize: const Size(double.infinity, 56),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (isEnabled) ...[
-                Icon(
-                  Icons.check_circle_outline,
-                  size: 20,
-                  color: AppColors.textPrimary,
-                ),
-                SizedBox(width: AppSpacing.marginS),
-              ],
+              Icon(
+                isEnabled ? Icons.check_circle_rounded : Icons.person_add_rounded,
+                size: 20,
+              ),
+              const SizedBox(width: 8),
               Text(
                 isEnabled ? 'Continue' : 'Select a Receiver First',
-                style: AppTextStyles.buttonMedium.copyWith(
-                  color: isEnabled
-                      ? AppColors.textPrimary
-                      : AppColors.textSecondary,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
         )
             .animate()
-            .fadeIn(duration: AppAnimations.normalAnimation, delay: 1000.ms)
-            .slideY(begin: 0.1, end: 0, duration: AppAnimations.normalAnimation)
-            .scale(begin: const Offset(0.95, 0.95), end: const Offset(1, 1)),
+            .fadeIn(duration: 600.ms, delay: 800.ms)
+            .slideY(begin: 0.1, end: 0),
 
-        SizedBox(height: AppSpacing.marginM),
+        const SizedBox(height: 12),
+
+        // Change Receiver button
+        OutlinedButton.icon(
+          onPressed: () {
+            HapticFeedback.lightImpact();
+            context.pop();
+          },
+          icon: const Icon(
+            Icons.swap_horiz_rounded,
+            size: 20,
+          ),
+          label: const Text(
+            'Change Receiver',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          style: OutlinedButton.styleFrom(
+            foregroundColor: const Color(0xFF2475FF),
+            side: const BorderSide(color: Color(0xFF2475FF), width: 1.5),
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            minimumSize: const Size(double.infinity, 56),
+          ),
+        )
+            .animate()
+            .fadeIn(duration: 600.ms, delay: 900.ms)
+            .slideY(begin: 0.1, end: 0),
+
+        const SizedBox(height: 12),
 
         // Cancel button
         TextButton(
-          onPressed: () => context.pop(),
+          onPressed: () {
+            HapticFeedback.lightImpact();
+            context.pop();
+          },
           style: TextButton.styleFrom(
-            foregroundColor: AppColors.textSecondary,
-            padding: EdgeInsets.symmetric(vertical: AppSpacing.paddingM),
+            foregroundColor: Colors.grey[600],
+            padding: const EdgeInsets.symmetric(vertical: 16),
             minimumSize: const Size(double.infinity, 56),
           ),
-          child: Text(
+          child: const Text(
             'Cancel',
-            style: AppTextStyles.buttonMedium.copyWith(
-              color: AppColors.textSecondary,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
             ),
           ),
         )
             .animate()
-            .fadeIn(duration: AppAnimations.normalAnimation, delay: 1100.ms)
-            .slideY(
-                begin: 0.1, end: 0, duration: AppAnimations.normalAnimation),
+            .fadeIn(duration: 600.ms, delay: 1000.ms),
       ],
     );
   }

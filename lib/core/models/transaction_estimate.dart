@@ -41,8 +41,8 @@ class ExchangeRateData {
 
   factory ExchangeRateData.fromJson(Map<String, dynamic> json) {
     return ExchangeRateData(
-      rate: (json['rate'] as num).toDouble(),
-      timestamp: json['timestamp'] as int,
+      rate: FeesBreakdown._safeParseDouble(json['rate']),
+      timestamp: json['timestamp']?.toInt() ?? 0,
     );
   }
 
@@ -60,6 +60,7 @@ class FeesBreakdown {
   final double gasFee;
   final double totalFee;
   final double discounts;
+  final double? gasFeeInCrypto;
 
   FeesBreakdown({
     required this.baseFee,
@@ -67,16 +68,26 @@ class FeesBreakdown {
     required this.gasFee,
     required this.totalFee,
     required this.discounts,
+    this.gasFeeInCrypto,
   });
 
   factory FeesBreakdown.fromJson(Map<String, dynamic> json) {
     return FeesBreakdown(
-      baseFee: (json['baseFee'] as num).toDouble(),
-      providerFee: (json['providerFee'] as num).toDouble(),
-      gasFee: (json['gasFee'] as num).toDouble(),
-      totalFee: (json['totalFee'] as num).toDouble(),
-      discounts: (json['discounts'] as num).toDouble(),
+      baseFee: _safeParseDouble(json['baseFee']),
+      providerFee: _safeParseDouble(json['providerFee']),
+      gasFee: _safeParseDouble(json['gasFee']),
+      totalFee: _safeParseDouble(json['totalFee']),
+      discounts: _safeParseDouble(json['discounts']),
+      gasFeeInCrypto: _safeParseDouble(json['gasFeeInCrypto']),
     );
+  }
+
+  static double _safeParseDouble(dynamic value) {
+    if (value == null) return 0.0;
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
+    if (value is String) return double.tryParse(value) ?? 0.0;
+    return 0.0;
   }
 
   Map<String, dynamic> toJson() {
@@ -86,6 +97,7 @@ class FeesBreakdown {
       'gasFee': gasFee,
       'totalFee': totalFee,
       'discounts': discounts,
+      'gasFeeInCrypto': gasFeeInCrypto,
     };
   }
 
@@ -105,9 +117,10 @@ class NetworkInfo {
 
   factory NetworkInfo.fromJson(Map<String, dynamic> json) {
     return NetworkInfo(
-      estimatedTimeSeconds: json['estimatedTimeSeconds'] as int,
-      humanReadableTime: json['humanReadableTime'] as String,
-      networkCongestion: (json['networkCongestion'] as num).toDouble(),
+      estimatedTimeSeconds: json['estimatedTimeSeconds']?.toInt() ?? 0,
+      humanReadableTime: json['humanReadableTime']?.toString() ?? '',
+      networkCongestion:
+          FeesBreakdown._safeParseDouble(json['networkCongestion']),
     );
   }
 
@@ -124,18 +137,47 @@ class TransactionResults {
   final double cryptoAmountToReceive;
   final double totalAmountToPay;
   final String paymentCurrency;
+  final double? fiatAmountToReceive; // For crypto-to-cash
+  final String? cryptoCurrency; // For crypto-to-cash
+  final String? fiatCurrency; // For crypto-to-cash
 
   TransactionResults({
     required this.cryptoAmountToReceive,
     required this.totalAmountToPay,
     required this.paymentCurrency,
+    this.fiatAmountToReceive,
+    this.cryptoCurrency,
+    this.fiatCurrency,
   });
 
   factory TransactionResults.fromJson(Map<String, dynamic> json) {
+    // Handle both crypto-to-cash and cash-to-crypto responses
+    double cryptoAmount = 0.0;
+    double totalToPay = 0.0;
+    String currency = '';
+
+    if (json['fiatAmountToReceive'] != null) {
+      // Crypto-to-cash response
+      cryptoAmount =
+          FeesBreakdown._safeParseDouble(json['fiatAmountToReceive']);
+      totalToPay = FeesBreakdown._safeParseDouble(json['totalAmountToPay']);
+      currency = json['fiatCurrency'] ?? json['cryptoCurrency'] ?? '';
+    } else {
+      // Cash-to-crypto response (existing format)
+      cryptoAmount =
+          FeesBreakdown._safeParseDouble(json['cryptoAmountToReceive']);
+      totalToPay = FeesBreakdown._safeParseDouble(json['totalAmountToPay']);
+      currency = json['paymentCurrency'] ?? '';
+    }
+
     return TransactionResults(
-      cryptoAmountToReceive: (json['cryptoAmountToReceive'] as num).toDouble(),
-      totalAmountToPay: (json['totalAmountToPay'] as num).toDouble(),
-      paymentCurrency: json['paymentCurrency'] as String,
+      cryptoAmountToReceive: cryptoAmount,
+      totalAmountToPay: totalToPay,
+      paymentCurrency: currency,
+      fiatAmountToReceive:
+          FeesBreakdown._safeParseDouble(json['fiatAmountToReceive']),
+      cryptoCurrency: json['cryptoCurrency'],
+      fiatCurrency: json['fiatCurrency'],
     );
   }
 
@@ -144,6 +186,14 @@ class TransactionResults {
       'cryptoAmountToReceive': cryptoAmountToReceive,
       'totalAmountToPay': totalAmountToPay,
       'paymentCurrency': paymentCurrency,
+      'fiatAmountToReceive': fiatAmountToReceive,
+      'cryptoCurrency': cryptoCurrency,
+      'fiatCurrency': fiatCurrency,
     };
   }
+
+  // Helper getters for display
+  double get receiveAmount => fiatAmountToReceive ?? cryptoAmountToReceive;
+  String get receiveCurrency =>
+      fiatCurrency ?? cryptoCurrency ?? paymentCurrency;
 }

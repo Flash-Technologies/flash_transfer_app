@@ -10,6 +10,7 @@ import 'package:flash_transfer_app/presentation/payment/components/crypto_addres
 import 'package:flash_transfer_app/presentation/payment/payment_complete_screen.dart';
 import 'package:flash_transfer_app/presentation/payment/components/payment_completion_screen.dart';
 import 'package:flash_transfer_app/presentation/payment/select_payment_screen.dart';
+import 'package:flash_transfer_app/presentation/payment/send_crypto_payment_screen.dart';
 import 'package:flash_transfer_app/presentation/review/review_details_screen.dart';
 import 'package:flash_transfer_app/presentation/transaction/invite_screen.dart';
 import 'package:flutter/material.dart';
@@ -344,6 +345,11 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/nft-benefits',
         builder: (context, state) => const NFTBenefitsScreen(),
+      ),
+
+      GoRoute(
+        path: '/send-crypto-payment',
+        builder: (context, state) => const SendCryptoPaymentScreen(),
       ),
     ],
   );

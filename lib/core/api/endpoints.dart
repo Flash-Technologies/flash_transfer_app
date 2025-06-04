@@ -35,6 +35,13 @@ class Endpoints {
       '$baseUrl/api/transaction/estimate-mobile-money-to-crypto';
   static const String createCashToCryptoTransaction =
       '$baseUrl/api/transaction/cash-to-crypto-mobile-money';
+  static const String cryptoToCashEstimate =
+      '$baseUrl/api/transaction/estimate-crypto-to-fait';
+  static const String createCryptoToCashTransaction =
+      '$baseUrl/api/transaction/crypto-to-fait';
+
+  // wallet endpoints
+  static const String walletBalance = '/api/webhooks/walletBalance';
 
   // External API
   static const String countries = 'https://restcountries.com/v3.1/all';

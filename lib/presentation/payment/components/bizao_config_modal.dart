@@ -45,14 +45,30 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
   bool _isSubmitting = false;
 
   final List<Map<String, String>> _countries = [
-    {'name': 'Ivory Coast', 'code': '+225', 'currency': 'XOF'},
-    {'name': 'Burkina Faso', 'code': '+226', 'currency': 'XOF'},
-    {'name': 'Senegal', 'code': '+221', 'currency': 'XOF'},
-    {'name': 'Cameroon', 'code': '+237', 'currency': 'XAF'},
-    {'name': 'Togo', 'code': '+228', 'currency': 'XOF'},
+    {
+      'name': 'Ivory Coast',
+      'code': '+225',
+      'countryCode': 'ci',
+      'currency': 'XOF'
+    },
+    {
+      'name': 'Burkina Faso',
+      'code': '+226',
+      'countryCode': 'bf',
+      'currency': 'XOF'
+    },
+    {'name': 'Senegal', 'code': '+221', 'countryCode': 'sn', 'currency': 'XOF'},
+    {
+      'name': 'Cameroon',
+      'code': '+237',
+      'countryCode': 'cm',
+      'currency': 'XAF'
+    },
+    {'name': 'Togo', 'code': '+228', 'countryCode': 'tg', 'currency': 'XOF'},
     {
       'name': 'Democratic Republic of the Congo',
       'code': '+243',
+      'countryCode': 'cd',
       'currency': 'CDF'
     },
   ];
@@ -124,7 +140,7 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
 
     final configData = BizaoConfigData(
       country: _selectedCountry!,
-      countryCode: country['code']!,
+      countryCode: country['countryCode']!,
       phoneNumber: _phoneController.text,
       language: _selectedLanguage!,
     );
