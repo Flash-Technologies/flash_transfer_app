@@ -31,6 +31,7 @@ class Endpoints {
   static const String createBeneficiary = '/api/beneficiary';
 
   // transaction endpoints
+  static const String transactions = '$baseUrl/api/transaction';
   static const String transactionEstimate =
       '$baseUrl/api/transaction/estimate-mobile-money-to-crypto';
   static const String createCashToCryptoTransaction =

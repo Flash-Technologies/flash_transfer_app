@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/models/transaction_model.dart';
-import '../../../core/services/translation_service.dart';
 
 class TransactionCardWidget extends StatefulWidget {
-  final TransactionModel transaction;
+  final Transaction transaction;
   final VoidCallback onTap;
 
   const TransactionCardWidget({
@@ -45,7 +43,6 @@ class _TransactionCardWidgetState extends State<TransactionCardWidget>
 
   @override
   Widget build(BuildContext context) {
-    final translationService = TranslationService.instance;
 
     return GestureDetector(
       onTap: () {
@@ -68,7 +65,7 @@ class _TransactionCardWidgetState extends State<TransactionCardWidget>
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -77,22 +74,28 @@ class _TransactionCardWidgetState extends State<TransactionCardWidget>
               ),
               child: Row(
                 children: [
-                  // Transaction Type Indicator
+                  // Profile Avatar or Character
                   Container(
-                    width: 48,
-                    height: 48,
+                    width: 50,
+                    height: 50,
                     decoration: BoxDecoration(
-                      color: _getTypeColor().withOpacity(0.1),
+                      color: _getRecipientColor(),
                       shape: BoxShape.circle,
+                      border: Border.all(color: Colors.grey.shade200, width: 1),
                     ),
-                    child: Icon(
-                      _getTypeIcon(),
-                      color: _getTypeColor(),
-                      size: 24,
+                    child: Center(
+                      child: Text(
+                        _getRecipientInitial(),
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
                   ),
 
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 12),
 
                   // Transaction Details
                   Expanded(
@@ -103,84 +106,97 @@ class _TransactionCardWidgetState extends State<TransactionCardWidget>
                           children: [
                             Expanded(
                               child: Text(
-                                widget.transaction.recipient ??
-                                    widget.transaction.receiverName,
+                                _getRecipientName(),
                                 style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                   color: Color(0xFF181F30),
                                 ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            Text(
-                              '${widget.transaction.type == TransactionType.send ? '-' : '+'}${widget.transaction.amount.toStringAsFixed(2)} ${widget.transaction.currency}',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color:
-                                    widget.transaction.type ==
-                                            TransactionType.send
-                                        ? const Color(0xFFFF3E24)
-                                        : const Color(0xFF00C735),
+                            // Type indicator (Send/Receive)
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: _isReceiveTransaction() ? Colors.green.shade50 : Colors.red.shade50,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                _isReceiveTransaction() ? 'Receive' : 'Send',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w600,
+                                  color: _isReceiveTransaction() ? Colors.green.shade600 : Colors.red.shade600,
+                                ),
                               ),
                             ),
                           ],
                         ),
 
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 4),
 
-                        Row(
-                          children: [
-                            Text(
-                              _formatDate(
-                                widget.transaction.date ??
-                                    widget.transaction.createdAt,
-                              ),
-                              style: const TextStyle(
-                                fontSize: 12,
-                                color: Color(0xFF6E757D),
-                              ),
-                            ),
-
-                            const Spacer(),
-
-                            // Status Badge
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                color: _getStatusColor().withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    width: 6,
-                                    height: 6,
-                                    decoration: BoxDecoration(
-                                      color: _getStatusColor(),
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    _getStatusText(),
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w600,
-                                      color: _getStatusColor(),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
+                        Text(
+                          _formatDate(widget.transaction.createdAt),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Color(0xFF6E757D),
+                          ),
                         ),
                       ],
                     ),
+                  ),
+
+                  const SizedBox(width: 12),
+
+                  // Amount and Status
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        '${_isReceiveTransaction() ? '+' : '-'}${widget.transaction.amount.toStringAsFixed(2)} ${widget.transaction.currency}',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: _isReceiveTransaction() ? Colors.green.shade600 : Colors.red.shade600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      // Status Badge
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: widget.transaction.statusColor.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 4,
+                              height: 4,
+                              decoration: BoxDecoration(
+                                color: widget.transaction.statusColor,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              _getStatusDisplayName(widget.transaction.status),
+                              style: TextStyle(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w600,
+                                color: widget.transaction.statusColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -191,97 +207,104 @@ class _TransactionCardWidgetState extends State<TransactionCardWidget>
     );
   }
 
-  Color _getTypeColor() {
-    if (widget.transaction.type == null) return const Color(0xFF6E757D);
-
-    switch (widget.transaction.type!) {
-      case TransactionType.send:
-        return const Color(0xFFFF3E24);
-      case TransactionType.receive:
-        return const Color(0xFF00C735);
+  // Get recipient name from transaction data
+  String _getRecipientName() {
+    // Try to get the destination wallet address or beneficiary name
+    if (widget.transaction.destinationDetails != null) {
+      final walletAddress = widget.transaction.destinationDetails!['walletAddress'] as String?;
+      if (walletAddress != null && walletAddress.isNotEmpty) {
+        // Show first 6 and last 4 characters of wallet address
+        if (walletAddress.length > 10) {
+          return '${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}';
+        }
+        return walletAddress;
+      }
     }
+    
+    // Fallback to user's own name or a generic name
+    if (widget.transaction.user != null) {
+      return widget.transaction.user!.fullName.isNotEmpty 
+          ? widget.transaction.user!.fullName 
+          : 'Wallet Transfer';
+    }
+    
+    return 'Crypto Transfer';
   }
 
-  IconData _getTypeIcon() {
-    if (widget.transaction.type == null) return Icons.swap_horiz;
-
-    switch (widget.transaction.type!) {
-      case TransactionType.send:
-        return Icons.arrow_upward;
-      case TransactionType.receive:
-        return Icons.arrow_downward;
+  // Get first character for avatar
+  String _getRecipientInitial() {
+    final name = _getRecipientName();
+    if (name.startsWith('0x')) {
+      return 'W'; // W for Wallet
     }
+    return name.isNotEmpty ? name[0].toUpperCase() : 'U';
+  }
+
+  // Generate color based on name
+  Color _getRecipientColor() {
+    final name = _getRecipientName();
+    final colors = [
+      const Color(0xFF6366F1), // Indigo
+      const Color(0xFF8B5CF6), // Violet
+      const Color(0xFFEC4899), // Pink
+      const Color(0xFFF59E0B), // Amber
+      const Color(0xFF10B981), // Emerald
+      const Color(0xFF3B82F6), // Blue
+      const Color(0xFFEF4444), // Red
+      const Color(0xFF84CC16), // Lime
+    ];
+    
+    int hash = 0;
+    for (int i = 0; i < name.length; i++) {
+      hash = name.codeUnitAt(i) + ((hash << 5) - hash);
+    }
+    
+    return colors[hash.abs() % colors.length];
+  }
+
+  // Check if this is a receive transaction (user is receiving money)
+  bool _isReceiveTransaction() {
+    // In our API, if the transaction type is CASH_TO_CRYPTO and user is receiving crypto
+    // Or if it's CRYPTO_TO_CASH and user is receiving cash
+    // For now, we'll assume all transactions in the list are "send" transactions
+    // You can adjust this logic based on your business requirements
+    return false; // All transactions are "send" from user's perspective
   }
 
   Color _getBorderColor() {
-    final statusEnum = _parseStatus(widget.transaction.status);
-    switch (statusEnum) {
-      case TransactionStatus.completed:
-        return const Color(0xFF00C735).withOpacity(0.3);
-      case TransactionStatus.pending:
-      case TransactionStatus.processing:
-        return const Color(0xFFFFC000).withOpacity(0.3);
-      case TransactionStatus.failed:
-      case TransactionStatus.cancelled:
-        return const Color(0xFFFF3E24).withOpacity(0.3);
-    }
+    return widget.transaction.statusColor.withValues(alpha: 0.2);
   }
 
-  Color _getStatusColor() {
-    final statusEnum = _parseStatus(widget.transaction.status);
-    switch (statusEnum) {
-      case TransactionStatus.completed:
-        return const Color(0xFF00C735);
-      case TransactionStatus.pending:
-      case TransactionStatus.processing:
-        return const Color(0xFFFFC000);
-      case TransactionStatus.failed:
-      case TransactionStatus.cancelled:
-        return const Color(0xFFFF3E24);
-    }
-  }
-
-  String _getStatusText() {
-    final statusEnum = _parseStatus(widget.transaction.status);
-    switch (statusEnum) {
-      case TransactionStatus.completed:
+  String _getStatusDisplayName(String status) {
+    switch (status.toUpperCase()) {
+      case 'COMPLETED':
         return 'Completed';
-      case TransactionStatus.pending:
+      case 'PENDING':
         return 'Pending';
-      case TransactionStatus.processing:
+      case 'PROCESSING':
         return 'Processing';
-      case TransactionStatus.failed:
+      case 'FAILED':
         return 'Failed';
-      case TransactionStatus.cancelled:
+      case 'CANCELLED':
         return 'Cancelled';
-    }
-  }
-
-  TransactionStatus _parseStatus(String status) {
-    try {
-      return TransactionStatus.values.firstWhere(
-        (e) => e.toString().split('.').last == status,
-        orElse: () => TransactionStatus.pending,
-      );
-    } catch (e) {
-      return TransactionStatus.pending;
+      default:
+        return status.toUpperCase();
     }
   }
 
   String _formatDate(DateTime date) {
-    final now = DateTime.now();
-    final difference = now.difference(date);
-
-    if (difference.inDays == 0) {
-      return 'Today';
-    } else if (difference.inDays == 1) {
-      return 'Yesterday';
-    } else if (difference.inDays < 7) {
-      return '${difference.inDays}d ago';
-    } else if (difference.inDays < 30) {
-      return '${(difference.inDays / 7).floor()}w ago';
-    } else {
-      return '${(difference.inDays / 30).floor()}m ago';
-    }
+    // Format like: Sep 13, 2025, 04:35 PM
+    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    final month = months[date.month - 1];
+    final day = date.day;
+    final year = date.year;
+    
+    final hour = date.hour == 0 ? 12 : (date.hour > 12 ? date.hour - 12 : date.hour);
+    final minute = date.minute.toString().padLeft(2, '0');
+    final ampm = date.hour >= 12 ? 'PM' : 'AM';
+    
+    return '$month $day, $year, ${hour.toString().padLeft(2, '0')}:$minute $ampm';
   }
 }

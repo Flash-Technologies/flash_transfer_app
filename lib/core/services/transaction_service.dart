@@ -3,6 +3,7 @@ import '../api/endpoints.dart';
 import '../api/api_client.dart';
 import '../models/transaction_estimate.dart';
 import '../models/transaction_response.dart';
+import '../models/transaction_model.dart';
 
 class TransactionService {
   final ApiClient _apiClient;
@@ -224,6 +225,98 @@ class TransactionService {
           '❌ TransactionService: Error creating crypto-to-cash transaction: $e');
       throw Exception(
           'Failed to create crypto-to-cash transaction: ${e.toString()}');
+    }
+  }
+
+  /// Get user transactions list
+  Future<List<Transaction>> getTransactions() async {
+    try {
+      print('🚀 Fetching transactions from API...');
+      print('🔍 Using endpoint: ${Endpoints.transactions}');
+      
+      final response = await _apiClient.get(Endpoints.transactions);
+      
+      print('📱 Transactions Response status: ${response.statusCode}');
+      print('📱 Transactions Response data: ${response.data}');
+      
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        final List<dynamic> transactionsData = response.data['data']['data'];
+        
+        final transactions = <Transaction>[];
+        for (int i = 0; i < transactionsData.length; i++) {
+          try {
+            final transaction = Transaction.fromJson(transactionsData[i]);
+            transactions.add(transaction);
+          } catch (e) {
+            print('❌ Error parsing transaction $i: $e');
+            print('❌ Transaction data: ${transactionsData[i]}');
+            rethrow;
+          }
+        }
+            
+        print('✅ Successfully parsed ${transactions.length} transactions');
+        return transactions;
+      } else {
+        final message = response.data['message'] ?? 'Failed to load transactions';
+        print('❌ API Error: $message');
+        throw Exception(message);
+      }
+    } on DioException catch (e) {
+      print('❌ DioException Details:');
+      print('   Status Code: ${e.response?.statusCode}');
+      print('   Response Data: ${e.response?.data}');
+      print('   Request Headers: ${e.requestOptions.headers}');
+      print('   Request URI: ${e.requestOptions.uri}');
+      
+      if (e.response?.statusCode == 401) {
+        final errorMsg = e.response?.data?['message'] ?? 'Authentication failed';
+        print('❌ 401 Error: $errorMsg');
+        throw Exception('Please log in to view your transactions. ($errorMsg)');
+      } else if (e.response?.statusCode == 403) {
+        throw Exception('Access denied. Please check your permissions.');
+      } else if (e.response?.statusCode == 404) {
+        throw Exception('Transactions not found.');
+      } else if (e.type == DioExceptionType.connectionTimeout || 
+                 e.type == DioExceptionType.receiveTimeout) {
+        throw Exception('Connection timeout. Please check your internet connection.');
+      } else {
+        throw Exception('Network error: ${e.message}');
+      }
+    } catch (e) {
+      print('❌ Unexpected error: $e');
+      throw Exception('Unable to fetch transactions. Please try again later.');
+    }
+  }
+
+  /// Get single transaction by ID
+  Future<Transaction> getTransactionById(String transactionId) async {
+    try {
+      print('🚀 Fetching transaction $transactionId from API...');
+      
+      final response = await _apiClient.get('${Endpoints.transactions}/$transactionId');
+      
+      print('📱 Transaction Response status: ${response.statusCode}');
+      print('📱 Transaction Response data: ${response.data}');
+      
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        return Transaction.fromJson(response.data['data']);
+      } else {
+        final message = response.data['message'] ?? 'Failed to load transaction';
+        throw Exception(message);
+      }
+    } on DioException catch (e) {
+      print('❌ Network error: ${e.response?.statusCode} - ${e.message}');
+      
+      if (e.response?.statusCode == 401) {
+        throw Exception('Authentication failed. Please log in again.');
+      } else if (e.response?.statusCode == 404) {
+        throw Exception('Transaction not found.');
+      } else {
+        throw Exception('Network error: ${e.message}');
+      }
+    } catch (e) {
+      print('❌ Unexpected error: $e');
+      throw Exception('Unable to fetch transaction. Please try again later.');
     }
   }
 }

@@ -18,6 +18,7 @@ class BeneficiariesState {
   final String searchQuery;
   final BeneficiaryPagination? pagination;
   final bool isCreating;
+  final bool isLoadingMore;
 
   BeneficiariesState({
     this.beneficiaries = const [],
@@ -26,6 +27,7 @@ class BeneficiariesState {
     this.searchQuery = '',
     this.pagination,
     this.isCreating = false,
+    this.isLoadingMore = false,
   });
 
   BeneficiariesState copyWith({
@@ -35,6 +37,7 @@ class BeneficiariesState {
     String? searchQuery,
     BeneficiaryPagination? pagination,
     bool? isCreating,
+    bool? isLoadingMore,
   }) {
     return BeneficiariesState(
       beneficiaries: beneficiaries ?? this.beneficiaries,
@@ -43,6 +46,7 @@ class BeneficiariesState {
       searchQuery: searchQuery ?? this.searchQuery,
       pagination: pagination ?? this.pagination,
       isCreating: isCreating ?? this.isCreating,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
   }
 
@@ -75,6 +79,7 @@ class BeneficiariesNotifier extends StateNotifier<BeneficiariesState> {
 
     try {
       final response = await _service.getBeneficiaries(
+        page: 1, // Always start from page 1 for initial load
         search: state.searchQuery.isNotEmpty ? state.searchQuery : null,
       );
 
@@ -98,6 +103,53 @@ class BeneficiariesNotifier extends StateNotifier<BeneficiariesState> {
       );
     }
   }
+
+  Future<void> loadMoreBeneficiaries() async {
+    // Don't load more if already loading, no more pages, or error exists
+    if (state.isLoadingMore || 
+        state.isLoading || 
+        state.pagination?.hasNextPage != true ||
+        state.error != null) {
+      return;
+    }
+
+    state = state.copyWith(isLoadingMore: true);
+
+    try {
+      final nextPage = (state.pagination?.currentPage ?? 0) + 1;
+      final response = await _service.getBeneficiaries(
+        page: nextPage,
+        search: state.searchQuery.isNotEmpty ? state.searchQuery : null,
+      );
+
+      if (response.success) {
+        // Append new beneficiaries to existing list
+        final updatedBeneficiaries = [
+          ...state.beneficiaries,
+          ...response.data.data,
+        ];
+
+        state = state.copyWith(
+          beneficiaries: updatedBeneficiaries,
+          pagination: response.data.pagination,
+          isLoadingMore: false,
+          error: null,
+        );
+      } else {
+        state = state.copyWith(
+          isLoadingMore: false,
+          error: 'Failed to load more beneficiaries',
+        );
+      }
+    } catch (e) {
+      state = state.copyWith(
+        isLoadingMore: false,
+        error: e.toString(),
+      );
+    }
+  }
+
+  bool get hasMorePages => state.pagination?.hasNextPage == true;
 
   void setSearchQuery(String query) {
     state = state.copyWith(searchQuery: query);

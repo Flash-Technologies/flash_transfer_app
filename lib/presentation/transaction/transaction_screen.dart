@@ -4,7 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/services/translation_service.dart';
 import '../../core/models/transaction_model.dart';
-import '../../core/models/sample_data.dart';
+import '../../providers/transaction_provider.dart';
+import '../../providers/auth_provider.dart';
 import 'widgets/transaction_card_widget.dart';
 import 'widgets/transaction_filter_widget.dart';
 import 'widgets/transaction_header_widget.dart' as header;
@@ -26,15 +27,23 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
   late Animation<double> _filterScaleAnimation;
 
   final ScrollController _scrollController = ScrollController();
-  bool _isLoading = false;
   String _selectedFilter = 'all';
-  List<TransactionModel> _filteredTransactions = [];
 
   @override
   void initState() {
     super.initState();
     _initializeAnimations();
-    _loadTransactions();
+    
+    // Load transactions after build
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Debug: Check if user is logged in before fetching transactions
+      final authState = ref.read(authProvider);
+      print('🔍 DEBUG: Transaction screen - User logged in: ${authState.user != null}');
+      print('🔍 DEBUG: Transaction screen - User ID: ${authState.user?.id}');
+      print('🔍 DEBUG: Transaction screen - Has token: ${authState.user?.token != null}');
+      
+      ref.read(transactionsProvider.notifier).fetchTransactions();
+    });
   }
 
   void _initializeAnimations() {
@@ -80,22 +89,6 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
     });
   }
 
-  void _loadTransactions() {
-    setState(() {
-      _isLoading = true;
-    });
-
-    // Simulate API call
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (mounted) {
-        setState(() {
-          _filteredTransactions = SampleData.sampleTransactions;
-          _isLoading = false;
-        });
-      }
-    });
-  }
-
   void _filterTransactions(String filter) {
     _filterAnimationController.forward().then((_) {
       _filterAnimationController.reverse();
@@ -103,44 +96,6 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
 
     setState(() {
       _selectedFilter = filter;
-
-      switch (filter) {
-        case 'sent':
-          _filteredTransactions =
-              SampleData.sampleTransactions
-                  .where((t) => t.type == TransactionType.send)
-                  .toList();
-          break;
-        case 'received':
-          _filteredTransactions =
-              SampleData.sampleTransactions
-                  .where((t) => t.type == TransactionType.receive)
-                  .toList();
-          break;
-        case 'thisMonth':
-          final now = DateTime.now();
-          final thisMonth = DateTime(now.year, now.month);
-          _filteredTransactions =
-              SampleData.sampleTransactions
-                  .where((t) => (t.date ?? t.createdAt).isAfter(thisMonth))
-                  .toList();
-          break;
-        case 'lastMonth':
-          final now = DateTime.now();
-          final lastMonth = DateTime(now.year, now.month - 1);
-          final thisMonth = DateTime(now.year, now.month);
-          _filteredTransactions =
-              SampleData.sampleTransactions
-                  .where(
-                    (t) =>
-                        (t.date ?? t.createdAt).isAfter(lastMonth) &&
-                        (t.date ?? t.createdAt).isBefore(thisMonth),
-                  )
-                  .toList();
-          break;
-        default:
-          _filteredTransactions = SampleData.sampleTransactions;
-      }
     });
 
     // Haptic feedback
@@ -149,18 +104,28 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
 
   Future<void> _refreshTransactions() async {
     HapticFeedback.mediumImpact();
-    setState(() {
-      _isLoading = true;
-    });
+    await ref.read(transactionsProvider.notifier).fetchTransactions(refresh: true);
+  }
 
-    // Simulate refresh
-    await Future.delayed(const Duration(milliseconds: 1000));
-
-    if (mounted) {
-      setState(() {
-        _filteredTransactions = SampleData.sampleTransactions;
-        _isLoading = false;
-      });
+  List<Transaction> _getFilteredTransactions(List<Transaction> transactions) {
+    switch (_selectedFilter) {
+      case 'sent':
+        return transactions.where((t) => t.type.contains('TO')).toList();
+      case 'received':
+        return transactions.where((t) => t.destinationType == 'CRYPTO_WALLET').toList();
+      case 'thisMonth':
+        final now = DateTime.now();
+        final thisMonth = DateTime(now.year, now.month);
+        return transactions.where((t) => t.createdAt.isAfter(thisMonth)).toList();
+      case 'lastMonth':
+        final now = DateTime.now();
+        final lastMonth = DateTime(now.year, now.month - 1);
+        final thisMonth = DateTime(now.year, now.month);
+        return transactions
+            .where((t) => t.createdAt.isAfter(lastMonth) && t.createdAt.isBefore(thisMonth))
+            .toList();
+      default:
+        return transactions;
     }
   }
 
@@ -223,41 +188,53 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
   }
 
   Widget _buildTransactionsList() {
-    if (_isLoading) {
-      return _buildLoadingState();
-    }
+    return Consumer(
+      builder: (context, ref, child) {
+        final transactionsState = ref.watch(transactionsProvider);
+        
+        if (transactionsState.isLoading && transactionsState.transactions.isEmpty) {
+          return _buildLoadingState();
+        }
 
-    if (_filteredTransactions.isEmpty) {
-      return _buildEmptyState();
-    }
+        if (transactionsState.error != null && transactionsState.transactions.isEmpty) {
+          return _buildErrorState(transactionsState.error!);
+        }
 
-    return RefreshIndicator(
-      onRefresh: _refreshTransactions,
-      color: const Color(0xFFFFC000),
-      backgroundColor: Colors.white,
-      child: CustomScrollView(
-        controller: _scrollController,
-        physics: const AlwaysScrollableScrollPhysics(),
-        slivers: [
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate((context, index) {
-                final transaction = _filteredTransactions[index];
-                return TransactionCardWidget(
-                      transaction: transaction,
-                      onTap: () => _onTransactionTap(transaction),
-                    )
-                    .animate(delay: Duration(milliseconds: 100 * index))
-                    .fadeIn(duration: const Duration(milliseconds: 400))
-                    .slideY(begin: 1, curve: Curves.easeOutBack);
-              }, childCount: _filteredTransactions.length),
-            ),
+        final filteredTransactions = _getFilteredTransactions(transactionsState.transactions);
+
+        if (filteredTransactions.isEmpty) {
+          return _buildEmptyState();
+        }
+
+        return RefreshIndicator(
+          onRefresh: _refreshTransactions,
+          color: const Color(0xFFFFC000),
+          backgroundColor: Colors.white,
+          child: CustomScrollView(
+            controller: _scrollController,
+            physics: const ClampingScrollPhysics(),
+            slivers: [
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final transaction = filteredTransactions[index];
+                    return TransactionCardWidget(
+                          transaction: transaction,
+                          onTap: () => _onTransactionTap(transaction),
+                        )
+                        .animate(delay: Duration(milliseconds: 100 * index))
+                        .fadeIn(duration: const Duration(milliseconds: 400))
+                        .slideY(begin: 1, curve: Curves.easeOutBack);
+                  }, childCount: filteredTransactions.length),
+                ),
+              ),
+              // Bottom padding
+              const SliverToBoxAdapter(child: SizedBox(height: 20)),
+            ],
           ),
-          // Bottom padding
-          const SliverToBoxAdapter(child: SizedBox(height: 20)),
-        ],
-      ),
+        );
+      }
     );
   }
 
@@ -282,6 +259,93 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
         .animate()
         .fadeIn(duration: const Duration(milliseconds: 300))
         .scale(begin: const Offset(0.8, 0.8));
+  }
+
+  Widget _buildErrorState(String error) {
+    final isAuthError = error.contains('log in') || error.contains('Authentication') || error.contains('Access token');
+    
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                color: isAuthError ? Colors.orange.shade50 : Colors.red.shade50,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                isAuthError ? Icons.login_rounded : Icons.error_outline_rounded,
+                size: 60,
+                color: isAuthError ? Colors.orange.shade400 : Colors.red.shade400,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              isAuthError ? 'Please Log In' : 'Failed to Load Transactions',
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF181F30),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              isAuthError 
+                ? 'You need to log in to view your transaction history.'
+                : error,
+              style: const TextStyle(
+                fontSize: 14,
+                color: Color(0xFF6E757D),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 32),
+            if (isAuthError) ...[
+              ElevatedButton.icon(
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  Navigator.of(context).pop(); // Go back to previous screen
+                },
+                icon: const Icon(Icons.login, size: 16),
+                label: const Text('Go to Login'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFFC000),
+                  foregroundColor: const Color(0xFF181F30),
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 0,
+                ),
+              ),
+            ] else ...[
+              ElevatedButton.icon(
+                onPressed: () {
+                  HapticFeedback.lightImpact();
+                  ref.read(transactionsProvider.notifier).fetchTransactions(refresh: true);
+                },
+                icon: const Icon(Icons.refresh, size: 16),
+                label: const Text('Retry'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFFFC000),
+                  foregroundColor: const Color(0xFF181F30),
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 0,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildEmptyState() {
@@ -374,7 +438,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
     );
   }
 
-  void _onTransactionTap(TransactionModel transaction) {
+  void _onTransactionTap(Transaction transaction) {
     HapticFeedback.lightImpact();
 
     // Show transaction details modal
@@ -386,9 +450,8 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
     );
   }
 
-  Widget _buildTransactionDetailsModal(TransactionModel transaction) {
+  Widget _buildTransactionDetailsModal(Transaction transaction) {
     final translationService = TranslationService.instance;
-    final statusEnum = _parseStatus(transaction.status);
 
     return Container(
           height: MediaQuery.of(context).size.height * 0.7,
@@ -422,12 +485,12 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: _getStatusColor(statusEnum).withOpacity(0.1),
+                        color: transaction.statusColor.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
-                        _getStatusIcon(statusEnum),
-                        color: _getStatusColor(statusEnum),
+                        transaction.statusIcon,
+                        color: transaction.statusColor,
                         size: 24,
                       ),
                     ),
@@ -447,9 +510,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
                             ),
                           ),
                           Text(
-                            translationService.translate(
-                              'transaction.${transaction.type?.toString().split('.').last ?? 'send'}',
-                            ),
+                            transaction.formattedType,
                             style: const TextStyle(
                               fontSize: 14,
                               color: Color(0xFF6E757D),
@@ -479,29 +540,37 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildDetailRow(
-                        translationService.translate('transaction.recipient'),
-                        transaction.recipient ?? transaction.receiverName,
+                        'Recipient',
+                        _getWalletAddressFormatted(transaction),
                       ),
                       _buildDetailRow(
-                        translationService.translate('transaction.date'),
-                        _formatDate(transaction.date ?? transaction.createdAt),
+                        'Transaction Date',
+                        _formatDate(transaction.createdAt),
                       ),
-                      if (transaction.reference != null)
+                      _buildDetailRow(
+                        'Reference ID',
+                        transaction.referenceId,
+                      ),
+                      _buildDetailRow(
+                        'Tracking Number',
+                        transaction.trackingNumber,
+                      ),
+                      _buildDetailRow(
+                        'Transaction Fee',
+                        '${transaction.fee.toStringAsFixed(2)} ${transaction.currency}',
+                      ),
+                      _buildDetailRow(
+                        'Network',
+                        transaction.blockchainNetwork ?? 'Unknown',
+                      ),
+                      _buildDetailRow(
+                        'Status',
+                        transaction.status.toUpperCase(),
+                      ),
+                      if (transaction.blockchainTxHash != null)
                         _buildDetailRow(
-                          translationService.translate('transaction.reference'),
-                          transaction.reference!,
-                        ),
-                      if (transaction.trackingNumber.isNotEmpty)
-                        _buildDetailRow(
-                          translationService.translate(
-                            'transaction.transactionId',
-                          ),
-                          transaction.trackingNumber,
-                        ),
-                      if (transaction.fee != null)
-                        _buildDetailRow(
-                          translationService.translate('transaction.fee'),
-                          '${transaction.fee!.toStringAsFixed(2)} ${transaction.currency}',
+                          'Blockchain Hash',
+                          _formatTxHash(transaction.blockchainTxHash!),
                         ),
 
                       const SizedBox(height: 32),
@@ -605,55 +674,39 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
     );
   }
 
-  Color _getStatusColor(TransactionStatus status) {
-    switch (status) {
-      case TransactionStatus.completed:
-        return const Color(0xFF00C735);
-      case TransactionStatus.pending:
-      case TransactionStatus.processing:
-        return const Color(0xFFFFC000);
-      case TransactionStatus.failed:
-      case TransactionStatus.cancelled:
-        return const Color(0xFFFF3E24);
+  String _getWalletAddressFormatted(Transaction transaction) {
+    if (transaction.destinationDetails != null) {
+      final walletAddress = transaction.destinationDetails!['walletAddress'] as String?;
+      if (walletAddress != null && walletAddress.isNotEmpty) {
+        if (walletAddress.length > 16) {
+          return '${walletAddress.substring(0, 8)}...${walletAddress.substring(walletAddress.length - 8)}';
+        }
+        return walletAddress;
+      }
     }
+    return 'Unknown';
   }
 
-  IconData _getStatusIcon(TransactionStatus status) {
-    switch (status) {
-      case TransactionStatus.completed:
-        return Icons.check_circle;
-      case TransactionStatus.pending:
-      case TransactionStatus.processing:
-        return Icons.access_time;
-      case TransactionStatus.failed:
-      case TransactionStatus.cancelled:
-        return Icons.error;
+  String _formatTxHash(String txHash) {
+    if (txHash.length > 16) {
+      return '${txHash.substring(0, 8)}...${txHash.substring(txHash.length - 8)}';
     }
-  }
-
-  TransactionStatus _parseStatus(String status) {
-    try {
-      return TransactionStatus.values.firstWhere(
-        (e) => e.toString().split('.').last == status,
-        orElse: () => TransactionStatus.pending,
-      );
-    } catch (e) {
-      return TransactionStatus.pending;
-    }
+    return txHash;
   }
 
   String _formatDate(DateTime date) {
-    final now = DateTime.now();
-    final difference = now.difference(date);
-
-    if (difference.inDays == 0) {
-      return 'Today';
-    } else if (difference.inDays == 1) {
-      return 'Yesterday';
-    } else if (difference.inDays < 7) {
-      return '${difference.inDays} days ago';
-    } else {
-      return '${date.day}/${date.month}/${date.year}';
-    }
+    // Format like: Sep 13, 2025, 04:35 PM
+    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    final month = months[date.month - 1];
+    final day = date.day;
+    final year = date.year;
+    
+    final hour = date.hour == 0 ? 12 : (date.hour > 12 ? date.hour - 12 : date.hour);
+    final minute = date.minute.toString().padLeft(2, '0');
+    final ampm = date.hour >= 12 ? 'PM' : 'AM';
+    
+    return '$month $day, $year, ${hour.toString().padLeft(2, '0')}:$minute $ampm';
   }
 }

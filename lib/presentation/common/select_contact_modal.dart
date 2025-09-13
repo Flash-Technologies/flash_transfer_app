@@ -29,12 +29,24 @@ class _SelectContactModalState extends ConsumerState<SelectContactModal>
 
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     _initializeAnimations();
+    _setupScrollListener();
     _loadBeneficiaries();
+  }
+
+  void _setupScrollListener() {
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 200) {
+        // Load more when user is 200 pixels from bottom
+        ref.read(beneficiariesProvider.notifier).loadMoreBeneficiaries();
+      }
+    });
   }
 
   void _initializeAnimations() {
@@ -82,6 +94,7 @@ class _SelectContactModalState extends ConsumerState<SelectContactModal>
     _fadeController.dispose();
     _searchController.dispose();
     _searchFocusNode.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -292,12 +305,18 @@ class _SelectContactModalState extends ConsumerState<SelectContactModal>
         return RefreshIndicator(
           onRefresh: () => ref.read(beneficiariesProvider.notifier).refresh(),
           child: ListView.builder(
+            controller: _scrollController,
             padding: EdgeInsets.symmetric(
               horizontal: AppSpacing.paddingL,
               vertical: AppSpacing.paddingM,
             ),
-            itemCount: filteredBeneficiaries.length,
+            itemCount: filteredBeneficiaries.length + (beneficiariesState.isLoadingMore ? 1 : 0),
             itemBuilder: (context, index) {
+              // Show loading indicator at the end when loading more
+              if (index == filteredBeneficiaries.length) {
+                return _buildLoadMoreIndicator();
+              }
+
               final beneficiary = filteredBeneficiaries[index];
               final isSelected = selectedBeneficiary?.id == beneficiary.id;
 
@@ -637,5 +656,33 @@ class _SelectContactModalState extends ConsumerState<SelectContactModal>
         );
       },
     ).animate().fadeIn(delay: 600.ms, duration: 300.ms);
+  }
+
+  Widget _buildLoadMoreIndicator() {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: AppSpacing.paddingM),
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(AppColors.primaryBlue),
+              ),
+            ),
+            SizedBox(width: AppSpacing.marginS),
+            Text(
+              'Loading more contacts...',
+              style: AppTextStyles.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

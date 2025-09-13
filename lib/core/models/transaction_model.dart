@@ -561,11 +561,21 @@ class Transaction {
       webhookUrl: json['webhookUrl'],
       kytVerificationId: json['kytVerificationId'],
       kytVerificationStatus: json['kytVerificationStatus'],
-      sourceDetails: json['sourceDetails']?.cast<String, dynamic>(),
-      destinationDetails: json['destinationDetails']?.cast<String, dynamic>(),
-      feeDetails: json['feeDetails']?.cast<String, dynamic>(),
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      sourceDetails: json['sourceDetails'] is Map<String, dynamic> 
+          ? json['sourceDetails'] 
+          : null,
+      destinationDetails: json['destinationDetails'] is Map<String, dynamic> 
+          ? json['destinationDetails'] 
+          : null,
+      feeDetails: json['feeDetails'] is Map<String, dynamic> 
+          ? json['feeDetails'] 
+          : null,
+      createdAt: json['createdAt'] != null 
+          ? DateTime.parse(json['createdAt']) 
+          : DateTime.now(),
+      updatedAt: json['updatedAt'] != null 
+          ? DateTime.parse(json['updatedAt']) 
+          : DateTime.now(),
       completedAt: json['completedAt'] != null
           ? DateTime.parse(json['completedAt'])
           : null,
@@ -587,7 +597,7 @@ class Transaction {
       systemLiquidityWallet: json['systemLiquidityWallet'],
       isUserManagedSourceWallet: json['isUserManagedSourceWallet'] ?? false,
       user: json['user'] != null ? User.fromJson(json['user']) : null,
-      beneficiary: json['beneficiary'],
+      beneficiary: json['beneficiary']?.toString(),
       statusHistory: (json['statusHistory'] as List<dynamic>?)
               ?.map((e) => StatusHistory.fromJson(e))
               .toList() ??
