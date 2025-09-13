@@ -124,8 +124,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       if (success) {
         _showAnimatedSnackBar('Login successful! Redirecting...', true);
 
-        // Update the logged in state in the router
-        ref.read(isLoggedInProvider.notifier).state = true;
 
         // Short delay to let the snackbar be visible
         await Future.delayed(const Duration(milliseconds: 1000));
@@ -273,8 +271,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
       if (success) {
         print("✅ [SIGN_IN_SCREEN] Google login successful");
-        // Update logged in state
-        ref.read(isLoggedInProvider.notifier).state = true;
 
         _showAnimatedSnackBar('Google login successful! Redirecting...', true);
 
@@ -329,8 +325,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       });
 
       if (success) {
-        // Update logged in state
-        ref.read(isLoggedInProvider.notifier).state = true;
 
         if (mounted) {
           _showAnimatedSnackBar(
@@ -417,8 +411,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       });
 
       if (success) {
-        // Update logged in state
-        ref.read(isLoggedInProvider.notifier).state = true;
 
         if (mounted) {
           scaffoldMessenger.showSnackBar(

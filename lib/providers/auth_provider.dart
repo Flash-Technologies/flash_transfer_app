@@ -88,29 +88,40 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> _initialize() async {
+    print("🔑 [AUTH_PROVIDER] Starting authentication initialization");
     // Set to initial state with loading flag
     state = AuthState(status: AuthStatus.initial, isLoading: true);
 
     try {
+      print("🔑 [AUTH_PROVIDER] Checking if user is logged in...");
       final isLoggedIn = await _authService.isLoggedIn();
+      print("🔑 [AUTH_PROVIDER] isLoggedIn result: $isLoggedIn");
+      
       if (isLoggedIn) {
+        print("🔑 [AUTH_PROVIDER] Getting saved user data...");
         final user = await _authService.getSavedUser();
+        print("🔑 [AUTH_PROVIDER] Saved user: ${user?.email}, token: ${user?.token != null ? 'present' : 'null'}");
+        
         state = AuthState(
           status: AuthStatus.authenticated,
           user: user,
           isLoading: false,
         );
+        print("🔑 [AUTH_PROVIDER] Auth state set to AUTHENTICATED");
       } else {
+        print("🔑 [AUTH_PROVIDER] No saved user found, setting to UNAUTHENTICATED");
         state = AuthState(status: AuthStatus.unauthenticated, isLoading: false);
       }
     } catch (e) {
       // Handle initialization errors
+      print("🔑 [AUTH_PROVIDER] Initialization error: ${e.toString()}");
       state = AuthState(
         status: AuthStatus.unauthenticated,
         isLoading: false,
         message: "Failed to initialize: ${e.toString()}",
       );
     }
+    print("🔑 [AUTH_PROVIDER] Auth initialization completed. Final status: ${state.status}");
   }
 
   Future<bool> register(RegisterRequest request) async {

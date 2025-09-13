@@ -291,8 +291,6 @@ class SocialLoginButtons extends ConsumerWidget {
           .loginWithGoogle(token, countryName);
 
       if (success) {
-        // Update logged in state
-        ref.read(isLoggedInProvider.notifier).state = true;
 
         scaffoldMessenger.showSnackBar(
           const SnackBar(content: Text('Login successful! Redirecting...')),
@@ -363,8 +361,6 @@ class SocialLoginButtons extends ConsumerWidget {
       scaffoldMessenger.hideCurrentSnackBar();
 
       if (success) {
-        // Update logged in state
-        ref.read(isLoggedInProvider.notifier).state = true;
 
         scaffoldMessenger.showSnackBar(
           const SnackBar(
@@ -459,8 +455,6 @@ class SocialLoginButtons extends ConsumerWidget {
           .loginWithApple(idToken, countryName);
 
       if (success) {
-        // Update logged in state
-        ref.read(isLoggedInProvider.notifier).state = true;
 
         scaffoldMessenger.showSnackBar(
           const SnackBar(
@@ -548,8 +542,6 @@ class SocialLoginButtons extends ConsumerWidget {
           .loginWithWalletAddress(walletAddress, countryName);
 
       if (success) {
-        // Update logged in state
-        ref.read(isLoggedInProvider.notifier).state = true;
 
         scaffoldMessenger.showSnackBar(
           const SnackBar(

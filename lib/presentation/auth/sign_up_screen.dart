@@ -1,18 +1,14 @@
-import 'package:flash_transfer_app/presentation/common/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import '../../core/models/auth_models.dart' as auth_models;
-import '../../core/models/country_model.dart';
 import '../../providers/auth_provider.dart';
 import '../../config/router.dart';
 import '../common/social_login_buttons.dart';
 import '../../main.dart' show googleSignIn;
+import '../settings/widgets/country_selection_widget.dart';
 
 class SignUpScreen extends ConsumerStatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -27,14 +23,16 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
   final _confirmPasswordController = TextEditingController();
   bool _isLoading = false;
 
-  auth_models.CountryModel? _selectedCountry;
-  List<auth_models.CountryModel> _countries = [];
-  bool _loadingCountries = true;
+  CountryData? _selectedCountry;
 
   @override
   void initState() {
     super.initState();
-    _fetchCountries();
+    // Set default country to Senegal
+    _selectedCountry = XOFCountries.getXOFCountries().firstWhere(
+      (country) => country.name == 'Senegal',
+      orElse: () => XOFCountries.getXOFCountries().first,
+    );
   }
 
   @override
@@ -52,20 +50,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     }
   }
 
-  // Convert auth model to country model
-  CountryModel _convertToCountryModel(auth_models.CountryModel authCountry) {
-    return CountryModel(
-      name: authCountry.name,
-      code: authCountry.name
-          .substring(0, 2)
-          .toLowerCase(), // Use first 2 chars as code
-      flagUrl: authCountry.flag,
-    );
-  }
 
   // Handlers for social login
   Future<void> _handleGoogleSignUp() async {
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
     final authNotifier = ref.read(authProvider.notifier);
 
     if (_selectedCountry == null) {
@@ -114,8 +101,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       });
 
       if (success) {
-        // Update logged in state
-        ref.read(isLoggedInProvider.notifier).state = true;
 
         _showAnimatedSnackBar(
           'Google sign up successful! Redirecting...',
@@ -172,8 +157,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       });
 
       if (success) {
-        // Update logged in state
-        ref.read(isLoggedInProvider.notifier).state = true;
 
         _showAnimatedSnackBar(
           '✅ Facebook sign up successful! Redirecting...',
@@ -254,8 +237,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       });
 
       if (success) {
-        // Update logged in state
-        ref.read(isLoggedInProvider.notifier).state = true;
 
         _showAnimatedSnackBar('Apple sign up successful! Redirecting...', true);
 
@@ -284,52 +265,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     }
   }
 
-  Future<void> _fetchCountries() async {
-    try {
-      final response = await http.get(
-        Uri.parse('https://restcountries.com/v3.1/all'),
-      );
-
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-
-        final countries = data
-            .map(
-              (country) => auth_models.CountryModel(
-                name: country['name']['common'],
-                flag: country['flags']['svg'] ?? country['flags']['png'] ?? '',
-              ),
-            )
-            .toList()
-          ..sort((a, b) => a.name.compareTo(b.name));
-
-        if (mounted) {
-          setState(() {
-            _countries = countries;
-            _loadingCountries = false;
-
-            // Set default country to United States
-            _selectedCountry = countries.firstWhere(
-              (c) => c.name == 'United States',
-              orElse: () => countries.first,
-            );
-          });
-        }
-      } else {
-        throw Exception('Failed to load countries');
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _loadingCountries = false;
-        });
-
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Failed to load countries: $e')));
-      }
-    }
-  }
 
   bool _validateEmail(String email) {
     return RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$').hasMatch(email);
@@ -414,51 +349,6 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     _showAnimatedSnackBar(message, false);
   }
 
-  void _showCountryPicker() {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.6,
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            const Text(
-              'Select Country',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Expanded(
-              child: ListView.builder(
-                itemCount: _countries.length,
-                itemBuilder: (context, index) {
-                  final country = _countries[index];
-                  return ListTile(
-                    leading: Image.network(
-                      country.flag,
-                      width: 32,
-                      height: 20,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.flag),
-                    ),
-                    title: Text(country.name),
-                    onTap: () {
-                      setState(() {
-                        _selectedCountry = country;
-                      });
-                      Navigator.pop(context);
-                    },
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -506,120 +396,22 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Text(
-                      'Send From',
+                      'Send From (XOF Currency Countries)',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    InkWell(
-                      onTap: _loadingCountries
-                          ? null
-                          : () {
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(20),
-                                  ),
-                                ),
-                                builder: (context) => Container(
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.7,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(20),
-                                    ),
-                                  ),
-                                  child: CountryPicker(
-                                    countries: _countries
-                                        .map(
-                                          (c) => _convertToCountryModel(
-                                            c,
-                                          ),
-                                        )
-                                        .toList(),
-                                    selectedCountry: _selectedCountry != null
-                                        ? _convertToCountryModel(
-                                            _selectedCountry!,
-                                          )
-                                        : null,
-                                    onSelect: (country) {
-                                      // Find matching auth country model by name
-                                      final authCountry = _countries.firstWhere(
-                                        (c) => c.name == country.name,
-                                        orElse: () => _countries.first,
-                                      );
-                                      setState(() {
-                                        _selectedCountry = authCountry;
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                ),
-                              );
-                            },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF4F5F7),
-                          border: Border.all(color: const Color(0xFFEBECED)),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: _loadingCountries
-                            ? const Row(
-                                children: [
-                                  SizedBox(
-                                    width: 16,
-                                    height: 16,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text('Loading countries...'),
-                                ],
-                              )
-                            : Row(
-                                children: [
-                                  if (_selectedCountry != null) ...[
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(4),
-                                      child: Image.network(
-                                        _selectedCountry!.flag,
-                                        width: 24,
-                                        height: 16,
-                                        errorBuilder:
-                                            (context, error, stackTrace) =>
-                                                const Icon(
-                                          Icons.flag,
-                                          size: 24,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    _selectedCountry?.name ?? 'Select Country',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      color: Color(0xFF181F30),
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  const Icon(
-                                    Icons.keyboard_arrow_down,
-                                    size: 16,
-                                  ),
-                                ],
-                              ),
-                      ),
+                    CountrySelectionWidget(
+                      countries: XOFCountries.getXOFCountries(),
+                      selectedCountry: _selectedCountry,
+                      onCountrySelected: (country) {
+                        setState(() {
+                          _selectedCountry = country;
+                        });
+                      },
+                      label: null,
+                      hint: 'Select Country',
                     ),
                   ],
                 ),

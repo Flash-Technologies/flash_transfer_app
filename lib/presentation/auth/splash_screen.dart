@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/auth_provider.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   final VoidCallback? onInitialized;
 
   const SplashScreen({Key? key, this.onInitialized}) : super(key: key);
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
+class _SplashScreenState extends ConsumerState<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
@@ -30,12 +32,34 @@ class _SplashScreenState extends State<SplashScreen>
 
     _animationController.forward();
 
-    // Wait for 2.5 seconds and then notify router that splash is complete
-    Future.delayed(const Duration(milliseconds: 2500), () {
-      if (mounted) {
-        widget.onInitialized?.call();
+    // Wait for both animation and auth initialization to complete
+    _initializeSplash();
+  }
+
+  Future<void> _initializeSplash() async {
+    print("💫 [SPLASH] Starting splash initialization");
+    // Wait for minimum splash duration (for UX)
+    final splashDuration = Future.delayed(const Duration(milliseconds: 2500));
+    
+    // Wait for auth initialization to complete
+    while (mounted) {
+      final authState = ref.read(authProvider);
+      print("💫 [SPLASH] Auth state check - loading: ${authState.isLoading}, status: ${authState.status}");
+      if (!authState.isLoading) {
+        print("💫 [SPLASH] Auth initialization complete");
+        break;
       }
-    });
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+    
+    // Ensure minimum splash time has passed
+    print("💫 [SPLASH] Waiting for minimum splash duration");
+    await splashDuration;
+    
+    if (mounted) {
+      print("💫 [SPLASH] Calling onInitialized callback");
+      widget.onInitialized?.call();
+    }
   }
 
   @override

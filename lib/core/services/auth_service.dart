@@ -225,27 +225,36 @@ class AuthService {
 
   // Get saved user data
   Future<User?> getSavedUser() async {
+    print("🔑 [AUTH_SERVICE] Getting saved user from SharedPreferences");
     final prefs = await SharedPreferences.getInstance();
     final userData = prefs.getString('user');
+    final token = prefs.getString('token');
+    print("🔑 [AUTH_SERVICE] userData exists: ${userData != null}, token exists: ${token != null}");
 
     if (userData != null) {
       final user = User.fromJson(json.decode(userData));
+      print("🔑 [AUTH_SERVICE] Parsed user: ${user.email}, token: ${user.token != null ? 'present' : 'null'}");
 
       // Set the token in API client
       if (user.token != null) {
         _apiClient.setToken(user.token!);
+        print("🔑 [AUTH_SERVICE] Token set in API client");
       }
 
       return user;
     }
 
+    print("🔑 [AUTH_SERVICE] No saved user data found");
     return null;
   }
 
   // Check if user is logged in
   Future<bool> isLoggedIn() async {
+    print("🔑 [AUTH_SERVICE] Checking if user is logged in");
     final user = await getSavedUser();
-    return user != null && user.token != null;
+    final result = user != null && user.token != null;
+    print("🔑 [AUTH_SERVICE] isLoggedIn result: $result");
+    return result;
   }
 
   // Logout user

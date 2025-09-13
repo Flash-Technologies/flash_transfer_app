@@ -1,11 +1,66 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart';
 import '../../common/accessibility_widget.dart';
 import '../../common/error_boundary_widget.dart';
 import 'dart:async';
+
+// Hardcoded XOF Countries
+class XOFCountries {
+  static const List<CountryData> countries = [
+    CountryData(
+      name: "Benin",
+      code: "BJ",
+      flagEmoji: "🇧🇯",
+      currency: "XOF",
+    ),
+    CountryData(
+      name: "Burkina Faso",
+      code: "BF",
+      flagEmoji: "🇧🇫",
+      currency: "XOF",
+    ),
+    CountryData(
+      name: "Cote d'Ivoire",
+      code: "CI",
+      flagEmoji: "🇨🇮",
+      currency: "XOF",
+    ),
+    CountryData(
+      name: "Guinea-Bissau",
+      code: "GW",
+      flagEmoji: "🇬🇼",
+      currency: "XOF",
+    ),
+    CountryData(
+      name: "Mali",
+      code: "ML",
+      flagEmoji: "🇲🇱",
+      currency: "XOF",
+    ),
+    CountryData(
+      name: "Niger",
+      code: "NE",
+      flagEmoji: "🇳🇪",
+      currency: "XOF",
+    ),
+    CountryData(
+      name: "Senegal",
+      code: "SN",
+      flagEmoji: "🇸🇳",
+      currency: "XOF",
+    ),
+    CountryData(
+      name: "Togo",
+      code: "TG",
+      flagEmoji: "🇹🇬",
+      currency: "XOF",
+    ),
+  ];
+  
+  static List<CountryData> getXOFCountries() => countries;
+}
 
 class CountrySelectionWidget extends ConsumerStatefulWidget {
   final List<CountryData> countries;
@@ -46,7 +101,6 @@ class _CountrySelectionWidgetState extends ConsumerState<CountrySelectionWidget>
   List<CountryData> _filteredCountries = [];
   List<CountryData> _favoriteCountries = [];
   List<CountryData> _recentCountries = [];
-  bool _showSearch = false;
   Timer? _debounceTimer;
 
   @override
@@ -73,18 +127,20 @@ class _CountrySelectionWidgetState extends ConsumerState<CountrySelectionWidget>
   }
 
   void _initializeCountries() {
-    _filteredCountries = widget.countries;
+    // Use provided countries or default to XOF countries
+    final countriesList = widget.countries.isNotEmpty ? widget.countries : XOFCountries.getXOFCountries();
+    _filteredCountries = countriesList;
     
     // Setup favorites
     if (widget.showFavorites && widget.favoriteCountryCodes != null) {
-      _favoriteCountries = widget.countries
+      _favoriteCountries = countriesList
           .where((country) => widget.favoriteCountryCodes!.contains(country.code))
           .toList();
     }
     
     // Setup recent countries (would normally come from preferences)
     if (widget.showRecentlyUsed) {
-      _recentCountries = widget.countries.take(3).toList();
+      _recentCountries = countriesList.take(3).toList();
     }
   }
 
@@ -100,16 +156,18 @@ class _CountrySelectionWidgetState extends ConsumerState<CountrySelectionWidget>
   }
 
   void _filterCountries(String query) {
+    final countriesList = widget.countries.isNotEmpty ? widget.countries : XOFCountries.getXOFCountries();
+    
     if (query.isEmpty) {
       setState(() {
-        _filteredCountries = widget.countries;
+        _filteredCountries = countriesList;
       });
       return;
     }
 
     final lowercaseQuery = query.toLowerCase();
     setState(() {
-      _filteredCountries = widget.countries.where((country) {
+      _filteredCountries = countriesList.where((country) {
         return country.name.toLowerCase().contains(lowercaseQuery) ||
                country.code.toLowerCase().contains(lowercaseQuery) ||
                (country.dialCode?.toLowerCase().contains(lowercaseQuery) ?? false);
@@ -137,7 +195,7 @@ class _CountrySelectionWidgetState extends ConsumerState<CountrySelectionWidget>
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => _CountryPickerModal(
-        countries: widget.countries,
+        countries: widget.countries.isNotEmpty ? widget.countries : XOFCountries.getXOFCountries(),
         filteredCountries: _filteredCountries,
         favoriteCountries: _favoriteCountries,
         recentCountries: _recentCountries,
@@ -197,19 +255,11 @@ class _CountrySelectionWidgetState extends ConsumerState<CountrySelectionWidget>
                           color: Colors.grey[200],
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: widget.selectedCountry?.flagUrl != null
-                            ? ClipRRect(
-                                borderRadius: BorderRadius.circular(4),
-                                child: Image.network(
-                                  widget.selectedCountry!.flagUrl!,
-                                  width: 32,
-                                  height: 24,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) => Icon(
-                                    Icons.flag,
-                                    size: 16,
-                                    color: Colors.grey[500],
-                                  ),
+                        child: widget.selectedCountry != null
+                            ? Center(
+                                child: Text(
+                                  widget.selectedCountry!.flagEmoji,
+                                  style: const TextStyle(fontSize: 18),
                                 ),
                               )
                             : Icon(
@@ -304,6 +354,7 @@ class _CountryPickerModalState extends State<_CountryPickerModal>
     with TickerProviderStateMixin {
   late AnimationController _slideController;
   late Animation<Offset> _slideAnimation;
+  bool _isSearching = false;
 
   @override
   void initState() {
@@ -380,7 +431,7 @@ class _CountryPickerModalState extends State<_CountryPickerModal>
                 controller: widget.searchController,
                 focusNode: widget.searchFocus,
                 decoration: InputDecoration(
-                  hintText: 'Search countries...',
+                  hintText: 'Search XOF countries...',
                   prefixIcon: const Icon(Icons.search),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
@@ -395,33 +446,59 @@ class _CountryPickerModalState extends State<_CountryPickerModal>
                     borderSide: const BorderSide(color: Color(0xFFFFC000), width: 2),
                   ),
                 ),
-                onChanged: widget.onSearchChanged,
+                onChanged: (value) {
+                  setState(() {
+                    _isSearching = value.trim().isNotEmpty;
+                  });
+                  widget.onSearchChanged(value);
+                },
               ),
             ),
 
             // Countries list
             Expanded(
-              child: ListView(
-                children: [
-                  // Recently used
-                  if (widget.showRecentlyUsed && widget.recentCountries.isNotEmpty) ...[
-                    _buildSectionHeader('Recently Used'),
-                    ...widget.recentCountries.map((country) => _buildCountryTile(country, isRecent: true)),
-                    const Divider(),
-                  ],
+              child: _isSearching 
+                ? ListView(
+                    children: [
+                      if (widget.filteredCountries.isNotEmpty) ...[
+                        _buildSectionHeader('Search Results'),
+                        ...widget.filteredCountries.map((country) => _buildCountryTile(country)),
+                      ] else ...[
+                        const Padding(
+                          padding: EdgeInsets.all(20),
+                          child: Text(
+                            'No countries found',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  )
+                : ListView(
+                    children: [
+                      // Recently used
+                      if (widget.showRecentlyUsed && widget.recentCountries.isNotEmpty) ...[
+                        _buildSectionHeader('Recently Used'),
+                        ...widget.recentCountries.map((country) => _buildCountryTile(country, isRecent: true)),
+                        const Divider(),
+                      ],
 
-                  // Favorites
-                  if (widget.showFavorites && widget.favoriteCountries.isNotEmpty) ...[
-                    _buildSectionHeader('Favorites'),
-                    ...widget.favoriteCountries.map((country) => _buildCountryTile(country, isFavorite: true)),
-                    const Divider(),
-                  ],
+                      // Favorites
+                      if (widget.showFavorites && widget.favoriteCountries.isNotEmpty) ...[
+                        _buildSectionHeader('Favorites'),
+                        ...widget.favoriteCountries.map((country) => _buildCountryTile(country, isFavorite: true)),
+                        const Divider(),
+                      ],
 
-                  // All countries
-                  _buildSectionHeader('All Countries'),
-                  ...widget.filteredCountries.map((country) => _buildCountryTile(country)),
-                ],
-              ),
+                      // All countries
+                      _buildSectionHeader('All Countries'),
+                      ...widget.filteredCountries.map((country) => _buildCountryTile(country)),
+                    ],
+                  ),
             ),
           ],
         ),
@@ -463,26 +540,12 @@ class _CountryPickerModalState extends State<_CountryPickerModal>
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(4),
               ),
-              child: country.flagUrl != null
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: Image.network(
-                        country.flagUrl!,
-                        width: 32,
-                        height: 24,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) => Icon(
-                          Icons.flag,
-                          size: 16,
-                          color: Colors.grey[500],
-                        ),
-                      ),
-                    )
-                  : Icon(
-                      Icons.flag,
-                      size: 16,
-                      color: Colors.grey[500],
-                    ),
+              child: Center(
+                child: Text(
+                  country.flagEmoji,
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ),
             ),
             
             const SizedBox(width: 12),
@@ -542,6 +605,7 @@ class CountryData {
   final String code;
   final String? dialCode;
   final String? flagUrl;
+  final String flagEmoji;
   final String? currency;
   final List<String>? languages;
 
@@ -550,6 +614,7 @@ class CountryData {
     required this.code,
     this.dialCode,
     this.flagUrl,
+    required this.flagEmoji,
     this.currency,
     this.languages,
   });
@@ -560,6 +625,7 @@ class CountryData {
       code: json['code'] ?? '',
       dialCode: json['dialCode'],
       flagUrl: json['flagUrl'],
+      flagEmoji: json['flagEmoji'] ?? '',
       currency: json['currency'],
       languages: json['languages'] != null ? List<String>.from(json['languages']) : null,
     );
@@ -571,6 +637,7 @@ class CountryData {
       'code': code,
       'dialCode': dialCode,
       'flagUrl': flagUrl,
+      'flagEmoji': flagEmoji,
       'currency': currency,
       'languages': languages,
     };

@@ -51,29 +51,48 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 final splashCompletedProvider = StateProvider<bool>((ref) => false);
 
-final isLoggedInProvider = StateProvider<bool>((ref) => false);
-
 final routerProvider = Provider<GoRouter>((ref) {
-  final authService = ref.watch(authServiceProvider);
+  final authState = ref.watch(authProvider);
   final splashCompleted = ref.watch(splashCompletedProvider);
-
-  authService.isLoggedIn().then((loggedIn) {
-    ref.read(isLoggedInProvider.notifier).state = loggedIn;
-  });
 
   return GoRouter(
     navigatorKey: navigatorKey,
     debugLogDiagnostics: true,
     initialLocation: '/',
     redirect: (context, state) {
-      final isLoggedIn = ref.read(isLoggedInProvider);
-
-      if (!splashCompleted) return null;
-
-      if (state.matchedLocation == '/') {
-        return isLoggedIn ? '/home' : '/sign-in';
+      print("🔄 [ROUTER] Redirect check - splashCompleted: $splashCompleted, authLoading: ${authState.isLoading}, authStatus: ${authState.status}, currentPath: ${state.matchedLocation}");
+      
+      // Don't redirect if splash hasn't completed or auth is still loading
+      if (!splashCompleted || authState.isLoading) {
+        print("🔄 [ROUTER] No redirect - waiting for splash/auth");
+        return null;
       }
 
+      final isAuthenticated = authState.status == AuthStatus.authenticated;
+      print("🔄 [ROUTER] isAuthenticated: $isAuthenticated");
+
+      // If on root path, redirect based on auth status
+      if (state.matchedLocation == '/') {
+        final destination = isAuthenticated ? '/home' : '/sign-in';
+        print("🔄 [ROUTER] Root path redirect to: $destination");
+        return destination;
+      }
+
+      // Protect authenticated routes
+      final protectedRoutes = ['/home', '/profile', '/transaction', '/edit-profile'];
+      if (protectedRoutes.contains(state.matchedLocation) && !isAuthenticated) {
+        print("🔄 [ROUTER] Protected route access denied, redirecting to /sign-in");
+        return '/sign-in';
+      }
+
+      // Redirect authenticated users away from auth screens
+      final authRoutes = ['/sign-in', '/sign-up'];
+      if (authRoutes.contains(state.matchedLocation) && isAuthenticated) {
+        print("🔄 [ROUTER] Authenticated user on auth screen, redirecting to /home");
+        return '/home';
+      }
+
+      print("🔄 [ROUTER] No redirect needed");
       return null;
     },
     routes: [
