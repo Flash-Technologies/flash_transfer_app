@@ -19,14 +19,8 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: () async {
-            ref.invalidate(currenciesProvider);
-            await Future.delayed(const Duration(seconds: 1));
-          },
-          color: const Color(0xFFFFC000),
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
+        child: SingleChildScrollView(
+          physics: const ClampingScrollPhysics(),
             padding: EdgeInsets.symmetric(
               horizontal: MediaQuery.of(context).size.width * 0.04,
               vertical: 16,
@@ -68,7 +62,6 @@ class HomeScreen extends ConsumerWidget {
             ),
           ),
         ),
-      ),
     );
   }
 
@@ -756,7 +749,7 @@ class HomeScreen extends ConsumerWidget {
 
                         return ListView.builder(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
-                          physics: const BouncingScrollPhysics(),
+                          physics: const ClampingScrollPhysics(),
                           itemCount: filteredCurrencies.length,
                           itemBuilder: (context, index) {
                             final currency = filteredCurrencies[index];

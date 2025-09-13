@@ -97,7 +97,7 @@ class _CashScreenState extends ConsumerState<CashScreen> {
           backgroundColor: const Color(0xFFF8F9FA),
           body: SafeArea(
             child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
+              physics: const ClampingScrollPhysics(),
               padding: EdgeInsets.symmetric(
                 horizontal: MediaQuery.of(context).size.width * 0.04,
                 vertical: 16,
@@ -1024,7 +1024,7 @@ class _CashScreenState extends ConsumerState<CashScreen> {
                   Flexible(
                     child: ListView.builder(
                       shrinkWrap: true,
-                      physics: const BouncingScrollPhysics(),
+                      physics: const ClampingScrollPhysics(),
                       itemCount: notifications.length,
                       itemBuilder: (context, index) {
                         final notification = notifications[index];

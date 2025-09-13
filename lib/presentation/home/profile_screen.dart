@@ -143,7 +143,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     _buildHeader(context),
                     Expanded(
                       child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
+                        physics: const ClampingScrollPhysics(),
                         child: Column(
                           children: [
                             _buildProfileHeader(context, user),

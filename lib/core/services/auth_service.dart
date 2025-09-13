@@ -228,11 +228,19 @@ class AuthService {
     print("🔑 [AUTH_SERVICE] Getting saved user from SharedPreferences");
     final prefs = await SharedPreferences.getInstance();
     final userData = prefs.getString('user');
-    final token = prefs.getString('token');
-    print("🔑 [AUTH_SERVICE] userData exists: ${userData != null}, token exists: ${token != null}");
+    final storedToken = prefs.getString('token');
+    print("🔑 [AUTH_SERVICE] userData exists: ${userData != null}, token exists: ${storedToken != null}");
 
     if (userData != null) {
-      final user = User.fromJson(json.decode(userData));
+      final userJson = json.decode(userData) as Map<String, dynamic>;
+      
+      // If user doesn't have token but we have it stored separately, inject it
+      if (storedToken != null && userJson['token'] == null) {
+        print("🔑 [AUTH_SERVICE] Injecting stored token into user object");
+        userJson['token'] = storedToken;
+      }
+      
+      final user = User.fromJson(userJson);
       print("🔑 [AUTH_SERVICE] Parsed user: ${user.email}, token: ${user.token != null ? 'present' : 'null'}");
 
       // Set the token in API client

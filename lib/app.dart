@@ -4,6 +4,7 @@ import 'config/router.dart';
 import 'config/theme.dart';
 import 'core/services/storage_service.dart';
 import 'core/services/facebook_service.dart';
+import 'providers/auth_provider.dart';
 
 class FlashTransferApp extends StatelessWidget {
   const FlashTransferApp({Key? key}) : super(key: key);
@@ -13,6 +14,8 @@ class FlashTransferApp extends StatelessWidget {
     return ProviderScope(
       child: Consumer(
         builder: (context, ref, _) {
+          // Initialize auth provider early
+          ref.watch(authProvider);
           final router = ref.watch(routerProvider);
 
           return MaterialApp.router(
