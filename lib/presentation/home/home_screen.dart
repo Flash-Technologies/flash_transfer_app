@@ -503,27 +503,24 @@ class HomeScreen extends ConsumerWidget {
                       offset: const Offset(0, 2),
                     ),
                   ],
-                  image: selectedCurrency.logo != null
-                      ? DecorationImage(
-                          image: NetworkImage(selectedCurrency.logo!),
-                          fit: BoxFit.cover,
-                        )
-                      : null,
-                  color: selectedCurrency.logo == null
-                      ? Colors.grey.shade200
-                      : null,
+                  // Temporarily commented out problematic image loading
+                  // image: selectedCurrency.logo != null
+                  //     ? DecorationImage(
+                  //         image: NetworkImage(selectedCurrency.logo!),
+                  //         fit: BoxFit.cover,
+                  //       )
+                  //     : null,
+                  color: Colors.grey.shade200, // Always use fallback color
                 ),
-                child: selectedCurrency.logo == null
-                    ? Center(
-                        child: Text(
-                          selectedCurrency.code.substring(0, 1),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                        ),
-                      )
-                    : null,
+                child: Center(
+                  child: Text(
+                    selectedCurrency.code.substring(0, 1),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
               ),
               const SizedBox(width: 10),
               Text(
@@ -794,27 +791,24 @@ class HomeScreen extends ConsumerWidget {
                                         offset: const Offset(0, 2),
                                       ),
                                     ],
-                                    image: currency.logo != null
-                                        ? DecorationImage(
-                                            image: NetworkImage(currency.logo!),
-                                            fit: BoxFit.cover,
-                                          )
-                                        : null,
-                                    color: currency.logo == null
-                                        ? Colors.grey.shade200
-                                        : null,
+                                    // Temporarily commented out problematic image loading
+                                    // image: currency.logo != null
+                                    //     ? DecorationImage(
+                                    //         image: NetworkImage(currency.logo!),
+                                    //         fit: BoxFit.cover,
+                                    //       )
+                                    //     : null,
+                                    color: Colors.grey.shade200, // Always use fallback color
                                   ),
-                                  child: currency.logo == null
-                                      ? Center(
-                                          child: Text(
-                                            currency.code.substring(0, 1),
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 20,
-                                            ),
-                                          ),
-                                        )
-                                      : null,
+                                  child: Center(
+                                    child: Text(
+                                      currency.code.substring(0, 1),
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
                                 ),
                                 title: Text(
                                   currency.code,
@@ -938,24 +932,65 @@ class HomeScreen extends ConsumerWidget {
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: Colors.red.shade200),
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.error_outline_rounded,
-            color: Colors.red.shade700,
-            size: 20,
+          Row(
+            children: [
+              Icon(
+                Icons.error_outline_rounded,
+                color: Colors.red.shade700,
+                size: 20,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  error.contains('temporarily unavailable') 
+                      ? 'Server is temporarily unavailable. Please try again.'
+                      : error.contains('DioException') || error.contains('bad response')
+                          ? 'Unable to connect to server. Please check your connection and try again.'
+                          : error,
+                  style: TextStyle(
+                    color: Colors.red.shade800,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              error,
-              style: TextStyle(
-                color: Colors.red.shade800,
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
+          if (error.contains('temporarily unavailable') || 
+              error.contains('server') || 
+              error.contains('DioException') ||
+              error.contains('bad response')) ...[
+            const SizedBox(height: 12),
+            Consumer(
+              builder: (context, ref, child) => ElevatedButton.icon(
+                onPressed: () {
+                  // Clear error and retry
+                  final exchangeForm = ref.read(exchangeFormProvider);
+                  if (exchangeForm.fromCurrency != null && exchangeForm.toCurrency != null) {
+                    // Trigger a refresh by re-setting currencies
+                    ref.read(exchangeFormProvider.notifier)
+                        .setFromCurrency(exchangeForm.fromCurrency!);
+                  }
+                },
+                icon: const Icon(Icons.refresh, size: 16),
+                label: const Text('Retry'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange.shade600,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  minimumSize: Size.zero,
+                  textStyle: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
               ),
             ),
-          ),
+          ],
         ],
       ),
     );
@@ -965,11 +1000,14 @@ class HomeScreen extends ConsumerWidget {
     final exchangeForm = ref.watch(exchangeFormProvider);
 
     // Check if continue button should be enabled
+    final sendAmount = double.tryParse(exchangeForm.sendAmount) ?? 0;
+    final receiveAmount = double.tryParse(exchangeForm.receiveAmount) ?? 0;
+    
     final bool isEnabled = exchangeForm.fromCurrency != null &&
         exchangeForm.toCurrency != null &&
+        sendAmount > 0 &&
+        receiveAmount > 0 &&
         exchangeForm.sendAmount.isNotEmpty &&
-        exchangeForm.exchangeRate != null &&
-        exchangeForm.calculation != null &&
         !exchangeForm.isLoading &&
         exchangeForm.error == null;
 
@@ -1047,7 +1085,7 @@ class HomeScreen extends ConsumerWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -1059,28 +1097,108 @@ class HomeScreen extends ConsumerWidget {
             icon: Icons.currency_exchange_rounded,
             label: 'Exchange Rate',
             value: state.exchangeRate != null
-                ? '1 ${state.fromCurrency?.code ?? ''} = ${state.exchangeRate?.rate.toStringAsFixed(2)} ${state.toCurrency?.code ?? ''}'
-                : '—',
+                ? '1 ${state.fromCurrency?.code ?? ''} = ${_formatExchangeRate(state.exchangeRate!.rate)} ${state.toCurrency?.code ?? ''}'
+                : state.calculation != null 
+                    ? '1 ${state.fromCurrency?.code ?? ''} = ${_formatExchangeRate(state.calculation!.rate)} ${state.toCurrency?.code ?? ''}'
+                    : '—',
             isLoading: state.isLoading,
           ),
-          const SizedBox(height: 16),
-          _buildInfoRow(
-            icon: Icons.attach_money_rounded,
-            label: 'Fee',
-            value: state.calculation != null
-                ? '+${state.calculation?.fee} ${state.calculation?.feeCurrency}'
-                : '—',
-            isLoading: state.isLoading,
-          ),
+          if (state.calculation?.networkInfo != null) ...[
+            const SizedBox(height: 16),
+            _buildInfoRow(
+              icon: Icons.settings_ethernet_rounded,
+              label: 'Network',
+              value: state.calculation!.networkInfo!.network.toUpperCase(),
+              isLoading: state.isLoading,
+            ),
+          ],
+          if (state.calculation?.feeBreakdown != null) ...[
+            const SizedBox(height: 16),
+            _buildInfoRow(
+              icon: Icons.business_rounded,
+              label: 'Platform Fee',
+              value: '${state.calculation!.feeBreakdown!.fees.platformCharges.toStringAsFixed(6)} ${state.calculation?.feeCurrency}',
+              isLoading: state.isLoading,
+            ),
+            const SizedBox(height: 16),
+            _buildInfoRow(
+              icon: Icons.local_gas_station_rounded,
+              label: 'Gas Fee',
+              value: '${state.calculation!.feeBreakdown!.fees.gasFee.toStringAsFixed(6)} ${state.calculation?.feeCurrency}',
+              isLoading: state.isLoading,
+            ),
+            const SizedBox(height: 16),
+            _buildInfoRow(
+              icon: Icons.calculate_rounded,
+              label: 'Total Fee',
+              value: '${state.calculation!.feeBreakdown!.fees.totalFee.toStringAsFixed(6)} ${state.calculation?.feeCurrency}',
+              isLoading: state.isLoading,
+            ),
+          ] else ...[
+            const SizedBox(height: 16),
+            _buildInfoRow(
+              icon: Icons.attach_money_rounded,
+              label: 'Fee',
+              value: state.calculation != null
+                  ? '+${state.calculation!.fee.toStringAsFixed(2)} ${state.calculation?.feeCurrency}'
+                  : '—',
+              isLoading: state.isLoading,
+            ),
+          ],
           const SizedBox(height: 16),
           _buildInfoRow(
             icon: Icons.access_time_rounded,
-            label: 'Transfer Time',
-            value: state.exchangeRate != null
-                ? '${state.exchangeRate?.transferTime.time} ${state.exchangeRate?.transferTime.unit}'
-                : '—',
+            label: 'Estimated Time',
+            value: state.calculation?.networkInfo?.humanReadableTime ?? 
+                   (state.exchangeRate?.networkInfo?.humanReadableTime) ??
+                   (state.exchangeRate != null
+                       ? '${state.exchangeRate?.transferTime.time} ${state.exchangeRate?.transferTime.unit}'
+                       : '—'),
             isLoading: state.isLoading,
           ),
+          if (state.calculation?.networkInfo != null) ...[
+            const SizedBox(height: 16),
+            _buildInfoRow(
+              icon: Icons.network_check_rounded,
+              label: 'Network Status',
+              value: state.calculation!.networkInfo!.networkStatus,
+              isLoading: state.isLoading,
+            ),
+          ],
+          if (state.calculation?.feeBreakdown != null && 
+              (state.calculation!.feeBreakdown!.fees.loyaltyDiscount > 0 || 
+               state.calculation!.feeBreakdown!.fees.nftDiscount > 0)) ...[
+            const SizedBox(height: 16),
+            if (state.calculation!.feeBreakdown!.fees.loyaltyDiscount > 0)
+              _buildInfoRow(
+                icon: Icons.star_rounded,
+                label: 'Loyalty Discount (SILVER)',
+                value: '-${state.calculation!.feeBreakdown!.fees.loyaltyDiscount.toStringAsFixed(6)} ${state.calculation?.feeCurrency}',
+                isLoading: state.isLoading,
+                isDiscount: true,
+              ),
+            if (state.calculation!.feeBreakdown!.fees.nftDiscount > 0) ...[
+              const SizedBox(height: 16),
+              _buildInfoRow(
+                icon: Icons.toll_rounded,
+                label: 'NFT Discount (COMMON)',
+                value: '-${state.calculation!.feeBreakdown!.fees.nftDiscount.toStringAsFixed(6)} ${state.calculation?.feeCurrency}',
+                isLoading: state.isLoading,
+                isDiscount: true,
+              ),
+            ],
+            if (state.calculation!.feeBreakdown!.fees.totalDiscount > 0) ...[
+              const SizedBox(height: 16),
+              _buildInfoRow(
+                icon: Icons.savings_rounded,
+                label: 'Total Savings',
+                value: '-${state.calculation!.feeBreakdown!.fees.totalDiscount.toStringAsFixed(6)} ${state.calculation?.feeCurrency}',
+                isLoading: state.isLoading,
+                isDiscount: true,
+                isHighlighted: true,
+              ),
+            ],
+          ],
           const SizedBox(height: 20),
           Container(
             height: 1,
@@ -1095,21 +1213,39 @@ class HomeScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 20),
-          _buildInfoRow(
-            icon: Icons.payment_rounded,
-            label: 'Total to Pay',
-            value: state.sendAmount.isNotEmpty && state.calculation != null
-                ? '${state.calculation?.amount} ${state.fromCurrency?.code ?? ''}'
-                : '—',
-            isLoading: state.isLoading,
-            isHighlighted: true,
-          ),
-          const SizedBox(height: 16),
+          if (state.calculation?.feeBreakdown != null) ...[
+            _buildInfoRow(
+              icon: Icons.payment_rounded,
+              label: 'Total Amount with Fees',
+              value: '${state.calculation!.feeBreakdown!.totalAmountWithFees.toStringAsFixed(6)} ${state.fromCurrency?.code ?? ''}',
+              isLoading: state.isLoading,
+              isHighlighted: true,
+            ),
+            const SizedBox(height: 16),
+            _buildInfoRow(
+              icon: Icons.trending_up_rounded,
+              label: 'Effective Rate',
+              value: '${state.calculation!.feeBreakdown!.effectiveRate.toStringAsFixed(6)} ${state.fromCurrency?.code ?? ''}',
+              isLoading: state.isLoading,
+            ),
+            const SizedBox(height: 16),
+          ] else ...[
+            _buildInfoRow(
+              icon: Icons.payment_rounded,
+              label: 'Total to Pay',
+              value: state.sendAmount.isNotEmpty && state.calculation != null
+                  ? '${state.calculation!.totalAmount.toStringAsFixed(2)} ${state.fromCurrency?.code ?? ''}'
+                  : '—',
+              isLoading: state.isLoading,
+              isHighlighted: true,
+            ),
+            const SizedBox(height: 16),
+          ],
           _buildInfoRow(
             icon: Icons.account_balance_wallet_rounded,
             label: 'Recipient Gets',
             value: state.calculation != null
-                ? '${state.calculation?.receivedAmount} ${state.toCurrency?.code ?? ''}'
+                ? '${_formatExchangeRate(state.calculation!.receivedAmount)} ${state.toCurrency?.code ?? ''}'
                 : '—',
             isLoading: state.isLoading,
             isHighlighted: true,
@@ -1125,6 +1261,7 @@ class HomeScreen extends ConsumerWidget {
     required String value,
     required bool isLoading,
     bool isHighlighted = false,
+    bool isDiscount = false,
   }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1134,17 +1271,21 @@ class HomeScreen extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: isHighlighted
-                    ? const Color(0xFFFFC000).withOpacity(0.15)
-                    : const Color(0xFFE3F2FD),
+                color: isDiscount
+                    ? const Color(0xFF4CAF50).withValues(alpha: 0.15)
+                    : isHighlighted
+                        ? const Color(0xFFFFC000).withValues(alpha: 0.15)
+                        : const Color(0xFFE3F2FD),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
                 icon,
                 size: 18,
-                color: isHighlighted
-                    ? const Color(0xFFF57C00)
-                    : const Color(0xFF1976D2),
+                color: isDiscount
+                    ? const Color(0xFF4CAF50)
+                    : isHighlighted
+                        ? const Color(0xFFF57C00)
+                        : const Color(0xFF1976D2),
               ),
             ),
             const SizedBox(width: 12),
@@ -1152,7 +1293,7 @@ class HomeScreen extends ConsumerWidget {
               label,
               style: TextStyle(
                 fontSize: 15,
-                color: const Color(0xFF6A6A6A),
+                color: isDiscount ? const Color(0xFF4CAF50) : const Color(0xFF6A6A6A),
                 fontWeight: isHighlighted ? FontWeight.w600 : FontWeight.normal,
               ),
             ),
@@ -1180,7 +1321,7 @@ class HomeScreen extends ConsumerWidget {
                 value,
                 style: TextStyle(
                   fontSize: isHighlighted ? 16 : 14,
-                  color: Colors.black,
+                  color: isDiscount ? const Color(0xFF4CAF50) : Colors.black,
                   fontWeight: isHighlighted ? FontWeight.w700 : FontWeight.w600,
                 ),
                 maxLines: 1,
@@ -1193,5 +1334,13 @@ class HomeScreen extends ConsumerWidget {
 
   Widget _buildRecentTransactions(BuildContext context) {
     return const RecentTransactionsWidget();
+  }
+
+  String _formatExchangeRate(double rate) {
+    if (rate == 0) return '0';
+    if (rate >= 1) return rate.toStringAsFixed(2);
+    if (rate >= 0.01) return rate.toStringAsFixed(4);
+    if (rate >= 0.0001) return rate.toStringAsFixed(6);
+    return rate.toStringAsExponential(2);
   }
 }

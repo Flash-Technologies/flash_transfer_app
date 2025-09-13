@@ -21,8 +21,8 @@ class CashScreen extends ConsumerStatefulWidget {
 }
 
 class _CashScreenState extends ConsumerState<CashScreen> {
-  String activePay = 'cash';
-  String activeReceive = 'cash';
+  String activePay = 'mobile';
+  String activeReceive = 'mobile';
   bool showNotifications = false;
   Beneficiary? selectedContact;
 
@@ -75,17 +75,17 @@ class _CashScreenState extends ConsumerState<CashScreen> {
     final receivingCurrency = exchangeForm.toCurrency;
 
     // Auto-set payment method based on sending currency
-    if (sendingCurrency?.type == 'CRYPTO' && activePay != 'wallet') {
+    if (sendingCurrency?.type == 'CRYPTO') {
       setState(() => activePay = 'wallet');
-    } else if (sendingCurrency?.type == 'FIAT' && activePay == 'wallet') {
-      setState(() => activePay = 'cash'); // Default to cash for fiat
+    } else if (sendingCurrency?.type == 'FIAT') {
+      setState(() => activePay = 'mobile'); // Default to mobile money for fiat
     }
 
     // Auto-set receiver method based on receiving currency
-    if (receivingCurrency?.type == 'CRYPTO' && activeReceive != 'wallet') {
+    if (receivingCurrency?.type == 'CRYPTO') {
       setState(() => activeReceive = 'wallet');
-    } else if (receivingCurrency?.type == 'FIAT' && activeReceive == 'wallet') {
-      setState(() => activeReceive = 'cash'); // Default to cash for fiat
+    } else if (receivingCurrency?.type == 'FIAT') {
+      setState(() => activeReceive = 'mobile'); // Default to mobile money for fiat
     }
   }
 
@@ -303,7 +303,7 @@ class _CashScreenState extends ConsumerState<CashScreen> {
           Text(
             isSendingCrypto
                 ? '💡 Crypto payments require a crypto wallet'
-                : '💡 Multiple payment options available for fiat',
+                : '💡 Choose mobile money for fiat payments',
             style: TextStyle(
               color: Colors.grey[600],
               fontSize: 12,
@@ -314,79 +314,32 @@ class _CashScreenState extends ConsumerState<CashScreen> {
 
         const SizedBox(height: 20),
 
-        // Responsive payment grid
-        LayoutBuilder(
-          builder: (context, constraints) {
-            return SizedBox(
-              height: MediaQuery.of(context).size.height * 0.325,
-              child: Row(
-                children: [
-                  // Left column
-                  Expanded(
-                    flex: 4,
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: _buildPaymentOption(
-                            title: 'Cash\nPayment',
-                            value: 'cash',
-                            isEnabled: !isSendingCrypto,
-                            isCompact: true,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Expanded(
-                          child: _buildPaymentOption(
-                            title: 'Credit\nCard',
-                            value: 'card',
-                            isEnabled: !isSendingCrypto,
-                            isCompact: true,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  // Center column
-                  Expanded(
-                    flex: 4,
-                    child: _buildPaymentOption(
-                      title: 'Crypto Wallet',
-                      value: 'wallet',
-                      isEnabled: isSendingCrypto,
-                      isCenter: true,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  // Right column
-                  Expanded(
-                    flex: 4,
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: _buildPaymentOption(
-                            title: 'Bank\nTransfer',
-                            value: 'bank',
-                            isEnabled: !isSendingCrypto,
-                            isCompact: true,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Expanded(
-                          child: _buildPaymentOption(
-                            title: 'Mobile\nMoney',
-                            value: 'mobile',
-                            isEnabled: !isSendingCrypto,
-                            isCompact: true,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+        // Simplified 2-option payment grid
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.22,
+          child: Row(
+            children: [
+              // Crypto Wallet
+              Expanded(
+                child: _buildPaymentOption(
+                  title: 'Crypto Wallet',
+                  value: 'wallet',
+                  isEnabled: isSendingCrypto,
+                  isCenter: true,
+                ),
               ),
-            );
-          },
+              const SizedBox(width: 16),
+              // Mobile Money
+              Expanded(
+                child: _buildPaymentOption(
+                  title: 'Mobile Money',
+                  value: 'mobile',
+                  isEnabled: !isSendingCrypto,
+                  isCenter: true,
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -669,7 +622,7 @@ class _CashScreenState extends ConsumerState<CashScreen> {
           Text(
             isReceivingCrypto
                 ? '💡 Crypto must be received in a crypto wallet'
-                : '💡 Choose cash pickup or mobile money for fiat',
+                : '💡 Choose mobile money for fiat payments',
             style: TextStyle(
               color: Colors.grey[600],
               fontSize: 12,
@@ -682,20 +635,12 @@ class _CashScreenState extends ConsumerState<CashScreen> {
           children: [
             Expanded(
               child: _buildReceiverOption(
-                title: 'Cash\nPickup',
-                value: 'cash',
-                isEnabled: !isReceivingCrypto,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _buildReceiverOption(
                 title: 'Crypto\nWallet',
                 value: 'wallet',
                 isEnabled: isReceivingCrypto,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 16),
             Expanded(
               child: _buildReceiverOption(
                 title: 'Mobile\nMoney',

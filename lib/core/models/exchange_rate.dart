@@ -17,11 +17,13 @@ class ExchangeRate {
 
   factory ExchangeRate.fromJson(Map<String, dynamic> json) {
     return ExchangeRate(
-      from: json['from'],
-      to: json['to'],
-      rate: json['rate'].toDouble(),
-      timestamp: json['timestamp'],
-      transferTime: TransferTime.fromJson(json['transferTime']),
+      from: json['fromCurrency'] ?? json['from'] ?? '',
+      to: json['toCurrency'] ?? json['to'] ?? '',
+      rate: (json['rate'] ?? 0).toDouble(),
+      timestamp: json['timestamp'] ?? 0,
+      transferTime: json['transferTime'] != null 
+          ? TransferTime.fromJson(json['transferTime'])
+          : TransferTime(time: 0, unit: 'seconds'),
       networkInfo: json['networkInfo'] != null
           ? NetworkInfo.fromJson(json['networkInfo'])
           : null,
@@ -40,8 +42,8 @@ class TransferTime {
 
   factory TransferTime.fromJson(Map<String, dynamic> json) {
     return TransferTime(
-      time: json['time'],
-      unit: json['unit'],
+      time: json['time'] ?? 0,
+      unit: json['unit'] ?? 'seconds',
     );
   }
 }
@@ -63,10 +65,10 @@ class NetworkInfo {
 
   factory NetworkInfo.fromJson(Map<String, dynamic> json) {
     return NetworkInfo(
-      fee: json['fee'].toDouble(),
-      feeUSD: json['feeUSD'].toDouble(),
-      estimatedTimeSeconds: json['estimatedTimeSeconds'],
-      networkCongestion: json['networkCongestion'].toDouble(),
+      fee: (json['fee'] ?? 0).toDouble(),
+      feeUSD: (json['feeUSD'] ?? 0).toDouble(),
+      estimatedTimeSeconds: json['estimatedTimeSeconds'] ?? 0,
+      networkCongestion: (json['networkCongestion'] ?? 0).toDouble(),
       humanReadableTime: json['humanReadableTime'],
     );
   }

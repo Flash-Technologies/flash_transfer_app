@@ -14,6 +14,21 @@ final apiClientProvider = Provider<ApiClient>((ref) {
   return ApiClient(baseUrl: Endpoints.baseUrl);
 });
 
+// Authenticated API Client provider
+final authenticatedApiClientProvider = Provider<ApiClient>((ref) {
+  final apiClient = ApiClient(baseUrl: Endpoints.baseUrl);
+  final authState = ref.watch(authProvider);
+  
+  if (authState.user?.token != null) {
+    print('🔐 Setting auth token in API client: Bearer ${authState.user!.token}');
+    apiClient.setToken(authState.user!.token!);
+  } else {
+    print('⚠️ No auth token found for API client! User: ${authState.user?.id}');
+  }
+  
+  return apiClient;
+});
+
 // Auth Service provider
 final authServiceProvider = Provider<AuthService>((ref) {
   final apiClient = ref.watch(apiClientProvider);

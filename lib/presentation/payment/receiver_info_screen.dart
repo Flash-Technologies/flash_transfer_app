@@ -767,19 +767,20 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
           const SizedBox(height: 8),
           Row(
             children: [
-              if (currencyLogo != null)
-                Container(
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: NetworkImage(currencyLogo),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                )
-              else
+              // Temporarily commented out problematic image loading
+              // if (currencyLogo != null)
+              //   Container(
+              //     width: 20,
+              //     height: 20,
+              //     decoration: BoxDecoration(
+              //       shape: BoxShape.circle,
+              //       image: DecorationImage(
+              //         image: NetworkImage(currencyLogo),
+              //         fit: BoxFit.cover,
+              //       ),
+              //     ),
+              //   )
+              // else
                 Container(
                   width: 20,
                   height: 20,

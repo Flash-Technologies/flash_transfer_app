@@ -6,7 +6,7 @@ import '../providers/auth_provider.dart';
 // Service provider - Updated to use authenticated API client
 final beneficiaryServiceProvider = Provider<BeneficiaryService>((ref) {
   final apiClient =
-      ref.watch(apiClientProvider); // Use the authenticated API client
+      ref.watch(authenticatedApiClientProvider); // Use the authenticated API client
   return BeneficiaryService(apiClient);
 });
 
