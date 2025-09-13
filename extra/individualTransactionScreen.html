@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Details</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #F8F9FA;
+            color: #181F30;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 428px;
+            margin: 0 auto;
+            min-height: 100vh;
+            background-color: #F8F9FA;
+        }
+
+        /* Header */
+        .header {
+            background-color: #FFFFFF;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #E9ECEF;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background-color: #F8F9FA;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background-color: #E9ECEF;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #181F30;
+        }
+
+        .notification-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background-color: #F8F9FA;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: auto;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 6px;
+            height: 6px;
+            background-color: #FF3E24;
+            border-radius: 50%;
+        }
+
+        /* Content */
+        .content {
+            padding: 24px 16px;
+            padding-bottom: 100px;
+        }
+
+        .card {
+            background-color: #FFFFFF;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Status Header */
+        .status-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .status-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #00C735;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+        }
+
+        .status-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #181F30;
+            margin-bottom: 8px;
+        }
+
+        .status-subtitle {
+            font-size: 16px;
+            color: #6E757D;
+            margin-bottom: 4px;
+        }
+
+        .tracking-number {
+            font-size: 12px;
+            color: #6E757D;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            background-color: #F8F9FA;
+            padding: 8px 12px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-top: 8px;
+        }
+
+        /* Transaction Info Cards */
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: #6E757D;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #181F30;
+            text-align: right;
+        }
+
+        .amount-large {
+            font-size: 24px;
+            font-weight: 700;
+            color: #181F30;
+        }
+
+        .amount-small {
+            font-size: 16px;
+            font-weight: 600;
+            color: #00C735;
+        }
+
+        .currency-badge {
+            background-color: #181F30;
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 6px;
+            margin-right: 8px;
+            display: inline-block;
+        }
+
+        /* Timeline */
+        .timeline-header {
+            font-size: 18px;
+            font-weight: 600;
+            color: #181F30;
+            margin-bottom: 16px;
+        }
+
+        .timeline-item {
+            display: flex;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 15px;
+            top: 32px;
+            width: 2px;
+            height: calc(100% - 8px);
+            background-color: #E9ECEF;
+        }
+
+        .timeline-item:last-child::after {
+            display: none;
+        }
+
+        .timeline-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #00C735;
+            margin-right: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .timeline-dot.pending {
+            background-color: #FFC000;
+        }
+
+        .timeline-dot.failed {
+            background-color: #FF3E24;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        .timeline-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #181F30;
+            margin-bottom: 4px;
+        }
+
+        .timeline-time {
+            font-size: 12px;
+            color: #6E757D;
+        }
+
+        .timeline-description {
+            font-size: 12px;
+            color: #6E757D;
+            margin-top: 4px;
+        }
+
+        /* Fee Breakdown */
+        .fee-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #F8F9FA;
+        }
+
+        .fee-item:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            border-top: 2px solid #F8F9FA;
+            margin-top: 8px;
+            padding-top: 16px;
+        }
+
+        .fee-discount {
+            color: #00C735;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 428px;
+            padding: 16px;
+            background-color: white;
+            border-top: 1px solid #E9ECEF;
+        }
+
+        .btn {
+            width: 100%;
+            height: 56px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+
+        .btn:last-child {
+            margin-bottom: 0;
+        }
+
+        .btn-primary {
+            background-color: #FFC000;
+            color: #181F30;
+        }
+
+        .btn-secondary {
+            background-color: #F8F9FA;
+            color: #181F30;
+            border: 1px solid #E9ECEF;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #181F30;
+            margin-bottom: 16px;
+        }
+
+        .divider {
+            height: 1px;
+            background-color: #F8F9FA;
+            margin: 16px 0;
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            color: #2475FF;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <button class="back-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M15 18L9 12L15 6" stroke="#181F30" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+            <h1 class="header-title">Transaction Details</h1>
+            <button class="notification-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#181F30" stroke-width="2"/>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" stroke="#181F30" stroke-width="2"/>
+                </svg>
+                <div class="notification-dot"></div>
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Status Card -->
+            <div class="card">
+                <div class="status-header">
+                    <div class="status-icon">✓</div>
+                    <h2 class="status-title">Cash to Crypto</h2>
+                    <p class="status-subtitle">Sep 13, 2025, 04:35:11 PM</p>
+                    <p class="status-subtitle">Completed</p>
+                    <div class="tracking-number">
+                        CC17577615103339513
+                        <button class="copy-btn" onclick="copyToClipboard('CC17577615103339513')">Copy</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transaction Amount -->
+            <div class="card">
+                <div class="section-title">Transaction Details</div>
+                
+                <div class="info-row">
+                    <span class="info-label">You're Sending</span>
+                    <div class="info-value">
+                        <span class="currency-badge">XOF</span>
+                        <span class="amount-large">10.184000</span>
+                    </div>
+                </div>
+                
+                <div class="info-row">
+                    <span class="info-label">Including fee</span>
+                    <span class="info-value">0.184000 XOF</span>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="info-row">
+                    <span class="info-label">Recipient Gets</span>
+                    <span class="info-value amount-small">0.000004</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Duration</span>
+                    <span class="info-value">6h 45m</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Started</span>
+                    <span class="info-value">6h ago</span>
+                </div>
+            </div>
+
+            <!-- Transaction Timeline -->
+            <div class="card">
+                <div class="timeline-header">Transaction Timeline</div>
+                <p style="color: #6E757D; font-size: 14px; margin-bottom: 24px;">11 events • Duration: 6h 45m</p>
+                
+                <div class="timeline-item">
+                    <div class="timeline-dot">✓</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">Transaction Completed</div>
+                        <div class="timeline-time">6h ago</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot">📞</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">Payment Callback Received</div>
+                        <div class="timeline-time">6h ago</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot pending">⏳</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">Blockchain Pending</div>
+                        <div class="timeline-time">6h ago</div>
+                        <div class="timeline-description">Still waiting for confirmations</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot">🔄</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">Cryptocurrency Purchase Submitted</div>
+                        <div class="timeline-time">6h ago</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot">✅</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">Payment Successful</div>
+                        <div class="timeline-time">6h ago</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-dot">🕐</div>
+                    <div class="timeline-content">
+                        <div class="timeline-title">Transaction Started</div>
+                        <div class="timeline-time">6h ago</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fee Breakdown -->
+            <div class="card">
+                <div class="section-title">Fee Breakdown</div>
+                
+                <div class="fee-item">
+                    <span class="info-label">Base Amount</span>
+                    <span class="info-value">10.00 XOF</span>
+                </div>
+
+                <div class="fee-item">
+                    <span class="info-label">Service Fee</span>
+                    <span class="info-value">0.18 XOF</span>
+                </div>
+
+                <div class="fee-item fee-discount">
+                    <span class="info-label">Loyalty Discount</span>
+                    <span class="info-value">-0.01 XOF</span>
+                </div>
+
+                <div class="fee-item">
+                    <span class="info-label">Total</span>
+                    <span class="info-value">10.18 XOF</span>
+                </div>
+            </div>
+
+            <!-- Transaction Info -->
+            <div class="card">
+                <div class="section-title">Transaction Info</div>
+                
+                <div class="info-row">
+                    <span class="info-label">Reference ID</span>
+                    <span class="info-value">FT-1757761511339-4040</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Type</span>
+                    <span class="info-value">Cash to Crypto</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Created</span>
+                    <span class="info-value">6h ago</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Completed</span>
+                    <span class="info-value">6h ago</span>
+                </div>
+
+                <div class="info-row">
+                    <span class="info-label">Blockchain TX</span>
+                    <span class="info-value">
+                        0x9c204c...
+                        <button class="copy-btn" onclick="copyToClipboard('0x9c204c...')">Copy</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-primary">Track Another Transaction</button>
+            <button class="btn btn-secondary">Back to Home</button>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                // You could add a toast notification here
+                console.log('Copied to clipboard: ' + text);
+            });
+        }
+
+        // Add smooth scroll behavior
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add any additional JavaScript functionality here
+        });
+    </script>
+</body>
+</html>

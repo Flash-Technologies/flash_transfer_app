@@ -5,10 +5,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/services/translation_service.dart';
 import '../../core/models/transaction_model.dart';
 import '../../providers/transaction_provider.dart';
-import '../../providers/auth_provider.dart';
 import 'widgets/transaction_card_widget.dart';
 import 'widgets/transaction_filter_widget.dart';
 import 'widgets/transaction_header_widget.dart' as header;
+import 'individual_transaction_screen.dart';
 
 class TransactionScreen extends ConsumerStatefulWidget {
   const TransactionScreen({super.key});
@@ -33,16 +33,24 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
   void initState() {
     super.initState();
     _initializeAnimations();
+    _setupScrollListener();
     
     // Load transactions after build
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Debug: Check if user is logged in before fetching transactions
-      final authState = ref.read(authProvider);
-      print('🔍 DEBUG: Transaction screen - User logged in: ${authState.user != null}');
-      print('🔍 DEBUG: Transaction screen - User ID: ${authState.user?.id}');
-      print('🔍 DEBUG: Transaction screen - Has token: ${authState.user?.token != null}');
-      
       ref.read(transactionsProvider.notifier).fetchTransactions();
+    });
+  }
+
+  void _setupScrollListener() {
+    _scrollController.addListener(() {
+      final transactionsState = ref.read(transactionsProvider);
+      
+      // Load more when approaching the end, but only if we have transactions and there are more to load
+      if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent - 200) {
+        if (!transactionsState.isLoading && transactionsState.hasMore && transactionsState.transactions.isNotEmpty) {
+          ref.read(transactionsProvider.notifier).loadMoreTransactions();
+        }
+      }
     });
   }
 
@@ -143,7 +151,7 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
     final translationService = TranslationService.instance;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFEFF0F1),
+      backgroundColor: Colors.white,
       body: Column(
         children: [
           // Header
@@ -161,22 +169,23 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
               opacity: _contentFadeAnimation,
               child: Column(
                 children: [
-                  // Filter Section
+                  // Filter Section (no spacing above)
                   ScaleTransition(
                     scale: _filterScaleAnimation,
-                    child: TransactionFilterWidget(
-                      selectedFilter: _selectedFilter,
-                      onFilterChanged: _filterTransactions,
-                    ).animate().slideX(
-                      begin: -1,
-                      duration: const Duration(milliseconds: 600),
-                      curve: Curves.easeOutBack,
+                    child: Container(
+                      color: Colors.white,
+                      child: TransactionFilterWidget(
+                        selectedFilter: _selectedFilter,
+                        onFilterChanged: _filterTransactions,
+                      ).animate().slideX(
+                        begin: -1,
+                        duration: const Duration(milliseconds: 600),
+                        curve: Curves.easeOutBack,
+                      ),
                     ),
                   ),
 
-                  const SizedBox(height: 16),
-
-                  // Transactions List
+                  // Transactions List (starts immediately after filter)
                   Expanded(child: _buildTransactionsList()),
                 ],
               ),
@@ -210,28 +219,45 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
           onRefresh: _refreshTransactions,
           color: const Color(0xFFFFC000),
           backgroundColor: Colors.white,
-          child: CustomScrollView(
+          child: ListView.builder(
             controller: _scrollController,
             physics: const ClampingScrollPhysics(),
-            slivers: [
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final transaction = filteredTransactions[index];
-                    return TransactionCardWidget(
-                          transaction: transaction,
-                          onTap: () => _onTransactionTap(transaction),
-                        )
-                        .animate(delay: Duration(milliseconds: 100 * index))
-                        .fadeIn(duration: const Duration(milliseconds: 400))
-                        .slideY(begin: 1, curve: Curves.easeOutBack);
-                  }, childCount: filteredTransactions.length),
-                ),
-              ),
-              // Bottom padding
-              const SliverToBoxAdapter(child: SizedBox(height: 20)),
-            ],
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 80),
+            itemCount: filteredTransactions.length + (transactionsState.isLoading && filteredTransactions.isNotEmpty ? 1 : 0),
+            itemBuilder: (context, index) {
+              // Show loading indicator at the end if loading more
+              if (index == filteredTransactions.length) {
+                return Container(
+                  height: 60,
+                  alignment: Alignment.center,
+                  child: const CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFFC000)),
+                    strokeWidth: 2,
+                  ),
+                );
+              }
+              
+              final transaction = filteredTransactions[index];
+              
+              // Don't animate if this is from pagination (index >= initial load count)
+              // Assume first page has 10 items, don't animate items beyond that
+              final isFromPagination = index >= 10;
+              
+              final widget = TransactionCardWidget(
+                transaction: transaction,
+                onTap: () => _onTransactionTap(transaction),
+              );
+              
+              // Only animate initial load items, not paginated items
+              if (isFromPagination) {
+                return widget;
+              }
+              
+              return widget
+                  .animate(delay: Duration(milliseconds: 50 * (index % 10)))
+                  .fadeIn(duration: const Duration(milliseconds: 300))
+                  .slideY(begin: 0.5, curve: Curves.easeOutCubic);
+            },
           ),
         );
       }
@@ -441,272 +467,15 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
   void _onTransactionTap(Transaction transaction) {
     HapticFeedback.lightImpact();
 
-    // Show transaction details modal
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _buildTransactionDetailsModal(transaction),
-    );
-  }
-
-  Widget _buildTransactionDetailsModal(Transaction transaction) {
-    final translationService = TranslationService.instance;
-
-    return Container(
-          height: MediaQuery.of(context).size.height * 0.7,
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(24),
-              topRight: Radius.circular(24),
-            ),
-          ),
-          child: Column(
-            children: [
-              // Handle
-              Container(
-                width: 40,
-                height: 4,
-                margin: const EdgeInsets.only(top: 12),
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-
-              // Header
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  children: [
-                    // Status indicator
-                    Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        color: transaction.statusColor.withValues(alpha: 0.1),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        transaction.statusIcon,
-                        color: transaction.statusColor,
-                        size: 24,
-                      ),
-                    ),
-
-                    const SizedBox(width: 16),
-
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${transaction.amount.toStringAsFixed(2)} ${transaction.currency}',
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF181F30),
-                            ),
-                          ),
-                          Text(
-                            transaction.formattedType,
-                            style: const TextStyle(
-                              fontSize: 14,
-                              color: Color(0xFF6E757D),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    // Close button
-                    IconButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      icon: const Icon(Icons.close),
-                      style: IconButton.styleFrom(
-                        backgroundColor: Colors.grey[100],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Transaction details
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildDetailRow(
-                        'Recipient',
-                        _getWalletAddressFormatted(transaction),
-                      ),
-                      _buildDetailRow(
-                        'Transaction Date',
-                        _formatDate(transaction.createdAt),
-                      ),
-                      _buildDetailRow(
-                        'Reference ID',
-                        transaction.referenceId,
-                      ),
-                      _buildDetailRow(
-                        'Tracking Number',
-                        transaction.trackingNumber,
-                      ),
-                      _buildDetailRow(
-                        'Transaction Fee',
-                        '${transaction.fee.toStringAsFixed(2)} ${transaction.currency}',
-                      ),
-                      _buildDetailRow(
-                        'Network',
-                        transaction.blockchainNetwork ?? 'Unknown',
-                      ),
-                      _buildDetailRow(
-                        'Status',
-                        transaction.status.toUpperCase(),
-                      ),
-                      if (transaction.blockchainTxHash != null)
-                        _buildDetailRow(
-                          'Blockchain Hash',
-                          _formatTxHash(transaction.blockchainTxHash!),
-                        ),
-
-                      const SizedBox(height: 32),
-
-                      // Action buttons
-                      Row(
-                        children: [
-                          Expanded(
-                            child: OutlinedButton(
-                              onPressed: () {
-                                // Download receipt
-                                HapticFeedback.lightImpact();
-                              },
-                              style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 16,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                              ),
-                              child: Text(
-                                translationService.translate(
-                                  'transaction.actions.download',
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          const SizedBox(width: 12),
-
-                          Expanded(
-                            child: ElevatedButton(
-                              onPressed: () {
-                                // Repeat transaction
-                                HapticFeedback.lightImpact();
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFFFFC000),
-                                foregroundColor: const Color(0xFF181F30),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 16,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                elevation: 0,
-                              ),
-                              child: Text(
-                                translationService.translate(
-                                  'transaction.actions.repeatTransaction',
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 20),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        )
-        .animate()
-        .slideY(
-          begin: 1,
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        )
-        .fadeIn(duration: const Duration(milliseconds: 200));
-  }
-
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 100,
-            child: Text(
-              label,
-              style: const TextStyle(fontSize: 14, color: Color(0xFF6E757D)),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF181F30),
-              ),
-            ),
-          ),
-        ],
+    // Navigate to individual transaction screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => IndividualTransactionScreen(
+          transactionId: transaction.id,
+          transaction: transaction,
+        ),
       ),
     );
-  }
-
-  String _getWalletAddressFormatted(Transaction transaction) {
-    if (transaction.destinationDetails != null) {
-      final walletAddress = transaction.destinationDetails!['walletAddress'] as String?;
-      if (walletAddress != null && walletAddress.isNotEmpty) {
-        if (walletAddress.length > 16) {
-          return '${walletAddress.substring(0, 8)}...${walletAddress.substring(walletAddress.length - 8)}';
-        }
-        return walletAddress;
-      }
-    }
-    return 'Unknown';
-  }
-
-  String _formatTxHash(String txHash) {
-    if (txHash.length > 16) {
-      return '${txHash.substring(0, 8)}...${txHash.substring(txHash.length - 8)}';
-    }
-    return txHash;
-  }
-
-  String _formatDate(DateTime date) {
-    // Format like: Sep 13, 2025, 04:35 PM
-    final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                   'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    
-    final month = months[date.month - 1];
-    final day = date.day;
-    final year = date.year;
-    
-    final hour = date.hour == 0 ? 12 : (date.hour > 12 ? date.hour - 12 : date.hour);
-    final minute = date.minute.toString().padLeft(2, '0');
-    final ampm = date.hour >= 12 ? 'PM' : 'AM';
-    
-    return '$month $day, $year, ${hour.toString().padLeft(2, '0')}:$minute $ampm';
   }
 }

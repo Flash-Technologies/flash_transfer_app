@@ -54,7 +54,7 @@ class TransactionsNotifier extends StateNotifier<TransactionsState> {
   // Fetch transactions from API
   Future<void> fetchTransactions({bool refresh = false}) async {
     if (refresh) {
-      state = state.copyWith(isLoading: true, clearError: true);
+      state = state.copyWith(isLoading: true, clearError: true, page: 1);
     } else if (state.isLoading) {
       return; // Already loading
     } else {
@@ -67,10 +67,32 @@ class TransactionsNotifier extends StateNotifier<TransactionsState> {
       state = state.copyWith(
         transactions: transactions,
         isLoading: false,
-        hasMore: false, // Assuming single page for now
+        hasMore: transactions.length >= 10, // Assume 10 items per page, has more if full page
       );
     } catch (e) {
       print('❌ Error fetching transactions: $e');
+      state = state.copyWith(
+        error: e.toString(),
+        isLoading: false,
+      );
+    }
+  }
+  
+  // Load more transactions for pagination
+  Future<void> loadMoreTransactions() async {
+    if (state.isLoading || !state.hasMore) return;
+    
+    state = state.copyWith(isLoading: true, clearError: true);
+    
+    try {
+      // For now, since the API doesn't support pagination, we'll simulate it
+      // by not loading more to prevent empty scrolling
+      state = state.copyWith(
+        isLoading: false,
+        hasMore: false, // No more data to load
+      );
+    } catch (e) {
+      print('❌ Error loading more transactions: $e');
       state = state.copyWith(
         error: e.toString(),
         isLoading: false,
