@@ -151,5 +151,62 @@
     "walletConnection": {
       "connected": "Conectado"
     }
+  },
+  "recipients": {
+    "screen": {
+      "title": "Destinatarios",
+      "subtitle": "Elige a quién enviar dinero",
+      "back": "Atrás",
+      "search": "Buscar destinatarios...",
+      "addNew": "Agregar nuevo destinatario",
+      "emptyState": "Sin destinatarios aún",
+      "emptyDescription": "Agregar un destinatario para comenzar a enviar dinero"
+    },
+    "promo": {
+      "title": "¡Refiere y gana!",
+      "subtitle": "Obtén $25 por cada amigo",
+      "description": "Invita amigos y gana dinero cuando hagan su primera transferencia",
+      "button": "Invitar ahora"
+    },
+    "sorting": {
+      "recentlyAdded": "Reciente",
+      "alphabetical": "A-Z",
+      "mostUsed": "Más usado"
+    },
+    "filters": {
+      "favorites": "Favoritos"
+    },
+    "recipient": {
+      "lastSent": "Último envío",
+      "never": "Nunca enviado",
+      "send": "Enviar"
+    }
+  },
+  "transaction": {
+    "screen": {
+      "title": "Transacciones",
+      "back": "Atrás",
+      "loading": "Cargando transacciones...",
+      "emptyState": "Sin transacciones aún",
+      "emptyDescription": "Tu historial de transacciones aparecerá aquí"
+    },
+    "filters": {
+      "all": "Todas",
+      "sent": "Enviadas",
+      "received": "Recibidas",
+      "thisMonth": "Este mes",
+      "lastMonth": "Mes pasado"
+    },
+    "recipient": "Destinatario",
+    "date": "Fecha",
+    "reference": "Referencia",
+    "transactionId": "ID de transacción",
+    "fee": "Comisión",
+    "send": "Enviado",
+    "receive": "Recibido",
+    "actions": {
+      "download": "Descargar recibo",
+      "repeatTransaction": "Enviar de nuevo"
+    }
   }
 }

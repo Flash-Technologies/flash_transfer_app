@@ -152,5 +152,62 @@
     "walletConnection": {
       "connected": "Connected"
     }
+  },
+  "recipients": {
+    "screen": {
+      "title": "Recipients",
+      "subtitle": "Choose who to send money to",
+      "back": "Back",
+      "search": "Search recipients...",
+      "addNew": "Add New Recipient",
+      "emptyState": "No recipients yet",
+      "emptyDescription": "Add a recipient to start sending money"
+    },
+    "promo": {
+      "title": "Refer & Earn!",
+      "subtitle": "Get $25 for each friend",
+      "description": "Invite friends and earn money when they make their first transfer",
+      "button": "Invite Now"
+    },
+    "sorting": {
+      "recentlyAdded": "Recent",
+      "alphabetical": "A-Z",
+      "mostUsed": "Most Used"
+    },
+    "filters": {
+      "favorites": "Favorites"
+    },
+    "recipient": {
+      "lastSent": "Last sent",
+      "never": "Never sent",
+      "send": "Send"
+    }
+  },
+  "transaction": {
+    "screen": {
+      "title": "Transactions",
+      "back": "Back",
+      "loading": "Loading transactions...",
+      "emptyState": "No transactions yet",
+      "emptyDescription": "Your transaction history will appear here"
+    },
+    "filters": {
+      "all": "All",
+      "sent": "Sent",
+      "received": "Received",
+      "thisMonth": "This Month",
+      "lastMonth": "Last Month"
+    },
+    "recipient": "Recipient",
+    "date": "Date",
+    "reference": "Reference",
+    "transactionId": "Transaction ID",
+    "fee": "Fee",
+    "send": "Sent",
+    "receive": "Received",
+    "actions": {
+      "download": "Download Receipt",
+      "repeatTransaction": "Send Again"
+    }
   }
 }

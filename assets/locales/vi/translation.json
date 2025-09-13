@@ -151,5 +151,62 @@
     "walletConnection": {
       "connected": "Đã kết nối"
     }
+  },
+  "recipients": {
+    "screen": {
+      "title": "Người nhận",
+      "subtitle": "Chọn người để gửi tiền",
+      "back": "Quay lại",
+      "search": "Tìm kiếm người nhận...",
+      "addNew": "Thêm người nhận mới",
+      "emptyState": "Chưa có người nhận",
+      "emptyDescription": "Thêm một người nhận để bắt đầu gửi tiền"
+    },
+    "promo": {
+      "title": "Giới thiệu & Kiếm tiền!",
+      "subtitle": "Nhận $25 cho mỗi bạn",
+      "description": "Mời bạn bè và kiếm tiền khi họ thực hiện chuyển khoản đầu tiên",
+      "button": "Mời ngay"
+    },
+    "sorting": {
+      "recentlyAdded": "Gần đây",
+      "alphabetical": "A-Z",
+      "mostUsed": "Dùng nhiều nhất"
+    },
+    "filters": {
+      "favorites": "Yêu thích"
+    },
+    "recipient": {
+      "lastSent": "Gửi lần cuối",
+      "never": "Chưa bao giờ gửi",
+      "send": "Gửi"
+    }
+  },
+  "transaction": {
+    "screen": {
+      "title": "Giao dịch",
+      "back": "Quay lại",
+      "loading": "Đang tải giao dịch...",
+      "emptyState": "Chưa có giao dịch",
+      "emptyDescription": "Lịch sử giao dịch của bạn sẽ xuất hiện ở đây"
+    },
+    "filters": {
+      "all": "Tất cả",
+      "sent": "Đã gửi",
+      "received": "Đã nhận",
+      "thisMonth": "Tháng này",
+      "lastMonth": "Tháng trước"
+    },
+    "recipient": "Người nhận",
+    "date": "Ngày",
+    "reference": "Tham chiếu",
+    "transactionId": "ID giao dịch",
+    "fee": "Phí",
+    "send": "Đã gửi",
+    "receive": "Đã nhận",
+    "actions": {
+      "download": "Tải xuống biên lai",
+      "repeatTransaction": "Gửi lại"
+    }
   }
 }

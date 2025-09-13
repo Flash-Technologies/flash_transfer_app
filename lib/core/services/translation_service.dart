@@ -16,11 +16,15 @@ class TranslationService {
   Future<void> loadTranslations(String locale) async {
     try {
       final String jsonString = await rootBundle.loadString(
-        'assets/locales/$locale/language.json',
+        'assets/locales/$locale/translation.json',
       );
-      _translations = json.decode(jsonString);
+      final Map<String, dynamic> loadedTranslations = json.decode(jsonString);
+      
+      // Merge with default translations to ensure all keys are available
+      _translations = _mergeTranslations(_defaultTranslations, loadedTranslations);
       _currentLocale = locale;
     } catch (e) {
+      print('Error loading translation file for $locale: $e');
       // Fallback to English if the locale file doesn't exist
       if (locale != 'en') {
         await loadTranslations('en');
@@ -29,9 +33,26 @@ class TranslationService {
       }
     }
   }
+  
+  Map<String, dynamic> _mergeTranslations(Map<String, dynamic> base, Map<String, dynamic> override) {
+    final result = Map<String, dynamic>.from(base);
+    
+    override.forEach((key, value) {
+      if (result.containsKey(key) && result[key] is Map<String, dynamic> && value is Map<String, dynamic>) {
+        result[key] = _mergeTranslations(result[key] as Map<String, dynamic>, value as Map<String, dynamic>);
+      } else {
+        result[key] = value;
+      }
+    });
+    
+    return result;
+  }
 
   String translate(String key, [Map<String, String>? params]) {
-    if (_translations == null) return key;
+    if (_translations == null) {
+      print('Translations not loaded, initializing with default locale...');
+      _translations = _defaultTranslations;
+    }
 
     final keys = key.split('.');
     dynamic value = _translations;
@@ -40,6 +61,7 @@ class TranslationService {
       if (value is Map<String, dynamic> && value.containsKey(k)) {
         value = value[k];
       } else {
+        print('Translation key not found: $key');
         return key;
       }
     }

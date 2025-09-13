@@ -151,5 +151,62 @@
     "walletConnection": {
       "connected": "Connecté"
     }
+  },
+  "recipients": {
+    "screen": {
+      "title": "Destinataires",
+      "subtitle": "Choisissez à qui envoyer de l'argent",
+      "back": "Retour",
+      "search": "Rechercher des destinataires...",
+      "addNew": "Ajouter un nouveau destinataire",
+      "emptyState": "Aucun destinataire pour le moment",
+      "emptyDescription": "Ajoutez un destinataire pour commencer à envoyer de l'argent"
+    },
+    "promo": {
+      "title": "Parrainez et gagnez !",
+      "subtitle": "Gagnez 25 $ pour chaque ami",
+      "description": "Invitez des amis et gagnez de l'argent quand ils font leur premier transfer",
+      "button": "Inviter maintenant"
+    },
+    "sorting": {
+      "recentlyAdded": "Récent",
+      "alphabetical": "A-Z",
+      "mostUsed": "Plus utilisé"
+    },
+    "filters": {
+      "favorites": "Favoris"
+    },
+    "recipient": {
+      "lastSent": "Dernier envoi",
+      "never": "Jamais envoyé",
+      "send": "Envoyer"
+    }
+  },
+  "transaction": {
+    "screen": {
+      "title": "Transactions",
+      "back": "Retour",
+      "loading": "Chargement des transactions...",
+      "emptyState": "Aucune transaction pour le moment",
+      "emptyDescription": "Votre historique de transactions apparaîtra ici"
+    },
+    "filters": {
+      "all": "Toutes",
+      "sent": "Envoyées",
+      "received": "Reçues",
+      "thisMonth": "Ce mois",
+      "lastMonth": "Mois dernier"
+    },
+    "recipient": "Destinataire",
+    "date": "Date",
+    "reference": "Référence",
+    "transactionId": "ID de transaction",
+    "fee": "Frais",
+    "send": "Envoyé",
+    "receive": "Reçu",
+    "actions": {
+      "download": "Télécharger le reçu",
+      "repeatTransaction": "Renvoyer"
+    }
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import '../core/models/language_model.dart';
+import '../core/services/translation_service.dart';
 
 // Language state
 class LanguageState {
@@ -137,6 +138,9 @@ class LanguageNotifier extends StateNotifier<LanguageState> {
           orElse: () => _availableLanguages.first,
         );
 
+        // Load translations for the saved language
+        await TranslationService.instance.loadTranslations(savedLanguage.code);
+        
         state = state.copyWith(
           currentLanguage: savedLanguage,
           isLoading: false,
@@ -159,6 +163,9 @@ class LanguageNotifier extends StateNotifier<LanguageState> {
       // Save to shared preferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_languageKey, language.code);
+
+      // Load translations for the new language
+      await TranslationService.instance.loadTranslations(language.code);
 
       // Update state
       state = state.copyWith(currentLanguage: language, isLoading: false);

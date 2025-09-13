@@ -151,5 +151,62 @@
     "walletConnection": {
       "connected": "متصل"
     }
+  },
+  "recipients": {
+    "screen": {
+      "title": "المستلمون",
+      "subtitle": "اختر من ترسل إليه الأموال",
+      "back": "العودة",
+      "search": "البحث عن المستلمين...",
+      "addNew": "إضافة مستلم جديد",
+      "emptyState": "لا يوجد مستلمون حتى الآن",
+      "emptyDescription": "أضف مستلماً لبدء إرسال الأموال"
+    },
+    "promo": {
+      "title": "أحِل واربح!",
+      "subtitle": "احصل على 25 دولاراً لكل صديق",
+      "description": "ادع الأصدقاء واربح المال عندما يقومون بأول تحويل لهم",
+      "button": "ادع الآن"
+    },
+    "sorting": {
+      "recentlyAdded": "الأحدث",
+      "alphabetical": "أ-ي",
+      "mostUsed": "الأكثر استخداماً"
+    },
+    "filters": {
+      "favorites": "المفضلة"
+    },
+    "recipient": {
+      "lastSent": "آخر إرسال",
+      "never": "لم يتم الإرسال مطلقاً",
+      "send": "إرسال"
+    }
+  },
+  "transaction": {
+    "screen": {
+      "title": "المعاملات",
+      "back": "العودة",
+      "loading": "تحميل المعاملات...",
+      "emptyState": "لا توجد معاملات حتى الآن",
+      "emptyDescription": "سيظهر تاريخ معاملاتك هنا"
+    },
+    "filters": {
+      "all": "الكل",
+      "sent": "مُرسلة",
+      "received": "مُستلمة",
+      "thisMonth": "هذا الشهر",
+      "lastMonth": "الشهر الماضي"
+    },
+    "recipient": "المستلم",
+    "date": "التاريخ",
+    "reference": "المرجع",
+    "transactionId": "معرف المعاملة",
+    "fee": "الرسوم",
+    "send": "مُرسل",
+    "receive": "مُستلم",
+    "actions": {
+      "download": "تحميل الإيصال",
+      "repeatTransaction": "إرسال مرة أخرى"
+    }
   }
 }

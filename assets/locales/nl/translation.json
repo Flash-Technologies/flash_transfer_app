@@ -151,5 +151,62 @@
     "walletConnection": {
       "connected": "Verbonden"
     }
+  },
+  "recipients": {
+    "screen": {
+      "title": "Ontvangers",
+      "subtitle": "Kies aan wie je geld wilt sturen",
+      "back": "Terug",
+      "search": "Zoek ontvangers...",
+      "addNew": "Nieuwe ontvanger toevoegen",
+      "emptyState": "Nog geen ontvangers",
+      "emptyDescription": "Voeg een ontvanger toe om geld te sturen"
+    },
+    "promo": {
+      "title": "Verwijs & Verdien!",
+      "subtitle": "Krijg $25 voor elke vriend",
+      "description": "Nodig vrienden uit en verdien geld wanneer ze hun eerste overmaking doen",
+      "button": "Nu uitnodigen"
+    },
+    "sorting": {
+      "recentlyAdded": "Recent",
+      "alphabetical": "A-Z",
+      "mostUsed": "Meest gebruikt"
+    },
+    "filters": {
+      "favorites": "Favorieten"
+    },
+    "recipient": {
+      "lastSent": "Laatst verstuurd",
+      "never": "Nooit verstuurd",
+      "send": "Versturen"
+    }
+  },
+  "transaction": {
+    "screen": {
+      "title": "Transacties",
+      "back": "Terug",
+      "loading": "Transacties laden...",
+      "emptyState": "Nog geen transacties",
+      "emptyDescription": "Je transactiegeschiedenis verschijnt hier"
+    },
+    "filters": {
+      "all": "Alle",
+      "sent": "Verzonden",
+      "received": "Ontvangen",
+      "thisMonth": "Deze maand",
+      "lastMonth": "Vorige maand"
+    },
+    "recipient": "Ontvanger",
+    "date": "Datum",
+    "reference": "Referentie",
+    "transactionId": "Transactie-ID",
+    "fee": "Kosten",
+    "send": "Verzonden",
+    "receive": "Ontvangen",
+    "actions": {
+      "download": "Bon downloaden",
+      "repeatTransaction": "Opnieuw versturen"
+    }
   }
 }

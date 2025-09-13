@@ -4,6 +4,7 @@ import 'config/router.dart';
 import 'config/theme.dart';
 import 'core/services/storage_service.dart';
 import 'core/services/facebook_service.dart';
+import 'core/services/translation_service.dart';
 import 'providers/auth_provider.dart';
 
 class FlashTransferApp extends StatelessWidget {
@@ -36,4 +37,7 @@ Future<void> initApp() async {
 
   // Initialize Facebook SDK
   await FacebookService.initialize();
+  
+  // Initialize Translation Service
+  await TranslationService.instance.loadTranslations('en');
 }

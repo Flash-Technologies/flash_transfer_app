@@ -151,5 +151,62 @@
     "walletConnection": {
       "connected": "Verbunden"
     }
+  },
+  "recipients": {
+    "screen": {
+      "title": "Empfänger",
+      "subtitle": "Wählen Sie, an wen Sie Geld senden möchten",
+      "back": "Zurück",
+      "search": "Empfänger suchen...",
+      "addNew": "Neuen Empfänger hinzufügen",
+      "emptyState": "Noch keine Empfänger",
+      "emptyDescription": "Fügen Sie einen Empfänger hinzu, um Geld zu senden"
+    },
+    "promo": {
+      "title": "Werben & Verdienen!",
+      "subtitle": "Erhalten Sie $25 für jeden Freund",
+      "description": "Laden Sie Freunde ein und verdienen Sie Geld, wenn sie ihre erste Überweisung tätigen",
+      "button": "Jetzt einladen"
+    },
+    "sorting": {
+      "recentlyAdded": "Kürzlich",
+      "alphabetical": "A-Z",
+      "mostUsed": "Am meisten verwendet"
+    },
+    "filters": {
+      "favorites": "Favoriten"
+    },
+    "recipient": {
+      "lastSent": "Zuletzt gesendet",
+      "never": "Nie gesendet",
+      "send": "Senden"
+    }
+  },
+  "transaction": {
+    "screen": {
+      "title": "Transaktionen",
+      "back": "Zurück",
+      "loading": "Transaktionen laden...",
+      "emptyState": "Noch keine Transaktionen",
+      "emptyDescription": "Ihr Transaktionsverlauf wird hier angezeigt"
+    },
+    "filters": {
+      "all": "Alle",
+      "sent": "Gesendet",
+      "received": "Erhalten",
+      "thisMonth": "Dieser Monat",
+      "lastMonth": "Letzter Monat"
+    },
+    "recipient": "Empfänger",
+    "date": "Datum",
+    "reference": "Referenz",
+    "transactionId": "Transaktions-ID",
+    "fee": "Gebühr",
+    "send": "Gesendet",
+    "receive": "Erhalten",
+    "actions": {
+      "download": "Beleg herunterladen",
+      "repeatTransaction": "Erneut senden"
+    }
   }
 }

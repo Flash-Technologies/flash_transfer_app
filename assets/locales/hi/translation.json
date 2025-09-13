@@ -151,5 +151,62 @@
     "walletConnection": {
       "connected": "कनेक्ट है"
     }
+  },
+  "recipients": {
+    "screen": {
+      "title": "प्राप्तकर्ता",
+      "subtitle": "चुनें कि पैसे किसे भेजना है",
+      "back": "वापस",
+      "search": "प्राप्तकर्ता खोजें...",
+      "addNew": "नया प्राप्तकर्ता जोड़ें",
+      "emptyState": "अभी तक कोई प्राप्तकर्ता नहीं",
+      "emptyDescription": "पैसे भेजना शुरू करने के लिए एक प्राप्तकर्ता जोड़ें"
+    },
+    "promo": {
+      "title": "रेफर करें और कमाएं!",
+      "subtitle": "हर दोस्त के लिए $25 पाएं",
+      "description": "दोस्तों को आमंत्रित करें और जब वे अपना पहला ट्रांसफर करें तो पैसे कमाएं",
+      "button": "अभी आमंत्रित करें"
+    },
+    "sorting": {
+      "recentlyAdded": "हाल का",
+      "alphabetical": "अ-य",
+      "mostUsed": "सबसे ज्यादा इस्तेमाल"
+    },
+    "filters": {
+      "favorites": "पसंदीदा"
+    },
+    "recipient": {
+      "lastSent": "अंतिम भेजा गया",
+      "never": "कभी नहीं भेजा",
+      "send": "भेजें"
+    }
+  },
+  "transaction": {
+    "screen": {
+      "title": "लेन-देन",
+      "back": "वापस",
+      "loading": "लेन-देन लोड हो रहे हैं...",
+      "emptyState": "अभी तक कोई लेन-देन नहीं",
+      "emptyDescription": "आपका लेन-देन इतिहास यहां दिखाई देगा"
+    },
+    "filters": {
+      "all": "सभी",
+      "sent": "भेजे गए",
+      "received": "प्राप्त",
+      "thisMonth": "इस महीने",
+      "lastMonth": "पिछले महीने"
+    },
+    "recipient": "प्राप्तकर्ता",
+    "date": "दिनांक",
+    "reference": "संदर्भ",
+    "transactionId": "लेन-देन आईडी",
+    "fee": "शुल्क",
+    "send": "भेजा गया",
+    "receive": "प्राप्त",
+    "actions": {
+      "download": "रसीद डाउनलोड करें",
+      "repeatTransaction": "फिर से भेजें"
+    }
   }
 }
