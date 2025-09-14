@@ -12,6 +12,7 @@ class BizaoConfigData {
   final String phoneNumber;
   final String language;
   final String serviceCode;
+  final String apiPaymentMethod;
 
   BizaoConfigData({
     required this.firstName,
@@ -22,6 +23,7 @@ class BizaoConfigData {
     required this.phoneNumber,
     required this.language,
     required this.serviceCode,
+    required this.apiPaymentMethod,
   });
 }
 
@@ -94,6 +96,21 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
         return 'Moov Money';
       default:
         return 'Mobile Money Provider';
+    }
+  }
+
+  String _getApiPaymentMethod(String? provider) {
+    switch (provider?.toLowerCase()) {
+      case 'orange':
+        return 'OM';
+      case 'wave':
+        return 'WAVE';
+      case 'mtn':
+        return 'MTN';
+      case 'moov':
+        return 'MOOV';
+      default:
+        return 'WAVE';
     }
   }
 
@@ -176,6 +193,7 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
       phoneNumber: _phoneController.text,
       language: _selectedLanguage!,
       serviceCode: _getServiceCode(widget.selectedProvider),
+      apiPaymentMethod: _getApiPaymentMethod(widget.selectedProvider),
     );
 
     widget.onSubmit(configData);

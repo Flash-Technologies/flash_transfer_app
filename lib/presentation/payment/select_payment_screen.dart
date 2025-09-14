@@ -83,13 +83,31 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
       ref.read(paymentProvider.notifier).setMobileMoneyDetails({
         'phoneNumber': configData.phoneNumber,
         'provider': selectedProvider!,
-        'country': configData.countryCode,
+        'countryCode': configData.countryCode,
+        'firstName': configData.firstName,
+        'lastName': configData.lastName,
+        'email': configData.email,
+        'language': configData.language,
+        'serviceCode': configData.serviceCode,
+        'apiPaymentMethod': configData.apiPaymentMethod,
       });
 
       // Get crypto-to-cash estimate and navigate to review
       _getCryptoToCashEstimate(configData);
     } else {
-      // For cash-to-crypto, go to crypto address confirmation screen
+      // For cash-to-crypto, store mobile money details and go to crypto address confirmation screen
+      ref.read(paymentProvider.notifier).setMobileMoneyDetails({
+        'phoneNumber': configData.phoneNumber,
+        'provider': selectedProvider!,
+        'countryCode': configData.countryCode,
+        'firstName': configData.firstName,
+        'lastName': configData.lastName,
+        'email': configData.email,
+        'language': configData.language,
+        'serviceCode': configData.serviceCode,
+        'apiPaymentMethod': configData.apiPaymentMethod,
+      });
+      
       context.push('/crypto-address-confirmation');
     }
   }
@@ -122,7 +140,13 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
     ref.read(paymentProvider.notifier).setMobileMoneyDetails({
       'phoneNumber': configData.phoneNumber,
       'provider': selectedProvider!,
-      'country': configData.countryCode,
+      'countryCode': configData.countryCode,
+      'firstName': configData.firstName,
+      'lastName': configData.lastName,
+      'email': configData.email,
+      'language': configData.language,
+      'serviceCode': configData.serviceCode,
+      'apiPaymentMethod': configData.apiPaymentMethod,
     });
 
     // Determine blockchain network based on source currency

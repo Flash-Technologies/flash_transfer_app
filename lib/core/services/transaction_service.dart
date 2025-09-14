@@ -24,19 +24,29 @@ class TransactionService {
     required String walletAddress,
   }) async {
     try {
+      // Convert blockchain network to lowercase for API
+      final apiBlockchainNetwork = blockchainNetwork.toLowerCase();
+      
       final response = await _apiClient.post(
         Endpoints.transactionEstimate,
         data: {
           'amount': amount,
           'sourceCurrency': sourceCurrency,
           'destinationCurrency': destinationCurrency,
-          'sourceType': sourceType,
-          'destinationType': destinationType,
-          'blockchainNetwork': blockchainNetwork,
-          'countryCode': countryCode,
+          'blockchainNetwork': apiBlockchainNetwork,
           'paymentMethod': paymentMethod,
-          'mobileMoneyDetails': mobileMoneyDetails,
-          'walletAddress': walletAddress,
+          'countryCode': countryCode,
+          'customerInfo': {
+            'firstName': mobileMoneyDetails['firstName'] ?? 'Test',
+            'lastName': mobileMoneyDetails['lastName'] ?? 'User', 
+            'email': mobileMoneyDetails['email'] ?? 'test@example.com',
+            'phoneNumber': mobileMoneyDetails['phoneNumber'] ?? '123123123',
+            'address': mobileMoneyDetails['address'] ?? 'Test Address',
+            'city': mobileMoneyDetails['city'] ?? 'Test City',
+            'country': countryCode,
+            'state': countryCode,
+            'zipCode': mobileMoneyDetails['zipCode'] ?? '00000',
+          },
         },
       );
 

@@ -149,9 +149,12 @@ class PaymentNotifier extends StateNotifier<PaymentState> {
         blockchainNetwork: blockchainNetwork,
         countryCode: countryCode,
         paymentMethod: paymentMethod,
-        mobileMoneyDetails: {
+        mobileMoneyDetails: state.mobileMoneyDetails ?? {
           'phoneNumber': phoneNumber.toString(),
           'provider': provider,
+          'firstName': 'Test',
+          'lastName': 'User',
+          'email': 'test@example.com',
         },
         walletAddress: walletAddress,
       );

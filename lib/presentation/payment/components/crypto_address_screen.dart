@@ -47,31 +47,37 @@ class _CryptoAddressScreenState extends ConsumerState<CryptoAddressScreen> {
   final List<Map<String, String>> _blockchains = [
     {
       'name': 'ETHEREUM',
+      'apiName': 'ethereum',
       'displayName': 'Ethereum Mainnet',
       'icon': 'assets/images/ethereum.png',
     },
     {
       'name': 'POLYGON',
+      'apiName': 'polygon',
       'displayName': 'Polygon',
       'icon': 'assets/images/polygon.png',
     },
     {
       'name': 'BSC',
+      'apiName': 'bsc',
       'displayName': 'Binance Smart Chain',
       'icon': 'assets/images/bsc.png',
     },
     {
       'name': 'ARBITRUM',
+      'apiName': 'arbitrum',
       'displayName': 'Arbitrum',
       'icon': 'assets/images/arbitrum.png',
     },
     {
       'name': 'OPTIMISM',
+      'apiName': 'optimism',
       'displayName': 'Optimism',
       'icon': 'assets/images/optimism.png',
     },
     {
       'name': 'BASE',
+      'apiName': 'base',
       'displayName': 'Base',
       'icon': 'assets/images/base.png',
     },
@@ -214,6 +220,12 @@ class _CryptoAddressScreenState extends ConsumerState<CryptoAddressScreen> {
         return;
       }
 
+      // Get the correct blockchain network name for API
+      final selectedBlockchainData = _blockchains.firstWhere(
+        (blockchain) => blockchain['name'] == _selectedBlockchain,
+      );
+      final apiBlockchainNetwork = selectedBlockchainData['apiName'] ?? 'ethereum';
+
       // Get transaction estimate from API with real user data
       final success = await ref
           .read(paymentProvider.notifier)
@@ -221,12 +233,11 @@ class _CryptoAddressScreenState extends ConsumerState<CryptoAddressScreen> {
             amount: amount,
             sourceCurrency: exchangeForm.fromCurrency!.code,
             destinationCurrency: exchangeForm.toCurrency!.code,
-            blockchainNetwork: _selectedBlockchain!,
-            countryCode: 'ci', // TODO: Get from user location or selection
-            paymentMethod:
-                'orange', // TODO: Get from mobile money provider selection
-            phoneNumber: '1231231232', // TODO: Get from mobile money details
-            provider: 'orange', // TODO: Get from provider selection
+            blockchainNetwork: apiBlockchainNetwork,
+            countryCode: paymentState.mobileMoneyDetails?['countryCode'] ?? 'ci',
+            paymentMethod: paymentState.mobileMoneyDetails?['apiPaymentMethod'] ?? 'WAVE',
+            phoneNumber: paymentState.mobileMoneyDetails?['phoneNumber'] ?? '1231231232',
+            provider: paymentState.selectedProvider ?? 'orange',
             walletAddress: address,
           );
 
