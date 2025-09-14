@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart';
 import '../../providers/tracking_provider.dart';
-import 'transaction_details_screen.dart';
+import 'individual_transaction_screen.dart';
 
 class TrackTransferScreen extends ConsumerStatefulWidget {
   const TrackTransferScreen({super.key});
@@ -16,12 +16,10 @@ class TrackTransferScreen extends ConsumerStatefulWidget {
 class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
     with TickerProviderStateMixin {
   late AnimationController _headerAnimationController;
-  late AnimationController _toggleAnimationController;
   late AnimationController _formAnimationController;
   late AnimationController _shakeAnimationController;
 
   late Animation<Offset> _headerSlideAnimation;
-  late Animation<double> _toggleScaleAnimation;
   late Animation<Offset> _formSlideAnimation;
   late Animation<double> _shakeAnimation;
 
@@ -29,7 +27,6 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
   final _trackingController = TextEditingController();
   final FocusNode _trackingFocus = FocusNode();
 
-  String _activeTab = 'Send';
   String? _validationError;
 
   @override
@@ -42,11 +39,6 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
   void _initializeAnimations() {
     _headerAnimationController = AnimationController(
       duration: const Duration(milliseconds: 600),
-      vsync: this,
-    );
-
-    _toggleAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 300),
       vsync: this,
     );
 
@@ -66,14 +58,6 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
     ).animate(CurvedAnimation(
       parent: _headerAnimationController,
       curve: Curves.easeOutBack,
-    ));
-
-    _toggleScaleAnimation = Tween<double>(
-      begin: 0.95,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _toggleAnimationController,
-      curve: Curves.easeInOut,
     ));
 
     _formSlideAnimation = Tween<Offset>(
@@ -96,12 +80,6 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
   void _startAnimations() {
     _headerAnimationController.forward();
 
-    Future.delayed(const Duration(milliseconds: 200), () {
-      if (mounted) {
-        _toggleAnimationController.forward();
-      }
-    });
-
     Future.delayed(const Duration(milliseconds: 400), () {
       if (mounted) {
         _formAnimationController.forward();
@@ -112,7 +90,6 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
   @override
   void dispose() {
     _headerAnimationController.dispose();
-    _toggleAnimationController.dispose();
     _formAnimationController.dispose();
     _shakeAnimationController.dispose();
     _trackingController.dispose();
@@ -120,28 +97,6 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
     super.dispose();
   }
 
-  void _onTabChanged(String tab) {
-    if (_activeTab != tab) {
-      setState(() {
-        _activeTab = tab;
-        _validationError = null;
-      });
-
-      HapticFeedback.selectionClick();
-
-      // Animate toggle
-      _toggleAnimationController.reset();
-      _toggleAnimationController.forward();
-
-      // Clear previous form
-      _trackingController.clear();
-
-      // Update provider
-      ref.read(trackingProvider.notifier).setTrackingType(
-            tab == 'Send' ? TrackingType.send : TrackingType.receive,
-          );
-    }
-  }
 
   void _validateAndSubmit() async {
     final trackingNumber = _trackingController.text.trim();
@@ -179,25 +134,24 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
         HapticFeedback.mediumImpact();
 
         final transaction = ref.read(transactionProvider);
-        final statusDetails = ref.read(statusDetailsProvider);
 
         if (transaction != null) {
-          // Navigate to transaction details screen
+          // Navigate to individual transaction details screen
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => TransactionDetailsScreen(
+              builder: (context) => IndividualTransactionScreen(
+                transactionId: transaction.id,
                 transaction: transaction,
-                statusDetails: statusDetails,
               ),
             ),
           );
         } else {
-          // Show success message
+          // Show success message if transaction found but loading
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Row(
                 children: [
-                  Icon(Icons.check_circle, color: Colors.white),
+                  const Icon(Icons.check_circle, color: Colors.white),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text('Transfer found! Loading details...'),
@@ -214,7 +168,7 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
         }
       }
     } catch (e) {
-      _showValidationError('Transfer not found or invalid tracking number');
+      _showValidationError('Sorry, no transaction found for this tracking ID. Please check the tracking number and try again.');
     }
   }
 
@@ -332,51 +286,7 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                     ],
                   ),
 
-                  const SizedBox(height: 24),
-
-                  // Toggle Tabs
-                  ScaleTransition(
-                    scale: _toggleScaleAnimation,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
-                            blurRadius: 10,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: _buildToggleButton(
-                              'Send',
-                              Icons.flight_takeoff_rounded,
-                              _activeTab == 'Send',
-                            ),
-                          ),
-                          Expanded(
-                            child: _buildToggleButton(
-                              'Receive',
-                              Icons.flight_land_rounded,
-                              _activeTab == 'Receive',
-                            ),
-                          ),
-                        ],
-                      ),
-                    ).animate().slideY(
-                          begin: 0.5,
-                          delay: const Duration(milliseconds: 700),
-                          duration: const Duration(milliseconds: 600),
-                          curve: Curves.easeOutBack,
-                        ),
-                  ),
-
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 32),
 
                   // Form
                   SlideTransition(
@@ -586,54 +496,4 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
     );
   }
 
-  Widget _buildToggleButton(String text, IconData icon, bool isActive) {
-    return GestureDetector(
-      onTap: () => _onTabChanged(text),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        decoration: BoxDecoration(
-          color: isActive ? const Color(0xFFFFC000) : Colors.transparent,
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: isActive
-              ? [
-                  BoxShadow(
-                    color: const Color(0xFFFFC000).withOpacity(0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              child: Icon(
-                icon,
-                size: 20,
-                color: isActive
-                    ? const Color(0xFF181F30)
-                    : const Color(0xFF6E757D),
-              ),
-            ),
-            const SizedBox(width: 8),
-            AnimatedDefaultTextStyle(
-              duration: const Duration(milliseconds: 300),
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
-                color: isActive
-                    ? const Color(0xFF181F30)
-                    : const Color(0xFF6E757D),
-              ),
-              child: Text(text),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

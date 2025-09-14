@@ -15,24 +15,69 @@ class TrackingService {
     String trackingNumber,
   ) async {
     try {
-      print('🔍 Tracking API: Calling /api/transaction/$trackingNumber/status');
+      print('🔍 Tracking API: Searching for transaction $trackingNumber');
 
+      // Try to find the transaction in the user's transaction list
       final response = await _apiClient.get(
-        '/api/transaction/$trackingNumber/status',
+        '/api/transaction',
+        queryParameters: {
+          'page': 1,
+          'limit': 100, // Search through recent transactions
+          'sortBy': 'createdAt',
+          'sortOrder': 'desc',
+        },
       );
 
       print('📞 API Response Status: ${response.statusCode}');
       print('📦 API Response Data: ${response.data}');
 
-      return ApiResponse<Map<String, dynamic>>.fromJson(
-        response.data,
-        (json) => json,
-      );
+      if (response.statusCode == 200 && response.data != null) {
+        Map<String, dynamic> responseData;
+        
+        if (response.data is Map<String, dynamic>) {
+          responseData = response.data as Map<String, dynamic>;
+          
+          // Search through transactions to find matching tracking number
+          if (responseData['success'] == true && responseData['data'] != null) {
+            final transactions = responseData['data']['transactions'] as List?;
+            
+            if (transactions != null) {
+              // Look for transaction with matching tracking number
+              for (var transaction in transactions) {
+                if (transaction is Map<String, dynamic>) {
+                  final transactionTrackingNumber = transaction['trackingNumber']?.toString();
+                  if (transactionTrackingNumber == trackingNumber) {
+                    // Found matching transaction
+                    return ApiResponse<Map<String, dynamic>>(
+                      success: true,
+                      message: 'Transaction found successfully',
+                      data: {
+                        'transaction': transaction,
+                        'statusDetails': {
+                          'status': transaction['status'],
+                          'statusMessage': transaction['statusMessage'] ?? 'Transaction in progress',
+                          'estimatedCompletion': transaction['estimatedCompletion'],
+                        }
+                      },
+                    );
+                  }
+                }
+              }
+            }
+          }
+        }
+        
+        // If we reach here, transaction wasn't found
+        throw Exception('Transaction not found in user transactions');
+      } else {
+        throw Exception('Failed to fetch transactions');
+      }
+
     } catch (e) {
       print('❌ API Error: $e');
       return ApiResponse<Map<String, dynamic>>(
         success: false,
-        message: 'Failed to track transfer: ${e.toString()}',
+        message: 'Sorry, no transaction found for this tracking ID. Please check the tracking number and try again.',
       );
     }
   }
