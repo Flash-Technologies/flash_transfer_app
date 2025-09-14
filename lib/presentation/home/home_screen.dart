@@ -5,16 +5,19 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../providers/exchange_provider.dart';
+import '../../providers/notification_provider.dart';
 import '../../core/models/currency.dart';
 import 'widgets/recent_transactions_widget.dart';
+import '../common/notification_modal.dart';
 
 class HomeScreen extends ConsumerWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final exchangeForm = ref.watch(exchangeFormProvider);
     final currenciesAsync = ref.watch(currenciesProvider);
+    final unreadCount = ref.watch(unreadNotificationCountProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
@@ -28,7 +31,7 @@ class HomeScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildHeader(context)
+                _buildHeader(context, ref, unreadCount)
                     .animate()
                     .fadeIn(duration: 600.ms)
                     .slideY(begin: -0.2, end: 0, curve: Curves.easeOutCubic),
@@ -65,7 +68,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, WidgetRef ref, int unreadCount) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -130,7 +133,14 @@ class HomeScreen extends ConsumerWidget {
           child: InkWell(
             onTap: () {
               HapticFeedback.lightImpact();
-              // Show notifications
+              showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) => NotificationModal(
+                  onClose: () => Navigator.pop(context),
+                ),
+              );
             },
             borderRadius: BorderRadius.circular(16),
             child: Container(
@@ -158,29 +168,28 @@ class HomeScreen extends ConsumerWidget {
                       color: Color(0xFF181F30),
                     ),
                   ),
-                  Positioned(
-                    top: 0,
-                    right: 0,
-                    child: Container(
-                      width: 8,
-                      height: 8,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFF3E24),
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 1.5),
+                  if (unreadCount > 0)
+                    Positioned(
+                      top: -2,
+                      right: -2,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFF3E24),
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 1.5),
+                        ),
+                        child: Text(
+                          unreadCount > 99 ? '99+' : unreadCount.toString(),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    )
-                        .animate(onPlay: (controller) => controller.repeat())
-                        .scale(
-                            begin: const Offset(1, 1),
-                            end: const Offset(1.2, 1.2),
-                            duration: 1.seconds)
-                        .then()
-                        .scale(
-                            begin: const Offset(1.2, 1.2),
-                            end: const Offset(1, 1),
-                            duration: 1.seconds),
-                  ),
+                    ),
                 ],
               ),
             ),

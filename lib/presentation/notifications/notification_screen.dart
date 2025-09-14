@@ -77,7 +77,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
               child: const Text(
                 'Mark all read',
                 style: TextStyle(
-                  color: Color(0xFF2475FF),
+                  color: Color(0xFFFFC000),
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                 ),
@@ -115,7 +115,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircularProgressIndicator(
-            color: Color(0xFF2475FF),
+            color: Color(0xFFFFC000),
           ),
           SizedBox(height: 16),
           Text(
@@ -176,8 +176,8 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                 ref.read(notificationProvider.notifier).fetchNotifications(refresh: true);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2475FF),
-                foregroundColor: Colors.white,
+                backgroundColor: const Color(0xFFFFC000),
+                foregroundColor: const Color(0xFF181F30),
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -281,7 +281,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     child: const Center(
                       child: CircularProgressIndicator(
-                        color: Color(0xFF2475FF),
+                        color: Color(0xFFFFC000),
                       ),
                     ),
                   );

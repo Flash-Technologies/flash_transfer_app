@@ -12,7 +12,7 @@ import 'package:flash_transfer_app/providers/payment_provider.dart';
 import 'package:flash_transfer_app/providers/exchange_provider.dart';
 
 class PaymentCompleteScreen extends ConsumerStatefulWidget {
-  const PaymentCompleteScreen({Key? key}) : super(key: key);
+  const PaymentCompleteScreen({super.key});
 
   @override
   ConsumerState<PaymentCompleteScreen> createState() =>
@@ -34,31 +34,7 @@ class _PaymentCompleteScreenState extends ConsumerState<PaymentCompleteScreen>
     'Total to pay': '102.50 EUR',
   };
 
-  final List<NotificationItem> _notifications = [
-    NotificationItem(
-      action: 'Payment sent!',
-      description: 'your payment #1234 has been send',
-      icon: Icons.check_circle,
-      iconColor: Colors.green,
-    ),
-    NotificationItem(
-      action: 'Payment Failed!',
-      description: 'your payment #1234 has been send',
-      icon: Icons.cancel,
-      iconColor: Colors.red,
-    ),
-    NotificationItem(
-      action: 'Payment sent!',
-      description: 'your payment #1234 has been send',
-      icon: Icons.check_circle,
-      iconColor: Colors.green,
-    ),
-    NotificationItem(
-      action: 'Invite friend',
-      description: 'Registration confirmed via affiliate link',
-      icon: Icons.group,
-    ),
-  ];
+  // Removed old NotificationItem list - now using real notifications from API
 
   // Instructions list
   final List<String> _instructions = [
@@ -160,7 +136,6 @@ class _PaymentCompleteScreenState extends ConsumerState<PaymentCompleteScreen>
           // Notification modal overlay
           if (_showNotificationModal)
             NotificationModal(
-              notifications: _notifications,
               onClose: _toggleNotificationModal,
             ),
         ],

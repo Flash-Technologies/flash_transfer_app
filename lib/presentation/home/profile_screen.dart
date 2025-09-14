@@ -530,7 +530,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) => NotificationModal(
-        notifications: [],
         onClose: () => Navigator.pop(context),
       ),
     );
