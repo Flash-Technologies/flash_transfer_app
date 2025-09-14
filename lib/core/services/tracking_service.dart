@@ -39,14 +39,19 @@ class TrackingService {
           
           // Search through transactions to find matching tracking number
           if (responseData['success'] == true && responseData['data'] != null) {
-            final transactions = responseData['data']['transactions'] as List?;
+            final transactions = responseData['data']['data'] as List?;
             
             if (transactions != null) {
+              print('🔍 Searching through ${transactions.length} transactions for $trackingNumber');
+              
               // Look for transaction with matching tracking number
               for (var transaction in transactions) {
                 if (transaction is Map<String, dynamic>) {
                   final transactionTrackingNumber = transaction['trackingNumber']?.toString();
+                  print('📋 Checking transaction: $transactionTrackingNumber vs $trackingNumber');
+                  
                   if (transactionTrackingNumber == trackingNumber) {
+                    print('🎉 Found matching transaction!');
                     // Found matching transaction
                     return ApiResponse<Map<String, dynamic>>(
                       success: true,
@@ -63,6 +68,7 @@ class TrackingService {
                   }
                 }
               }
+              print('❌ No matching transaction found in ${transactions.length} transactions');
             }
           }
         }
