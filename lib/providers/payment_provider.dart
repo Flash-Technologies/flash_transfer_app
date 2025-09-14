@@ -29,6 +29,7 @@ class PaymentState {
   final String activePay;
   final String activeReceive;
   final String? selectedProvider;
+  final String? selectedNetwork;
   final PaymentType? selectedPaymentType;
   final String? selectedWalletAddress;
   final TransactionEstimate? estimateData;
@@ -42,6 +43,7 @@ class PaymentState {
     this.activePay = 'cash',
     this.activeReceive = 'cash',
     this.selectedProvider,
+    this.selectedNetwork,
     this.selectedPaymentType,
     this.selectedWalletAddress,
     this.estimateData,
@@ -56,6 +58,7 @@ class PaymentState {
     String? activePay,
     String? activeReceive,
     String? selectedProvider,
+    String? selectedNetwork,
     PaymentType? selectedPaymentType,
     String? selectedWalletAddress,
     TransactionEstimate? estimateData,
@@ -70,6 +73,7 @@ class PaymentState {
       activePay: activePay ?? this.activePay,
       activeReceive: activeReceive ?? this.activeReceive,
       selectedProvider: selectedProvider ?? this.selectedProvider,
+      selectedNetwork: selectedNetwork ?? this.selectedNetwork,
       selectedPaymentType: selectedPaymentType ?? this.selectedPaymentType,
       selectedWalletAddress:
           selectedWalletAddress ?? this.selectedWalletAddress,
@@ -104,6 +108,10 @@ class PaymentNotifier extends StateNotifier<PaymentState> {
 
   void setSelectedProvider(String providerId) {
     state = state.copyWith(selectedProvider: providerId);
+  }
+
+  void setSelectedNetwork(String network) {
+    state = state.copyWith(selectedNetwork: network);
   }
 
   void setSelectedPaymentType(PaymentType paymentType) {
@@ -268,7 +276,7 @@ class PaymentNotifier extends StateNotifier<PaymentState> {
     }
   }
 
-  /// Get transaction estimate for crypto to cash flow
+  /// Get transaction estimate for crypto to fiat flow
   Future<bool> getCryptoToCashEstimate({
     required double amount,
     required String sourceCurrency,
@@ -277,6 +285,10 @@ class PaymentNotifier extends StateNotifier<PaymentState> {
     required String walletAddress,
     required String countryCode,
     required String paymentMethod,
+    required String? firstName,
+    required String? lastName,
+    required String? email,
+    required String? phoneNumber,
   }) async {
     print('PaymentProvider: Starting getCryptoToCashEstimate');
     print(
@@ -288,9 +300,6 @@ class PaymentNotifier extends StateNotifier<PaymentState> {
     );
 
     try {
-      // Get phone number from mobile money details
-      final phoneNumber = state.mobileMoneyDetails?['phoneNumber'];
-
       final estimate = await _transactionService.getCryptoToCashEstimate(
         amount: amount,
         sourceCurrency: sourceCurrency,
@@ -299,6 +308,9 @@ class PaymentNotifier extends StateNotifier<PaymentState> {
         walletAddress: walletAddress,
         countryCode: countryCode,
         paymentMethod: paymentMethod,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
         phoneNumber: phoneNumber,
       );
 

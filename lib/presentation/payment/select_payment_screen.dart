@@ -149,23 +149,10 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
       'apiPaymentMethod': configData.apiPaymentMethod,
     });
 
-    // Determine blockchain network based on source currency
-    String blockchainNetwork;
-    switch (exchangeForm.fromCurrency!.code.toUpperCase()) {
-      case 'SOL':
-        blockchainNetwork = 'solana';
-        break;
-      case 'ETH':
-        blockchainNetwork = 'ethereum';
-        break;
-      case 'BTC':
-        blockchainNetwork = 'bitcoin';
-        break;
-      default:
-        blockchainNetwork = 'ethereum'; // Default fallback
-    }
+    // Get blockchain network from payment state (selected in crypto payment screen)
+    String blockchainNetwork = paymentState.selectedNetwork ?? 'ethereum';
 
-    // Get crypto-to-cash estimate
+    // Get crypto-to-fiat estimate
     final success =
         await ref.read(paymentProvider.notifier).getCryptoToCashEstimate(
               amount: amount,
@@ -175,19 +162,27 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
               walletAddress: paymentState.selectedWalletAddress!,
               countryCode: configData.countryCode,
               paymentMethod: selectedProvider!,
+              firstName: configData.firstName,
+              lastName: configData.lastName,
+              email: configData.email,
+              phoneNumber: configData.phoneNumber,
             );
 
     if (success) {
       // Navigate to review details
-      context.push('/review-details/crypto');
+      if (mounted) {
+        context.push('/review-details/crypto');
+      }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content:
-              Text('Failed to get transaction estimate. Please try again.'),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content:
+                Text('Failed to get transaction estimate. Please try again.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 

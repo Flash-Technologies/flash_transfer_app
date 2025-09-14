@@ -158,7 +158,7 @@ class TransactionService {
     }
   }
 
-  /// Get crypto-to-cash transaction estimate
+  /// Get crypto-to-fiat transaction estimate
   Future<TransactionEstimate> getCryptoToCashEstimate({
     required double amount,
     required String sourceCurrency,
@@ -167,7 +167,10 @@ class TransactionService {
     required String walletAddress,
     required String countryCode,
     required String paymentMethod,
-    String? phoneNumber,
+    required String? firstName,
+    required String? lastName,
+    required String? email,
+    required String? phoneNumber,
   }) async {
     try {
       // Convert phone prefix to country code if needed
@@ -192,7 +195,26 @@ class TransactionService {
         }
       }
 
-      // Prepare the request payload matching the expected API format
+      // Convert provider to correct format for API
+      String apiPaymentMethod;
+      switch (paymentMethod.toLowerCase()) {
+        case 'orange':
+          apiPaymentMethod = 'ORANGE';
+          break;
+        case 'wave':
+          apiPaymentMethod = 'WAVE';
+          break;
+        case 'mtn':
+          apiPaymentMethod = 'MTN';
+          break;
+        case 'moov':
+          apiPaymentMethod = 'MOOV';
+          break;
+        default:
+          apiPaymentMethod = paymentMethod.toUpperCase();
+      }
+
+      // Prepare the request payload matching the new API format
       final payload = {
         'amount': amount,
         'sourceCurrency': sourceCurrency,
@@ -200,16 +222,23 @@ class TransactionService {
         'blockchainNetwork': blockchainNetwork,
         'withdrawalMethod': 'mobile_money',
         'countryCode': actualCountryCode,
+        'customerInfo': {
+          'firstName': firstName ?? 'Test',
+          'lastName': lastName ?? 'User',
+          'email': email ?? 'test@example.com',
+          'phoneNumber': phoneNumber ?? '33749928528',
+        },
+        'mobileMoneyProvider': apiPaymentMethod,
         'mobileMoneyDetails': {
-          'phoneNumber':
-              phoneNumber?.toString() ?? '7977596822', // Ensure string format
-          'provider': paymentMethod.toUpperCase(),
-          'country': actualCountryCode,
-        }
+          'phoneNumber': phoneNumber ?? '33749928528',
+          'provider': apiPaymentMethod,
+        },
+        'beneficiaryId': 18,
+        'webhookUrl': 'https://webhook.site/your-test-webhook-id',
       };
 
       print(
-          '🚀 TransactionService: Getting crypto-to-cash estimate with payload: $payload');
+          '🚀 TransactionService: Getting crypto-to-fiat estimate with payload: $payload');
 
       final response = await _apiClient.post(
         Endpoints.cryptoToCashEstimate,
@@ -217,18 +246,18 @@ class TransactionService {
       );
 
       print(
-          '📞 TransactionService: Crypto-to-cash estimate response: ${response.statusCode}');
+          '📞 TransactionService: Crypto-to-fiat estimate response: ${response.statusCode}');
       print('📦 TransactionService: Response data: ${response.data}');
 
       if (response.statusCode == 200 && response.data['success'] == true) {
         return TransactionEstimate.fromJson(response.data['data']);
       } else {
         throw Exception(
-            'Failed to get crypto-to-cash estimate: ${response.data['message'] ?? 'Unknown error'}');
+            'Failed to get crypto-to-fiat estimate: ${response.data['message'] ?? 'Unknown error'}');
       }
     } catch (e) {
-      print('❌ TransactionService: Error getting crypto-to-cash estimate: $e');
-      throw Exception('Failed to get crypto-to-cash estimate: ${e.toString()}');
+      print('❌ TransactionService: Error getting crypto-to-fiat estimate: $e');
+      throw Exception('Failed to get crypto-to-fiat estimate: ${e.toString()}');
     }
   }
 

@@ -185,10 +185,10 @@ class TransactionResults {
     String currency = '';
 
     if (json['fiatAmountToReceive'] != null) {
-      // Crypto-to-cash response
+      // Crypto-to-fiat response (new API format)
       cryptoAmount =
           FeesBreakdown._safeParseDouble(json['fiatAmountToReceive']);
-      totalToPay = FeesBreakdown._safeParseDouble(json['totalAmountToPay']);
+      totalToPay = FeesBreakdown._safeParseDouble(json['totalCryptoAmountToPay']);
       currency = json['fiatCurrency'] ?? json['cryptoCurrency'] ?? '';
     } else {
       // Cash-to-crypto response (existing format)
