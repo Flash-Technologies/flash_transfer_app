@@ -433,7 +433,6 @@ class HomeScreen extends ConsumerWidget {
 
         // Enhanced Swap Button
         Positioned(
-          top: MediaQuery.of(context).size.height * 0.25,
           child: InkWell(
             onTap: () {
               HapticFeedback.mediumImpact();

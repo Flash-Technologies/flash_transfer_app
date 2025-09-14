@@ -684,7 +684,7 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
             dropdownColor: Colors.white,
             style: const TextStyle(
               fontSize: 16,
-              color: AppTheme.textDarkColor,
+              color: Color(0xFF181F30),
               fontWeight: FontWeight.w500,
             ),
             items: items.map((item) {
