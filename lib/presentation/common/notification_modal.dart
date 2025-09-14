@@ -406,10 +406,9 @@ class _NotificationModalState extends ConsumerState<NotificationModal>
       child: SizedBox(
         width: double.infinity,
         child: ElevatedButton(
-          onPressed: () {
+          onPressed: () async {
             // Navigate to full notification screen
-            _closeModal();
-            context.push('/notification');
+            await _closeModalThenNavigate();
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: const Color(0xFFFFC000),
@@ -478,6 +477,29 @@ class _NotificationModalState extends ConsumerState<NotificationModal>
     _animationController.reverse().then((_) {
       widget.onClose();
     });
+  }
+
+  Future<void> _closeModalThenNavigate() async {
+    HapticFeedback.lightImpact();
+    
+    try {
+      // Close the modal first
+      await _animationController.reverse();
+      widget.onClose();
+      
+      // Small delay to ensure modal is fully closed, then navigate
+      await Future.delayed(const Duration(milliseconds: 150));
+      
+      if (mounted) {
+        await context.push('/notification');
+      }
+    } catch (e) {
+      print('Navigation error: $e');
+      // Fallback: just close modal if navigation fails
+      if (mounted) {
+        widget.onClose();
+      }
+    }
   }
 
   String _formatTimestamp(DateTime timestamp) {
