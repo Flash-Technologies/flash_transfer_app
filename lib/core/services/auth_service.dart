@@ -211,49 +211,76 @@ class AuthService {
     }
   }
 
-  // Save user data to SharedPreferences
+  // Save user data to SharedPreferences with improved error handling
   Future<void> saveUserData(User user) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('user', json.encode(user.toJson()));
-    await prefs.setString('token', user.token ?? '');
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      
+      // Ensure we have a valid token
+      if (user.token == null || user.token!.isEmpty) {
+        print("⚠️ [AUTH_SERVICE] Warning: Attempting to save user without token");
+        throw Exception('Cannot save user without valid token');
+      }
 
-    // Set the token in API client for future requests
-    if (user.token != null) {
+      await prefs.setString('user', json.encode(user.toJson()));
+      await prefs.setString('token', user.token!);
+      
+      // Store timestamp for token validation
+      await prefs.setInt('tokenTimestamp', DateTime.now().millisecondsSinceEpoch);
+
+      // Set the token in API client for future requests
       _apiClient.setToken(user.token!);
+      
+      print("🔑 [AUTH_SERVICE] User data and token saved successfully");
+    } catch (e) {
+      print("❌ [AUTH_SERVICE] Failed to save user data: $e");
+      throw Exception('Failed to save user data: $e');
     }
   }
 
-  // Get saved user data
+  // Get saved user data with improved validation
   Future<User?> getSavedUser() async {
     print("🔑 [AUTH_SERVICE] Getting saved user from SharedPreferences");
-    final prefs = await SharedPreferences.getInstance();
-    final userData = prefs.getString('user');
-    final storedToken = prefs.getString('token');
-    print("🔑 [AUTH_SERVICE] userData exists: ${userData != null}, token exists: ${storedToken != null}");
+    
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userData = prefs.getString('user');
+      final storedToken = prefs.getString('token');
+      final tokenTimestamp = prefs.getInt('tokenTimestamp');
+      
+      print("🔑 [AUTH_SERVICE] userData exists: ${userData != null}, token exists: ${storedToken != null}");
 
-    if (userData != null) {
+      if (userData == null || storedToken == null || storedToken.isEmpty) {
+        print("🔑 [AUTH_SERVICE] No saved user data or token found");
+        return null;
+      }
+
+      // Check if token is too old (optional - backend should handle expiration)
+      if (tokenTimestamp != null) {
+        final tokenAge = DateTime.now().millisecondsSinceEpoch - tokenTimestamp;
+        final tokenAgeDays = tokenAge / (1000 * 60 * 60 * 24);
+        print("🔑 [AUTH_SERVICE] Token age: ${tokenAgeDays.toStringAsFixed(1)} days");
+      }
+
       final userJson = json.decode(userData) as Map<String, dynamic>;
       
-      // If user doesn't have token but we have it stored separately, inject it
-      if (storedToken != null && userJson['token'] == null) {
-        print("🔑 [AUTH_SERVICE] Injecting stored token into user object");
-        userJson['token'] = storedToken;
-      }
+      // Ensure token is in the user object
+      userJson['token'] = storedToken;
       
       final user = User.fromJson(userJson);
       print("🔑 [AUTH_SERVICE] Parsed user: ${user.email}, token: ${user.token != null ? 'present' : 'null'}");
 
-      // Set the token in API client
-      if (user.token != null) {
-        _apiClient.setToken(user.token!);
-        print("🔑 [AUTH_SERVICE] Token set in API client");
-      }
+      // Always set the token in API client when loading user
+      _apiClient.setToken(user.token!);
+      print("🔑 [AUTH_SERVICE] Token set in API client");
 
       return user;
+    } catch (e) {
+      print("❌ [AUTH_SERVICE] Error loading saved user: $e");
+      // Clear corrupted data
+      await logout();
+      return null;
     }
-
-    print("🔑 [AUTH_SERVICE] No saved user data found");
-    return null;
   }
 
   // Check if user is logged in
@@ -265,10 +292,20 @@ class AuthService {
     return result;
   }
 
-  // Logout user
+  // Logout user with thorough cleanup
   Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('user');
-    await prefs.remove('token');
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('user');
+      await prefs.remove('token');
+      await prefs.remove('tokenTimestamp');
+      
+      // Clear token from API client
+      _apiClient.clearToken();
+      
+      print("🔑 [AUTH_SERVICE] Logout completed - all data cleared");
+    } catch (e) {
+      print("❌ [AUTH_SERVICE] Error during logout: $e");
+    }
   }
 }

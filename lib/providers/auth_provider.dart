@@ -14,16 +14,23 @@ final apiClientProvider = Provider<ApiClient>((ref) {
   return ApiClient(baseUrl: Endpoints.baseUrl);
 });
 
-// Authenticated API Client provider
+// Authenticated API Client provider - Now properly handles token persistence
 final authenticatedApiClientProvider = Provider<ApiClient>((ref) {
-  final apiClient = ApiClient(baseUrl: Endpoints.baseUrl);
   final authState = ref.watch(authProvider);
   
+  // Create a single instance that will be reused
+  final apiClient = ApiClient(baseUrl: Endpoints.baseUrl);
+  
+  // Always set the token if available, even on provider rebuilds
   if (authState.user?.token != null) {
     print('🔐 Setting auth token in API client: Bearer ${authState.user!.token}');
     apiClient.setToken(authState.user!.token!);
   } else {
-    print('⚠️ No auth token found for API client! User: ${authState.user?.id}');
+    print('⚠️ No auth token found for API client! User: ${authState.user?.id}, Status: ${authState.status}');
+    // Clear any existing token if user is no longer authenticated
+    if (authState.status == AuthStatus.unauthenticated) {
+      apiClient.clearToken();
+    }
   }
   
   return apiClient;
@@ -569,6 +576,18 @@ class AuthNotifier extends StateNotifier<AuthState> {
     await _authService.logout();
     _updateState(
       state.copyWith(status: AuthStatus.unauthenticated, user: null),
+    );
+  }
+
+  // Handle automatic logout for expired tokens
+  void handleTokenExpiration() {
+    print("🔐 [AUTH_PROVIDER] Handling token expiration - logging out user");
+    _updateState(
+      state.copyWith(
+        status: AuthStatus.unauthenticated, 
+        user: null,
+        message: "Session expired. Please log in again."
+      ),
     );
   }
 }

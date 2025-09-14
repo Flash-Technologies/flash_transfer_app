@@ -1,6 +1,7 @@
 // lib/core/api/api_client.dart
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ApiClient {
   final Dio _dio = Dio();
@@ -12,6 +13,9 @@ class ApiClient {
     _dio.options.receiveTimeout = const Duration(seconds: 15);
     _dio.options.responseType = ResponseType.json;
 
+    // Add auth interceptor to handle token issues
+    _dio.interceptors.add(_createAuthInterceptor());
+
     if (kDebugMode) {
       _dio.interceptors.add(
         LogInterceptor(requestBody: true, responseBody: true),
@@ -19,8 +23,59 @@ class ApiClient {
     }
   }
 
+  InterceptorsWrapper _createAuthInterceptor() {
+    return InterceptorsWrapper(
+      onRequest: (options, handler) async {
+        // Ensure token is always loaded from storage for each request
+        await _ensureTokenFromStorage(options);
+        handler.next(options);
+      },
+      onError: (error, handler) async {
+        // Handle 401 unauthorized errors
+        if (error.response?.statusCode == 401) {
+          print('🔐 Received 401 error - token may be expired or invalid');
+          print('🔐 Request path: ${error.requestOptions.path}');
+          print('🔐 Response: ${error.response?.data}');
+          
+          // Clear the invalid token
+          clearToken();
+          await _clearStoredToken();
+          
+          // You can add a callback here to notify auth provider about token expiration
+          // This will be handled by the services that catch this error
+        }
+        handler.next(error);
+      },
+    );
+  }
+
+  Future<void> _ensureTokenFromStorage(RequestOptions options) async {
+    // Only add token if it's not already in the headers
+    if (options.headers['Authorization'] == null) {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token');
+      if (token != null && token.isNotEmpty) {
+        options.headers['Authorization'] = 'Bearer $token';
+        print('🔐 Auto-loaded token from storage for request: ${options.path}');
+      }
+    }
+  }
+
+  Future<void> _clearStoredToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
+    await prefs.remove('user');
+    print('🔐 Cleared stored token due to 401 error');
+  }
+
   void setToken(String token) {
     _dio.options.headers['Authorization'] = 'Bearer $token';
+    print('🔐 Token set in ApiClient: Bearer ${token.substring(0, 10)}...');
+  }
+
+  void clearToken() {
+    _dio.options.headers.remove('Authorization');
+    print('🔐 Token cleared from ApiClient');
   }
 
   Future<Response> get(
