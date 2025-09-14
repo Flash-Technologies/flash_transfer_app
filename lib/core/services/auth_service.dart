@@ -211,73 +211,141 @@ class AuthService {
     }
   }
 
-  // Save user data to SharedPreferences with improved error handling
+  // Save user data to SharedPreferences with improved error handling and debugging
   Future<void> saveUserData(User user) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       
       // Ensure we have a valid token
       if (user.token == null || user.token!.isEmpty) {
-        print("⚠️ [AUTH_SERVICE] Warning: Attempting to save user without token");
+        print("⚠️ [AUTH_SERVICE] ERROR: Attempting to save user without token!");
+        print("⚠️ [AUTH_SERVICE] User details: email=${user.email}, id=${user.id}");
         throw Exception('Cannot save user without valid token');
       }
 
-      await prefs.setString('user', json.encode(user.toJson()));
+      // Debug: Show what we're about to save
+      print("🔑 [AUTH_SERVICE] Saving user data:");
+      print("🔑 [AUTH_SERVICE] - User ID: ${user.id}");
+      print("🔑 [AUTH_SERVICE] - Email: ${user.email}");
+      print("🔑 [AUTH_SERVICE] - Token present: ${user.token != null}");
+      print("🔑 [AUTH_SERVICE] - Token length: ${user.token?.length}");
+      print("🔑 [AUTH_SERVICE] - Token preview: ${user.token?.substring(0, 20)}...");
+
+      // Save user object as JSON (includes token)
+      final userJson = json.encode(user.toJson());
+      await prefs.setString('user', userJson);
+      print("🔑 [AUTH_SERVICE] ✅ User JSON saved");
+
+      // Save token separately as backup
       await prefs.setString('token', user.token!);
+      print("🔑 [AUTH_SERVICE] ✅ Token saved separately");
       
       // Store timestamp for token validation
-      await prefs.setInt('tokenTimestamp', DateTime.now().millisecondsSinceEpoch);
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      await prefs.setInt('tokenTimestamp', timestamp);
+      print("🔑 [AUTH_SERVICE] ✅ Token timestamp saved: $timestamp");
 
-      // Set the token in API client for future requests
+      // Set the token in API client for immediate use
       _apiClient.setToken(user.token!);
+      print("🔑 [AUTH_SERVICE] ✅ Token set in API client");
+
+      // Verify the save worked by reading it back
+      final savedUser = prefs.getString('user');
+      final savedToken = prefs.getString('token');
+      print("🔑 [AUTH_SERVICE] ✅ Verification - Saved user: ${savedUser != null}");
+      print("🔑 [AUTH_SERVICE] ✅ Verification - Saved token: ${savedToken != null}");
+      print("🔑 [AUTH_SERVICE] ✅ All user data saved and verified successfully!");
       
-      print("🔑 [AUTH_SERVICE] User data and token saved successfully");
     } catch (e) {
-      print("❌ [AUTH_SERVICE] Failed to save user data: $e");
+      print("❌ [AUTH_SERVICE] CRITICAL ERROR saving user data: $e");
+      print("❌ [AUTH_SERVICE] Stack trace: ${StackTrace.current}");
       throw Exception('Failed to save user data: $e');
     }
   }
 
-  // Get saved user data with improved validation
+  // Get saved user data with improved validation and detailed debugging
   Future<User?> getSavedUser() async {
-    print("🔑 [AUTH_SERVICE] Getting saved user from SharedPreferences");
+    print("🔑 [AUTH_SERVICE] ==================== GETTING SAVED USER ====================");
     
     try {
       final prefs = await SharedPreferences.getInstance();
+      
+      // Get all saved data
       final userData = prefs.getString('user');
       final storedToken = prefs.getString('token');
       final tokenTimestamp = prefs.getInt('tokenTimestamp');
       
-      print("🔑 [AUTH_SERVICE] userData exists: ${userData != null}, token exists: ${storedToken != null}");
+      print("🔑 [AUTH_SERVICE] Raw storage check:");
+      print("🔑 [AUTH_SERVICE] - User data exists: ${userData != null}");
+      print("🔑 [AUTH_SERVICE] - Token exists: ${storedToken != null}");
+      print("🔑 [AUTH_SERVICE] - Token timestamp exists: ${tokenTimestamp != null}");
+      
+      if (userData != null) {
+        print("🔑 [AUTH_SERVICE] - User data length: ${userData.length} chars");
+        print("🔑 [AUTH_SERVICE] - User data preview: ${userData.substring(0, 100)}...");
+      }
+      
+      if (storedToken != null) {
+        print("🔑 [AUTH_SERVICE] - Token length: ${storedToken.length}");
+        print("🔑 [AUTH_SERVICE] - Token preview: ${storedToken.substring(0, 20)}...");
+      }
 
-      if (userData == null || storedToken == null || storedToken.isEmpty) {
-        print("🔑 [AUTH_SERVICE] No saved user data or token found");
+      if (userData == null) {
+        print("❌ [AUTH_SERVICE] No user data found in storage");
         return null;
       }
 
-      // Check if token is too old (optional - backend should handle expiration)
+      if (storedToken == null || storedToken.isEmpty) {
+        print("❌ [AUTH_SERVICE] No token found in storage");
+        return null;
+      }
+
+      // Check token age
       if (tokenTimestamp != null) {
         final tokenAge = DateTime.now().millisecondsSinceEpoch - tokenTimestamp;
         final tokenAgeDays = tokenAge / (1000 * 60 * 60 * 24);
-        print("🔑 [AUTH_SERVICE] Token age: ${tokenAgeDays.toStringAsFixed(1)} days");
+        print("🔑 [AUTH_SERVICE] Token age: ${tokenAgeDays.toStringAsFixed(2)} days");
+      } else {
+        print("⚠️ [AUTH_SERVICE] No timestamp found for token");
       }
 
+      // Parse user data
+      print("🔑 [AUTH_SERVICE] Parsing user JSON data...");
       final userJson = json.decode(userData) as Map<String, dynamic>;
       
-      // Ensure token is in the user object
+      // Debug the token in the JSON
+      print("🔑 [AUTH_SERVICE] Token in user JSON: ${userJson['token'] != null}");
+      if (userJson['token'] != null) {
+        print("🔑 [AUTH_SERVICE] JSON token preview: ${userJson['token'].toString().substring(0, 20)}...");
+      }
+      
+      // Ensure token from separate storage takes precedence (more reliable)
       userJson['token'] = storedToken;
+      print("🔑 [AUTH_SERVICE] ✅ Token injected from separate storage");
       
       final user = User.fromJson(userJson);
-      print("🔑 [AUTH_SERVICE] Parsed user: ${user.email}, token: ${user.token != null ? 'present' : 'null'}");
+      print("🔑 [AUTH_SERVICE] ✅ User parsed successfully:");
+      print("🔑 [AUTH_SERVICE] - Email: ${user.email}");
+      print("🔑 [AUTH_SERVICE] - ID: ${user.id}");
+      print("🔑 [AUTH_SERVICE] - Token present: ${user.token != null}");
+      print("🔑 [AUTH_SERVICE] - Token length: ${user.token?.length}");
 
-      // Always set the token in API client when loading user
-      _apiClient.setToken(user.token!);
-      print("🔑 [AUTH_SERVICE] Token set in API client");
+      // CRITICAL: Always set the token in API client when loading user
+      if (user.token != null) {
+        _apiClient.setToken(user.token!);
+        print("🔑 [AUTH_SERVICE] ✅ Token set in API client");
+      } else {
+        print("❌ [AUTH_SERVICE] CRITICAL ERROR: User loaded but no token!");
+        return null;
+      }
 
+      print("🔑 [AUTH_SERVICE] ================ USER LOADED SUCCESSFULLY ================");
       return user;
+      
     } catch (e) {
-      print("❌ [AUTH_SERVICE] Error loading saved user: $e");
-      // Clear corrupted data
+      print("❌ [AUTH_SERVICE] CRITICAL ERROR loading saved user: $e");
+      print("❌ [AUTH_SERVICE] Stack trace: ${StackTrace.current}");
+      // Clear potentially corrupted data
       await logout();
       return null;
     }

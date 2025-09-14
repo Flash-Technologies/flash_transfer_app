@@ -50,14 +50,34 @@ class ApiClient {
   }
 
   Future<void> _ensureTokenFromStorage(RequestOptions options) async {
+    print('🔐 [API_CLIENT] Checking token for request: ${options.path}');
+    print('🔐 [API_CLIENT] Current Authorization header: ${options.headers['Authorization']}');
+    
     // Only add token if it's not already in the headers
     if (options.headers['Authorization'] == null) {
-      final prefs = await SharedPreferences.getInstance();
-      final token = prefs.getString('token');
-      if (token != null && token.isNotEmpty) {
-        options.headers['Authorization'] = 'Bearer $token';
-        print('🔐 Auto-loaded token from storage for request: ${options.path}');
+      print('🔐 [API_CLIENT] No Authorization header found, loading from storage...');
+      
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final token = prefs.getString('token');
+        
+        print('🔐 [API_CLIENT] Token in storage: ${token != null}');
+        if (token != null) {
+          print('🔐 [API_CLIENT] Token length: ${token.length}');
+          print('🔐 [API_CLIENT] Token preview: ${token.substring(0, 20)}...');
+        }
+        
+        if (token != null && token.isNotEmpty) {
+          options.headers['Authorization'] = 'Bearer $token';
+          print('🔐 [API_CLIENT] ✅ Auto-loaded token from storage for request: ${options.path}');
+        } else {
+          print('⚠️ [API_CLIENT] WARNING: No token found in storage for request: ${options.path}');
+        }
+      } catch (e) {
+        print('❌ [API_CLIENT] ERROR loading token from storage: $e');
       }
+    } else {
+      print('🔐 [API_CLIENT] ✅ Authorization header already present for request: ${options.path}');
     }
   }
 

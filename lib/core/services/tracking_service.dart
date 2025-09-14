@@ -52,17 +52,19 @@ class TrackingService {
                   
                   if (transactionTrackingNumber == trackingNumber) {
                     print('🎉 Found matching transaction!');
-                    // Found matching transaction
+                    // Create proper transaction and status details structure
+                    final statusDetails = {
+                      'lastChecked': DateTime.now().toIso8601String(),
+                      'blockchainStatus': transaction['status'],
+                      'loyalty': null,
+                    };
+                    
                     return ApiResponse<Map<String, dynamic>>(
                       success: true,
                       message: 'Transaction found successfully',
                       data: {
                         'transaction': transaction,
-                        'statusDetails': {
-                          'status': transaction['status'],
-                          'statusMessage': transaction['statusMessage'] ?? 'Transaction in progress',
-                          'estimatedCompletion': transaction['estimatedCompletion'],
-                        }
+                        'statusDetails': statusDetails,
                       },
                     );
                   }

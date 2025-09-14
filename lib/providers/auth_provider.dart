@@ -14,25 +14,48 @@ final apiClientProvider = Provider<ApiClient>((ref) {
   return ApiClient(baseUrl: Endpoints.baseUrl);
 });
 
-// Authenticated API Client provider - Now properly handles token persistence
+// Authenticated API Client provider with detailed debugging
 final authenticatedApiClientProvider = Provider<ApiClient>((ref) {
+  print('🔐 [API_CLIENT_PROVIDER] ============ CREATING AUTHENTICATED API CLIENT ============');
+  
   final authState = ref.watch(authProvider);
   
-  // Create a single instance that will be reused
-  final apiClient = ApiClient(baseUrl: Endpoints.baseUrl);
+  print('🔐 [API_CLIENT_PROVIDER] Auth state:');
+  print('🔐 [API_CLIENT_PROVIDER] - Status: ${authState.status}');
+  print('🔐 [API_CLIENT_PROVIDER] - User exists: ${authState.user != null}');
+  print('🔐 [API_CLIENT_PROVIDER] - User ID: ${authState.user?.id}');
+  print('🔐 [API_CLIENT_PROVIDER] - User email: ${authState.user?.email}');
+  print('🔐 [API_CLIENT_PROVIDER] - Token exists: ${authState.user?.token != null}');
   
-  // Always set the token if available, even on provider rebuilds
   if (authState.user?.token != null) {
-    print('🔐 Setting auth token in API client: Bearer ${authState.user!.token}');
+    print('🔐 [API_CLIENT_PROVIDER] - Token length: ${authState.user!.token!.length}');
+    print('🔐 [API_CLIENT_PROVIDER] - Token preview: ${authState.user!.token!.substring(0, 20)}...');
+  }
+  
+  // Create API client instance
+  final apiClient = ApiClient(baseUrl: Endpoints.baseUrl);
+  print('🔐 [API_CLIENT_PROVIDER] ✅ API client created');
+  
+  // Set token if available
+  if (authState.user?.token != null && authState.user!.token!.isNotEmpty) {
+    print('🔐 [API_CLIENT_PROVIDER] Setting auth token in API client...');
     apiClient.setToken(authState.user!.token!);
+    print('🔐 [API_CLIENT_PROVIDER] ✅ Token set successfully');
   } else {
-    print('⚠️ No auth token found for API client! User: ${authState.user?.id}, Status: ${authState.status}');
+    print('⚠️ [API_CLIENT_PROVIDER] WARNING: No valid auth token available!');
+    print('⚠️ [API_CLIENT_PROVIDER] - User: ${authState.user?.email ?? 'null'}');
+    print('⚠️ [API_CLIENT_PROVIDER] - Status: ${authState.status}');
+    print('⚠️ [API_CLIENT_PROVIDER] - Token null: ${authState.user?.token == null}');
+    print('⚠️ [API_CLIENT_PROVIDER] - Token empty: ${authState.user?.token?.isEmpty ?? true}');
+    
     // Clear any existing token if user is no longer authenticated
     if (authState.status == AuthStatus.unauthenticated) {
+      print('🔐 [API_CLIENT_PROVIDER] Clearing token due to unauthenticated status');
       apiClient.clearToken();
     }
   }
   
+  print('🔐 [API_CLIENT_PROVIDER] ============ API CLIENT READY ============');
   return apiClient;
 });
 
