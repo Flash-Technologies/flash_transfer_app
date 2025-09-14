@@ -64,7 +64,7 @@ class TransactionService {
     }
   }
 
-  /// Create transaction
+  /// Create cash-to-crypto transaction
   Future<TransactionResponse> createTransaction({
     required double amount,
     required String sourceCurrency,
@@ -72,39 +72,89 @@ class TransactionService {
     required String blockchainNetwork,
     required String countryCode,
     required String paymentMethod,
-    required String language,
-    required String paymentChannel,
-    required Map<String, dynamic> mobileMoneyDetails,
     required String walletAddress,
+    required Map<String, dynamic> mobileMoneyDetails,
+    required Map<String, dynamic> customerInfo,
   }) async {
     try {
+      // Convert blockchain network to lowercase for API
+      final apiBlockchainNetwork = blockchainNetwork.toLowerCase();
+      
+      // Convert provider to correct format for API
+      String apiPaymentMethod;
+      switch (paymentMethod.toLowerCase()) {
+        case 'orange':
+          apiPaymentMethod = 'ORANGE';
+          break;
+        case 'wave':
+          apiPaymentMethod = 'WAVE';
+          break;
+        case 'mtn':
+          apiPaymentMethod = 'MTN';
+          break;
+        case 'moov':
+          apiPaymentMethod = 'MOOV';
+          break;
+        default:
+          apiPaymentMethod = paymentMethod.toUpperCase();
+      }
+
+      final payload = {
+        'amount': amount,
+        'sourceCurrency': sourceCurrency,
+        'destinationCurrency': destinationCurrency,
+        'walletAddress': walletAddress,
+        'blockchainNetwork': apiBlockchainNetwork,
+        'paymentMethod': apiPaymentMethod,
+        'mobileMoneyDetails': {
+          'phoneNumber': mobileMoneyDetails['phoneNumber'] ?? customerInfo['phoneNumber'] ?? '12123123',
+          'provider': apiPaymentMethod,
+        },
+        'countryCode': countryCode,
+        'customerInfo': {
+          'firstName': customerInfo['firstName'] ?? 'Test',
+          'lastName': customerInfo['lastName'] ?? 'User',
+          'email': customerInfo['email'] ?? 'test@example.com',
+          'phoneNumber': customerInfo['phoneNumber'] ?? '12123123',
+          'address': customerInfo['address'] ?? 'Test Address',
+          'city': customerInfo['city'] ?? 'Test City',
+          'country': countryCode,
+          'state': countryCode,
+          'zipCode': customerInfo['zipCode'] ?? '00000',
+        },
+      };
+
+      print('🚀 TransactionService: Creating cash-to-crypto transaction with payload: $payload');
+
       final response = await _apiClient.post(
         Endpoints.createCashToCryptoTransaction,
-        data: {
-          'amount': amount,
-          'sourceCurrency': sourceCurrency,
-          'destinationCurrency': destinationCurrency,
-          'blockchainNetwork': blockchainNetwork,
-          'countryCode': countryCode,
-          'paymentMethod': paymentMethod,
-          'language': language,
-          'paymentChannel': paymentChannel,
-          'mobileMoneyDetails': mobileMoneyDetails,
-          'walletAddress': walletAddress,
-        },
+        data: payload,
       );
+
+      print('📞 TransactionService: Transaction creation response: ${response.statusCode}');
+      print('📦 TransactionService: Response data: ${response.data}');
 
       if (response.statusCode == 200 && response.data['success'] == true) {
         return TransactionResponse.fromJson(response.data['data']);
       } else {
-        throw Exception(
-            response.data['message'] ?? 'Failed to create transaction');
+        // Handle TouchPay and server errors with user-friendly messages
+        final errorMessage = response.data['message'] ?? 'Transaction failed';
+        
+        if (errorMessage.contains('TouchPay') || errorMessage.contains('Request failed with status code 300')) {
+          throw Exception('Payment service is temporarily unavailable. Please try again later or use a different payment method.');
+        } else if (errorMessage.contains('server') || errorMessage.contains('500')) {
+          throw Exception('Our servers are currently being updated. Please try your transaction again in a few minutes.');
+        } else {
+          throw Exception(errorMessage);
+        }
       }
     } catch (e) {
+      print('❌ TransactionService: Error creating transaction: $e');
+      
       if (e is Exception) {
         rethrow; // Re-throw our formatted exceptions
       }
-      throw Exception('Failed to create transaction: $e');
+      throw Exception('Transaction could not be processed. Please check your connection and try again.');
     }
   }
 

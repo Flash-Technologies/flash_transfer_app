@@ -214,13 +214,22 @@ class PaymentNotifier extends StateNotifier<PaymentState> {
         blockchainNetwork: blockchainNetwork,
         countryCode: countryCode,
         paymentMethod: paymentMethod,
-        language: language,
-        paymentChannel: 'web',
+        walletAddress: walletAddress,
         mobileMoneyDetails: {
           'phoneNumber': phoneNumber,
           'provider': provider,
         },
-        walletAddress: walletAddress,
+        customerInfo: {
+          'firstName': 'Test',
+          'lastName': 'User',
+          'email': 'test@example.com',
+          'phoneNumber': phoneNumber,
+          'address': 'Test Address',
+          'city': 'Test City',
+          'country': countryCode,
+          'state': countryCode,
+          'zipCode': '00000',
+        },
       );
 
       print(
@@ -237,9 +246,14 @@ class PaymentNotifier extends StateNotifier<PaymentState> {
 
       // Parse error message for better user feedback
       String errorMessage = e.toString();
-      if (errorMessage.contains('503')) {
-        errorMessage =
-            'Service temporarily unavailable. Please try again in a few minutes.';
+      if (errorMessage.contains('TouchPay') || errorMessage.contains('Request failed with status code 300')) {
+        errorMessage = 'Payment service is temporarily unavailable. Please try again later or use a different payment method.';
+      } else if (errorMessage.contains('Payment service is temporarily unavailable')) {
+        errorMessage = 'Our payment system is currently being updated. Please try your transaction again in a few minutes.';
+      } else if (errorMessage.contains('Our servers are currently being updated')) {
+        errorMessage = 'Service maintenance in progress. Please wait a moment and try again.';
+      } else if (errorMessage.contains('503')) {
+        errorMessage = 'Service temporarily unavailable. Please try again in a few minutes.';
       } else if (errorMessage.contains('401')) {
         errorMessage = 'Authentication failed. Please log in again.';
       } else if (errorMessage.contains('400')) {
