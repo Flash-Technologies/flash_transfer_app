@@ -11,6 +11,7 @@ class BizaoConfigData {
   final String countryCode;
   final String phoneNumber;
   final String language;
+  final String serviceCode;
 
   BizaoConfigData({
     required this.firstName,
@@ -20,6 +21,7 @@ class BizaoConfigData {
     required this.countryCode,
     required this.phoneNumber,
     required this.language,
+    required this.serviceCode,
   });
 }
 
@@ -62,21 +64,19 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
 
   final List<String> _languages = [
     'English',
-    'Spanish',
     'French',
-    'Portuguese',
   ];
 
   String _getServiceCode(String? provider) {
     switch (provider?.toLowerCase()) {
       case 'orange':
-        return 'CI_PAIEMENTORANGE_TP';
+        return 'PAIEMENTMARCHANDOMPAYCIDIRECT';
       case 'wave':
         return 'CI_PAIEMENTWAVE_TP';
       case 'mtn':
-        return 'CI_PAIEMENTMTN_TP';
+        return 'PAIEMENTMARCHAND_MTN_CI';
       case 'moov':
-        return 'CI_PAIEMENTMOOV_TP';
+        return 'PAIEMENTMARCHAND_MOOV_CI';
       default:
         return 'CI_PAIEMENTWAVE_TP';
     }
@@ -175,6 +175,7 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
       countryCode: _fixedCountry['countryCode']!,
       phoneNumber: _phoneController.text,
       language: _selectedLanguage!,
+      serviceCode: _getServiceCode(widget.selectedProvider),
     );
 
     widget.onSubmit(configData);
@@ -336,7 +337,7 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
                                 const SizedBox(height: 16),
 
                                 // Language Dropdown
-                                _buildDropdownField(
+                                _buildImprovedDropdownField(
                                   label: 'Preferred Language *',
                                   value: _selectedLanguage,
                                   items: _languages,
@@ -626,6 +627,96 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
             fontSize: 12,
             color: Color(0xFF9E9E9E),
             fontStyle: FontStyle.italic,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildImprovedDropdownField({
+    required String label,
+    required String? value,
+    required List<String> items,
+    required Function(String?) onChanged,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: AppTheme.textDarkColor,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            border: Border.all(color: const Color(0xFFEBECED)),
+            borderRadius: BorderRadius.circular(8),
+            color: Colors.white,
+          ),
+          child: DropdownButtonFormField<String>(
+            value: value,
+            decoration: const InputDecoration(
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              hintStyle: TextStyle(color: Color(0xFF9E9E9E)),
+            ),
+            hint: Text(
+              'Select language',
+              style: const TextStyle(
+                color: Color(0xFF9E9E9E),
+                fontSize: 16,
+              ),
+            ),
+            icon: Container(
+              margin: const EdgeInsets.only(right: 12),
+              child: const Icon(
+                Icons.keyboard_arrow_down_rounded,
+                color: Color(0xFF9E9E9E),
+                size: 24,
+              ),
+            ),
+            isExpanded: true,
+            dropdownColor: Colors.white,
+            style: const TextStyle(
+              fontSize: 16,
+              color: AppTheme.textDarkColor,
+              fontWeight: FontWeight.w500,
+            ),
+            items: items.map((item) {
+              return DropdownMenuItem<String>(
+                value: item,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: value == item ? AppTheme.primaryColor : Colors.transparent,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        item,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: value == item ? FontWeight.w600 : FontWeight.w500,
+                          color: value == item ? AppTheme.primaryColor : AppTheme.textDarkColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+            onChanged: onChanged,
           ),
         ),
       ],

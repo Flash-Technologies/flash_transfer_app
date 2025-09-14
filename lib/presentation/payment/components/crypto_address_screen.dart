@@ -7,6 +7,8 @@ import 'package:flash_transfer_app/presentation/common/app_button.dart';
 import 'package:flash_transfer_app/providers/payment_provider.dart';
 import 'package:flash_transfer_app/providers/exchange_provider.dart';
 import 'package:flash_transfer_app/providers/auth_provider.dart';
+import '../../../core/services/wallet_validation_service.dart';
+import '../../../core/api/api_client.dart';
 
 class CryptoAddressScreen extends ConsumerStatefulWidget {
   const CryptoAddressScreen({Key? key}) : super(key: key);
@@ -21,17 +23,57 @@ class _CryptoAddressScreenState extends ConsumerState<CryptoAddressScreen> {
   String? _selectedBlockchain;
   bool _isValidating = false;
   String? _validationError;
+  bool _isAddressValid = false;
+  late WalletValidationService _walletValidationService;
+  
+  @override
+  void initState() {
+    super.initState();
+    // Initialize wallet validation service
+    final authState = ref.read(authProvider);
+    final apiClient = ApiClient(baseUrl: 'https://flash-transfer.com');
+    if (authState.status == AuthStatus.authenticated && authState.user?.token != null) {
+      apiClient.setToken(authState.user!.token!);
+    }
+    _walletValidationService = WalletValidationService(apiClient);
+    
+    // Set default blockchain to ethereum mainnet to match working payload
+    _selectedBlockchain = 'ETHEREUM';
+    
+    // Add listener to address field for real-time validation
+    _addressController.addListener(_onAddressChanged);
+  }
 
   final List<Map<String, String>> _blockchains = [
     {
-      'name': 'ethereum',
+      'name': 'ETHEREUM',
       'displayName': 'Ethereum Mainnet',
       'icon': 'assets/images/ethereum.png',
     },
     {
-      'name': 'sepolia',
-      'displayName': 'Sepolia Testnet',
-      'icon': 'assets/images/ethereum.png',
+      'name': 'POLYGON',
+      'displayName': 'Polygon',
+      'icon': 'assets/images/polygon.png',
+    },
+    {
+      'name': 'BSC',
+      'displayName': 'Binance Smart Chain',
+      'icon': 'assets/images/bsc.png',
+    },
+    {
+      'name': 'ARBITRUM',
+      'displayName': 'Arbitrum',
+      'icon': 'assets/images/arbitrum.png',
+    },
+    {
+      'name': 'OPTIMISM',
+      'displayName': 'Optimism',
+      'icon': 'assets/images/optimism.png',
+    },
+    {
+      'name': 'BASE',
+      'displayName': 'Base',
+      'icon': 'assets/images/base.png',
     },
   ];
 
@@ -41,24 +83,74 @@ class _CryptoAddressScreenState extends ConsumerState<CryptoAddressScreen> {
     'icon': 'assets/images/ethereum.png',
   };
 
-  @override
-  void initState() {
-    super.initState();
-    // Set default blockchain to ethereum mainnet to match working payload
-    _selectedBlockchain = 'ethereum';
-  }
 
   @override
   void dispose() {
+    _addressController.removeListener(_onAddressChanged);
     _addressController.dispose();
     super.dispose();
   }
-
-  bool _isValidEthereumAddress(String address) {
-    // Basic Ethereum address validation
-    final regex = RegExp(r'^0x[a-fA-F0-9]{40}$');
-    return regex.hasMatch(address);
+  
+  void _onAddressChanged() {
+    final address = _addressController.text.trim();
+    
+    // Reset validation state when address changes
+    if (_isAddressValid || _validationError != null) {
+      setState(() {
+        _isAddressValid = false;
+        _validationError = null;
+      });
+    }
+    
+    // Basic format validation
+    if (address.isNotEmpty && !_walletValidationService.isValidEvmFormat(address)) {
+      setState(() {
+        _validationError = 'Invalid EVM address format';
+      });
+      return;
+    }
+    
+    // If address is valid format and we have a blockchain selected, validate with API
+    if (address.isNotEmpty && 
+        _walletValidationService.isValidEvmFormat(address) && 
+        _selectedBlockchain != null) {
+      _validateAddressWithAPI(address);
+    }
   }
+  
+  Future<void> _validateAddressWithAPI(String address) async {
+    if (_isValidating) return;
+    
+    setState(() {
+      _isValidating = true;
+      _validationError = null;
+    });
+    
+    try {
+      final response = await _walletValidationService.validateWalletAddress(
+        address: address,
+        network: _selectedBlockchain!,
+      );
+      
+      setState(() {
+        _isValidating = false;
+        if (response.success && response.data?.isValid == true) {
+          _isAddressValid = true;
+          _validationError = null;
+        } else {
+          _isAddressValid = false;
+          _validationError = response.message ?? 'Invalid wallet address';
+        }
+      });
+    } catch (e) {
+      setState(() {
+        _isValidating = false;
+        _isAddressValid = false;
+        _validationError = 'Failed to validate address. Please try again.';
+      });
+    }
+  }
+
 
   Future<void> _validateAddress() async {
     final address = _addressController.text.trim();
@@ -77,10 +169,9 @@ class _CryptoAddressScreenState extends ConsumerState<CryptoAddressScreen> {
       return;
     }
 
-    if (!_isValidEthereumAddress(address)) {
+    if (!_isAddressValid) {
       setState(() {
-        _validationError =
-            'Invalid address format for the selected network. Please check and try again.';
+        _validationError = 'Please wait for address validation to complete';
       });
       return;
     }
@@ -323,7 +414,10 @@ class _CryptoAddressScreenState extends ConsumerState<CryptoAddressScreen> {
             border: Border.all(
               color: _validationError != null
                   ? Colors.red
-                  : const Color(0xFFE0E4E8),
+                  : _isAddressValid
+                      ? Colors.green
+                      : const Color(0xFFE0E4E8),
+              width: _isAddressValid || _validationError != null ? 2 : 1,
             ),
             boxShadow: [
               BoxShadow(
@@ -333,28 +427,58 @@ class _CryptoAddressScreenState extends ConsumerState<CryptoAddressScreen> {
               ),
             ],
           ),
-          child: TextField(
-            controller: _addressController,
-            decoration: const InputDecoration(
-              hintText: '0x.................................',
-              hintStyle: TextStyle(
-                color: Color(0xFFBDC3C7),
-                fontSize: 16,
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _addressController,
+                  decoration: const InputDecoration(
+                    hintText: '0x.................................',
+                    hintStyle: TextStyle(
+                      color: Color(0xFFBDC3C7),
+                      fontSize: 16,
+                    ),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.all(16),
+                  ),
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontFamily: 'monospace',
+                  ),
+                  // onChanged is handled by the listener
+                ),
               ),
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.all(16),
-            ),
-            style: const TextStyle(
-              fontSize: 16,
-              fontFamily: 'monospace',
-            ),
-            onChanged: (_) {
-              if (_validationError != null) {
-                setState(() {
-                  _validationError = null;
-                });
-              }
-            },
+              if (_isValidating)
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  child: const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                    ),
+                  ),
+                )
+              else if (_isAddressValid)
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  child: const Icon(
+                    Icons.check_circle,
+                    color: Colors.green,
+                    size: 20,
+                  ),
+                )
+              else if (_validationError != null && _addressController.text.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  child: const Icon(
+                    Icons.error,
+                    color: Colors.red,
+                    size: 20,
+                  ),
+                ),
+            ],
           ),
         ),
       ],
@@ -487,7 +611,14 @@ class _CryptoAddressScreenState extends ConsumerState<CryptoAddressScreen> {
               setState(() {
                 _selectedBlockchain = value;
                 _validationError = null;
+                _isAddressValid = false;
               });
+              
+              // Re-validate address with new blockchain if address is present
+              final address = _addressController.text.trim();
+              if (address.isNotEmpty && _walletValidationService.isValidEvmFormat(address)) {
+                _validateAddressWithAPI(address);
+              }
             },
           ),
         ),
@@ -576,10 +707,10 @@ class _CryptoAddressScreenState extends ConsumerState<CryptoAddressScreen> {
         children: [
           AppButton(
             text: _isValidating ? 'Validating...' : 'Continue',
-            onPressed: () => _validateAddress(),
-            backgroundColor: AppTheme.primaryColor,
-            textColor: Colors.black87,
-            isDisabled: _isValidating,
+            onPressed: _isAddressValid ? _validateAddress : () {},
+            backgroundColor: _isAddressValid ? AppTheme.primaryColor : Colors.grey.shade300,
+            textColor: _isAddressValid ? Colors.black87 : Colors.grey.shade600,
+            isDisabled: !_isAddressValid || _isValidating,
           ).animate().scale(
                 duration: 200.ms,
                 curve: Curves.easeInOut,
