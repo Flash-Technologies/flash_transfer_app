@@ -88,7 +88,7 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
             _buildProgressHeader(),
             Expanded(
               child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
+                physics: const ClampingScrollPhysics(),
                 padding: EdgeInsets.symmetric(
                   horizontal: MediaQuery.of(context).size.width * 0.04,
                   vertical: 16,

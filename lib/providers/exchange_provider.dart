@@ -215,7 +215,7 @@ class ExchangeFormNotifier extends StateNotifier<ExchangeFormState> {
       
       state = state.copyWith(
         calculation: calculation,
-        receiveAmount: calculation.receivedAmount.toString(),
+        receiveAmount: _formatNumber(calculation.receivedAmount),
         isLoading: false,
       );
     } catch (e) {
@@ -237,6 +237,25 @@ class ExchangeFormNotifier extends StateNotifier<ExchangeFormState> {
     );
     
     _fetchExchangeRate();
+  }
+  
+  String _formatNumber(double number) {
+    if (number == 0) return '0';
+    
+    // For very small numbers, use fixed decimal places instead of scientific notation
+    if (number < 0.000001) {
+      // Format with up to 12 decimal places, removing trailing zeros
+      String formatted = number.toStringAsFixed(12);
+      // Remove trailing zeros
+      formatted = formatted.replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
+      return formatted;
+    } else if (number < 0.01) {
+      return number.toStringAsFixed(8).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
+    } else if (number < 1) {
+      return number.toStringAsFixed(6).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
+    } else {
+      return number.toStringAsFixed(2).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\.$'), '');
+    }
   }
 }
 

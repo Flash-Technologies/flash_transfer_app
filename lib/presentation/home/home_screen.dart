@@ -273,6 +273,9 @@ class HomeScreen extends ConsumerWidget {
                       keyboardType: const TextInputType.numberWithOptions(
                         decimal: true,
                       ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,6}$')),
+                      ],
                       style: const TextStyle(
                         fontSize: 36,
                         fontWeight: FontWeight.w700,
@@ -294,12 +297,9 @@ class HomeScreen extends ConsumerWidget {
                         contentPadding: EdgeInsets.zero,
                       ),
                       onChanged: (value) {
-                        if (value.isEmpty ||
-                            RegExp(r'^\d*\.?\d{0,6}$').hasMatch(value)) {
-                          ref
-                              .read(exchangeFormProvider.notifier)
-                              .setSendAmount(value);
-                        }
+                        ref
+                            .read(exchangeFormProvider.notifier)
+                            .setSendAmount(value);
                       },
                     ),
                   ),
@@ -1347,9 +1347,20 @@ class HomeScreen extends ConsumerWidget {
 
   String _formatExchangeRate(double rate) {
     if (rate == 0) return '0';
-    if (rate >= 1) return rate.toStringAsFixed(2);
-    if (rate >= 0.01) return rate.toStringAsFixed(4);
-    if (rate >= 0.0001) return rate.toStringAsFixed(6);
-    return rate.toStringAsExponential(2);
+    
+    // For very small numbers, use fixed decimal places instead of scientific notation
+    if (rate < 0.000001) {
+      // Format with up to 12 decimal places, removing trailing zeros
+      String formatted = rate.toStringAsFixed(12);
+      // Remove trailing zeros
+      formatted = formatted.replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\\.$'), '');
+      return formatted;
+    } else if (rate < 0.01) {
+      return rate.toStringAsFixed(8).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\\.$'), '');
+    } else if (rate < 1) {
+      return rate.toStringAsFixed(6).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\\.$'), '');
+    } else {
+      return rate.toStringAsFixed(2).replaceAll(RegExp(r'0*$'), '').replaceAll(RegExp(r'\\.$'), '');
+    }
   }
 }
