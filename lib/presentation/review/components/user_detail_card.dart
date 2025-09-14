@@ -7,14 +7,14 @@ class UserDetailCard extends StatelessWidget {
   final String title;
   final User user;
   final bool showKycBadge;
-  final VoidCallback onEdit;
+  final VoidCallback? onEdit;
 
   const UserDetailCard({
     Key? key,
     required this.title,
     required this.user,
     required this.showKycBadge,
-    required this.onEdit,
+    this.onEdit,
   }) : super(key: key);
 
   @override
@@ -48,20 +48,21 @@ class UserDetailCard extends StatelessWidget {
                   color: Color(0xFF273240),
                 ),
               ),
-              TextButton(
-                onPressed: onEdit,
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  minimumSize: Size.zero,
-                ),
-                child: const Text(
-                  "Edit",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppTheme.secondaryColor,
+              if (onEdit != null)
+                TextButton(
+                  onPressed: onEdit,
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    minimumSize: Size.zero,
+                  ),
+                  child: const Text(
+                    "Edit",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: AppTheme.secondaryColor,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
 

@@ -127,9 +127,9 @@ class TransactionSummary extends ConsumerWidget {
           ],
 
           // Show discounts if any
-          if (hasApiData && estimateData.fees.discounts > 0) ...[
+          if (hasApiData && estimateData.fees.totalDiscount > 0) ...[
             const SizedBox(height: 16),
-            _buildDiscountsSection(estimateData.fees.discounts),
+            _buildDiscountsSection(estimateData.fees.totalDiscount),
           ],
         ],
       ),
@@ -265,6 +265,52 @@ class TransactionSummary extends ConsumerWidget {
   }
 
   Widget _buildDiscountsSection(discounts) {
+    final formatter = NumberFormat.currency(symbol: '', decimalDigits: 2);
+    
+    // Handle case where discounts is a double (total discount amount)
+    if (discounts is double) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Applied Discounts",
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+              color: AppTheme.textDarkColor,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Expanded(
+                  child: Text(
+                    "Total Savings",
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Color(0xFF6E757D),
+                    ),
+                  ),
+                ),
+                Text(
+                  "-${formatter.format(discounts)}",
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.green,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      );
+    }
+
+    // Handle case where discounts is a list
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -292,7 +338,7 @@ class TransactionSummary extends ConsumerWidget {
                     ),
                   ),
                   Text(
-                    "-${NumberFormat.currency(symbol: '', decimalDigits: 2).format(discount.amount)}",
+                    "-${formatter.format(discount.amount)}",
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,

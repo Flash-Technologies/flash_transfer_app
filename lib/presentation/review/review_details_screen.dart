@@ -42,7 +42,7 @@ class ReviewDetailsScreen extends ConsumerWidget {
             // Main content with scroll
             Expanded(
               child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
+                physics: const ClampingScrollPhysics(),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -56,19 +56,6 @@ class ReviewDetailsScreen extends ConsumerWidget {
 
                       const SizedBox(height: 16),
 
-                      // Sender Details Card
-                      UserDetailCard(
-                        title: "Sender Details",
-                        user: transactionDetails.sender,
-                        showKycBadge: true,
-                        onEdit: () => context.push('/sender-details'),
-                      )
-                          .animate()
-                          .fadeIn(duration: 500.ms, delay: 100.ms)
-                          .slideY(begin: 0.1, end: 0),
-
-                      const SizedBox(height: 24),
-
                       // Payment Method Details (factory pattern)
                       PaymentDetailsFactory.create(
                         paymentType: paymentType,
@@ -78,25 +65,7 @@ class ReviewDetailsScreen extends ConsumerWidget {
                           .fadeIn(duration: 500.ms, delay: 200.ms)
                           .slideY(begin: 0.1, end: 0),
 
-                      const SizedBox(height: 24),
 
-                      UserDetailCard(
-                        title: "Receiver details",
-                        user: transactionDetails.receiver,
-                        showKycBadge: false,
-                        onEdit: () => context.push('/receiver-info'),
-                      )
-                          .animate()
-                          .fadeIn(duration: 500.ms, delay: 300.ms)
-                          .slideY(begin: 0.1, end: 0),
-
-                      const SizedBox(height: 24),
-
-                      // Transaction Summary
-                      TransactionSummary(transactionDetails: transactionDetails)
-                          .animate()
-                          .fadeIn(duration: 500.ms, delay: 400.ms)
-                          .slideY(begin: 0.1, end: 0),
                     ],
                   ),
                 ),

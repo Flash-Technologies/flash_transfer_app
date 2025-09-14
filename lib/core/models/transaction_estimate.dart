@@ -3,12 +3,16 @@ class TransactionEstimate {
   final FeesBreakdown fees;
   final NetworkInfo networkInfo;
   final TransactionResults results;
+  final DiscountsBreakdown discounts;
+  final TransactionRequest request;
 
   TransactionEstimate({
     required this.exchangeRate,
     required this.fees,
     required this.networkInfo,
     required this.results,
+    required this.discounts,
+    required this.request,
   });
 
   factory TransactionEstimate.fromJson(Map<String, dynamic> json) {
@@ -17,6 +21,8 @@ class TransactionEstimate {
       fees: FeesBreakdown.fromJson(json['fees']),
       networkInfo: NetworkInfo.fromJson(json['networkInfo']),
       results: TransactionResults.fromJson(json['results']),
+      discounts: DiscountsBreakdown.fromJson(json['discounts'] ?? {}),
+      request: TransactionRequest.fromJson(json['request'] ?? {}),
     );
   }
 
@@ -26,6 +32,8 @@ class TransactionEstimate {
       'fees': fees.toJson(),
       'networkInfo': networkInfo.toJson(),
       'results': results.toJson(),
+      'discounts': discounts.toJson(),
+      'request': request.toJson(),
     };
   }
 }
@@ -57,28 +65,43 @@ class ExchangeRateData {
 class FeesBreakdown {
   final double baseFee;
   final double providerFee;
+  final double platformCharges;
+  final double aggregatorCharges;
   final double gasFee;
   final double totalFee;
-  final double discounts;
+  final double loyaltyDiscount;
+  final double nftDiscount;
+  final double totalDiscount;
   final double? gasFeeInCrypto;
+  final bool enhancedFeatures;
 
   FeesBreakdown({
     required this.baseFee,
     required this.providerFee,
+    required this.platformCharges,
+    required this.aggregatorCharges,
     required this.gasFee,
     required this.totalFee,
-    required this.discounts,
+    required this.loyaltyDiscount,
+    required this.nftDiscount,
+    required this.totalDiscount,
     this.gasFeeInCrypto,
+    required this.enhancedFeatures,
   });
 
   factory FeesBreakdown.fromJson(Map<String, dynamic> json) {
     return FeesBreakdown(
       baseFee: _safeParseDouble(json['baseFee']),
       providerFee: _safeParseDouble(json['providerFee']),
+      platformCharges: _safeParseDouble(json['platformCharges']),
+      aggregatorCharges: _safeParseDouble(json['aggregatorCharges']),
       gasFee: _safeParseDouble(json['gasFee']),
       totalFee: _safeParseDouble(json['totalFee']),
-      discounts: _safeParseDouble(json['discounts']),
+      loyaltyDiscount: _safeParseDouble(json['loyaltyDiscount']),
+      nftDiscount: _safeParseDouble(json['nftDiscount']),
+      totalDiscount: _safeParseDouble(json['totalDiscount']),
       gasFeeInCrypto: _safeParseDouble(json['gasFeeInCrypto']),
+      enhancedFeatures: json['enhancedFeatures'] ?? false,
     );
   }
 
@@ -94,10 +117,15 @@ class FeesBreakdown {
     return {
       'baseFee': baseFee,
       'providerFee': providerFee,
+      'platformCharges': platformCharges,
+      'aggregatorCharges': aggregatorCharges,
       'gasFee': gasFee,
       'totalFee': totalFee,
-      'discounts': discounts,
+      'loyaltyDiscount': loyaltyDiscount,
+      'nftDiscount': nftDiscount,
+      'totalDiscount': totalDiscount,
       'gasFeeInCrypto': gasFeeInCrypto,
+      'enhancedFeatures': enhancedFeatures,
     };
   }
 
@@ -196,4 +224,124 @@ class TransactionResults {
   double get receiveAmount => fiatAmountToReceive ?? cryptoAmountToReceive;
   String get receiveCurrency =>
       fiatCurrency ?? cryptoCurrency ?? paymentCurrency;
+}
+
+class DiscountsBreakdown {
+  final LoyaltyDiscount loyalty;
+  final NFTDiscount nft;
+
+  DiscountsBreakdown({
+    required this.loyalty,
+    required this.nft,
+  });
+
+  factory DiscountsBreakdown.fromJson(Map<String, dynamic> json) {
+    return DiscountsBreakdown(
+      loyalty: LoyaltyDiscount.fromJson(json['loyalty'] ?? {}),
+      nft: NFTDiscount.fromJson(json['nft'] ?? {}),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'loyalty': loyalty.toJson(),
+      'nft': nft.toJson(),
+    };
+  }
+}
+
+class LoyaltyDiscount {
+  final bool applied;
+  final double amount;
+  final String rank;
+
+  LoyaltyDiscount({
+    required this.applied,
+    required this.amount,
+    required this.rank,
+  });
+
+  factory LoyaltyDiscount.fromJson(Map<String, dynamic> json) {
+    return LoyaltyDiscount(
+      applied: json['applied'] ?? false,
+      amount: FeesBreakdown._safeParseDouble(json['amount']),
+      rank: json['rank'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'applied': applied,
+      'amount': amount,
+      'rank': rank,
+    };
+  }
+}
+
+class NFTDiscount {
+  final bool applied;
+  final double amount;
+  final String rarity;
+
+  NFTDiscount({
+    required this.applied,
+    required this.amount,
+    required this.rarity,
+  });
+
+  factory NFTDiscount.fromJson(Map<String, dynamic> json) {
+    return NFTDiscount(
+      applied: json['applied'] ?? false,
+      amount: FeesBreakdown._safeParseDouble(json['amount']),
+      rarity: json['rarity'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'applied': applied,
+      'amount': amount,
+      'rarity': rarity,
+    };
+  }
+}
+
+class TransactionRequest {
+  final double amount;
+  final String sourceCurrency;
+  final String destinationCurrency;
+  final String blockchainNetwork;
+  final String paymentMethod;
+  final String countryCode;
+
+  TransactionRequest({
+    required this.amount,
+    required this.sourceCurrency,
+    required this.destinationCurrency,
+    required this.blockchainNetwork,
+    required this.paymentMethod,
+    required this.countryCode,
+  });
+
+  factory TransactionRequest.fromJson(Map<String, dynamic> json) {
+    return TransactionRequest(
+      amount: FeesBreakdown._safeParseDouble(json['amount']),
+      sourceCurrency: json['sourceCurrency'] ?? '',
+      destinationCurrency: json['destinationCurrency'] ?? '',
+      blockchainNetwork: json['blockchainNetwork'] ?? '',
+      paymentMethod: json['paymentMethod'] ?? '',
+      countryCode: json['countryCode'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'amount': amount,
+      'sourceCurrency': sourceCurrency,
+      'destinationCurrency': destinationCurrency,
+      'blockchainNetwork': blockchainNetwork,
+      'paymentMethod': paymentMethod,
+      'countryCode': countryCode,
+    };
+  }
 }
