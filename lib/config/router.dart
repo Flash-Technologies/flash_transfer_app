@@ -36,7 +36,7 @@ import 'package:flash_transfer_app/presentation/settings/contact_us_screen.dart'
 // import 'package:flash_transfer_app/presentation/home/rank_screen.dart';
 // import 'package:flash_transfer_app/presentation/card/my_card_screen.dart';
 // import 'package:flash_transfer_app/presentation/home/invite_screen.dart';
-// import 'package:flash_transfer_app/presentation/home/notification_screen.dart';
+import 'package:flash_transfer_app/presentation/notifications/notification_screen.dart';
 import 'package:flash_transfer_app/presentation/settings/language_screen.dart';
 // import 'package:flash_transfer_app/presentation/settings/settings_screen.dart';
 import 'package:flash_transfer_app/presentation/settings/privacy_screen.dart';
@@ -79,7 +79,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       }
 
       // Protect authenticated routes
-      final protectedRoutes = ['/home', '/profile', '/transaction', '/edit-profile'];
+      final protectedRoutes = ['/home', '/profile', '/transaction', '/edit-profile', '/notification'];
       if (protectedRoutes.contains(state.matchedLocation) && !isAuthenticated) {
         print("🔄 [ROUTER] Protected route access denied, redirecting to /sign-in");
         return '/sign-in';
@@ -267,11 +267,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const InviteScreen(),
       ),
 
-      // // Settings and support screens
-      // GoRoute(
-      //   path: '/notification',
-      //   builder: (context, state) => const NotificationScreen(),
-      // ),
+      // Settings and support screens
+      GoRoute(
+        path: '/notification',
+        builder: (context, state) => const NotificationScreen(),
+      ),
       GoRoute(
         path: '/language',
         builder: (context, state) => const LanguageScreen(),

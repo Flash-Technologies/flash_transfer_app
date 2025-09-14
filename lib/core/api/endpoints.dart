@@ -28,6 +28,9 @@ class Endpoints {
 
   // beneficiary endpoints
   static const String beneficiaries = '$baseUrl/api/beneficiary';
+
+  // notification endpoints
+  static const String notifications = '/api/notifications';
   static const String createBeneficiary = '/api/beneficiary';
 
   // transaction endpoints

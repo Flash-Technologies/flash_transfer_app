@@ -1,162 +1,89 @@
 
+import '../api/api_client.dart';
+import '../api/endpoints.dart';
+import '../models/notification_model.dart';
 
-// import 'package:dio/dio.dart';
-// import 'package:flash_transfer_app/core/api/api_client.dart';
-// import 'package:flash_transfer_app/core/models/notification.dart';
+class NotificationService {
+  final ApiClient _apiClient;
 
-// class NotificationService {
-//   final ApiClient _apiClient;
+  NotificationService(this._apiClient);
 
-//   NotificationService({ApiClient? apiClient}) : _apiClient = apiClient ?? ApiClient();
+  /// Fetch notifications with pagination
+  Future<NotificationsResponseModel> fetchNotifications({
+    int page = 1,
+    int limit = 10,
+    String sortBy = 'createdAt',
+    String sortOrder = 'desc',
+  }) async {
+    try {
+      print('🌐 Fetching notifications - Page: $page, Limit: $limit');
 
-//   // Get all notifications
-//   Future<List<AppNotification>> getNotifications({
-//     int page = 1,
-//     int limit = 20,
-//   }) async {
-//     try {
-//       final response = await _apiClient.get('/notifications', queryParameters: {
-//         'page': page,
-//         'limit': limit,
-//       });
-      
-//       if (response.statusCode == 200) {
-//         final List<dynamic> data = response.data['notifications'] as List<dynamic>;
-//         return data.map((item) => AppNotification.fromJson(item)).toList();
-//       } else {
-//         throw Exception('Failed to load notifications: ${response.statusMessage}');
-//       }
-//     } on DioException catch (e) {
-//       throw Exception('Network error loading notifications: ${e.message}');
-//     } catch (error) {
-//       throw Exception('Failed to load notifications: $error');
-//     }
-//   }
+      final response = await _apiClient.get(
+        Endpoints.notifications,
+        queryParameters: {
+          'page': page,
+          'limit': limit,
+          'sortBy': sortBy,
+          'sortOrder': sortOrder,
+        },
+      );
 
-//   // Mark notification as read
-//   Future<void> markAsRead(String notificationId) async {
-//     try {
-//       final response = await _apiClient.put('/notifications/$notificationId/read');
-      
-//       if (response.statusCode != 200) {
-//         throw Exception('Failed to mark notification as read: ${response.statusMessage}');
-//       }
-//     } on DioException catch (e) {
-//       throw Exception('Network error marking notification as read: ${e.message}');
-//     } catch (error) {
-//       throw Exception('Failed to mark notification as read: $error');
-//     }
-//   }
+      print('📡 Notifications Response: ${response.data}');
 
-//   // Mark all notifications as read
-//   Future<void> markAllAsRead() async {
-//     try {
-//       final response = await _apiClient.put('/notifications/read-all');
-      
-//       if (response.statusCode != 200) {
-//         throw Exception('Failed to mark all notifications as read: ${response.statusMessage}');
-//       }
-//     } on DioException catch (e) {
-//       throw Exception('Network error marking all notifications as read: ${e.message}');
-//     } catch (error) {
-//       throw Exception('Failed to mark all notifications as read: $error');
-//     }
-//   }
+      return NotificationsResponseModel.fromJson(response.data);
+    } catch (e) {
+      print('❌ Notification Service Error: $e');
+      if (e.toString().contains('401')) {
+        throw Exception('Authentication failed. Please log in again.');
+      } else if (e.toString().contains('403')) {
+        throw Exception('Access forbidden. Please check your permissions.');
+      } else if (e.toString().contains('500')) {
+        throw Exception('Server error. Please try again later.');
+      } else if (e.toString().contains('network') || e.toString().contains('connection')) {
+        throw Exception('Network error. Please check your internet connection.');
+      }
+      throw Exception('Failed to load notifications. Please try again.');
+    }
+  }
 
-//   // Delete notification
-//   Future<void> deleteNotification(String notificationId) async {
-//     try {
-//       final response = await _apiClient.delete('/notifications/$notificationId');
-      
-//       if (response.statusCode != 200) {
-//         throw Exception('Failed to delete notification: ${response.statusMessage}');
-//       }
-//     } on DioException catch (e) {
-//       throw Exception('Network error deleting notification: ${e.message}');
-//     } catch (error) {
-//       throw Exception('Failed to delete notification: $error');
-//     }
-//   }
+  /// Mark notification as read
+  Future<bool> markAsRead(int notificationId) async {
+    try {
+      print('📝 Marking notification as read - ID: $notificationId');
 
-//   // Delete all notifications
-//   Future<void> deleteAllNotifications() async {
-//     try {
-//       final response = await _apiClient.delete('/notifications/all');
-      
-//       if (response.statusCode != 200) {
-//         throw Exception('Failed to delete all notifications: ${response.statusMessage}');
-//       }
-//     } on DioException catch (e) {
-//       throw Exception('Network error deleting all notifications: ${e.message}');
-//     } catch (error) {
-//       throw Exception('Failed to delete all notifications: $error');
-//     }
-//   }
+      await _apiClient.put('/api/notifications/$notificationId/read');
 
-//   // Get unread notification count
-//   Future<int> getUnreadCount() async {
-//     try {
-//       final response = await _apiClient.get('/notifications/unread-count');
-      
-//       if (response.statusCode == 200) {
-//         return response.data['count'] as int;
-//       } else {
-//         throw Exception('Failed to get unread count: ${response.statusMessage}');
-//       }
-//     } on DioException catch (e) {
-//       throw Exception('Network error getting unread count: ${e.message}');
-//     } catch (error) {
-//       throw Exception('Failed to get unread count: $error');
-//     }
-//   }
+      print('✅ Notification marked as read successfully');
+      return true;
+    } catch (e) {
+      print('❌ Failed to mark notification as read: $e');
+      return false;
+    }
+  }
 
-//   // Send push notification token to server
-//   Future<void> updatePushToken(String token) async {
-//     try {
-//       final response = await _apiClient.post('/notifications/push-token', data: {
-//         'token': token,
-//       });
-      
-//       if (response.statusCode != 200) {
-//         throw Exception('Failed to update push token: ${response.statusMessage}');
-//       }
-//     } on DioException catch (e) {
-//       throw Exception('Network error updating push token: ${e.message}');
-//     } catch (error) {
-//       throw Exception('Failed to update push token: $error');
-//     }
-//   }
+  /// Mark all notifications as read
+  Future<bool> markAllAsRead() async {
+    try {
+      print('📝 Marking all notifications as read');
 
-//   // Get notification preferences
-//   Future<Map<String, bool>> getNotificationPreferences() async {
-//     try {
-//       final response = await _apiClient.get('/notifications/preferences');
-      
-//       if (response.statusCode == 200) {
-//         final data = response.data as Map<String, dynamic>;
-//         return data.map((key, value) => MapEntry(key, value as bool));
-//       } else {
-//         throw Exception('Failed to load notification preferences: ${response.statusMessage}');
-//       }
-//     } on DioException catch (e) {
-//       throw Exception('Network error loading notification preferences: ${e.message}');
-//     } catch (error) {
-//       throw Exception('Failed to load notification preferences: $error');
-//     }
-//   }
+      await _apiClient.put('/api/notifications/read-all');
 
-//   // Update notification preferences
-//   Future<void> updateNotificationPreferences(Map<String, bool> preferences) async {
-//     try {
-//       final response = await _apiClient.put('/notifications/preferences', data: preferences);
-      
-//       if (response.statusCode != 200) {
-//         throw Exception('Failed to update notification preferences: ${response.statusMessage}');
-//       }
-//     } on DioException catch (e) {
-//       throw Exception('Network error updating notification preferences: ${e.message}');
-//     } catch (error) {
-//       throw Exception('Failed to update notification preferences: $error');
-//     }
-//   }
-// }
+      print('✅ All notifications marked as read successfully');
+      return true;
+    } catch (e) {
+      print('❌ Failed to mark all notifications as read: $e');
+      return false;
+    }
+  }
+
+  /// Get unread notification count
+  Future<int> getUnreadCount() async {
+    try {
+      final response = await _apiClient.get('/api/notifications/unread-count');
+      return response.data['count'] ?? 0;
+    } catch (e) {
+      print('❌ Failed to get unread notification count: $e');
+      return 0;
+    }
+  }
+}
