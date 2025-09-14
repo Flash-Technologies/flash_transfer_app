@@ -19,7 +19,9 @@ import 'package:flash_transfer_app/providers/exchange_provider.dart';
 // import 'package:flash_transfer_app/presentation/common/notification_modal.dart';
 
 class AddNewScreen extends ConsumerStatefulWidget {
-  const AddNewScreen({Key? key}) : super(key: key);
+  final Map<String, dynamic>? navigationParams;
+  
+  const AddNewScreen({Key? key, this.navigationParams}) : super(key: key);
 
   @override
   ConsumerState<AddNewScreen> createState() => _AddNewScreenState();
@@ -45,6 +47,9 @@ class _AddNewScreenState extends ConsumerState<AddNewScreen> {
 
   late AuthService _authService;
   late Future<List<CountryModel>> _countriesFuture;
+  
+  bool get _isFromRecipientsScreen => 
+      widget.navigationParams?['returnToRecipients'] == true;
 
   final List<String> _purposeOptions = [
     'Family Support',
@@ -359,7 +364,7 @@ class _AddNewScreenState extends ConsumerState<AddNewScreen> {
                   ),
                 )
               : AppButton(
-                  text: 'Continue',
+                  text: _isFromRecipientsScreen ? 'Confirm' : 'Continue',
                   backgroundColor: AppColors.primaryYellow,
                   onPressed: _submitForm,
                 ).animate().fadeIn(duration: 400.ms, delay: 850.ms).scale(
@@ -553,8 +558,14 @@ class _AddNewScreenState extends ConsumerState<AddNewScreen> {
             ),
           );
 
-          // Navigate to receiver info with new beneficiary
-          context.push('/receiver-info', extra: newBeneficiary);
+          // Navigate based on where this screen was called from
+          if (_isFromRecipientsScreen) {
+            // Go back to recipients screen
+            context.pop();
+          } else {
+            // Continue to receiver info (original flow)
+            context.push('/receiver-info', extra: newBeneficiary);
+          }
         } else {
           // Show error message
           _showErrorSnackBar();

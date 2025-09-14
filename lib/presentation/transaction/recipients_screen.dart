@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import '../../core/services/translation_service.dart';
-import '../../core/models/transaction_model.dart';
-import '../../core/models/sample_data.dart';
+import '../../core/models/beneficiary.dart';
+import '../../providers/beneficiary_provider.dart';
 import 'widgets/promo_banner_widget.dart';
-import 'widgets/recipient_card_widget.dart';
 import 'widgets/recipient_search_widget.dart';
 
 class RecipientsScreen extends ConsumerStatefulWidget {
@@ -29,16 +29,13 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _searchController = TextEditingController();
 
-  bool _isLoading = false;
-  String _searchQuery = '';
-  List<RecipientModel> _filteredRecipients = [];
   String _sortBy = 'recent';
 
   @override
   void initState() {
     super.initState();
     _initializeAnimations();
-    _loadRecipients();
+    _loadBeneficiaries();
     _setupScrollListener();
   }
 
@@ -98,110 +95,44 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
           ScrollDirection.forward) {
         _fabAnimationController.forward();
       }
-    });
-  }
-
-  void _loadRecipients() {
-    setState(() {
-      _isLoading = true;
-    });
-
-    // Simulate API call
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (mounted) {
-        setState(() {
-          _filteredRecipients = SampleData.sampleRecipients;
-          _isLoading = false;
+      
+      // Load more beneficiaries when scrolling near bottom
+      if (_scrollController.position.pixels >= 
+          _scrollController.position.maxScrollExtent - 200) {
+        // Use Future.microtask to avoid provider modification during scroll events
+        Future.microtask(() {
+          ref.read(beneficiariesProvider.notifier).loadMoreBeneficiaries();
         });
-        _applyFiltersAndSort();
       }
     });
   }
 
-  void _searchRecipients(String query) {
-    setState(() {
-      _searchQuery = query;
+  Future<void> _loadBeneficiaries() async {
+    // Use Future.microtask to avoid provider modification during build
+    await Future.microtask(() async {
+      await ref.read(beneficiariesProvider.notifier).loadBeneficiaries();
     });
-    _applyFiltersAndSort();
   }
 
-  void _sortRecipients(String sortBy) {
-    setState(() {
-      _sortBy = sortBy;
+  void _searchBeneficiaries(String query) {
+    // Use Future.microtask to avoid provider modification during build
+    Future.microtask(() {
+      ref.read(beneficiariesProvider.notifier).setSearchQuery(query);
     });
-    _applyFiltersAndSort();
     HapticFeedback.selectionClick();
   }
 
-  void _applyFiltersAndSort() {
-    List<RecipientModel> filtered = SampleData.sampleRecipients;
-
-    // Apply search filter
-    if (_searchQuery.isNotEmpty) {
-      filtered =
-          filtered.where((recipient) {
-            return recipient.name.toLowerCase().contains(
-                  _searchQuery.toLowerCase(),
-                ) ||
-                recipient.country.toLowerCase().contains(
-                  _searchQuery.toLowerCase(),
-                );
-          }).toList();
-    }
-
-    // Apply sorting
-    switch (_sortBy) {
-      case 'alphabetical':
-        filtered.sort((a, b) => a.name.compareTo(b.name));
-        break;
-      case 'mostUsed':
-        filtered.sort(
-          (a, b) => b.totalTransactions.compareTo(a.totalTransactions),
-        );
-        break;
-      case 'lastSent':
-        filtered.sort((a, b) {
-          if (a.lastSentDate == null && b.lastSentDate == null) return 0;
-          if (a.lastSentDate == null) return 1;
-          if (b.lastSentDate == null) return -1;
-          return b.lastSentDate!.compareTo(a.lastSentDate!);
-        });
-        break;
-      case 'country':
-        filtered.sort((a, b) => a.country.compareTo(b.country));
-        break;
-      case 'favorites':
-        filtered = filtered.where((r) => r.isFavorite).toList();
-        break;
-      default: // recent
-        filtered.sort((a, b) {
-          if (a.lastSentDate == null && b.lastSentDate == null) return 0;
-          if (a.lastSentDate == null) return 1;
-          if (b.lastSentDate == null) return -1;
-          return b.lastSentDate!.compareTo(a.lastSentDate!);
-        });
-    }
-
+  void _sortBeneficiaries(String sortBy) {
     setState(() {
-      _filteredRecipients = filtered;
+      _sortBy = sortBy;
     });
+    // Note: Server-side sorting would be implemented here in a real app
+    HapticFeedback.selectionClick();
   }
 
-  Future<void> _refreshRecipients() async {
+  Future<void> _refreshBeneficiaries() async {
     HapticFeedback.mediumImpact();
-    setState(() {
-      _isLoading = true;
-    });
-
-    await Future.delayed(const Duration(milliseconds: 1000));
-
-    if (mounted) {
-      setState(() {
-        _filteredRecipients = SampleData.sampleRecipients;
-        _isLoading = false;
-      });
-      _applyFiltersAndSort();
-    }
+    await ref.read(beneficiariesProvider.notifier).refresh();
   }
 
   @override
@@ -253,7 +184,7 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
         ).animate().shimmer(
           delay: const Duration(seconds: 2),
           duration: const Duration(seconds: 2),
-          color: Colors.white.withOpacity(0.3),
+          color: Colors.white.withValues(alpha: 0.3),
         ),
       ),
     );
@@ -268,7 +199,7 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -385,7 +316,7 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
               // Search Bar
               RecipientSearchWidget(
                 controller: _searchController,
-                onChanged: _searchRecipients,
+                onChanged: _searchBeneficiaries,
                 hintText: translationService.translate(
                   'recipients.screen.search',
                 ),
@@ -443,7 +374,7 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
             sortOptions.map((option) {
               final isSelected = _sortBy == option['key'];
               return GestureDetector(
-                onTap: () => _sortRecipients(option['key']!),
+                onTap: () => _sortBeneficiaries(option['key']!),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   margin: const EdgeInsets.only(right: 8),
@@ -481,35 +412,44 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
   }
 
   Widget _buildRecipientsList() {
-    if (_isLoading) {
-      return _buildLoadingState();
-    }
+    return Consumer(
+      builder: (context, ref, child) {
+        final beneficiariesState = ref.watch(beneficiariesProvider);
 
-    if (_filteredRecipients.isEmpty) {
-      return _buildEmptyState();
-    }
+        if (beneficiariesState.isLoading && beneficiariesState.beneficiaries.isEmpty) {
+          return _buildLoadingState();
+        }
 
-    return RefreshIndicator(
-      onRefresh: _refreshRecipients,
-      color: const Color(0xFF2475FF),
-      backgroundColor: Colors.white,
-      child: ListView.builder(
-        controller: _scrollController,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        itemCount: _filteredRecipients.length,
-        itemBuilder: (context, index) {
-          final recipient = _filteredRecipients[index];
-          return RecipientCardWidget(
-                recipient: recipient,
-                onSendTap: () => _onSendMoney(recipient),
-                onFavoriteTap: () => _onToggleFavorite(recipient),
-                onMoreTap: () => _onShowMoreOptions(recipient),
-              )
-              .animate(delay: Duration(milliseconds: 100 * index))
-              .fadeIn(duration: const Duration(milliseconds: 400))
-              .slideX(begin: 1, curve: Curves.easeOutBack);
-        },
-      ),
+        if (beneficiariesState.error != null) {
+          return _buildErrorState(beneficiariesState.error!);
+        }
+
+        final beneficiaries = beneficiariesState.filteredBeneficiaries;
+
+        if (beneficiaries.isEmpty) {
+          return _buildEmptyState();
+        }
+
+        return RefreshIndicator(
+          onRefresh: _refreshBeneficiaries,
+          color: const Color(0xFF2475FF),
+          backgroundColor: Colors.white,
+          child: ListView.builder(
+            controller: _scrollController,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            itemCount: beneficiaries.length + (beneficiariesState.isLoadingMore ? 1 : 0),
+            itemBuilder: (context, index) {
+              // Show loading indicator at the end when loading more
+              if (index == beneficiaries.length) {
+                return _buildLoadMoreIndicator();
+              }
+
+              final beneficiary = beneficiaries[index];
+              return _buildBeneficiaryCard(beneficiary, index);
+            },
+          ),
+        );
+      },
     );
   }
 
@@ -563,7 +503,7 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
             const SizedBox(height: 24),
 
             Text(
-                  _searchQuery.isNotEmpty
+                  _searchController.text.isNotEmpty
                       ? 'No recipients found'
                       : translationService.translate(
                         'recipients.screen.emptyState',
@@ -582,7 +522,7 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
             const SizedBox(height: 12),
 
             Text(
-                  _searchQuery.isNotEmpty
+                  _searchController.text.isNotEmpty
                       ? 'Try adjusting your search terms'
                       : translationService.translate(
                         'recipients.screen.emptyDescription',
@@ -630,266 +570,238 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
     );
   }
 
-  void _onSendMoney(RecipientModel recipient) {
-    HapticFeedback.mediumImpact();
 
-    // Show send money modal or navigate to send screen
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _buildSendMoneyModal(recipient),
-    );
-  }
 
-  Widget _buildSendMoneyModal(RecipientModel recipient) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.6,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
-        ),
-      ),
-      child: Column(
-        children: [
-          // Handle
-          Container(
-            width: 40,
-            height: 4,
-            margin: const EdgeInsets.only(top: 12),
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-
-          // Content
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                children: [
-                  Text(
-                    'Send Money to ${recipient.name}',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF181F30),
-                    ),
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Quick amount buttons
-                  Text(
-                    'Quick amounts',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF181F30),
-                    ),
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  Wrap(
-                    spacing: 12,
-                    runSpacing: 12,
-                    children:
-                        [50, 100, 200, 500].map((amount) {
-                          return ElevatedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              // Navigate to send screen with preset amount
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFF4F5F7),
-                              foregroundColor: const Color(0xFF181F30),
-                              elevation: 0,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                            ),
-                            child: Text('\$$amount'),
-                          );
-                        }).toList(),
-                  ),
-
-                  const Spacer(),
-
-                  // Action buttons
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.pop(context),
-                          child: const Text('Cancel'),
-                        ),
-                      ),
-
-                      const SizedBox(width: 12),
-
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            // Navigate to send screen
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF2475FF),
-                            foregroundColor: Colors.white,
-                          ),
-                          child: const Text('Send Money'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    ).animate().slideY(
-      begin: 1,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeOut,
-    );
-  }
-
-  void _onToggleFavorite(RecipientModel recipient) {
-    HapticFeedback.selectionClick();
-
-    // Update favorite status (in real app, this would update via provider/API)
-    setState(() {
-      final index = _filteredRecipients.indexWhere((r) => r.id == recipient.id);
-      if (index != -1) {
-        _filteredRecipients[index] = recipient.copyWith(
-          isFavorite: !recipient.isFavorite,
-        );
-      }
-    });
-
-    // Show snackbar
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          recipient.isFavorite
-              ? 'Removed from favorites'
-              : 'Added to favorites',
-        ),
-        duration: const Duration(seconds: 2),
-        backgroundColor: const Color(0xFF2475FF),
-      ),
-    );
-  }
-
-  void _onShowMoreOptions(RecipientModel recipient) {
-    HapticFeedback.lightImpact();
-
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _buildMoreOptionsModal(recipient),
-    );
-  }
-
-  Widget _buildMoreOptionsModal(RecipientModel recipient) {
-    final options = [
-      {
-        'icon': Icons.edit,
-        'title': 'Edit Recipient',
-        'color': const Color(0xFF2475FF),
-      },
-      {
-        'icon': Icons.history,
-        'title': 'View History',
-        'color': const Color(0xFF6E757D),
-      },
-      {
-        'icon': Icons.share,
-        'title': 'Share Contact',
-        'color': const Color(0xFF6E757D),
-      },
-      {
-        'icon': Icons.block,
-        'title': 'Block Recipient',
-        'color': const Color(0xFFFF3E24),
-      },
-    ];
-
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Handle
-          Container(
-            width: 40,
-            height: 4,
-            margin: const EdgeInsets.only(top: 12),
-            decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(2),
-            ),
-          ),
-
-          const SizedBox(height: 20),
-
-          // Header
-          Text(
-            recipient.name,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF181F30),
-            ),
-          ),
-
-          const SizedBox(height: 20),
-
-          // Options
-          ...options.map((option) {
-            return ListTile(
-              leading: Icon(
-                option['icon'] as IconData,
-                color: option['color'] as Color,
-              ),
-              title: Text(
-                option['title'] as String,
-                style: TextStyle(
-                  color: option['color'] as Color,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              onTap: () {
-                Navigator.pop(context);
-                HapticFeedback.lightImpact();
-                // Handle option tap
-              },
-            );
-          }).toList(),
-
-          const SizedBox(height: 20),
-        ],
-      ),
-    ).animate().slideY(
-      begin: 1,
-      duration: const Duration(milliseconds: 300),
-      curve: Curves.easeOut,
-    );
-  }
 
   void _onAddNewRecipient() {
     HapticFeedback.mediumImpact();
-    // Navigate to add recipient screen
+    // Navigate to add recipient screen with flag to return to recipients list
+    context.push('/add-new', extra: {'returnToRecipients': true});
+  }
+
+  Widget _buildBeneficiaryCard(Beneficiary beneficiary, int index) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          // Avatar
+          Container(
+            width: 50,
+            height: 50,
+            decoration: BoxDecoration(
+              color: const Color(0xFFFFC000),
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: Colors.grey.shade200,
+                width: 1,
+              ),
+            ),
+            child: Center(
+              child: Text(
+                beneficiary.firstName.isNotEmpty 
+                    ? beneficiary.firstName[0].toUpperCase()
+                    : beneficiary.name[0].toUpperCase(),
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF181F30),
+                ),
+              ),
+            ),
+          ),
+
+          const SizedBox(width: 16),
+
+          // Info
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  beneficiary.displayName,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF181F30),
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.location_on_outlined,
+                      size: 14,
+                      color: Colors.grey[600],
+                    ),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        beneficiary.country,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Last sent: ${_getTimeAgo(beneficiary.updatedAt)}',
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.grey[500],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // Send button
+          ElevatedButton(
+            onPressed: () => _onSendMoney(beneficiary),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF2475FF),
+              foregroundColor: Colors.white,
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: const Text(
+              'Send',
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    )
+    .animate(delay: Duration(milliseconds: 100 * index))
+    .fadeIn(duration: const Duration(milliseconds: 400))
+    .slideX(begin: 1, curve: Curves.easeOutBack);
+  }
+
+  String _getTimeAgo(DateTime dateTime) {
+    final now = DateTime.now();
+    final difference = now.difference(dateTime);
+
+    if (difference.inDays > 0) {
+      return '${difference.inDays}d ago';
+    } else if (difference.inHours > 0) {
+      return '${difference.inHours}h ago';
+    } else if (difference.inMinutes > 0) {
+      return '${difference.inMinutes}m ago';
+    } else {
+      return 'Just now';
+    }
+  }
+
+  Widget _buildErrorState(String error) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline,
+              size: 64,
+              color: Colors.red.shade400,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Oops! Something went wrong',
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF181F30),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              error,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[600],
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => _refreshBeneficiaries(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2475FF),
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text('Try Again'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoadMoreIndicator() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2475FF)),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'Loading more recipients...',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey[600],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _onSendMoney(Beneficiary beneficiary) {
+    HapticFeedback.mediumImpact();
+    // Navigate to send money flow
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Send money to ${beneficiary.displayName}'),
+        backgroundColor: const Color(0xFF2475FF),
+      ),
+    );
   }
 }

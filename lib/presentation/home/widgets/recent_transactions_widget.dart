@@ -1,43 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../providers/transaction_provider.dart';
+import '../../../core/models/transaction_model.dart';
+import '../../transaction/individual_transaction_screen.dart';
+import '../../transaction/transaction_screen.dart';
 
-class RecentTransactionsWidget extends StatelessWidget {
+class RecentTransactionsWidget extends ConsumerStatefulWidget {
   const RecentTransactionsWidget({Key? key}) : super(key: key);
 
   @override
+  ConsumerState<RecentTransactionsWidget> createState() => _RecentTransactionsWidgetState();
+}
+
+class _RecentTransactionsWidgetState extends ConsumerState<RecentTransactionsWidget> {
+  @override
+  void initState() {
+    super.initState();
+    // Load transactions when widget initializes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(transactionsProvider.notifier).fetchTransactions();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final dummyTransactions = [
-      {
-        'name': 'Jane Cooper',
-        'date': '24 May, 2024',
-        'action': 'Send',
-        'amount': '\$396.84',
-        'avatar': 'assets/image/users/homeUser4.png',
-      },
-      {
-        'name': 'Marvin McKinney',
-        'date': '24 May, 2024',
-        'action': 'Receive',
-        'amount': '\$396.84',
-        'avatar': 'assets/image/users/homeUser1.png',
-      },
-      {
-        'name': 'Esther Howard',
-        'date': '24 May, 2024',
-        'action': 'Receive',
-        'amount': '\$396.84',
-        'avatar': 'assets/image/users/homeUser2.png',
-      },
-      {
-        'name': 'Ralph Edwards',
-        'date': '24 May, 2024',
-        'action': 'Send',
-        'amount': '\$396.84',
-        'avatar': 'assets/image/users/homeUser3.png',
-      },
-    ];
+    final transactionsState = ref.watch(transactionsProvider);
+    
+    // Get latest 4 transactions
+    final recentTransactions = transactionsState.transactions.take(4).toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,7 +65,12 @@ class RecentTransactionsWidget extends StatelessWidget {
             TextButton(
               onPressed: () {
                 HapticFeedback.lightImpact();
-                context.push('/transaction');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TransactionScreen(),
+                  ),
+                );
               },
               style: TextButton.styleFrom(
                 backgroundColor: const Color(0xFF2475FF),
@@ -111,37 +108,202 @@ class RecentTransactionsWidget extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 16),
-        ...dummyTransactions.asMap().entries.map((entry) {
-          final index = entry.key;
-          final transaction = entry.value;
-          return Padding(
-            padding: const EdgeInsets.only(bottom: 12),
-            child: _buildTransactionItem(
-              transaction['name']!,
-              transaction['date']!,
-              transaction['action']!,
-              transaction['amount']!,
-              transaction['action'] == 'Send',
-              transaction['avatar']!,
-            )
-                .animate()
-                .fadeIn(
-                    duration: 400.ms,
-                    delay: Duration(milliseconds: index * 100))
-                .slideX(begin: -0.1, end: 0),
-          );
-        }).toList(),
+        
+        // Show loading state if no transactions yet
+        if (transactionsState.isLoading && recentTransactions.isEmpty)
+          _buildLoadingState(),
+        
+        // Show recent transactions
+        if (recentTransactions.isNotEmpty)
+          ...recentTransactions.asMap().entries.map((entry) {
+            final index = entry.key;
+            final transaction = entry.value;
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: _buildTransactionItem(transaction, index)
+                  .animate()
+                  .fadeIn(
+                      duration: 400.ms,
+                      delay: Duration(milliseconds: index * 100))
+                  .slideX(begin: -0.1, end: 0),
+            );
+          }),
+        
+        // Show empty state if no transactions
+        if (!transactionsState.isLoading && recentTransactions.isEmpty)
+          _buildEmptyState(),
       ],
     );
   }
 
-  Widget _buildTransactionItem(
+  Widget _buildLoadingState() {
+    return Column(
+      children: List.generate(4, (index) => 
+        Container(
+          margin: const EdgeInsets.only(bottom: 12),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      height: 16,
+                      width: 120,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      height: 12,
+                      width: 80,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Container(
+                    height: 20,
+                    width: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    height: 16,
+                    width: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Container(
+      padding: const EdgeInsets.all(32),
+      child: Column(
+        children: [
+          Icon(
+            Icons.receipt_long_outlined,
+            size: 48,
+            color: Colors.grey[400],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'No recent transactions',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[600],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Your transactions will appear here',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[500],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTransactionItem(Transaction transaction, int index) {
+    final isSend = transaction.type.toLowerCase().contains('to');
+    final recipientName = _getRecipientName(transaction);
+    final amount = '${transaction.amount.toStringAsFixed(2)} ${transaction.currency}';
+    final date = _formatDate(transaction.createdAt);
+    
+    return GestureDetector(
+      onTap: () {
+        HapticFeedback.lightImpact();
+        // Navigate to individual transaction screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => IndividualTransactionScreen(
+              transactionId: transaction.id,
+              transaction: transaction,
+            ),
+          ),
+        );
+      },
+      child: _buildTransactionContainer(recipientName, date, isSend, amount),
+    );
+  }
+
+  String _getRecipientName(Transaction transaction) {
+    // Try to get recipient name from destination details or use wallet address
+    if (transaction.destinationDetails != null) {
+      final walletAddress = transaction.destinationDetails!['walletAddress'] as String?;
+      if (walletAddress != null && walletAddress.isNotEmpty) {
+        // Format wallet address as name-like display
+        if (walletAddress.length > 8) {
+          return '${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}';
+        }
+        return walletAddress;
+      }
+    }
+    return 'Unknown Recipient';
+  }
+
+  String _formatDate(DateTime date) {
+    final now = DateTime.now();
+    final difference = now.difference(date);
+
+    if (difference.inDays == 0) {
+      return 'Today';
+    } else if (difference.inDays == 1) {
+      return 'Yesterday';
+    } else if (difference.inDays < 30) {
+      return '${difference.inDays} days ago';
+    } else {
+      final months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      return '${date.day} ${months[date.month - 1]}, ${date.year}';
+    }
+  }
+
+  Widget _buildTransactionContainer(
     String name,
     String date,
-    String action,
-    String amount,
     bool isSend,
-    String avatarPath,
+    String amount,
   ) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -150,7 +312,7 @@ class RecentTransactionsWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),
@@ -170,7 +332,7 @@ class RecentTransactionsWidget extends StatelessWidget {
                     shape: BoxShape.circle,
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withValues(alpha: 0.1),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),
@@ -178,21 +340,15 @@ class RecentTransactionsWidget extends StatelessWidget {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(24),
-                    child: Image.asset(
-                      avatarPath,
-                      width: 48,
-                      height: 48,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, _) => CircleAvatar(
-                        backgroundColor: Colors.grey.shade200,
-                        radius: 24,
-                        child: Text(
-                          name.substring(0, 1),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
-                          ),
+                    child: CircleAvatar(
+                      backgroundColor: const Color(0xFF4CAF50),
+                      radius: 24,
+                      child: Text(
+                        name.isNotEmpty ? name.substring(0, 1).toUpperCase() : '?',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
                         ),
                       ),
                     ),
@@ -251,7 +407,7 @@ class RecentTransactionsWidget extends StatelessWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      action,
+                      isSend ? 'Send' : 'Receive',
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w600,

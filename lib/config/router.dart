@@ -144,7 +144,9 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       GoRoute(
         path: '/add-new',
-        builder: (context, state) => const AddNewScreen(),
+        builder: (context, state) => AddNewScreen(
+          navigationParams: state.extra as Map<String, dynamic>?,
+        ),
       ),
 
       GoRoute(path: '/home', builder: (context, state) => const HomeScreen()),
