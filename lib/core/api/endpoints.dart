@@ -47,6 +47,9 @@ class Endpoints {
   // wallet endpoints
   static const String walletBalance = '/api/webhooks/walletBalance';
 
+  // NFT endpoints
+  static const String userNFTs = '/api/nft/user-nfts';
+
   // External API
   static const String countries = 'https://restcountries.com/v3.1/all';
 }

@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../core/models/nft_model.dart';
 import '../core/services/nft_service.dart';
+import '../core/api/api_client.dart';
+import 'auth_provider.dart';
 
 // NFT state classes
 abstract class NFTState {}
@@ -98,10 +100,17 @@ class NFTNotifier extends StateNotifier<NFTState> {
     state = NFTLoading();
     
     try {
-      final nfts = await _nftService.getUserNFTs();
-      final stats = NFTStats.fromNFTs(nfts);
-      
-      state = NFTLoaded(nfts: nfts, stats: stats);
+      final response = await _nftService.getUserNFTs();
+      if (response.success && response.data != null) {
+        final nfts = response.data!.nfts;
+        final stats = NFTStats.fromNFTs(nfts);
+        
+        state = NFTLoaded(nfts: nfts, stats: stats);
+      } else {
+        state = NFTError(
+          message: response.message ?? 'Failed to load NFT collection',
+        );
+      }
     } catch (e, stackTrace) {
       print('Error loading NFTs: $e');
       print('Stack trace: $stackTrace');
@@ -116,7 +125,16 @@ class NFTNotifier extends StateNotifier<NFTState> {
   // Verify NFT ownership
   Future<bool> verifyNFTOwnership(String contractAddress, String tokenId) async {
     try {
-      return await _nftService.verifyOwnership(contractAddress, tokenId);
+      // This method would need to be implemented in the service if needed
+      // For now, return true for owned NFTs
+      if (state is NFTLoaded) {
+        final loadedState = state as NFTLoaded;
+        return loadedState.nfts.any((nft) => 
+          nft.contractAddress == contractAddress && 
+          nft.tokenId == tokenId
+        );
+      }
+      return false;
     } catch (e) {
       print('Error verifying NFT ownership: $e');
       return false;
@@ -128,10 +146,9 @@ class NFTNotifier extends StateNotifier<NFTState> {
     try {
       if (state is NFTLoaded) {
         final loadedState = state as NFTLoaded;
-        return await _nftService.calculateFeeDiscount(
-          originalFee,
-          loadedState.nfts,
-        );
+        final totalDiscount = _nftService.calculateTotalDiscount(loadedState.nfts);
+        final discountAmount = originalFee * (totalDiscount / 100);
+        return originalFee - discountAmount;
       }
       return originalFee;
     } catch (e) {
@@ -143,7 +160,37 @@ class NFTNotifier extends StateNotifier<NFTState> {
   // Get tier benefits
   Future<Map<String, dynamic>> getTierBenefits() async {
     try {
-      return await _nftService.getTierBenefits();
+      // Return hardcoded benefits for now
+      // This could be expanded to use the benefitsTiers from the API response
+      return {
+        'tiers': [
+          {
+            'name': 'Common',
+            'discount': 1.5,
+            'boost': 10,
+          },
+          {
+            'name': 'Uncommon',
+            'discount': 3.0,
+            'boost': 20,
+          },
+          {
+            'name': 'Rare',
+            'discount': 6.0,
+            'boost': 40,
+          },
+          {
+            'name': 'Epic',
+            'discount': 10.0,
+            'boost': 75,
+          },
+          {
+            'name': 'Legendary',
+            'discount': 15.0,
+            'boost': 150,
+          },
+        ],
+      };
     } catch (e) {
       print('Error getting tier benefits: $e');
       return {};
@@ -175,7 +222,16 @@ class NFTNotifier extends StateNotifier<NFTState> {
 
 // Providers
 final nftServiceProvider = Provider<NFTService>((ref) {
-  return NFTService();
+  final authState = ref.watch(authProvider);
+  // Get the API client from the app's main configuration
+  final apiClient = ApiClient(baseUrl: 'https://flash-transfer.com');
+  
+  // Set token if user is authenticated
+  if (authState.status == AuthStatus.authenticated && authState.user?.token != null) {
+    apiClient.setToken(authState.user!.token!);
+  }
+  
+  return NFTService(apiClient);
 });
 
 final nftProvider = StateNotifierProvider<NFTNotifier, NFTState>((ref) {

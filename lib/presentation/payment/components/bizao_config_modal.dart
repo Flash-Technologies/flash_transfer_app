@@ -1,17 +1,21 @@
 // lib/presentation/payment/components/bizao_config_modal.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flash_transfer_app/config/theme.dart';
-import 'package:flash_transfer_app/presentation/common/app_button.dart';
 
 class BizaoConfigData {
+  final String firstName;
+  final String lastName;
+  final String email;
   final String country;
   final String countryCode;
   final String phoneNumber;
   final String language;
 
   BizaoConfigData({
+    required this.firstName,
+    required this.lastName,
+    required this.email,
     required this.country,
     required this.countryCode,
     required this.phoneNumber,
@@ -22,11 +26,13 @@ class BizaoConfigData {
 class BizaoConfigModal extends StatefulWidget {
   final Function(BizaoConfigData) onSubmit;
   final VoidCallback onCancel;
+  final String? selectedProvider;
 
   const BizaoConfigModal({
     Key? key,
     required this.onSubmit,
     required this.onCancel,
+    this.selectedProvider,
   }) : super(key: key);
 
   @override
@@ -39,39 +45,20 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
   late Animation<double> _scaleAnimation;
   late Animation<double> _fadeAnimation;
 
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
-  String? _selectedCountry;
   String? _selectedLanguage;
   bool _isSubmitting = false;
-
-  final List<Map<String, String>> _countries = [
-    {
-      'name': 'Ivory Coast',
-      'code': '+225',
-      'countryCode': 'ci',
-      'currency': 'XOF'
-    },
-    {
-      'name': 'Burkina Faso',
-      'code': '+226',
-      'countryCode': 'bf',
-      'currency': 'XOF'
-    },
-    {'name': 'Senegal', 'code': '+221', 'countryCode': 'sn', 'currency': 'XOF'},
-    {
-      'name': 'Cameroon',
-      'code': '+237',
-      'countryCode': 'cm',
-      'currency': 'XAF'
-    },
-    {'name': 'Togo', 'code': '+228', 'countryCode': 'tg', 'currency': 'XOF'},
-    {
-      'name': 'Democratic Republic of the Congo',
-      'code': '+243',
-      'countryCode': 'cd',
-      'currency': 'CDF'
-    },
-  ];
+  
+  // Fixed country data for Ivory Coast
+  final Map<String, String> _fixedCountry = {
+    'name': 'Ivory Coast',
+    'code': '+225',
+    'countryCode': 'ci',
+    'currency': 'XOF'
+  };
 
   final List<String> _languages = [
     'English',
@@ -80,7 +67,35 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
     'Portuguese',
   ];
 
-  final List<String> _availableOperators = ['Moov', 'Orange', 'Mtn', 'Wave'];
+  String _getServiceCode(String? provider) {
+    switch (provider?.toLowerCase()) {
+      case 'orange':
+        return 'CI_PAIEMENTORANGE_TP';
+      case 'wave':
+        return 'CI_PAIEMENTWAVE_TP';
+      case 'mtn':
+        return 'CI_PAIEMENTMTN_TP';
+      case 'moov':
+        return 'CI_PAIEMENTMOOV_TP';
+      default:
+        return 'CI_PAIEMENTWAVE_TP';
+    }
+  }
+
+  String _getProviderDisplayName(String? provider) {
+    switch (provider?.toLowerCase()) {
+      case 'orange':
+        return 'Orange Money';
+      case 'wave':
+        return 'Wave';
+      case 'mtn':
+        return 'MTN';
+      case 'moov':
+        return 'Moov Money';
+      default:
+        return 'Mobile Money Provider';
+    }
+  }
 
   @override
   void initState() {
@@ -112,17 +127,33 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
   @override
   void dispose() {
     _animationController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _emailController.dispose();
     _phoneController.dispose();
     super.dispose();
   }
 
   void _handleSubmit() async {
-    if (_selectedCountry == null ||
+    if (_firstNameController.text.isEmpty ||
+        _lastNameController.text.isEmpty ||
+        _emailController.text.isEmpty ||
         _phoneController.text.isEmpty ||
         _selectedLanguage == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please fill all required fields'),
+          content: Text('Please fill in this field.'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Basic email validation
+    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(_emailController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please enter a valid email address.'),
           backgroundColor: Colors.red,
         ),
       );
@@ -136,11 +167,12 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
     // Simulate API call delay
     await Future.delayed(const Duration(milliseconds: 500));
 
-    final country = _countries.firstWhere((c) => c['name'] == _selectedCountry);
-
     final configData = BizaoConfigData(
-      country: _selectedCountry!,
-      countryCode: country['countryCode']!,
+      firstName: _firstNameController.text,
+      lastName: _lastNameController.text,
+      email: _emailController.text,
+      country: _fixedCountry['name']!,
+      countryCode: _fixedCountry['countryCode']!,
       phoneNumber: _phoneController.text,
       language: _selectedLanguage!,
     );
@@ -163,8 +195,11 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
                 child: ScaleTransition(
                   scale: _scaleAnimation,
                   child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 24),
-                    padding: const EdgeInsets.all(24),
+                    margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 40),
+                    constraints: BoxConstraints(
+                      maxHeight: MediaQuery.of(context).size.height * 0.9,
+                      maxWidth: MediaQuery.of(context).size.width - 32,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
@@ -180,91 +215,206 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         // Header
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text(
-                              'Phone Information',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: AppTheme.textDarkColor,
-                              ),
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: const BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(color: Color(0xFFEBECED), width: 1),
                             ),
-                            IconButton(
-                              onPressed: widget.onCancel,
-                              icon: const Icon(Icons.close),
-                              style: IconButton.styleFrom(
-                                backgroundColor: Colors.grey.shade100,
-                                shape: const CircleBorder(),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'Phone Information',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.textDarkColor,
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(height: 24),
-
-                        // Country Dropdown
-                        _buildDropdownField(
-                          label: 'Country',
-                          value: _selectedCountry,
-                          items: _countries.map((c) => c['name']!).toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedCountry = value;
-                            });
-                          },
-                        ),
-
-                        const SizedBox(height: 16),
-
-                        // Phone Number Field
-                        _buildPhoneField(),
-
-                        const SizedBox(height: 16),
-
-                        // Language Dropdown
-                        _buildDropdownField(
-                          label: 'Language',
-                          value: _selectedLanguage,
-                          items: _languages,
-                          onChanged: (value) {
-                            setState(() {
-                              _selectedLanguage = value;
-                            });
-                          },
-                        ),
-
-                        const SizedBox(height: 20),
-
-                        // Available Operators
-                        _buildAvailableOperators(),
-
-                        const SizedBox(height: 32),
-
-                        // Action Buttons
-                        Row(
-                          children: [
-                            Expanded(
-                              child: AppButton(
-                                text: 'Cancel',
+                              IconButton(
                                 onPressed: widget.onCancel,
-                                backgroundColor: Colors.transparent,
-                                textColor: AppTheme.textGrayColor,
+                                icon: const Icon(Icons.close),
+                                style: IconButton.styleFrom(
+                                  backgroundColor: Colors.grey.shade100,
+                                  shape: const CircleBorder(),
+                                ),
                               ),
+                            ],
+                          ),
+                        ),
+
+                        // Scrollable Content
+                        Flexible(
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Selected Provider Display
+                                if (widget.selectedProvider != null) ...[
+                                  Container(
+                                    width: double.infinity,
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFE3F2FD),
+                                      borderRadius: BorderRadius.circular(8),
+                                      border: Border.all(color: const Color(0xFF1976D2), width: 1),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.info_outline,
+                                          color: Color(0xFF1976D2),
+                                          size: 20,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          'Selected Provider: ${_getProviderDisplayName(widget.selectedProvider)}',
+                                          style: const TextStyle(
+                                            color: Color(0xFF1976D2),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                ],
+
+                                // Customer Information Section
+                                const Text(
+                                  'Customer Information',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppTheme.textDarkColor,
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+
+                                // First Name Field
+                                _buildTextField(
+                                  label: 'First Name *',
+                                  controller: _firstNameController,
+                                  hintText: 'Enter your first name',
+                                  keyboardType: TextInputType.text,
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                // Last Name Field
+                                _buildTextField(
+                                  label: 'Last Name *',
+                                  controller: _lastNameController,
+                                  hintText: 'Enter your last name',
+                                  keyboardType: TextInputType.text,
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                // Email Field
+                                _buildTextField(
+                                  label: 'Email Address *',
+                                  controller: _emailController,
+                                  hintText: 'Enter your email address',
+                                  keyboardType: TextInputType.emailAddress,
+                                ),
+
+                                const SizedBox(height: 16),
+
+                                // Country Field (Fixed)
+                                _buildFixedCountryField(),
+
+                                const SizedBox(height: 16),
+
+                                // Phone Number Field
+                                _buildPhoneField(),
+
+                                const SizedBox(height: 16),
+
+                                // Language Dropdown
+                                _buildDropdownField(
+                                  label: 'Preferred Language *',
+                                  value: _selectedLanguage,
+                                  items: _languages,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _selectedLanguage = value;
+                                    });
+                                  },
+                                ),
+
+                                const SizedBox(height: 24),
+
+                                // Service Code
+                                Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFF5F5F5),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    'Service Code: ${_getServiceCode(widget.selectedProvider)}',
+                                    style: const TextStyle(
+                                      color: Color(0xFF4CAF50),
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: 'monospace',
+                                    ),
+                                  ),
+                                ),
+
+                                const SizedBox(height: 24),
+                              ],
                             ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: AppButton(
-                                text:
-                                    _isSubmitting ? 'Submitting...' : 'Submit',
-                                onPressed: () => _handleSubmit(),
-                                backgroundColor: AppTheme.primaryColor,
-                                textColor: Colors.black87,
-                                isDisabled: _isSubmitting,
+                          ),
+                        ),
+
+                        // Bottom Buttons
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: const BoxDecoration(
+                            border: Border(
+                              top: BorderSide(color: Color(0xFFEBECED), width: 1),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: OutlinedButton(
+                                  onPressed: widget.onCancel,
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: AppTheme.textGrayColor,
+                                    side: const BorderSide(color: Color(0xFFEBECED)),
+                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  child: const Text('Cancel'),
+                                ),
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: _isSubmitting ? null : _handleSubmit,
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppTheme.primaryColor,
+                                    foregroundColor: Colors.black87,
+                                    elevation: 0,
+                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                  ),
+                                  child: Text(_isSubmitting ? 'Submitting...' : 'Submit'),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -275,6 +425,94 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField({
+    required String label,
+    required TextEditingController controller,
+    required String hintText,
+    required TextInputType keyboardType,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: AppTheme.textDarkColor,
+          ),
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: controller,
+          keyboardType: keyboardType,
+          decoration: InputDecoration(
+            hintText: hintText,
+            hintStyle: const TextStyle(color: Color(0xFF9E9E9E)),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Color(0xFFEBECED)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Color(0xFFEBECED)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Color(0xFF1976D2), width: 2),
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFixedCountryField() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Country',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: AppTheme.textDarkColor,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          decoration: BoxDecoration(
+            border: Border.all(color: const Color(0xFFEBECED)),
+            borderRadius: BorderRadius.circular(8),
+            color: const Color(0xFFF8F9FA),
+          ),
+          child: Text(
+            '${_fixedCountry['name']} (${_fixedCountry['code']}) - ${_fixedCountry['currency']}',
+            style: const TextStyle(
+              fontSize: 16,
+              color: AppTheme.textDarkColor,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+        const SizedBox(height: 4),
+        const Text(
+          'currently supports only Ivory Coast',
+          style: TextStyle(
+            fontSize: 12,
+            color: Color(0xFF9E9E9E),
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+      ],
     );
   }
 
@@ -323,16 +561,11 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
   }
 
   Widget _buildPhoneField() {
-    final selectedCountry = _countries.firstWhere(
-      (c) => c['name'] == _selectedCountry,
-      orElse: () => {'code': '+225'},
-    );
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'Phone Number',
+          'Mobile Number *',
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -341,7 +574,6 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
         ),
         const SizedBox(height: 8),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
           decoration: BoxDecoration(
             border: Border.all(color: const Color(0xFFEBECED)),
             borderRadius: BorderRadius.circular(8),
@@ -349,63 +581,55 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
           ),
           child: Row(
             children: [
-              Text(
-                selectedCountry['code']!,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: AppTheme.textDarkColor,
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                decoration: const BoxDecoration(
+                  border: Border(
+                    right: BorderSide(color: Color(0xFFEBECED), width: 1),
+                  ),
+                ),
+                child: Text(
+                  _fixedCountry['code']!,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: AppTheme.textDarkColor,
+                  ),
                 ),
               ),
-              const SizedBox(width: 8),
-              Container(
-                width: 1,
-                height: 20,
-                color: const Color(0xFFEBECED),
-              ),
-              const SizedBox(width: 8),
               Expanded(
                 child: TextField(
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                    // CI mobile numbers are typically 8 digits
                   ],
                   decoration: const InputDecoration(
-                    hintText: '123456789',
+                    hintText: '07123456',
+                    hintStyle: TextStyle(color: Color(0xFF9E9E9E)),
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(vertical: 16),
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                   ),
                 ),
               ),
             ],
           ),
         ),
+        const SizedBox(height: 4),
+        const Text(
+          'Enter CI mobile number ( e.g., 07123456)',
+          style: TextStyle(
+            fontSize: 12,
+            color: Color(0xFF9E9E9E),
+            fontStyle: FontStyle.italic,
+          ),
+        ),
       ],
     );
   }
 
-  Widget _buildAvailableOperators() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Available Operators',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: AppTheme.primaryColor,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          _availableOperators.join(', '),
-          style: const TextStyle(
-            fontSize: 14,
-            color: AppTheme.textGrayColor,
-          ),
-        ),
-      ],
-    );
-  }
 }

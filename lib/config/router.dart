@@ -41,6 +41,7 @@ import 'package:flash_transfer_app/presentation/settings/language_screen.dart';
 // import 'package:flash_transfer_app/presentation/settings/settings_screen.dart';
 import 'package:flash_transfer_app/presentation/settings/privacy_screen.dart';
 import 'package:flash_transfer_app/presentation/payment/receiver_info_screen.dart';
+import 'package:flash_transfer_app/presentation/wallet/wallet_screen.dart';
 
 import '../core/models/nft_model.dart';
 import '../presentation/nft/nft_screen.dart';
@@ -79,7 +80,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       }
 
       // Protect authenticated routes
-      final protectedRoutes = ['/home', '/profile', '/transaction', '/edit-profile', '/notification'];
+      final protectedRoutes = ['/home', '/profile', '/transaction', '/edit-profile', '/notification', '/wallet'];
       if (protectedRoutes.contains(state.matchedLocation) && !isAuthenticated) {
         print("🔄 [ROUTER] Protected route access denied, redirecting to /sign-in");
         return '/sign-in';
@@ -371,6 +372,12 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/send-crypto-payment',
         builder: (context, state) => const SendCryptoPaymentScreen(),
+      ),
+
+      // Wallet screen
+      GoRoute(
+        path: '/wallet',
+        builder: (context, state) => const WalletScreen(),
       ),
     ],
   );

@@ -420,6 +420,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     title: 'Track a Transfer',
                     onTap: () => context.push('/track-transfer'),
                   ),
+                  ProfileMenuItemData(
+                    icon: Icons.account_balance_wallet_outlined,
+                    title: 'Wallet',
+                    onTap: () => context.push('/wallet'),
+                  ),
                 ],
                 0),
             _buildMenuSection(

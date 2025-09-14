@@ -3,33 +3,49 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/models/nft_model.dart';
+import '../../core/services/nft_service.dart';
+import '../../core/api/api_client.dart';
 import 'components/nft_card_widget.dart';
 import 'components/nft_filters_bar.dart';
 import '../../config/theme.dart';
+import '../../providers/nft_provider.dart';
 
-class NFTScreen extends StatefulWidget {
+class NFTScreen extends ConsumerStatefulWidget {
   const NFTScreen({super.key});
 
   @override
-  State<NFTScreen> createState() => _NFTScreenState();
+  ConsumerState<NFTScreen> createState() => _NFTScreenState();
 }
 
-class _NFTScreenState extends State<NFTScreen> with TickerProviderStateMixin {
+class _NFTScreenState extends ConsumerState<NFTScreen> with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late AnimationController _slideController;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _slideAnimation;
-
+  late NFTService _nftService;
+  
   NFTRarity? _selectedRarity;
   Blockchain? _selectedBlockchain;
   bool _showOnlyEligible = false;
+  
+  List<NFTModel> _allNFTs = [];
+  bool _isLoading = true;
+  String? _errorMessage;
+  DiscountSummary? _discountSummary;
 
   @override
   void initState() {
     super.initState();
     _setupAnimations();
     _playEntryAnimation();
+    _initializeService();
+    _loadNFTs();
+  }
+  
+  void _initializeService() {
+    _nftService = ref.read(nftServiceProvider);
   }
 
   void _setupAnimations() {
@@ -69,7 +85,39 @@ class _NFTScreenState extends State<NFTScreen> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  // Sample NFT data with enhanced variety
+  Future<void> _loadNFTs() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+    
+    try {
+      final response = await _nftService.getUserNFTs(
+        network: 'POLYGON',
+        testnet: false,
+      );
+      
+      if (response.success && response.data != null) {
+        setState(() {
+          _allNFTs = response.data!.nfts;
+          _discountSummary = response.data!.discountSummary;
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _errorMessage = response.message ?? 'Failed to load NFTs';
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Error loading NFTs: $e';
+        _isLoading = false;
+      });
+    }
+  }
+  
+  // Sample NFT data for fallback
   List<NFTModel> get _sampleNFTs => [
     const NFTModel(
       tokenId: "0x001",
@@ -189,7 +237,8 @@ class _NFTScreenState extends State<NFTScreen> with TickerProviderStateMixin {
   ];
 
   List<NFTModel> get _filteredNFTs {
-    return _sampleNFTs.where((nft) {
+    final nfts = _allNFTs.isEmpty ? _sampleNFTs : _allNFTs;
+    return nfts.where((nft) {
       if (_selectedRarity != null && nft.rarity != _selectedRarity) {
         return false;
       }
@@ -329,10 +378,17 @@ class _NFTScreenState extends State<NFTScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildCollectionStats() {
-    final totalDiscount = _sampleNFTs
-        .where((nft) => nft.isEligible)
-        .map((nft) => nft.discountRate)
-        .fold<double>(0, (sum, rate) => sum + rate);
+    double totalDiscount = 0;
+    
+    if (_discountSummary != null) {
+      totalDiscount = _discountSummary!.currentStackedDiscount;
+    } else {
+      final nfts = _allNFTs.isEmpty ? _sampleNFTs : _allNFTs;
+      totalDiscount = nfts
+          .where((nft) => nft.isEligible)
+          .map((nft) => nft.discountRate)
+          .fold<double>(0, (sum, rate) => sum + rate);
+    }
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -382,13 +438,26 @@ class _NFTScreenState extends State<NFTScreen> with TickerProviderStateMixin {
   }
 
   Widget _buildNFTGrid() {
+    if (_isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    
+    if (_errorMessage != null) {
+      return _buildErrorState();
+    }
+    
     if (_filteredNFTs.isEmpty) {
       return _buildEmptyState();
     }
 
-    return Container(
-      padding: const EdgeInsets.all(20),
-      child: MasonryGridView.count(
+    return RefreshIndicator(
+      onRefresh: _loadNFTs,
+      color: AppColors.primary,
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        child: MasonryGridView.count(
         crossAxisCount: 2,
         mainAxisSpacing: 16,
         crossAxisSpacing: 16,
@@ -413,10 +482,55 @@ class _NFTScreenState extends State<NFTScreen> with TickerProviderStateMixin {
             },
           );
         },
+        ),
       ),
     );
   }
 
+  Widget _buildErrorState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.error_outline,
+            size: 64,
+            color: Colors.red.shade400,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Error Loading NFTs',
+            style: TextStyle(
+              color: Colors.grey.shade700,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _errorMessage ?? 'An error occurred',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: _loadNFTs,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: const Text(
+              'Retry',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  
   Widget _buildEmptyState() {
     return Center(
       child: Column(

@@ -276,6 +276,7 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
           // Modal Overlay
           if (_showModal)
             BizaoConfigModal(
+              selectedProvider: selectedProvider,
               onSubmit: _handleModalSubmit,
               onCancel: _handleModalCancel,
             ),

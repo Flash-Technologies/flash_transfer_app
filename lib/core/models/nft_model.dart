@@ -186,13 +186,66 @@ class NFTModel {
   }
 
   factory NFTModel.fromJson(Map<String, dynamic> json) {
+    // Parse blockchain from string
+    Blockchain blockchain = Blockchain.ethereum;
+    if (json['blockchain'] != null) {
+      String blockchainStr = json['blockchain'].toString().toLowerCase();
+      if (blockchainStr.contains('polygon')) {
+        blockchain = Blockchain.polygon;
+      } else if (blockchainStr.contains('ethereum')) {
+        blockchain = Blockchain.ethereum;
+      } else if (blockchainStr.contains('arbitrum')) {
+        blockchain = Blockchain.arbitrum;
+      } else if (blockchainStr.contains('binance') || blockchainStr.contains('bsc')) {
+        blockchain = Blockchain.binance;
+      } else if (blockchainStr.contains('optimism')) {
+        blockchain = Blockchain.optimism;
+      }
+    }
+
+    // Parse rarity from string
+    NFTRarity rarity = NFTRarity.common;
+    if (json['rarity'] != null) {
+      String rarityStr = json['rarity'].toString().toUpperCase();
+      switch (rarityStr) {
+        case 'COMMON':
+          rarity = NFTRarity.common;
+          break;
+        case 'UNCOMMON':
+          rarity = NFTRarity.uncommon;
+          break;
+        case 'RARE':
+          rarity = NFTRarity.rare;
+          break;
+        case 'EPIC':
+          rarity = NFTRarity.epic;
+          break;
+        case 'LEGENDARY':
+          rarity = NFTRarity.legendary;
+          break;
+      }
+    }
+
+    // Handle discount benefits if present
+    double discountRate = 0.0;
+    if (json['discountBenefits'] != null && json['discountBenefits']['feeDiscountPercentage'] != null) {
+      discountRate = (json['discountBenefits']['feeDiscountPercentage'] as num).toDouble();
+    } else if (json['discountRate'] != null) {
+      discountRate = (json['discountRate'] as num).toDouble();
+    }
+
+    // Handle rank boost
+    int rankBoost = 0;
+    if (json['discountBenefits'] != null && json['discountBenefits']['rankingBoost'] != null) {
+      rankBoost = json['discountBenefits']['rankingBoost'] as int;
+    } else if (json['rankBoost'] != null) {
+      rankBoost = json['rankBoost'] as int;
+    }
+
     return NFTModel(
       tokenId: json['tokenId'] as String,
       contractAddress: json['contractAddress'] as String,
-      blockchain: Blockchain.values.firstWhere(
-        (e) => e.name == json['blockchain'],
-        orElse: () => Blockchain.ethereum,
-      ),
+      blockchain: blockchain,
       name: json['name'] as String,
       description: json['description'] as String,
       imageUrl: json['imageUrl'] as String,
@@ -201,12 +254,9 @@ class NFTModel {
               ?.map((attr) => NFTAttribute.fromJson(attr))
               .toList() ??
           [],
-      rarity: NFTRarity.values.firstWhere(
-        (e) => e.name == json['rarity'],
-        orElse: () => NFTRarity.common,
-      ),
-      discountRate: (json['discountRate'] as num?)?.toDouble() ?? 0.0,
-      rankBoost: json['rankBoost'] as int? ?? 0,
+      rarity: rarity,
+      discountRate: discountRate,
+      rankBoost: rankBoost,
       isEligible: json['isEligible'] as bool? ?? false,
       isExternal: json['isExternal'] as bool? ?? true,
       acquiredDate: json['acquiredDate'] != null
@@ -240,10 +290,10 @@ class NFTAttribute {
 
   factory NFTAttribute.fromJson(Map<String, dynamic> json) {
     return NFTAttribute(
-      traitType: json['trait_type'] as String,
+      traitType: json['trait_type'] as String? ?? json['traitType'] as String? ?? '',
       value: json['value'],
-      displayType: json['display_type'] as String?,
-      maxValue: json['max_value'] as int?,
+      displayType: json['display_type'] as String? ?? json['displayType'] as String?,
+      maxValue: json['max_value'] as int? ?? json['maxValue'] as int?,
     );
   }
 }
