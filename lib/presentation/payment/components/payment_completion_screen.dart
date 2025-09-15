@@ -190,7 +190,7 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
       backgroundColor: AppColors.background,
       body: SafeArea(
         child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
+          physics: const ClampingScrollPhysics(),
           child: Padding(
             padding: EdgeInsets.all(AppSpacing.paddingL),
             child: Column(
