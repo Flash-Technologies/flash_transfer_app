@@ -125,7 +125,7 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
 
     final amount = double.tryParse(exchangeForm.sendAmount) ?? 0;
 
-    if (amount <= 0 || paymentState.selectedWalletAddress == null) {
+    if (amount <= 0 || paymentState.selectedNetwork == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
@@ -159,7 +159,6 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
               sourceCurrency: exchangeForm.fromCurrency!.code,
               destinationCurrency: exchangeForm.toCurrency!.code,
               blockchainNetwork: blockchainNetwork,
-              walletAddress: paymentState.selectedWalletAddress!,
               countryCode: configData.countryCode,
               paymentMethod: selectedProvider!,
               firstName: configData.firstName,

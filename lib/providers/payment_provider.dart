@@ -282,7 +282,7 @@ class PaymentNotifier extends StateNotifier<PaymentState> {
     required String sourceCurrency,
     required String destinationCurrency,
     required String blockchainNetwork,
-    required String walletAddress,
+    String? walletAddress,
     required String countryCode,
     required String paymentMethod,
     required String? firstName,
@@ -320,7 +320,6 @@ class PaymentNotifier extends StateNotifier<PaymentState> {
       state = state.copyWith(
         estimateData: estimate,
         estimateStatus: PaymentStatus.success,
-        selectedWalletAddress: walletAddress,
       );
 
       print('PaymentProvider: State updated, returning true');

@@ -164,7 +164,7 @@ class TransactionService {
     required String sourceCurrency,
     required String destinationCurrency,
     required String blockchainNetwork,
-    required String walletAddress,
+    String? walletAddress,
     required String countryCode,
     required String paymentMethod,
     required String? firstName,
