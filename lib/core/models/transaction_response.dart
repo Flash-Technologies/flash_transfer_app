@@ -114,7 +114,7 @@ class TransactionResponse {
       destinationType: json['destinationType'] as String,
       status: json['status'] as String,
       userId: json['userId'] as int,
-      beneficiaryId: json['beneficiaryId'] as String?,
+      beneficiaryId: json['beneficiaryId']?.toString(),
       blockchainTxHash: json['blockchainTxHash'] as String?,
       destinationBlockchainTxHash:
           json['destinationBlockchainTxHash'] as String?,
@@ -152,7 +152,7 @@ class TransactionResponse {
       useSystemLiquidity: json['useSystemLiquidity'] as bool,
       systemLiquidityWallet: json['systemLiquidityWallet'] as String?,
       isUserManagedSourceWallet: json['isUserManagedSourceWallet'] as bool,
-      message: json['message'] as String,
+      message: json['message'] as String? ?? '',
     );
   }
 

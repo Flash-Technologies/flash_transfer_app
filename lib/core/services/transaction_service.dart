@@ -261,38 +261,84 @@ class TransactionService {
     }
   }
 
-  /// Create crypto-to-cash transaction
+  /// Create crypto-to-fiat transaction
   Future<TransactionResponse> createCryptoToCashTransaction({
     required double amount,
     required String sourceCurrency,
     required String destinationCurrency,
     required String blockchainNetwork,
-    required String walletAddress,
     required String countryCode,
+    required String? firstName,
+    required String? lastName,
+    required String? email,
+    required String? phoneNumber,
     required String paymentMethod,
-    required String language,
-    required String paymentChannel,
-    required Map<String, dynamic> mobileMoneyDetails,
   }) async {
     try {
-      // Use the same payload format as the estimate API
+      // Convert phone prefix to country code if needed
+      String actualCountryCode = countryCode;
+      if (countryCode.startsWith('+')) {
+        switch (countryCode) {
+          case '+225':
+            actualCountryCode = 'ci';
+            break;
+          case '+221':
+            actualCountryCode = 'sn';
+            break;
+          case '+223':
+            actualCountryCode = 'ml';
+            break;
+          case '+226':
+            actualCountryCode = 'bf';
+            break;
+          default:
+            actualCountryCode = 'ci';
+        }
+      }
+
+      // Convert provider to correct format
+      String apiPaymentMethod;
+      switch (paymentMethod.toLowerCase()) {
+        case 'orange':
+          apiPaymentMethod = 'ORANGE';
+          break;
+        case 'wave':
+          apiPaymentMethod = 'WAVE';
+          break;
+        case 'mtn':
+          apiPaymentMethod = 'MTN';
+          break;
+        case 'moov':
+          apiPaymentMethod = 'MOOV';
+          break;
+        default:
+          apiPaymentMethod = paymentMethod.toUpperCase();
+      }
+
       final payload = {
         'amount': amount,
         'sourceCurrency': sourceCurrency,
         'destinationCurrency': destinationCurrency,
         'blockchainNetwork': blockchainNetwork,
         'withdrawalMethod': 'mobile_money',
-        'countryCode': countryCode,
+        'countryCode': actualCountryCode,
+        'customerInfo': {
+          'firstName': firstName ?? 'Test',
+          'lastName': lastName ?? 'User',
+          'email': email ?? 'test@example.com',
+          'phoneNumber': phoneNumber ?? '33749928528',
+        },
+        'mobileMoneyProvider': apiPaymentMethod,
         'mobileMoneyDetails': {
-          'phoneNumber':
-              mobileMoneyDetails['phoneNumber']?.toString() ?? '7977596822',
-          'provider': paymentMethod.toUpperCase(),
-          'country': countryCode,
-        }
+          'phoneNumber': phoneNumber ?? '33749928528',
+          'provider': apiPaymentMethod,
+        },
+        'beneficiaryId': 18,
+        'webhookUrl': 'https://webhook.site/your-test-webhook-id',
       };
 
       print(
-          '🚀 TransactionService: Creating crypto-to-cash transaction with payload: $payload');
+          '🚀 TransactionService: Creating crypto-to-fiat transaction with payload: $payload');
 
       final response = await _apiClient.post(
         Endpoints.createCryptoToCashTransaction,
@@ -300,20 +346,22 @@ class TransactionService {
       );
 
       print(
-          '📞 TransactionService: Crypto-to-cash creation response: ${response.statusCode}');
+          '📞 TransactionService: Crypto-to-fiat creation response: ${response.statusCode}');
       print('📦 TransactionService: Response data: ${response.data}');
 
       if (response.statusCode == 200 && response.data['success'] == true) {
-        return TransactionResponse.fromJson(response.data['data']);
+        final transactionData = Map<String, dynamic>.from(response.data['data']);
+        transactionData['message'] = response.data['message'] ?? '';
+        return TransactionResponse.fromJson(transactionData);
       } else {
         throw Exception(
-            'Failed to create crypto-to-cash transaction: ${response.data['message'] ?? 'Unknown error'}');
+            'Failed to create crypto-to-fiat transaction: ${response.data['message'] ?? 'Unknown error'}');
       }
     } catch (e) {
       print(
-          '❌ TransactionService: Error creating crypto-to-cash transaction: $e');
+          '❌ TransactionService: Error creating crypto-to-fiat transaction: $e');
       throw Exception(
-          'Failed to create crypto-to-cash transaction: ${e.toString()}');
+          'Failed to create crypto-to-fiat transaction: ${e.toString()}');
     }
   }
 

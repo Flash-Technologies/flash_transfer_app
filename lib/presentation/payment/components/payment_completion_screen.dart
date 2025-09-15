@@ -139,28 +139,52 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
     final paymentUrl = transactionData?.paymentUrl;
     final isComplete = widget.status == 'complete';
     final isPending = widget.status == 'pending';
+    
+    // Check if this is crypto-to-fiat transaction
+    final isCryptoToFiat = transactionData?.type == 'CRYPTO_TO_CASH' || 
+        transactionData?.type == 'CRYPTO_TO_FIAT' ||
+        (exchangeForm.fromCurrency?.type == 'CRYPTO' && exchangeForm.toCurrency?.type == 'FIAT');
 
-    // Build dynamic transaction details
-    final Map<String, String> transactionDetails = {
-      'You Sent':
-          '${exchangeForm.sendAmount} ${exchangeForm.fromCurrency?.code ?? 'USD'}',
-      'Transfer Rate': estimateData != null
-          ? '1 ${exchangeForm.fromCurrency?.code} = ${estimateData.exchangeRate.rate.toStringAsFixed(6)} ${exchangeForm.toCurrency?.code}'
-          : '1 ${exchangeForm.fromCurrency?.code ?? 'USD'} = 1 ${exchangeForm.toCurrency?.code ?? 'ETH'}',
-      'Fee': estimateData != null
-          ? '${estimateData.fees.totalFee.toStringAsFixed(2)} ${exchangeForm.fromCurrency?.code}'
-          : '2.50 ${exchangeForm.fromCurrency?.code ?? 'USD'}',
-      'Transaction Type': transactionData?.type ?? 'CASH_TO_CRYPTO',
-      'Status':
-          isPending ? 'Pending' : (isComplete ? 'Completed' : 'Processing'),
-      'Created On':
-          transactionData?.createdAt.toString() ?? DateTime.now().toString(),
-      'Recipient Gets':
-          '${exchangeForm.receiveAmount} ${exchangeForm.toCurrency?.code ?? 'ETH'}',
-      'Total to pay': estimateData != null
-          ? '${estimateData.results.totalAmountToPay.toStringAsFixed(2)} ${exchangeForm.fromCurrency?.code}'
-          : '${(double.tryParse(exchangeForm.sendAmount) ?? 100.0) + 2.50} ${exchangeForm.fromCurrency?.code ?? 'USD'}',
-    };
+    // Build dynamic transaction details for crypto-to-fiat
+    Map<String, String> transactionDetails;
+    
+    if (isCryptoToFiat && transactionData != null) {
+      // Crypto-to-fiat specific details
+      transactionDetails = {
+        'You Sent': '${transactionData.amount} ${transactionData.currency ?? exchangeForm.fromCurrency?.code ?? 'ETH'}',
+        'Transfer Rate': '1 ${transactionData.currency ?? 'ETH'} = ${transactionData.exchangeRate?.toStringAsFixed(2) ?? estimateData?.exchangeRate.rate.toStringAsFixed(2) ?? '0'} ${exchangeForm.toCurrency?.code ?? 'XOF'}',
+        'Fee': '${transactionData.fee?.toString() ?? '2e-8'} ${transactionData.currency ?? 'ETH'}',
+        'Status': transactionData.status ?? 'PENDING',
+        'Created On': transactionData.createdAt?.toString() ?? DateTime.now().toString(),
+        'Base Fee': transactionData.feeDetails?['baseFee']?.toString() ?? '2e-8',
+        'NFT discount': transactionData.feeDetails?['nftDiscount']?.toString() ?? '0',
+        'Loyalty Discount': transactionData.feeDetails?['loyaltyDiscount']?.toString() ?? '0',
+        'Total to Pay': '${transactionData.totalAmount ?? 0.00000102} ${transactionData.currency ?? 'ETH'}',
+        'Tracking Number': transactionData.trackingNumber ?? trackingNumber,
+      };
+    } else {
+      // Original transaction details for other types
+      transactionDetails = {
+        'You Sent':
+            '${exchangeForm.sendAmount} ${exchangeForm.fromCurrency?.code ?? 'USD'}',
+        'Transfer Rate': estimateData != null
+            ? '1 ${exchangeForm.fromCurrency?.code} = ${estimateData.exchangeRate.rate.toStringAsFixed(6)} ${exchangeForm.toCurrency?.code}'
+            : '1 ${exchangeForm.fromCurrency?.code ?? 'USD'} = 1 ${exchangeForm.toCurrency?.code ?? 'ETH'}',
+        'Fee': estimateData != null
+            ? '${estimateData.fees.totalFee.toStringAsFixed(2)} ${exchangeForm.fromCurrency?.code}'
+            : '2.50 ${exchangeForm.fromCurrency?.code ?? 'USD'}',
+        'Transaction Type': transactionData?.type ?? 'CASH_TO_CRYPTO',
+        'Status':
+            isPending ? 'Pending' : (isComplete ? 'Completed' : 'Processing'),
+        'Created On':
+            transactionData?.createdAt.toString() ?? DateTime.now().toString(),
+        'Recipient Gets':
+            '${exchangeForm.receiveAmount} ${exchangeForm.toCurrency?.code ?? 'ETH'}',
+        'Total to pay': estimateData != null
+            ? '${estimateData.results.totalAmountToPay.toStringAsFixed(2)} ${exchangeForm.fromCurrency?.code}'
+            : '${(double.tryParse(exchangeForm.sendAmount) ?? 100.0) + 2.50} ${exchangeForm.fromCurrency?.code ?? 'USD'}',
+      };
+    }
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -188,14 +212,14 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
 
                 SizedBox(height: AppSpacing.marginL),
 
-                // Payment Instructions if pending
-                // if (isPending && paymentUrl != null) ...[
-                //   _buildPaymentInstructions(paymentUrl),
-                //   SizedBox(height: AppSpacing.marginL),
-                // ],
+                // Payment Instructions if pending and crypto-to-fiat
+                if (isPending && isCryptoToFiat && transactionData != null) ...[
+                  _buildCryptoPaymentInstructions(transactionData),
+                  SizedBox(height: AppSpacing.marginL),
+                ],
 
                 // Action Buttons
-                _buildActionButtons(context, isPending, paymentUrl),
+                _buildActionButtons(context, isPending, paymentUrl, isCryptoToFiat),
 
                 SizedBox(height: AppSpacing.marginL),
               ],
@@ -566,6 +590,165 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
         );
   }
 
+  Widget _buildCryptoPaymentInstructions(dynamic transactionData) {
+    // Extract payment details from transaction data
+    final recipientAddress = transactionData.destinationDetails?['transferData']?['address'] ?? 
+                             transactionData.sourceDetails?['address'] ?? 
+                             '0xb0BcBd...1eBc7730';
+    final amount = transactionData.totalAmount ?? 0.00000102;
+    final network = transactionData.blockchainNetwork ?? 'ethereum';
+    final currency = transactionData.currency ?? 'ETH';
+    
+    return Container(
+      padding: EdgeInsets.all(AppSpacing.paddingL),
+      decoration: BoxDecoration(
+        color: AppColors.cardBackground,
+        borderRadius: BorderRadius.circular(AppRadius.radiusL),
+        border: Border.all(color: AppColors.border),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Payment Instructions',
+            style: AppTextStyles.heading3.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          )
+              .animate()
+              .fadeIn(
+                duration: AppAnimations.normalAnimation,
+                delay: Duration(milliseconds: 900),
+              )
+              .slideY(begin: 0.1, end: 0),
+          
+          SizedBox(height: AppSpacing.marginL),
+          
+          Text(
+            'Send exactly $amount $currency to the provided address to continue.',
+            style: AppTextStyles.bodyMedium.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ).animate().fadeIn(
+                duration: AppAnimations.normalAnimation,
+                delay: Duration(milliseconds: 1000),
+              ),
+          
+          SizedBox(height: AppSpacing.marginL),
+          
+          // Recipient Address
+          _buildInstructionRow('Recipient Address', recipientAddress, canCopy: true),
+          
+          SizedBox(height: AppSpacing.marginM),
+          
+          // Amount
+          _buildInstructionRow('Amount', '$amount $currency'),
+          
+          SizedBox(height: AppSpacing.marginM),
+          
+          // Network
+          _buildInstructionRow('Network', _formatNetworkName(network)),
+          
+          SizedBox(height: AppSpacing.marginM),
+          
+          // Currency Type
+          _buildInstructionRow('Currency Type', currency),
+        ],
+      ),
+    ).animate()
+        .fadeIn(
+          duration: AppAnimations.normalAnimation,
+          delay: Duration(milliseconds: 800),
+        )
+        .slideY(
+          begin: 0.1,
+          end: 0,
+          curve: AppAnimations.standardCurve,
+        );
+  }
+  
+  Widget _buildInstructionRow(String label, String value, {bool canCopy = false}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          label,
+          style: AppTextStyles.bodyMedium.copyWith(
+            color: AppColors.textSecondary,
+          ),
+        ),
+        Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Flexible(
+                child: Text(
+                  canCopy && value.length > 20 
+                      ? '${value.substring(0, 10)}...${value.substring(value.length - 10)}'
+                      : value,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              if (canCopy) ...[
+                SizedBox(width: AppSpacing.marginS),
+                InkWell(
+                  onTap: () => _copyToClipboard(value),
+                  child: Icon(
+                    Icons.copy,
+                    size: 16,
+                    color: AppColors.primaryBlue,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+  
+  String _formatNetworkName(String network) {
+    switch (network.toLowerCase()) {
+      case 'ethereum':
+        return 'Ethereum';
+      case 'polygon':
+        return 'Polygon';
+      case 'bsc':
+        return 'BSC';
+      default:
+        return network;
+    }
+  }
+  
+  void _copyToClipboard(String text) async {
+    HapticFeedback.mediumImpact();
+    await Clipboard.setData(ClipboardData(text: text));
+    
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Copied to clipboard!'),
+          backgroundColor: AppColors.success,
+          behavior: SnackBarBehavior.floating,
+          duration: Duration(seconds: 2),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppRadius.radiusM),
+          ),
+        ),
+      );
+    }
+  }
+
   Widget _buildPaymentInstructions(String paymentUrl) {
     return Container(
       margin: EdgeInsets.only(bottom: AppSpacing.marginL),
@@ -621,11 +804,60 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
   }
 
   Widget _buildActionButtons(
-      BuildContext context, bool isPending, String? paymentUrl) {
+      BuildContext context, bool isPending, String? paymentUrl, bool isCryptoToFiat) {
     return Container(
       margin: EdgeInsets.only(bottom: AppSpacing.marginL),
       child: Column(
         children: [
+          // Connect Wallet & Pay Button for crypto-to-fiat
+          if (isPending && isCryptoToFiat) ...[
+            ElevatedButton(
+              onPressed: () {
+                HapticFeedback.selectionClick();
+                // TODO: Implement wallet connection and payment
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Connect wallet feature coming soon!'),
+                    backgroundColor: AppColors.primaryBlue,
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primaryYellow,
+                foregroundColor: AppColors.textPrimary,
+                elevation: 0,
+                padding: EdgeInsets.symmetric(vertical: AppSpacing.paddingM),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.buttonRadius),
+                ),
+                minimumSize: const Size(double.infinity, 56),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.account_balance_wallet, size: 20),
+                  SizedBox(width: AppSpacing.marginS),
+                  Text(
+                    'Connect Wallet & Pay',
+                    style: AppTextStyles.buttonMedium,
+                  ),
+                ],
+              ),
+            )
+                .animate()
+                .fadeIn(
+                  duration: AppAnimations.normalAnimation,
+                  delay: Duration(milliseconds: 1100),
+                )
+                .scale(
+                  begin: const Offset(0.9, 0.9),
+                  end: const Offset(1.0, 1.0),
+                  curve: AppAnimations.emphasizedCurve,
+                ),
+            
+            SizedBox(height: AppSpacing.marginM),
+          ],
+          
           // Track Order Button
           ElevatedButton(
             onPressed: () {
@@ -633,9 +865,16 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
               context.push('/track-transfer');
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryYellow,
-              foregroundColor: AppColors.textPrimary,
+              backgroundColor: isCryptoToFiat && isPending 
+                  ? Colors.transparent 
+                  : AppColors.primaryYellow,
+              foregroundColor: isCryptoToFiat && isPending 
+                  ? AppColors.primaryBlue 
+                  : AppColors.textPrimary,
               elevation: 0,
+              side: isCryptoToFiat && isPending 
+                  ? BorderSide(color: AppColors.primaryBlue) 
+                  : BorderSide.none,
               padding: EdgeInsets.symmetric(vertical: AppSpacing.paddingM),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppRadius.buttonRadius),
@@ -649,7 +888,11 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
                 SizedBox(width: AppSpacing.marginS),
                 Text(
                   'Track Order',
-                  style: AppTextStyles.buttonMedium,
+                  style: AppTextStyles.buttonMedium.copyWith(
+                    color: isCryptoToFiat && isPending 
+                        ? AppColors.primaryBlue 
+                        : null,
+                  ),
                 ),
               ],
             ),

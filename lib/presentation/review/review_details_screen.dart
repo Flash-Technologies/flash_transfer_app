@@ -180,11 +180,11 @@ class ReviewDetailsScreen extends ConsumerWidget {
     final isCryptoToCash =
         fromCurrency?.type == 'CRYPTO' && toCurrency?.type == 'FIAT';
 
-    // For crypto-to-cash, we should already have the wallet address from the crypto payment screen
-    if (isCryptoToCash && paymentState.selectedWalletAddress == null) {
+    // For crypto-to-cash, we don't need a wallet address, just the selected network
+    if (isCryptoToCash && paymentState.selectedNetwork == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please go back and confirm your wallet address first'),
+          content: Text('Please go back and select a blockchain network first'),
           backgroundColor: Colors.red,
         ),
       );
@@ -234,6 +234,9 @@ class ReviewDetailsScreen extends ConsumerWidget {
       bool success;
 
       if (isCryptoToCash) {
+        // Get mobile money details from payment state
+        final mobileMoneyDetails = paymentState.mobileMoneyDetails;
+        
         // Create crypto-to-cash transaction
         success = await ref
             .read(paymentProvider.notifier)
@@ -241,15 +244,13 @@ class ReviewDetailsScreen extends ConsumerWidget {
               amount: amount,
               sourceCurrency: exchangeForm.fromCurrency!.code,
               destinationCurrency: exchangeForm.toCurrency!.code,
-              blockchainNetwork:
-                  'ethereum', // TODO: Get from blockchain selection
-              walletAddress: paymentState.selectedWalletAddress!,
-              countryCode: 'ci', // TODO: Get from user location or selection
-              paymentMethod:
-                  'orange', // TODO: Get from mobile money provider selection
-              language: 'en', // TODO: Get from app language setting
-              phoneNumber: '1231231232', // TODO: Get from mobile money details
-              provider: 'orange', // TODO: Get from provider selection
+              blockchainNetwork: paymentState.selectedNetwork ?? 'ethereum',
+              countryCode: mobileMoneyDetails?['countryCode'] ?? 'ci',
+              paymentMethod: paymentState.selectedProvider ?? 'wave',
+              firstName: mobileMoneyDetails?['firstName'],
+              lastName: mobileMoneyDetails?['lastName'],
+              email: mobileMoneyDetails?['email'],
+              phoneNumber: mobileMoneyDetails?['phoneNumber'],
             );
       } else {
         // Create cash-to-crypto transaction (existing flow)

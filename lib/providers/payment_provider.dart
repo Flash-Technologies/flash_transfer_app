@@ -334,24 +334,24 @@ class PaymentNotifier extends StateNotifier<PaymentState> {
     }
   }
 
-  /// Create crypto to cash transaction
+  /// Create crypto to fiat transaction
   Future<bool> createCryptoToCashTransaction({
     required double amount,
     required String sourceCurrency,
     required String destinationCurrency,
     required String blockchainNetwork,
-    required String walletAddress,
     required String countryCode,
     required String paymentMethod,
-    required String language,
-    required String phoneNumber,
-    required String provider,
+    required String? firstName,
+    required String? lastName,
+    required String? email,
+    required String? phoneNumber,
   }) async {
     print('PaymentProvider: Starting createCryptoToCashTransaction');
     print(
         'PaymentProvider: Data - amount: $amount, sourceCurrency: $sourceCurrency, destinationCurrency: $destinationCurrency');
     print(
-        'PaymentProvider: Network: $blockchainNetwork, Wallet: $walletAddress');
+        'PaymentProvider: Network: $blockchainNetwork, Country: $countryCode');
 
     state = state.copyWith(
       transactionStatus: PaymentStatus.loading,
@@ -359,26 +359,18 @@ class PaymentNotifier extends StateNotifier<PaymentState> {
     );
 
     try {
-      // Use mobile money details from state if available
-      final mobileDetails = state.mobileMoneyDetails ??
-          {
-            'phoneNumber': phoneNumber,
-            'provider': provider,
-            'country': countryCode,
-          };
-
       final transaction =
           await _transactionService.createCryptoToCashTransaction(
         amount: amount,
         sourceCurrency: sourceCurrency,
         destinationCurrency: destinationCurrency,
         blockchainNetwork: blockchainNetwork,
-        walletAddress: walletAddress,
         countryCode: countryCode,
         paymentMethod: paymentMethod,
-        language: language,
-        paymentChannel: 'web',
-        mobileMoneyDetails: mobileDetails,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        phoneNumber: phoneNumber,
       );
 
       print(
