@@ -499,11 +499,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  Future<bool> loginWithWallet(String walletAddress, String signature) async {
+  Future<bool> loginWithWallet(String walletAddress, String signature, {String countryName = 'Unknown'}) async {
     _updateState(state.copyWith(isLoading: true));
     try {
       final response = await _authService.authenticateWithWallet(
-        WalletAuthRequest(walletAddress: walletAddress),
+        WalletAuthRequest(walletAddress: walletAddress, countryName: countryName),
       );
 
       if (response.success && response.data != null) {
@@ -549,7 +549,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
       // For this implementation, since we're just sending the wallet address
       // We'll use a placeholder for signature requirement
       final response = await _authService.authenticateWithWallet(
-        WalletAuthRequest(walletAddress: walletAddress),
+        WalletAuthRequest(walletAddress: walletAddress, countryName: countryName),
       );
 
       if (response.success && response.data != null) {

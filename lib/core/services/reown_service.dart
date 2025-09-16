@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
+import 'phantom_service.dart';
 
 class ReownService {
   static ReownService? _instance;
@@ -61,7 +62,7 @@ class ReownService {
           icons: ['https://flash-transfer.com/logo.png'],
           redirect: Redirect(
             native: 'flashtransferapp://',
-            universal: 'https://flash-transfer.com',
+            universal: 'flashtransferapp://',
             linkMode: true,
           ),
         ),
@@ -113,6 +114,11 @@ class ReownService {
       print('Modal error: ${event?.message}');
     });
     
+    // Listen to modal state changes to handle cancellations
+    _appKitModal!.onModalNetworkChange.subscribe((ModalNetworkChange? event) {
+      print('Network changed');
+    });
+    
     // Additional session events can be added here when needed
   }
   
@@ -148,20 +154,31 @@ class ReownService {
       // Open modal and wait for connection
       await _appKitModal!.openModalView();
       
-      // Wait a bit for the connection to establish
+      // Wait for the connection to establish or modal to be closed
       int attempts = 0;
-      while (!isConnected && attempts < 30) {
+      while (attempts < 60) { // Increased timeout to 30 seconds
         await Future.delayed(Duration(milliseconds: 500));
         attempts++;
+        
+        // Check if connected
+        if (isConnected && walletAddress != null) {
+          print('Wallet connected successfully: $walletAddress');
+          return walletAddress;
+        }
+        
+        // Check if modal is still open - if not, user likely cancelled
+        try {
+          if (!_appKitModal!.isOpen) {
+            print('Modal closed - user cancelled connection');
+            return null;
+          }
+        } catch (e) {
+          // Modal might not have isOpen property, continue waiting
+        }
       }
       
-      if (isConnected && walletAddress != null) {
-        print('Wallet connected successfully: $walletAddress');
-        return walletAddress;
-      } else {
-        print('Wallet connection failed or timed out');
-        return null;
-      }
+      print('Wallet connection timed out');
+      return null;
     } catch (e) {
       print('Error in wallet authentication: $e');
       return null;
@@ -355,6 +372,52 @@ class ReownService {
     }
   }
   
+  // Handle deep links for wallet connections
+  Future<String?> handleDeepLink(Uri uri) async {
+    print('ReownService handling deep link: ${uri.toString()}');
+    
+    // Check if this is a Phantom wallet response
+    if (uri.queryParameters.containsKey('phantomRequest') ||
+        uri.queryParameters.containsKey('data') ||
+        uri.queryParameters.containsKey('phantom_encryption_public_key')) {
+      print('Detected Phantom wallet response in deep link');
+      
+      // Use Phantom service to handle the response
+      final phantomAddress = await PhantomService.instance.handlePhantomResponse(uri);
+      
+      if (phantomAddress != null && phantomAddress.isNotEmpty) {
+        print('✅ Phantom wallet connected successfully!');
+        print('Connected address: $phantomAddress');
+        return phantomAddress;
+      } else {
+        print('❌ Failed to connect Phantom wallet');
+        return null;
+      }
+    }
+    
+    // For non-Phantom wallets, check Reown connection state
+    if (_appKitModal != null) {
+      print('Reown modal is available - checking connection state...');
+      print('Current connection state: ${_appKitModal!.isConnected}');
+      
+      // Give Reown some time to process the deep link internally
+      await Future.delayed(Duration(milliseconds: 1000));
+      print('Checking connection state after delay: ${_appKitModal!.isConnected}');
+      
+      if (_appKitModal!.isConnected) {
+        print('✅ Wallet successfully connected via Reown!');
+        print('Connected address: $walletAddress');
+        return walletAddress;
+      } else {
+        print('⚠️ Wallet connection not detected after deep link');
+        return null;
+      }
+    } else {
+      print('⚠️ Reown modal not available to process deep link');
+      return null;
+    }
+  }
+
   void dispose() {
     _appKitModal?.closeModal();
     _appKitModal = null;

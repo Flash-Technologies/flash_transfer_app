@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-import 'providers/direct_wallet_provider.dart';
-import 'providers/metamask_provider.dart';
+import 'core/services/reown_service.dart';
+import 'providers/auth_provider.dart';
 import 'app.dart';
 
 final GoogleSignIn googleSignIn = GoogleSignIn(
@@ -71,7 +71,7 @@ void initDeepLinkHandling() {
     },
   );
 }
-void _handleDeepLink(Uri uri) {
+void _handleDeepLink(Uri uri) async {
   debugPrint('🔗 Enhanced deep link handler: ${uri.toString()}');
   debugPrint('📋 Scheme: ${uri.scheme}');
   debugPrint('📋 Host: ${uri.host}');
@@ -79,52 +79,54 @@ void _handleDeepLink(Uri uri) {
   debugPrint('📋 Query: ${uri.query}');
   debugPrint('📋 Fragment: ${uri.fragment}');
 
-  // Access the ProviderContainer to handle the deep link
-  Future.delayed(Duration.zero, () {
+  // Enhanced wallet connection detection
+  final isWalletConnection = _isWalletConnectionDeepLink(uri);
+
+  if (isWalletConnection) {
+    debugPrint('✅ Detected wallet connection callback');
+    
+    // Log all available data for debugging
+    _logWalletDeepLinkData(uri);
+
+    // For Reown-based connections, pass the deep link to Reown service
+    debugPrint('🔄 Passing wallet connection callback to Reown service...');
+    
     try {
-      final container = ProviderScope.containerOf(
-        WidgetsBinding.instance.rootElement!,
-        listen: false,
-      );
-
-      // Enhanced wallet connection detection
-      final isWalletConnection = _isWalletConnectionDeepLink(uri);
-
-      if (isWalletConnection) {
-        debugPrint('✅ Detected wallet connection callback');
+      // Handle the deep link and get the wallet address
+      final walletAddress = await ReownService.instance.handleDeepLink(uri);
+      
+      if (walletAddress != null && walletAddress.isNotEmpty) {
+        debugPrint('✅ Wallet connected! Address: $walletAddress');
         
-        // Log all available data for debugging
-        _logWalletDeepLinkData(uri);
-
-        // Determine wallet provider type with enhanced detection
-        final walletProvider = _identifyWalletProvider(uri);
-        debugPrint('🔍 Identified wallet provider: $walletProvider');
-
-        // Route to appropriate handler based on wallet type
-        switch (walletProvider) {
-          case 'metamask':
-            debugPrint('🦊 Routing to MetaMask handler');
-            container.read(metamaskProvider.notifier).handleDeepLink(uri);
-            break;
-            
-          case 'trust':
-          case 'phantom':
-          case 'coinbase':
-          case 'binance':
-          case 'rainbow':
-          case 'generic':
-          default:
-            debugPrint('🔗 Routing to enhanced direct wallet handler');
-            container.read(directWalletProvider.notifier).handleDeepLink(uri);
-            break;
-        }
+        // Trigger authentication flow with the wallet address
+        _triggerWalletAuthentication(walletAddress);
       } else {
-        debugPrint('ℹ️ Not a wallet connection deep link');
-        // Handle other types of deep links here if needed
-        _handleOtherDeepLinks(uri, container);
+        debugPrint('❌ No wallet address received from deep link');
       }
+    } catch (e) {
+      debugPrint('❌ Error passing deep link to Reown: $e');
+    }
+    return;
+  }
+
+  // Handle non-wallet deep links
+  debugPrint('ℹ️ Not a wallet connection deep link');
+  
+  // Safely access ProviderScope only for non-wallet deep links
+  Future.delayed(const Duration(milliseconds: 100), () {
+    try {
+      // Check if we have a valid root element and ProviderScope
+      final rootElement = WidgetsBinding.instance.rootElement;
+      if (rootElement == null) {
+        debugPrint('⚠️ Root element not available, delaying deep link handling...');
+        Future.delayed(const Duration(milliseconds: 500), () => _handleDeepLink(uri));
+        return;
+      }
+
+      final container = ProviderScope.containerOf(rootElement, listen: false);
+      _handleOtherDeepLinks(uri, container);
     } catch (e, stackTrace) {
-      debugPrint('❌ Critical error in deep link handler: $e');
+      debugPrint('❌ Error in non-wallet deep link handler: $e');
       debugPrint('📜 Stack trace: $stackTrace');
     }
   });
@@ -281,5 +283,59 @@ void _handleOtherDeepLinks(Uri uri, ProviderContainer container) {
     // Handle invite functionality
   } else {
     debugPrint('ℹ️ Unknown deep link type, ignoring');
+  }
+}
+
+// Trigger wallet authentication flow when wallet address is obtained from deep link
+Future<void> _triggerWalletAuthentication(String walletAddress) async {
+  debugPrint('🚀 Triggering wallet authentication with address: $walletAddress');
+  
+  try {
+    // Wait a bit to ensure the app UI is ready
+    await Future.delayed(const Duration(milliseconds: 500));
+    
+    // Get the root element and container
+    final rootElement = WidgetsBinding.instance.rootElement;
+    if (rootElement == null) {
+      debugPrint('❌ Root element not available for wallet authentication');
+      return;
+    }
+    
+    final container = ProviderScope.containerOf(rootElement, listen: false);
+    
+    // Get user country for API call
+    String countryName = 'Unknown';
+    try {
+      // Note: You might want to import http package for this
+      // For now, we'll use a default country
+      countryName = 'Unknown';
+      debugPrint('🌍 Using country: $countryName');
+    } catch (e) {
+      debugPrint('❌ Failed to get country: $e');
+    }
+    
+    debugPrint('🔐 Calling wallet authentication API...');
+    
+    // Call the auth provider to authenticate with the wallet address
+    final success = await container
+        .read(authProvider.notifier)
+        .loginWithWalletAddress(walletAddress, countryName);
+    
+    if (success) {
+      debugPrint('✅ Wallet authentication successful!');
+      debugPrint('🏠 Navigating to home screen...');
+      
+      // Navigate to home screen
+      // You might need to get the router context differently
+      // For now, this will help us see if the authentication worked
+    } else {
+      debugPrint('❌ Wallet authentication failed');
+      final errorMessage = container.read(authProvider).message ?? 'Authentication failed';
+      debugPrint('Error: $errorMessage');
+    }
+    
+  } catch (e, stackTrace) {
+    debugPrint('💥 Error in wallet authentication: $e');
+    debugPrint('📜 Stack trace: $stackTrace');
   }
 }

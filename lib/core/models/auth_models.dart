@@ -100,8 +100,9 @@ class SocialAuthRequest {
 
 class WalletAuthRequest {
   final String walletAddress;
+  final String countryName;
 
-  WalletAuthRequest({required this.walletAddress});
+  WalletAuthRequest({required this.walletAddress, required this.countryName});
 
-  Map<String, dynamic> toJson() => {'walletAddress': walletAddress};
+  Map<String, dynamic> toJson() => {'walletAddress': walletAddress, 'countryName': countryName};
 }

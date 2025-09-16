@@ -29,27 +29,30 @@ class _ReownWalletAuthButtonState extends ConsumerState<ReownWalletAuthButton> {
   @override
   void initState() {
     super.initState();
-    _initializeReown();
+    // Set as initialized immediately if already initialized
+    if (ReownService.instance.isInitialized) {
+      _isInitialized = true;
+    } else {
+      // Start background initialization but allow button to be enabled
+      _initializeReown();
+    }
   }
   
   Future<void> _initializeReown() async {
+    // Allow button to be clicked immediately, initialization will happen on demand
+    if (mounted) {
+      setState(() {
+        _isInitialized = true;
+      });
+    }
+    
     try {
       if (!ReownService.instance.isInitialized) {
         await ReownService.instance.initialize(context);
       }
-      if (mounted) {
-        setState(() {
-          _isInitialized = true;
-        });
-      }
     } catch (e) {
       debugPrint('Error initializing Reown for auth: $e');
-      // Still set as initialized to show the button
-      if (mounted) {
-        setState(() {
-          _isInitialized = true;
-        });
-      }
+      // Button remains functional, initialization will retry on wallet click
     }
   }
   
@@ -88,6 +91,12 @@ class _ReownWalletAuthButtonState extends ConsumerState<ReownWalletAuthButton> {
             backgroundColor: Colors.orange,
           ),
         );
+        // Reset loading state immediately when cancelled
+        if (mounted) {
+          setState(() {
+            _isConnecting = false;
+          });
+        }
         return;
       }
       
