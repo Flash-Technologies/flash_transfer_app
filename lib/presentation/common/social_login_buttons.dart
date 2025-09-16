@@ -11,6 +11,7 @@ import '../../providers/direct_wallet_provider.dart';
 import '../../config/router.dart';
 import '../../main.dart' show googleSignIn;
 import '../../core/services/facebook_service.dart';
+import 'reown_wallet_auth_button.dart';
 
 class SocialLoginButtons extends ConsumerWidget {
   final Function()? onGoogleLogin;
@@ -28,11 +29,8 @@ class SocialLoginButtons extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final walletState = ref.watch(directWalletProvider);
-
-    // Add loading indicator for wallet button when connecting
-    final isWalletConnecting =
-        walletState.status == WalletConnectionStatus.connecting;
+    // Keep the old wallet state for backward compatibility if needed
+    // final walletState = ref.watch(directWalletProvider);
 
     return Column(
       children: [
@@ -82,33 +80,9 @@ class SocialLoginButtons extends ConsumerWidget {
               label: 'Apple',
               onPressed: onAppleLogin ?? () => _handleAppleLogin(context, ref),
             ),
-            _buildSocialButton(
-              icon: isWalletConnecting
-                  ? const SizedBox(
-                      width: 24,
-                      height: 24,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                          Color(0xFF6E757D),
-                        ),
-                      ),
-                    )
-                  : Image.asset(
-                      'assets/images/wallet.png',
-                      width: 24,
-                      height: 24,
-                      errorBuilder: (_, __, ___) => const Icon(
-                        Icons.account_balance_wallet,
-                        size: 24,
-                        color: Colors.black,
-                      ),
-                    ),
-              label: isWalletConnecting ? 'Connecting...' : 'Wallet',
-              onPressed: isWalletConnecting
-                  ? null
-                  : (onWalletLogin ??
-                      () => _handleDirectWalletLogin(context, ref)),
+            // Use Reown wallet auth button instead of native approach
+            ReownWalletAuthButton(
+              onWalletLogin: onWalletLogin,
             ),
           ],
         ),
@@ -491,6 +465,12 @@ class SocialLoginButtons extends ConsumerWidget {
     }
   }
 
+  // DEPRECATED: Old native wallet implementation - kept for reference
+  // This method is no longer used as we've switched to Reown for wallet authentication
+  // To revert back to native implementation:
+  // 1. Remove ReownWalletAuthButton from the build method
+  // 2. Uncomment the old wallet button code
+  // 3. Call this method from the wallet button's onPressed
   Future<void> _handleDirectWalletLogin(
     BuildContext context,
     WidgetRef ref,

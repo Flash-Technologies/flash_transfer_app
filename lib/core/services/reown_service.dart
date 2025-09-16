@@ -6,8 +6,7 @@ class ReownService {
   ReownAppKitModal? _appKitModal;
   
   // Project ID from Reown Dashboard
-  // TODO: Replace with your actual project ID from https://cloud.reown.com
-  static const String projectId = 'YOUR_PROJECT_ID_HERE'; // Get from https://cloud.reown.com
+  static const String projectId = '7494d2d07a2996f0956dfb33e43ff98a';
   
   ReownService._();
   
