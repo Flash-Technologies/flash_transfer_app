@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.flash_transfer_app"
-        minSdk = 21
+        minSdk = 23  // Updated for Coinbase Wallet SDK compatibility
         targetSdk = 35  // Updated to match compileSdk
         versionCode = flutter.versionCode
         versionName = flutter.versionName

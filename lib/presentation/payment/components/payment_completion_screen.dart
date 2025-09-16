@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lottie/lottie.dart';
 import 'package:flash_transfer_app/config/ui_constants.dart';
-import 'package:flash_transfer_app/presentation/common/notification_modal.dart';
 import 'package:flash_transfer_app/providers/payment_provider.dart';
 import 'package:flash_transfer_app/providers/exchange_provider.dart';
+import 'package:flash_transfer_app/core/services/reown_service.dart';
+import 'package:flash_transfer_app/presentation/payment/components/wallet_connect_widget.dart';
 
 class PaymentDoneScreen extends ConsumerStatefulWidget {
   final String status; // 'pending' or 'complete'
@@ -32,6 +32,8 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
 
   bool _showNotificationModal = false;
   final String _trackingNumber = '771 824 9542';
+  bool _isWalletInitialized = false;
+  bool _isConnectingWallet = false;
 
   // Sample transaction details
   final Map<String, String> _transactionDetails = {
@@ -82,6 +84,20 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
   void initState() {
     super.initState();
     _initializeAnimations();
+    _initializeWallet();
+  }
+  
+  Future<void> _initializeWallet() async {
+    try {
+      await ReownService.instance.initialize(context);
+      if (mounted) {
+        setState(() {
+          _isWalletInitialized = true;
+        });
+      }
+    } catch (e) {
+      print('Error initializing wallet: $e');
+    }
   }
 
   void _initializeAnimations() {
@@ -186,43 +202,51 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
       };
     }
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: const ClampingScrollPhysics(),
-          child: Padding(
-            padding: EdgeInsets.all(AppSpacing.paddingL),
-            child: Column(
-              children: [
-                SizedBox(height: AppSpacing.marginXL),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          context.go('/home');
+        }
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
+            child: Padding(
+              padding: EdgeInsets.all(AppSpacing.paddingL),
+              child: Column(
+                children: [
+                  SizedBox(height: AppSpacing.marginXL),
 
-                // Status Icon and Title
-                _buildStatusSection(isPending, isComplete),
+                  // Status Icon and Title
+                  _buildStatusSection(isPending, isComplete),
 
-                SizedBox(height: AppSpacing.marginXL),
+                  SizedBox(height: AppSpacing.marginXL),
 
-                // Tracking Number Section
-                _buildTrackingSection(trackingNumber),
+                  // Tracking Number Section
+                  _buildTrackingSection(trackingNumber),
 
-                SizedBox(height: AppSpacing.marginL),
+                  SizedBox(height: AppSpacing.marginL),
 
-                // Transaction Details Card
-                _buildTransactionDetailsCard(transactionDetails),
+                  // Transaction Details Card
+                  _buildTransactionDetailsCard(transactionDetails),
 
-                SizedBox(height: AppSpacing.marginL),
+                  SizedBox(height: AppSpacing.marginL),
 
-                // Payment Instructions if pending and crypto-to-fiat
-                if (isPending && isCryptoToFiat && transactionData != null) ...[
-                  _buildCryptoPaymentInstructions(transactionData),
+                  // Payment Instructions if pending and crypto-to-fiat
+                  if (isPending && isCryptoToFiat && transactionData != null) ...[
+                    _buildCryptoPaymentInstructions(transactionData),
+                    SizedBox(height: AppSpacing.marginL),
+                  ],
+
+                  // Action Buttons
+                  _buildActionButtons(context, isPending, paymentUrl, isCryptoToFiat, transactionData),
+
                   SizedBox(height: AppSpacing.marginL),
                 ],
-
-                // Action Buttons
-                _buildActionButtons(context, isPending, paymentUrl, isCryptoToFiat),
-
-                SizedBox(height: AppSpacing.marginL),
-              ],
+              ),
             ),
           ),
         ),
@@ -804,58 +828,35 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
   }
 
   Widget _buildActionButtons(
-      BuildContext context, bool isPending, String? paymentUrl, bool isCryptoToFiat) {
+      BuildContext context, bool isPending, String? paymentUrl, bool isCryptoToFiat, dynamic transactionData) {
     return Container(
       margin: EdgeInsets.only(bottom: AppSpacing.marginL),
       child: Column(
         children: [
           // Connect Wallet & Pay Button for crypto-to-fiat
-          if (isPending && isCryptoToFiat) ...[
-            ElevatedButton(
-              onPressed: () {
-                HapticFeedback.selectionClick();
-                // TODO: Implement wallet connection and payment
+          if (isPending && isCryptoToFiat && transactionData != null) ...[
+            // Use the wallet connect widget for better UX
+            WalletConnectWidget(
+              transactionData: {
+                'totalAmount': transactionData.totalAmount,
+                'currency': transactionData.currency,
+                'destinationDetails': transactionData.destinationDetails,
+                'sourceDetails': transactionData.sourceDetails,
+              },
+              onTransactionSuccess: (txHash) {
+                // Handle successful transaction
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Connect wallet feature coming soon!'),
-                    backgroundColor: AppColors.primaryBlue,
+                    content: Text('Transaction successful! Hash: ${txHash.substring(0, 10)}...'),
+                    backgroundColor: AppColors.success,
                   ),
                 );
+                // Optionally navigate to success screen
+                // context.push('/payment-done?status=complete&transactionId=$txHash');
               },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryYellow,
-                foregroundColor: AppColors.textPrimary,
-                elevation: 0,
-                padding: EdgeInsets.symmetric(vertical: AppSpacing.paddingM),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.buttonRadius),
-                ),
-                minimumSize: const Size(double.infinity, 56),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.account_balance_wallet, size: 20),
-                  SizedBox(width: AppSpacing.marginS),
-                  Text(
-                    'Connect Wallet & Pay',
-                    style: AppTextStyles.buttonMedium,
-                  ),
-                ],
-              ),
-            )
-                .animate()
-                .fadeIn(
-                  duration: AppAnimations.normalAnimation,
-                  delay: Duration(milliseconds: 1100),
-                )
-                .scale(
-                  begin: const Offset(0.9, 0.9),
-                  end: const Offset(1.0, 1.0),
-                  curve: AppAnimations.emphasizedCurve,
-                ),
+            ),
             
-            SizedBox(height: AppSpacing.marginM),
+            SizedBox(height: AppSpacing.marginL),
           ],
           
           // Track Order Button
@@ -970,6 +971,92 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
           ),
         ),
       );
+    }
+  }
+  
+  Future<void> _handleWalletConnection() async {
+    final transactionData = ref.read(paymentProvider).transactionData;
+    
+    if (transactionData == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Transaction data not available'),
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+    
+    setState(() {
+      _isConnectingWallet = true;
+    });
+    
+    try {
+      // Check if wallet is already connected
+      if (!ReownService.instance.isConnected) {
+        // Open wallet connection modal
+        await ReownService.instance.connect();
+        
+        // Wait a bit for connection to establish
+        await Future.delayed(Duration(seconds: 1));
+        
+        // Check if connection was successful
+        if (!ReownService.instance.isConnected) {
+          throw Exception('Wallet connection failed');
+        }
+      }
+      
+      // Now wallet is connected, send the transaction
+      final recipientAddress = transactionData.destinationDetails?['transferData']?['address'] ?? 
+                               transactionData.sourceDetails?['address'] ?? 
+                               '0xb0BcBd1eBc7730'; // This should be from API
+      
+      final amount = transactionData.totalAmount ?? 0.00000102;
+      final currency = transactionData.currency ?? 'ETH';
+      
+      // Send the transaction
+      final txHash = await ReownService.instance.sendTransaction(
+        toAddress: recipientAddress,
+        amountInEth: amount,
+      );
+      
+      if (txHash != null) {
+        // Transaction sent successfully
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Transaction sent! Hash: ${txHash.substring(0, 10)}...'),
+              backgroundColor: AppColors.success,
+              behavior: SnackBarBehavior.floating,
+              duration: Duration(seconds: 5),
+            ),
+          );
+          
+          // Optionally update transaction status or navigate
+          // context.push('/payment-done?status=complete&transactionId=$txHash');
+        }
+      } else {
+        throw Exception('Transaction failed');
+      }
+      
+    } catch (e) {
+      print('Error in wallet connection/payment: $e');
+      
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${e.toString()}'),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isConnectingWallet = false;
+        });
+      }
     }
   }
 }
