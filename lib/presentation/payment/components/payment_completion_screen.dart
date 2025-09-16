@@ -7,7 +7,11 @@ import 'package:flash_transfer_app/config/ui_constants.dart';
 import 'package:flash_transfer_app/providers/payment_provider.dart';
 import 'package:flash_transfer_app/providers/exchange_provider.dart';
 import 'package:flash_transfer_app/core/services/reown_service.dart';
+import 'package:flash_transfer_app/core/services/transaction_status_service.dart';
+import 'package:flash_transfer_app/core/api/api_client.dart';
+import 'package:flash_transfer_app/core/api/endpoints.dart';
 import 'package:flash_transfer_app/presentation/payment/components/wallet_connect_widget.dart';
+import 'package:flash_transfer_app/presentation/payment/components/transaction_timeline_widget.dart';
 
 class PaymentDoneScreen extends ConsumerStatefulWidget {
   final String status; // 'pending' or 'complete'
@@ -34,6 +38,9 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
   final String _trackingNumber = '771 824 9542';
   bool _isWalletInitialized = false;
   bool _isConnectingWallet = false;
+  TransactionStatusService? _statusService;
+  Map<String, dynamic>? _statusData;
+  bool _isLoadingStatus = false;
 
   // Sample transaction details
   final Map<String, String> _transactionDetails = {
@@ -85,6 +92,12 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
     super.initState();
     _initializeAnimations();
     _initializeWallet();
+    _initializeStatusService();
+    _loadTransactionStatus();
+  }
+  
+  void _initializeStatusService() {
+    _statusService = TransactionStatusService(ApiClient(baseUrl: Endpoints.baseUrl));
   }
   
   Future<void> _initializeWallet() async {
@@ -137,6 +150,48 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
     _shimmerController.dispose();
     super.dispose();
   }
+  
+  Future<void> _loadTransactionStatus() async {
+    final paymentState = ref.read(paymentProvider);
+    final transactionData = paymentState.transactionData;
+    
+    String? trackingNumber = widget.transactionId ?? 
+                            transactionData?.trackingNumber ?? 
+                            transactionData?.orderId;
+    
+    if (trackingNumber == null || _statusService == null) return;
+    
+    setState(() {
+      _isLoadingStatus = true;
+    });
+    
+    try {
+      final statusData = await _statusService!.getTransactionStatus(trackingNumber);
+      if (mounted && statusData != null) {
+        setState(() {
+          _statusData = statusData;
+        });
+        
+        debugPrint('✅ Transaction status loaded successfully');
+        debugPrint('📊 Status: ${statusData['status']}');
+        
+        // Check if we should update the screen status based on API response
+        final statusInfo = _statusService!.getStatusDisplayInfo(statusData);
+        if (statusInfo['isComplete'] == true && widget.status == 'pending') {
+          // Transaction completed, could update UI or navigate
+          debugPrint('🎉 Transaction completed!');
+        }
+      }
+    } catch (e) {
+      debugPrint('❌ Error loading transaction status: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoadingStatus = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -165,19 +220,26 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
     Map<String, String> transactionDetails;
     
     if (isCryptoToFiat && transactionData != null) {
-      // Crypto-to-fiat specific details
-      transactionDetails = {
-        'You Sent': '${transactionData.amount} ${transactionData.currency ?? exchangeForm.fromCurrency?.code ?? 'ETH'}',
-        'Transfer Rate': '1 ${transactionData.currency ?? 'ETH'} = ${transactionData.exchangeRate?.toStringAsFixed(2) ?? estimateData?.exchangeRate.rate.toStringAsFixed(2) ?? '0'} ${exchangeForm.toCurrency?.code ?? 'XOF'}',
-        'Fee': '${transactionData.fee?.toString() ?? '2e-8'} ${transactionData.currency ?? 'ETH'}',
-        'Status': transactionData.status ?? 'PENDING',
-        'Created On': transactionData.createdAt?.toString() ?? DateTime.now().toString(),
-        'Base Fee': transactionData.feeDetails?['baseFee']?.toString() ?? '2e-8',
-        'NFT discount': transactionData.feeDetails?['nftDiscount']?.toString() ?? '0',
-        'Loyalty Discount': transactionData.feeDetails?['loyaltyDiscount']?.toString() ?? '0',
-        'Total to Pay': '${transactionData.totalAmount ?? 0.00000102} ${transactionData.currency ?? 'ETH'}',
-        'Tracking Number': transactionData.trackingNumber ?? trackingNumber,
-      };
+      // Use status API data if available, otherwise fallback to transaction data
+      if (_statusData != null && _statusService != null) {
+        transactionDetails = _statusService!.getTransactionDetailsForUI(_statusData!);
+        debugPrint('📊 Using status API transaction details');
+      } else {
+        // Crypto-to-fiat specific details (fallback)
+        transactionDetails = {
+          'You Sent': '${transactionData.amount} ${transactionData.currency ?? exchangeForm.fromCurrency?.code ?? 'ETH'}',
+          'Transfer Rate': '1 ${transactionData.currency ?? 'ETH'} = ${transactionData.exchangeRate?.toStringAsFixed(2) ?? estimateData?.exchangeRate.rate.toStringAsFixed(2) ?? '0'} ${exchangeForm.toCurrency?.code ?? 'XOF'}',
+          'Fee': '${transactionData.fee?.toString() ?? '2e-8'} ${transactionData.currency ?? 'ETH'}',
+          'Status': transactionData.status ?? 'PENDING',
+          'Created On': transactionData.createdAt?.toString() ?? DateTime.now().toString(),
+          'Base Fee': transactionData.feeDetails?['baseFee']?.toString() ?? '2e-8',
+          'NFT discount': transactionData.feeDetails?['nftDiscount']?.toString() ?? '0',
+          'Loyalty Discount': transactionData.feeDetails?['loyaltyDiscount']?.toString() ?? '0',
+          'Total to Pay': '${transactionData.totalAmount ?? 0.00000102} ${transactionData.currency ?? 'ETH'}',
+          'Tracking Number': transactionData.trackingNumber ?? trackingNumber,
+        };
+        debugPrint('📊 Using fallback transaction details');
+      }
     } else {
       // Original transaction details for other types
       transactionDetails = {
@@ -234,6 +296,15 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
                   _buildTransactionDetailsCard(transactionDetails),
 
                   SizedBox(height: AppSpacing.marginL),
+                  
+                  // Transaction Timeline for processing status
+                  if (_statusData != null && _statusData!['statusDetails'] != null) ...[
+                    TransactionTimelineWidget(
+                      enhancedTimeline: _statusData!['statusDetails']['enhancedTimeline'],
+                      statusDetails: _statusData!['statusDetails'],
+                    ),
+                    SizedBox(height: AppSpacing.marginL),
+                  ],
 
                   // Payment Instructions if pending and crypto-to-fiat
                   if (isPending && isCryptoToFiat && transactionData != null) ...[
@@ -242,7 +313,7 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
                   ],
 
                   // Action Buttons
-                  _buildActionButtons(context, isPending, paymentUrl, isCryptoToFiat, transactionData),
+                  _buildActionButtons(context, isPending, paymentUrl, isCryptoToFiat, transactionData, trackingNumber),
 
                   SizedBox(height: AppSpacing.marginL),
                 ],
@@ -270,10 +341,21 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
                 delay: Duration(milliseconds: 100),
               )
               .slideX(begin: -0.3, end: 0),
-          _buildHeaderButton(
-            icon: Icons.notifications_none_rounded,
-            onTap: () => setState(() => _showNotificationModal = true),
-            showBadge: true,
+          Row(
+            children: [
+              // Refresh button for status updates
+              if (_statusService != null)
+                _buildHeaderButton(
+                  icon: _isLoadingStatus ? Icons.hourglass_empty : Icons.refresh,
+                  onTap: _isLoadingStatus ? () {} : () => _loadTransactionStatus(),
+                ),
+              SizedBox(width: AppSpacing.marginS),
+              _buildHeaderButton(
+                icon: Icons.notifications_none_rounded,
+                onTap: () => setState(() => _showNotificationModal = true),
+                showBadge: true,
+              ),
+            ],
           )
               .animate()
               .fadeIn(
@@ -370,11 +452,11 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
 
           SizedBox(height: AppSpacing.marginL),
 
-          // Status Text
+          // Status Text - use API status if available
           Text(
-            isComplete ? 'Payment Complete' : 'Payment Pending',
+            _getStatusText(isComplete, isPending),
             style: AppTextStyles.heading1.copyWith(
-              color: isComplete ? AppColors.success : AppColors.textPrimary,
+              color: _getStatusColor(isComplete, isPending),
             ),
           )
               .animate()
@@ -391,7 +473,7 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
           if (!isComplete) ...[
             SizedBox(height: AppSpacing.marginS),
             Text(
-              'Your transaction is being processed',
+              _getStatusDescription(),
               style: AppTextStyles.bodyMedium.copyWith(
                 color: AppColors.textSecondary,
               ),
@@ -828,7 +910,7 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
   }
 
   Widget _buildActionButtons(
-      BuildContext context, bool isPending, String? paymentUrl, bool isCryptoToFiat, dynamic transactionData) {
+      BuildContext context, bool isPending, String? paymentUrl, bool isCryptoToFiat, dynamic transactionData, String trackingNumber) {
     return Container(
       margin: EdgeInsets.only(bottom: AppSpacing.marginL),
       child: Column(
@@ -837,6 +919,7 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
           if (isPending && isCryptoToFiat && transactionData != null) ...[
             // Use the wallet connect widget for better UX
             WalletConnectWidget(
+              trackingNumber: trackingNumber,
               transactionData: {
                 'totalAmount': transactionData.totalAmount,
                 'currency': transactionData.currency,
@@ -1058,6 +1141,50 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
         });
       }
     }
+  }
+  
+  String _getStatusText(bool isComplete, bool isPending) {
+    if (_statusData != null && _statusService != null) {
+      final statusInfo = _statusService!.getStatusDisplayInfo(_statusData!);
+      final status = _statusData!['status'];
+      
+      // Map status to user-friendly text
+      if (status == 'PROCESSING') {
+        return 'Payment Processing';
+      } else if (status == 'COMPLETED' || status == 'SUCCESS') {
+        return 'Payment Complete';
+      } else if (status == 'FAILED') {
+        return 'Payment Failed';
+      }
+      
+      return statusInfo['statusText'] ?? (isComplete ? 'Payment Complete' : 'Payment Pending');
+    }
+    return isComplete ? 'Payment Complete' : 'Payment Pending';
+  }
+  
+  Color _getStatusColor(bool isComplete, bool isPending) {
+    if (_statusData != null && _statusService != null) {
+      final statusInfo = _statusService!.getStatusDisplayInfo(_statusData!);
+      final status = _statusData!['status'];
+      
+      if (status == 'PROCESSING') {
+        return AppColors.primaryYellow;
+      } else if (status == 'FAILED') {
+        return AppColors.error;
+      }
+      
+      final actualComplete = statusInfo['isComplete'] ?? isComplete;
+      return actualComplete ? AppColors.success : AppColors.textPrimary;
+    }
+    return isComplete ? AppColors.success : AppColors.textPrimary;
+  }
+  
+  String _getStatusDescription() {
+    if (_statusData != null && _statusService != null) {
+      final statusInfo = _statusService!.getStatusDisplayInfo(_statusData!);
+      return statusInfo['statusDescription'] ?? 'Your transaction is being processed';
+    }
+    return 'Your transaction is being processed';
   }
 }
 

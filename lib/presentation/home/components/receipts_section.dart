@@ -1,35 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flash_transfer_app/config/ui_constants.dart';
+import '../../../providers/beneficiary_provider.dart';
+import '../../../core/models/beneficiary.dart';
 
-class ReceiptsSection extends StatefulWidget {
+class ReceiptsSection extends ConsumerStatefulWidget {
   const ReceiptsSection({Key? key}) : super(key: key);
 
   @override
-  State<ReceiptsSection> createState() => _ReceiptsSectionState();
+  ConsumerState<ReceiptsSection> createState() => _ReceiptsSectionState();
 }
 
-class _ReceiptsSectionState extends State<ReceiptsSection> {
+class _ReceiptsSectionState extends ConsumerState<ReceiptsSection> {
   final TextEditingController searchController = TextEditingController();
   final Set<int> invitedUsers = {};
   String searchQuery = '';
 
-  // FIXED: Sample data with proper image handling
-  final List<Map<String, dynamic>> frequentReceipts = [
-    {'id': 1, 'name': 'Michael', 'initial': 'M'},
-    {'id': 2, 'name': 'Billy', 'initial': 'B'},
-    {'id': 3, 'name': 'Mark', 'initial': 'M'},
-    {'id': 4, 'name': 'James', 'initial': 'J'},
-    {'id': 5, 'name': 'Alex', 'initial': 'A'},
-    {'id': 6, 'name': 'Sarah', 'initial': 'S'},
-  ];
-
-  final List<Map<String, dynamic>> recentReceipts = [
-    {'id': 1, 'name': 'Theresa Webb', 'country': 'USA', 'flag': '🇺🇸', 'initial': 'T'},
-    {'id': 2, 'name': 'Courtney Henry', 'country': 'France', 'flag': '🇫🇷', 'initial': 'C'},
-    {'id': 3, 'name': 'Robert Fox', 'country': 'USA', 'flag': '🇺🇸', 'initial': 'R'},
-  ];
+  @override
+  void initState() {
+    super.initState();
+    // Load beneficiaries when widget initializes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(beneficiariesProvider.notifier).loadBeneficiaries();
+    });
+  }
 
   @override
   void dispose() {
@@ -39,6 +35,14 @@ class _ReceiptsSectionState extends State<ReceiptsSection> {
 
   @override
   Widget build(BuildContext context) {
+    final beneficiariesState = ref.watch(beneficiariesProvider);
+    final beneficiaries = beneficiariesState.beneficiaries;
+
+    // Don't show widget if no beneficiaries
+    if (beneficiaries.isEmpty && !beneficiariesState.isLoading) {
+      return const SizedBox.shrink();
+    }
+
     return Container(
       padding: EdgeInsets.symmetric(vertical: AppSpacing.paddingL),
       decoration: BoxDecoration(
@@ -48,9 +52,9 @@ class _ReceiptsSectionState extends State<ReceiptsSection> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildFrequentReceipts(),
+          _buildFrequentReceipts(beneficiaries, beneficiariesState.isLoading),
           SizedBox(height: AppSpacing.marginL),
-          _buildRecentReceipts(),
+          _buildRecentReceipts(beneficiaries, beneficiariesState.isLoading),
           SizedBox(height: AppSpacing.marginL),
           _buildActionButtons(),
         ],
@@ -58,7 +62,18 @@ class _ReceiptsSectionState extends State<ReceiptsSection> {
     );
   }
 
-  Widget _buildFrequentReceipts() {
+  Widget _buildFrequentReceipts(List<Beneficiary> beneficiaries, bool isLoading) {
+    if (isLoading) {
+      return _buildFrequentReceiptsLoading();
+    }
+
+    // Take only the first 6 beneficiaries for frequent receipts
+    final frequentBeneficiaries = beneficiaries.take(6).toList();
+
+    if (frequentBeneficiaries.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -76,30 +91,42 @@ class _ReceiptsSectionState extends State<ReceiptsSection> {
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
             padding: EdgeInsets.symmetric(horizontal: AppSpacing.paddingS),
-            itemCount: frequentReceipts.length,
+            itemCount: frequentBeneficiaries.length,
             itemBuilder: (context, index) {
-              final receipt = frequentReceipts[index];
+              final beneficiary = frequentBeneficiaries[index];
               return Padding(
                 padding: EdgeInsets.only(right: AppSpacing.paddingM),
                 child: Column(
                   children: [
-                    // FIXED: Use CircleAvatar with initials instead of missing images
-                    CircleAvatar(
-                      radius: 24,
-                      backgroundColor: _getAvatarColor(index),
-                      child: Text(
-                        receipt['initial'],
-                        style: AppTextStyles.bodyMedium.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                    InkWell(
+                      onTap: () {
+                        ref.read(selectedBeneficiaryProvider.notifier).state = beneficiary;
+                      },
+                      child: CircleAvatar(
+                        radius: 24,
+                        backgroundColor: _getAvatarColor(index),
+                        child: Text(
+                          beneficiary.displayName.isNotEmpty
+                              ? beneficiary.displayName.substring(0, 1).toUpperCase()
+                              : '?',
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
                     SizedBox(height: AppSpacing.marginXS),
-                    Text(
-                      receipt['name'],
-                      style: AppTextStyles.bodySmall.copyWith(
-                        color: AppColors.textPrimary,
+                    SizedBox(
+                      width: 60,
+                      child: Text(
+                        beneficiary.displayName,
+                        style: AppTextStyles.bodySmall.copyWith(
+                          color: AppColors.textPrimary,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
@@ -123,13 +150,78 @@ class _ReceiptsSectionState extends State<ReceiptsSection> {
     );
   }
 
-  Widget _buildRecentReceipts() {
-    // Filter receipts based on search query
-    List<Map<String, dynamic>> filteredReceipts = recentReceipts
-        .where((receipt) => receipt['name']
+  Widget _buildFrequentReceiptsLoading() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.paddingS),
+          child: Text(
+            'Frequent Receipts',
+            style: AppTextStyles.heading3,
+          ),
+        ),
+        SizedBox(height: AppSpacing.marginM),
+        SizedBox(
+          height: 80,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.paddingS),
+            itemCount: 6,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: EdgeInsets.only(right: AppSpacing.paddingM),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.grey[300],
+                      ),
+                    ),
+                    SizedBox(height: AppSpacing.marginXS),
+                    Container(
+                      width: 40,
+                      height: 12,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                    ),
+                  ],
+                ),
+              ).animate()
+                .shimmer(
+                  delay: Duration(milliseconds: index * 100),
+                  duration: 1000.ms,
+                );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildRecentReceipts(List<Beneficiary> beneficiaries, bool isLoading) {
+    if (isLoading) {
+      return _buildRecentReceiptsLoading();
+    }
+
+    // Filter beneficiaries based on search query
+    List<Beneficiary> filteredBeneficiaries = beneficiaries
+        .where((beneficiary) => beneficiary.displayName
             .toLowerCase()
-            .contains(searchQuery.toLowerCase()))
+            .contains(searchQuery.toLowerCase()) ||
+            beneficiary.country.toLowerCase().contains(searchQuery.toLowerCase()) ||
+            beneficiary.email.toLowerCase().contains(searchQuery.toLowerCase()))
         .toList();
+
+    if (filteredBeneficiaries.isEmpty && searchQuery.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,10 +246,10 @@ class _ReceiptsSectionState extends State<ReceiptsSection> {
             decoration: BoxDecoration(
               color: AppColors.cardBackground,
               borderRadius: BorderRadius.circular(AppRadius.buttonRadius),
-              border: Border.all(color: AppColors.border.withOpacity(0.5)),
+              border: Border.all(color: AppColors.border.withValues(alpha: 0.5)),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.03),
+                  color: Colors.black.withValues(alpha: 0.03),
                   blurRadius: 4,
                   offset: const Offset(0, 2),
                 ),
@@ -165,7 +257,6 @@ class _ReceiptsSectionState extends State<ReceiptsSection> {
             ),
             child: Row(
               children: [
-                // FIXED: Use Icon instead of missing image
                 Icon(
                   Icons.search,
                   size: 24,
@@ -177,7 +268,7 @@ class _ReceiptsSectionState extends State<ReceiptsSection> {
                     controller: searchController,
                     onChanged: (value) => setState(() => searchQuery = value),
                     decoration: InputDecoration(
-                      hintText: 'Search receipts',
+                      hintText: 'Search beneficiaries',
                       hintStyle: AppTextStyles.bodyMedium.copyWith(
                         color: AppColors.textSecondary,
                       ),
@@ -195,23 +286,87 @@ class _ReceiptsSectionState extends State<ReceiptsSection> {
         SizedBox(height: AppSpacing.marginM),
         
         // Recent receipts list
-        ...filteredReceipts.asMap().entries.map((entry) {
-          final index = entry.key;
-          final receipt = entry.value;
-          return Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppSpacing.paddingS,
-              vertical: AppSpacing.paddingXS,
+        if (filteredBeneficiaries.isNotEmpty)
+          ...filteredBeneficiaries.take(5).toList().asMap().entries.map((entry) {
+            final index = entry.key;
+            final beneficiary = entry.value;
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: AppSpacing.paddingS,
+                vertical: AppSpacing.paddingXS,
+              ),
+              child: _buildReceiptItem(beneficiary, index),
+            );
+          })
+        else if (searchQuery.isNotEmpty)
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.paddingS),
+            child: Container(
+              padding: EdgeInsets.all(AppSpacing.paddingL),
+              child: Center(
+                child: Text(
+                  'No beneficiaries found matching "$searchQuery"',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+              ),
             ),
-            child: _buildReceiptItem(receipt, index),
-          );
-        }),
+          ),
       ],
     );
   }
 
-  Widget _buildReceiptItem(Map<String, dynamic> receipt, int index) {
-    final bool isInvited = invitedUsers.contains(receipt['id']);
+  Widget _buildRecentReceiptsLoading() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.paddingS),
+          child: Text(
+            'Recent Receipts',
+            style: AppTextStyles.heading3,
+          ),
+        ),
+        SizedBox(height: AppSpacing.marginL),
+        
+        // Search bar (always show)
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.paddingS),
+          child: Container(
+            height: 50,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(AppRadius.buttonRadius),
+            ),
+          ),
+        ).animate().shimmer(duration: 1000.ms),
+        
+        SizedBox(height: AppSpacing.marginM),
+        
+        // Loading items
+        ...List.generate(3, (index) => Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: AppSpacing.paddingS,
+            vertical: AppSpacing.paddingXS,
+          ),
+          child: Container(
+            height: 70,
+            decoration: BoxDecoration(
+              color: Colors.grey[300],
+              borderRadius: BorderRadius.circular(AppRadius.radiusM),
+            ),
+          ).animate().shimmer(
+            delay: Duration(milliseconds: index * 100),
+            duration: 1000.ms,
+          ),
+        )),
+      ],
+    );
+  }
+
+  Widget _buildReceiptItem(Beneficiary beneficiary, int index) {
+    final bool isInvited = invitedUsers.contains(beneficiary.id);
     
     return Material(
       color: Colors.transparent,
@@ -221,14 +376,16 @@ class _ReceiptsSectionState extends State<ReceiptsSection> {
           borderRadius: BorderRadius.circular(AppRadius.radiusM),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
           ],
         ),
         child: InkWell(
-          onTap: () {}, // Optional tap handling
+          onTap: () {
+            ref.read(selectedBeneficiaryProvider.notifier).state = beneficiary;
+          },
           borderRadius: BorderRadius.circular(AppRadius.radiusM),
           child: Padding(
             padding: EdgeInsets.all(AppSpacing.paddingM),
@@ -237,12 +394,13 @@ class _ReceiptsSectionState extends State<ReceiptsSection> {
               children: [
                 Row(
                   children: [
-                    // FIXED: Use CircleAvatar with initials instead of missing images
                     CircleAvatar(
                       radius: 20,
-                      backgroundColor: _getAvatarColor(index + 10), // Different colors for recent
+                      backgroundColor: _getAvatarColor(index + 10),
                       child: Text(
-                        receipt['initial'],
+                        beneficiary.displayName.isNotEmpty
+                            ? beneficiary.displayName.substring(0, 1).toUpperCase()
+                            : '?',
                         style: AppTextStyles.bodyMedium.copyWith(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -250,40 +408,49 @@ class _ReceiptsSectionState extends State<ReceiptsSection> {
                       ),
                     ),
                     SizedBox(width: AppSpacing.marginM),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          receipt['name'],
-                          style: AppTextStyles.bodyMedium.copyWith(
-                            fontWeight: FontWeight.w600,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            beneficiary.displayName,
+                            style: AppTextStyles.bodyMedium.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              receipt['flag'],
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            SizedBox(width: AppSpacing.marginXS),
-                            Text(
-                              receipt['country'],
-                              style: AppTextStyles.bodySmall,
-                            ),
-                          ],
-                        ),
-                      ],
+                          Row(
+                            children: [
+                              Text(
+                                _getCountryFlag(beneficiary.country),
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                              SizedBox(width: AppSpacing.marginXS),
+                              Expanded(
+                                child: Text(
+                                  beneficiary.country,
+                                  style: AppTextStyles.bodySmall,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
                 
-                // Invite button
+                // Select button
                 TextButton(
                   onPressed: () {
                     if (!isInvited) {
                       setState(() {
-                        invitedUsers.add(receipt['id']);
+                        invitedUsers.add(beneficiary.id);
                       });
+                      ref.read(selectedBeneficiaryProvider.notifier).state = beneficiary;
                     }
                   },
                   style: TextButton.styleFrom(
@@ -300,10 +467,10 @@ class _ReceiptsSectionState extends State<ReceiptsSection> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppRadius.radiusS),
                     ),
-                    minimumSize: Size(80, 32),
+                    minimumSize: const Size(80, 32),
                   ),
                   child: Text(
-                    isInvited ? 'Invited' : 'Invite',
+                    isInvited ? 'Selected' : 'Select',
                     style: AppTextStyles.bodySmall.copyWith(
                       color: isInvited ? AppColors.textSecondary : Colors.white,
                     ),
@@ -326,6 +493,26 @@ class _ReceiptsSectionState extends State<ReceiptsSection> {
         duration: AppAnimations.normalAnimation,
         curve: AppAnimations.standardCurve,
       );
+  }
+
+  String _getCountryFlag(String country) {
+    // Simple mapping of countries to flags
+    final countryFlags = {
+      'USA': '🇺🇸',
+      'United States': '🇺🇸',
+      'France': '🇫🇷',
+      'Germany': '🇩🇪',
+      'India': '🇮🇳',
+      'UK': '🇬🇧',
+      'United Kingdom': '🇬🇧',
+      'Canada': '🇨🇦',
+      'Australia': '🇦🇺',
+      'Japan': '🇯🇵',
+      'China': '🇨🇳',
+      'Brazil': '🇧🇷',
+    };
+    
+    return countryFlags[country] ?? '🌍';
   }
 
   Widget _buildActionButtons() {
@@ -383,7 +570,7 @@ class _ReceiptsSectionState extends State<ReceiptsSection> {
     final colors = [
       AppColors.primaryBlue,
       AppColors.success,
-      AppColors.primaryYellow.withOpacity(0.8),
+      AppColors.primaryYellow.withValues(alpha: 0.8),
       AppColors.error,
       const Color(0xFF9C27B0), // Purple
       const Color(0xFF607D8B), // Blue Grey

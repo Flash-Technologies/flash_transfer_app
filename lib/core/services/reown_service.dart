@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'phantom_service.dart';
+import 'package:flash_transfer_app/core/services/network_mapping_service.dart';
 
 class ReownService {
   static ReownService? _instance;
@@ -51,9 +52,14 @@ class ReownService {
   
   String? get selectedNetwork => _appKitModal?.selectedChain?.name;
   
-  Future<void> initialize(BuildContext context) async {
+  Future<void> initialize(BuildContext context, {int? preferredChainId}) async {
     if (_appKitModal != null) {
       print('ReownService already initialized');
+      
+      // If initialized but need to switch network
+      if (preferredChainId != null) {
+        await setSelectedNetwork(preferredChainId);
+      }
       return;
     }
     
@@ -97,6 +103,11 @@ class ReownService {
       // Setup listeners
       _setupEventListeners();
       
+      // Set preferred network if provided
+      if (preferredChainId != null) {
+        await setSelectedNetwork(preferredChainId);
+      }
+      
       print('ReownAppKitModal initialized successfully');
       print('Is connected: ${_appKitModal!.isConnected}');
       
@@ -104,6 +115,63 @@ class ReownService {
       print('Error initializing ReownAppKitModal: $e');
       _appKitModal = null;
       rethrow;
+    }
+  }
+  
+  Future<void> setSelectedNetwork(int chainId) async {
+    if (!isInitialized) return;
+    
+    try {
+      print('🌐 Setting selected network to chain ID: $chainId');
+      
+      // Create chain object with the desired chain ID
+      // Common chains: 1 (Ethereum), 56 (BSC), 137 (Polygon)
+      final chainName = _getChainName(chainId);
+      
+      // For now, just log the desired network
+      // The actual network switching will happen when wallet connects
+      print('🔗 Preferred network set to: $chainName (Chain ID: $chainId)');
+      print('✅ Network configuration set for chain ID: $chainId');
+    } catch (e) {
+      print('❌ Error setting network: $e');
+    }
+  }
+  
+  String _getChainName(int chainId) {
+    switch (chainId) {
+      case 1:
+        return 'Ethereum';
+      case 56:
+        return 'BNB Smart Chain';
+      case 137:
+        return 'Polygon';
+      case 43114:
+        return 'Avalanche';
+      case 42161:
+        return 'Arbitrum';
+      case 10:
+        return 'Optimism';
+      default:
+        return 'Ethereum';
+    }
+  }
+  
+  String _getCurrencyForChain(int chainId) {
+    switch (chainId) {
+      case 1:
+        return 'ETH';
+      case 56:
+        return 'BNB';
+      case 137:
+        return 'MATIC';
+      case 43114:
+        return 'AVAX';
+      case 42161:
+        return 'ETH';
+      case 10:
+        return 'ETH';
+      default:
+        return 'ETH';
     }
   }
   

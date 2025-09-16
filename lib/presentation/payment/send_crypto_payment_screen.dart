@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flash_transfer_app/config/ui_constants.dart';
 import 'package:flash_transfer_app/providers/payment_provider.dart';
+import 'package:flash_transfer_app/providers/exchange_provider.dart';
+import 'package:flash_transfer_app/core/services/network_mapping_service.dart';
 
 // Wallet balance model
 class WalletBalance {
@@ -58,37 +60,48 @@ class SendCryptoPaymentScreen extends ConsumerStatefulWidget {
 
 class _SendCryptoPaymentScreenState
     extends ConsumerState<SendCryptoPaymentScreen> {
-  String selectedNetwork = 'ethereum';
-
-  final List<Map<String, dynamic>> networks = [
-    {
-      'id': 'ethereum',
-      'name': 'Ethereum Mainnet',
-      'icon': Icons.diamond,
-      'color': AppColors.primaryBlue,
-    },
-    {
-      'id': 'polygon',
-      'name': 'Polygon',
-      'icon': Icons.hexagon,
-      'color': Colors.purple,
-    },
-    {
-      'id': 'bsc',
-      'name': 'BSC',
-      'icon': Icons.currency_bitcoin,
-      'color': Colors.orange,
-    },
-  ];
+  String? selectedNetwork;
+  List<NetworkInfo> availableNetworks = [];
 
   @override
   void initState() {
     super.initState();
+    _loadAvailableNetworks();
   }
-
-
+  
+  void _loadAvailableNetworks() {
+    // Get the selected crypto from exchange form
+    final exchangeForm = ref.read(exchangeFormProvider);
+    final cryptoCode = exchangeForm.fromCurrency?.code;
+    
+    // Get available networks for this crypto
+    availableNetworks = NetworkMappingService.getNetworksForCrypto(cryptoCode);
+    
+    // Auto-select first network if available
+    if (availableNetworks.isNotEmpty && selectedNetwork == null) {
+      selectedNetwork = availableNetworks.first.id;
+    }
+    
+    // If previously selected network is not available, reset
+    if (selectedNetwork != null && 
+        !availableNetworks.any((n) => n.id == selectedNetwork)) {
+      selectedNetwork = availableNetworks.isNotEmpty ? availableNetworks.first.id : null;
+    }
+  }
+  
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Reload networks if currency changes
+    _loadAvailableNetworks();
+  }
+  
   @override
   Widget build(BuildContext context) {
+    // Watch for currency changes
+    final exchangeForm = ref.watch(exchangeFormProvider);
+    final cryptoCode = exchangeForm.fromCurrency?.code;
+    
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -187,6 +200,9 @@ class _SendCryptoPaymentScreenState
   }
 
   Widget _buildNetworkSelection() {
+    final exchangeForm = ref.watch(exchangeFormProvider);
+    final cryptoCode = exchangeForm.fromCurrency?.code;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -196,60 +212,154 @@ class _SendCryptoPaymentScreenState
             fontWeight: FontWeight.w600,
           ),
         ),
+        if (cryptoCode != null) ...[
+          SizedBox(height: AppSpacing.marginS),
+          Text(
+            'Available networks for $cryptoCode',
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
+        ],
         SizedBox(height: AppSpacing.marginM),
-        Row(
-          children: networks.map((network) {
-            final isSelected = selectedNetwork == network['id'];
-            return Expanded(
-              child: GestureDetector(
+        if (availableNetworks.isEmpty) ...[
+          Container(
+            padding: EdgeInsets.all(AppSpacing.paddingL),
+            decoration: BoxDecoration(
+              color: AppColors.error.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(AppRadius.radiusM),
+              border: Border.all(color: AppColors.error.withOpacity(0.3)),
+            ),
+            child: Text(
+              'No networks available for selected cryptocurrency',
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.error,
+              ),
+            ),
+          ),
+        ] else if (availableNetworks.length <= 3) ...[
+          // Show networks in a row if 3 or less
+          Row(
+            children: availableNetworks.map((network) {
+              final isSelected = selectedNetwork == network.id;
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedNetwork = network.id;
+                    });
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      right: network == availableNetworks.last ? 0 : AppSpacing.marginS,
+                    ),
+                    padding: EdgeInsets.all(AppSpacing.paddingM),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? network.color.withOpacity(0.1)
+                          : Colors.white,
+                      borderRadius: BorderRadius.circular(AppRadius.radiusM),
+                      border: Border.all(
+                        color: isSelected ? network.color : AppColors.border,
+                        width: isSelected ? 2 : 1,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Icon(
+                          network.icon,
+                          color: isSelected
+                              ? network.color
+                              : AppColors.textSecondary,
+                          size: 24,
+                        ),
+                        SizedBox(height: AppSpacing.marginS),
+                        Text(
+                          network.displayName,
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: isSelected
+                                ? network.color
+                                : AppColors.textPrimary,
+                            fontWeight:
+                                isSelected ? FontWeight.w600 : FontWeight.normal,
+                            fontSize: availableNetworks.length > 2 ? 11 : 14,
+                          ),
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ] else ...[
+          // Show networks in a grid if more than 3
+          GridView.builder(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              childAspectRatio: 1.0,
+              crossAxisSpacing: AppSpacing.marginS,
+              mainAxisSpacing: AppSpacing.marginS,
+            ),
+            itemCount: availableNetworks.length,
+            itemBuilder: (context, index) {
+              final network = availableNetworks[index];
+              final isSelected = selectedNetwork == network.id;
+              return GestureDetector(
                 onTap: () {
                   setState(() {
-                    selectedNetwork = network['id'];
+                    selectedNetwork = network.id;
                   });
                 },
                 child: Container(
-                  margin: EdgeInsets.only(
-                    right: network == networks.last ? 0 : AppSpacing.marginS,
-                  ),
-                  padding: EdgeInsets.all(AppSpacing.paddingM),
+                  padding: EdgeInsets.all(AppSpacing.paddingS),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? network['color'].withValues(alpha: 0.1)
+                        ? network.color.withOpacity(0.1)
                         : Colors.white,
                     borderRadius: BorderRadius.circular(AppRadius.radiusM),
                     border: Border.all(
-                      color: isSelected ? network['color'] : AppColors.border,
+                      color: isSelected ? network.color : AppColors.border,
                       width: isSelected ? 2 : 1,
                     ),
                   ),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        network['icon'],
+                        network.icon,
                         color: isSelected
-                            ? network['color']
+                            ? network.color
                             : AppColors.textSecondary,
-                        size: 24,
+                        size: 20,
                       ),
-                      SizedBox(height: AppSpacing.marginS),
+                      SizedBox(height: 4),
                       Text(
-                        network['name'],
-                        style: AppTextStyles.bodyMedium.copyWith(
+                        network.displayName,
+                        style: AppTextStyles.caption.copyWith(
                           color: isSelected
-                              ? network['color']
+                              ? network.color
                               : AppColors.textPrimary,
                           fontWeight:
                               isSelected ? FontWeight.w600 : FontWeight.normal,
+                          fontSize: 10,
                         ),
                         textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                 ),
-              ),
-            );
-          }).toList(),
-        ),
+              );
+            },
+          ),
+        ],
       ],
     );
   }
@@ -257,9 +367,9 @@ class _SendCryptoPaymentScreenState
 
   Widget _buildContinueButton() {
     return ElevatedButton(
-      onPressed: () {
+      onPressed: selectedNetwork == null ? null : () {
         // Set the selected network in payment provider
-        ref.read(paymentProvider.notifier).setSelectedNetwork(selectedNetwork);
+        ref.read(paymentProvider.notifier).setSelectedNetwork(selectedNetwork!);
 
         // Navigate to next screen with aggregator
         context.push('/select-payment');
