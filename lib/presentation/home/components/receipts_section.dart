@@ -211,15 +211,20 @@ class _ReceiptsSectionState extends ConsumerState<ReceiptsSection> {
     }
 
     // Filter beneficiaries based on search query
-    List<Beneficiary> filteredBeneficiaries = beneficiaries
-        .where((beneficiary) => beneficiary.displayName
-            .toLowerCase()
-            .contains(searchQuery.toLowerCase()) ||
-            beneficiary.country.toLowerCase().contains(searchQuery.toLowerCase()) ||
-            beneficiary.email.toLowerCase().contains(searchQuery.toLowerCase()))
-        .toList();
+    List<Beneficiary> filteredBeneficiaries = beneficiaries;
+    
+    if (searchQuery.isNotEmpty) {
+      filteredBeneficiaries = beneficiaries
+          .where((beneficiary) => beneficiary.displayName
+              .toLowerCase()
+              .contains(searchQuery.toLowerCase()) ||
+              beneficiary.country.toLowerCase().contains(searchQuery.toLowerCase()) ||
+              beneficiary.email.toLowerCase().contains(searchQuery.toLowerCase()))
+          .toList();
+    }
 
-    if (filteredBeneficiaries.isEmpty && searchQuery.isEmpty) {
+    // Only hide if no beneficiaries at all (not due to search filtering)
+    if (beneficiaries.isEmpty) {
       return const SizedBox.shrink();
     }
 
@@ -285,9 +290,9 @@ class _ReceiptsSectionState extends ConsumerState<ReceiptsSection> {
         
         SizedBox(height: AppSpacing.marginM),
         
-        // Recent receipts list
+        // Recent receipts list - show all beneficiaries from API response
         if (filteredBeneficiaries.isNotEmpty)
-          ...filteredBeneficiaries.take(5).toList().asMap().entries.map((entry) {
+          ...filteredBeneficiaries.asMap().entries.map((entry) {
             final index = entry.key;
             final beneficiary = entry.value;
             return Padding(
@@ -309,6 +314,23 @@ class _ReceiptsSectionState extends ConsumerState<ReceiptsSection> {
                   style: AppTextStyles.bodyMedium.copyWith(
                     color: AppColors.textSecondary,
                   ),
+                ),
+              ),
+            ),
+          )
+        else
+          // Show message when no beneficiaries but search is empty
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.paddingS),
+            child: Container(
+              padding: EdgeInsets.all(AppSpacing.paddingL),
+              child: Center(
+                child: Text(
+                  'No beneficiaries found. Add some recipients to see them here.',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),

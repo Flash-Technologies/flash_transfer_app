@@ -17,11 +17,11 @@ class WalletConnectWidget extends ConsumerStatefulWidget {
   final String? trackingNumber;
   
   const WalletConnectWidget({
-    Key? key,
+    super.key,
     this.onTransactionSuccess,
     this.transactionData,
     this.trackingNumber,
-  }) : super(key: key);
+  });
 
   @override
   ConsumerState<WalletConnectWidget> createState() => _WalletConnectWidgetState();
@@ -38,6 +38,7 @@ class _WalletConnectWidgetState extends ConsumerState<WalletConnectWidget> {
   bool _isMonitoringTransaction = false;
   String? _userBalance;
   bool _isCheckingBalance = false;
+  bool _isConnecting = false;
   
   @override
   void initState() {
@@ -118,7 +119,15 @@ class _WalletConnectWidgetState extends ConsumerState<WalletConnectWidget> {
         
         // Configure network before initialization
         await _configureNetwork(selectedNetwork);
-        await ReownService.instance.initialize(context, preferredChainId: _selectedChainId);
+        if (mounted) {
+          await ReownService.instance.initialize(context, preferredChainId: _selectedChainId);
+        }
+      } else {
+        // Re-set context if already initialized but context was lost
+        debugPrint('🔄 Wallet already initialized, updating context');
+        if (mounted) {
+          await ReownService.instance.updateContext(context);
+        }
       }
       
       if (mounted) {
@@ -400,7 +409,7 @@ class _WalletConnectWidgetState extends ConsumerState<WalletConnectWidget> {
     
     // Show monitoring overlay if transaction is in progress
     if (_isMonitoringTransaction) {
-      return Container(
+      return SizedBox(
         height: 300,
         child: Center(
           child: Column(
@@ -422,10 +431,10 @@ class _WalletConnectWidgetState extends ConsumerState<WalletConnectWidget> {
                 margin: EdgeInsets.symmetric(horizontal: AppSpacing.marginL),
                 padding: EdgeInsets.all(AppSpacing.paddingM),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryYellow.withOpacity(0.1),
+                  color: AppColors.primaryYellow.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(AppRadius.radiusM),
                   border: Border.all(
-                    color: AppColors.primaryYellow.withOpacity(0.3),
+                    color: AppColors.primaryYellow.withValues(alpha: 0.3),
                   ),
                 ),
                 child: Row(
@@ -461,10 +470,10 @@ class _WalletConnectWidgetState extends ConsumerState<WalletConnectWidget> {
             padding: EdgeInsets.all(AppSpacing.paddingM),
             margin: EdgeInsets.only(bottom: AppSpacing.marginM),
             decoration: BoxDecoration(
-              color: AppColors.success.withOpacity(0.1),
+              color: AppColors.success.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppRadius.radiusM),
               border: Border.all(
-                color: AppColors.success.withOpacity(0.3),
+                color: AppColors.success.withValues(alpha: 0.3),
               ),
             ),
             child: Row(
@@ -585,35 +594,67 @@ class _WalletConnectWidgetState extends ConsumerState<WalletConnectWidget> {
         
         // Main Action Button
         if (!appKitModal.isConnected) ...[
-          // Connect Wallet Button using AppKit's built-in component
-          AppKitModalConnectButton(
-            appKit: appKitModal,
-            custom: ElevatedButton(
-              onPressed: () async {
+          // Connect Wallet Button
+          ElevatedButton(
+            onPressed: _isConnecting ? null : () async {
+              setState(() {
+                _isConnecting = true;
+                _errorMessage = null;
+              });
+              
+              try {
+                // Ensure we have latest context
+                await _initializeWallet();
+                
+                // Open modal
                 await appKitModal.openModalView();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryYellow,
-                foregroundColor: AppColors.textPrimary,
-                elevation: 0,
-                padding: EdgeInsets.symmetric(vertical: AppSpacing.paddingL),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.buttonRadius),
-                ),
-                minimumSize: const Size(double.infinity, 56),
+              } catch (e) {
+                debugPrint('Error opening wallet modal: $e');
+                if (mounted) {
+                  setState(() {
+                    _errorMessage = 'Failed to open wallet connection: ${e.toString()}';
+                  });
+                }
+              } finally {
+                if (mounted) {
+                  setState(() {
+                    _isConnecting = false;
+                  });
+                }
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _isConnecting 
+                  ? AppColors.primaryYellow.withValues(alpha: 0.7)
+                  : AppColors.primaryYellow,
+              foregroundColor: AppColors.textPrimary,
+              elevation: 0,
+              padding: EdgeInsets.symmetric(vertical: AppSpacing.paddingL),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.buttonRadius),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.account_balance_wallet, size: 24),
-                  SizedBox(width: AppSpacing.marginM),
-                  Text(
-                    'Connect Wallet',
-                    style: AppTextStyles.buttonLarge,
-                  ),
-                ],
-              ),
+              minimumSize: const Size(double.infinity, 56),
             ),
+            child: _isConnecting
+                ? SizedBox(
+                    height: 24,
+                    width: 24,
+                    child: CircularProgressIndicator(
+                      color: AppColors.textPrimary,
+                      strokeWidth: 2,
+                    ),
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.account_balance_wallet, size: 24),
+                      SizedBox(width: AppSpacing.marginM),
+                      Text(
+                        'Connect Wallet',
+                        style: AppTextStyles.buttonLarge,
+                      ),
+                    ],
+                  ),
           ),
         ] else ...[
           // Send Payment Button
@@ -666,10 +707,10 @@ class _WalletConnectWidgetState extends ConsumerState<WalletConnectWidget> {
           Container(
             padding: EdgeInsets.all(AppSpacing.paddingM),
             decoration: BoxDecoration(
-              color: AppColors.error.withOpacity(0.1),
+              color: AppColors.error.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppRadius.radiusM),
               border: Border.all(
-                color: AppColors.error.withOpacity(0.3),
+                color: AppColors.error.withValues(alpha: 0.3),
               ),
             ),
             child: Row(
@@ -694,25 +735,5 @@ class _WalletConnectWidgetState extends ConsumerState<WalletConnectWidget> {
         ],
       ],
     );
-  }
-  
-  String _formatNetworkName(String network) {
-    switch (network.toLowerCase()) {
-      case 'ethereum':
-        return 'Ethereum';
-      case 'polygon':
-        return 'Polygon';
-      case 'bsc':
-      case 'bnb':
-        return 'BNB Chain';
-      case 'avalanche':
-        return 'Avalanche';
-      case 'arbitrum':
-        return 'Arbitrum';
-      case 'optimism':
-        return 'Optimism';
-      default:
-        return network;
-    }
   }
 }

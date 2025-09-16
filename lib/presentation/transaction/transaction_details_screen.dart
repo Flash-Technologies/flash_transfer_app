@@ -3,8 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:go_router/go_router.dart';
 import '../../providers/tracking_provider.dart';
 import '../../core/models/transaction_model.dart';
+import '../../presentation/payment/components/wallet_connect_widget.dart';
+import '../../config/ui_constants.dart';
+import '../../providers/transaction_provider.dart';
 
 class TransactionDetailsScreen extends ConsumerStatefulWidget {
   final Transaction transaction;
@@ -96,6 +100,191 @@ class _TransactionDetailsScreenState
     });
   }
 
+  Widget _buildPaymentActionWidget() {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AppColors.primaryYellow.withOpacity(0.1),
+            AppColors.primaryYellow.withOpacity(0.05),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: AppColors.primaryYellow.withOpacity(0.3),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.primaryYellow.withOpacity(0.1),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: AppColors.primaryYellow.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.account_balance_wallet,
+                  color: AppColors.primaryYellow,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Complete Payment',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Connect your wallet to complete this transaction',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          
+          const SizedBox(height: 20),
+          
+          // Payment Summary
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: AppColors.border.withOpacity(0.5),
+              ),
+            ),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Amount Required',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    Text(
+                      '${widget.transaction.totalAmount} ${widget.transaction.currency}',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.primaryBlue,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Network',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryBlue.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        widget.transaction.blockchainNetwork ?? 'Ethereum',
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.primaryBlue,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          
+          const SizedBox(height: 20),
+          
+          // Wallet Connect Widget
+          WalletConnectWidget(
+            trackingNumber: widget.transaction.trackingNumber,
+            transactionData: {
+              'totalAmount': widget.transaction.totalAmount,
+              'currency': widget.transaction.currency,
+              'trackingNumber': widget.transaction.trackingNumber,
+              'orderId': widget.transaction.referenceId,
+              'type': widget.transaction.type,
+              'blockchainNetwork': widget.transaction.blockchainNetwork,
+            },
+            onTransactionSuccess: (txHash) {
+              // Handle successful transaction
+              HapticFeedback.heavyImpact();
+              
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Payment successful! Hash: ${txHash.substring(0, 10)}...'),
+                  backgroundColor: AppColors.success,
+                  behavior: SnackBarBehavior.floating,
+                ),
+              );
+              
+              // Refresh transaction
+              ref.read(trackingProvider.notifier).refreshTransactionDetails();
+              ref.read(transactionsProvider.notifier).fetchTransactions();
+              
+              // Navigate to success screen
+              Future.delayed(const Duration(seconds: 2), () {
+                if (mounted) {
+                  context.push('/payment-done?status=processing');
+                }
+              });
+            },
+          ),
+        ],
+      ),
+    )
+        .animate()
+        .fadeIn(duration: const Duration(milliseconds: 600))
+        .slideY(begin: 0.1, end: 0)
+        .scale(begin: const Offset(0.95, 0.95), end: const Offset(1.0, 1.0));
+  }
+  
   @override
   void dispose() {
     _headerAnimationController.dispose();
@@ -284,6 +473,14 @@ class _TransactionDetailsScreenState
                   ),
 
                   const SizedBox(height: 24),
+                  
+                  // Payment Action Card for Pending Crypto Transactions
+                  if (widget.transaction.status.toLowerCase() == 'pending' && 
+                      (widget.transaction.type == 'CRYPTO_TO_CASH' || 
+                       widget.transaction.type == 'CRYPTO_TO_FIAT')) ...[
+                    _buildPaymentActionWidget(),
+                    const SizedBox(height: 24),
+                  ],
 
                   // Tracking Number Card
                   ScaleTransition(
@@ -461,7 +658,7 @@ class _TransactionDetailsScreenState
                                 widget.transaction.statusHistory.length - 1;
 
                             return _buildTimelineItem(status, isLast);
-                          }).toList(),
+                          }),
                         ],
                       ),
                     ),

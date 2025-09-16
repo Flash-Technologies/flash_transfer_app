@@ -24,6 +24,7 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
   bool showError = false;
   bool _showModal = false;
   BizaoConfigData? _bizaoConfigData;
+  bool _isProcessing = false;
 
   final providers = [
     {
@@ -67,6 +68,7 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
     setState(() {
       _bizaoConfigData = configData;
       _showModal = false;
+      _isProcessing = true;
     });
 
     // Check transaction type to determine navigation
@@ -108,6 +110,10 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
         'apiPaymentMethod': configData.apiPaymentMethod,
       });
       
+      setState(() {
+        _isProcessing = false;
+      });
+      
       context.push('/crypto-address-confirmation');
     }
   }
@@ -116,6 +122,7 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
     setState(() {
       _showModal = false;
       selectedProvider = null; // Reset selection
+      _isProcessing = false;
     });
   }
 
@@ -170,10 +177,16 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
     if (success) {
       // Navigate to review details
       if (mounted) {
+        setState(() {
+          _isProcessing = false;
+        });
         context.push('/review-details/crypto');
       }
     } else {
       if (mounted) {
+        setState(() {
+          _isProcessing = false;
+        });
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content:
@@ -186,6 +199,8 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
   }
 
   void _handleSubmit() {
+    if (_isProcessing) return; // Prevent multiple submissions
+    
     if (selectedProvider == null) {
       setState(() {
         showError = true;
@@ -405,7 +420,8 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
             onPressed: _handleSubmit,
             backgroundColor: AppTheme.accentColor,
             textColor: Colors.black87,
-            isDisabled: false,
+            isLoading: _isProcessing,
+            isDisabled: _isProcessing,
           ),
           const SizedBox(height: 12),
           AppButton(
