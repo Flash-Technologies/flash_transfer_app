@@ -3,7 +3,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/services.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'core/services/reown_service.dart';
 import 'providers/auth_provider.dart';
 import 'app.dart';
@@ -97,9 +96,7 @@ void _handleDeepLink(Uri uri) async {
       
       if (walletAddress != null && walletAddress.isNotEmpty) {
         debugPrint('✅ Wallet connected! Address: $walletAddress');
-        
-        // Trigger authentication flow with the wallet address
-        _triggerWalletAuthentication(walletAddress);
+        debugPrint('🎯 Wallet connection successful - button should detect this and proceed with authentication');
       } else {
         debugPrint('❌ No wallet address received from deep link');
       }
@@ -294,14 +291,20 @@ Future<void> _triggerWalletAuthentication(String walletAddress) async {
     // Wait a bit to ensure the app UI is ready
     await Future.delayed(const Duration(milliseconds: 500));
     
-    // Get the root element and container
+    // Get the root element and container - with better error handling
     final rootElement = WidgetsBinding.instance.rootElement;
     if (rootElement == null) {
       debugPrint('❌ Root element not available for wallet authentication');
       return;
     }
     
-    final container = ProviderScope.containerOf(rootElement, listen: false);
+    ProviderContainer? container;
+    try {
+      container = ProviderScope.containerOf(rootElement, listen: false);
+    } catch (e) {
+      debugPrint('❌ Could not find ProviderScope: $e');
+      return;
+    }
     
     // Get user country for API call
     String countryName = 'Unknown';

@@ -82,7 +82,20 @@ class _ReownWalletAuthButtonState extends ConsumerState<ReownWalletAuthButton> {
         const SnackBar(content: Text('Opening wallet selection...')),
       );
       
-      final walletAddress = await ReownService.instance.connectForAuth();
+      String? walletAddress = await ReownService.instance.connectForAuth();
+      
+      // If initial connection returns null, check if Phantom connected via deep link
+      if (walletAddress == null || walletAddress.isEmpty) {
+        // Wait a bit more for Phantom deep link to complete
+        debugPrint('Initial connection returned null, checking for Phantom connection...');
+        await Future.delayed(Duration(seconds: 2));
+        
+        // Check if wallet connected via deep link (Phantom)
+        if (ReownService.instance.isConnected) {
+          walletAddress = ReownService.instance.walletAddress;
+          debugPrint('Found wallet connected via deep link: $walletAddress');
+        }
+      }
       
       if (walletAddress == null || walletAddress.isEmpty) {
         scaffoldMessenger.showSnackBar(

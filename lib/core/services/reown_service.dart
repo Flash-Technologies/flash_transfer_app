@@ -24,20 +24,29 @@ class ReownService {
   }
   
   bool get isInitialized => _appKitModal != null;
-  bool get isConnected => _appKitModal?.isConnected ?? false;
+  bool get isConnected => _appKitModal?.isConnected ?? false || PhantomService.instance.isConnected;
+  
   String? get walletAddress {
-    if (!isConnected || _appKitModal?.session == null) return null;
+    // Check Phantom wallet first
+    if (PhantomService.instance.isConnected && PhantomService.instance.walletAddress != null) {
+      return PhantomService.instance.walletAddress;
+    }
     
-    final chainId = _appKitModal!.selectedChain?.chainId;
-    if (chainId == null) return null;
+    // Check Reown/WalletConnect wallet
+    if (_appKitModal?.isConnected == true && _appKitModal?.session != null) {
+      final chainId = _appKitModal!.selectedChain?.chainId;
+      if (chainId == null) return null;
+      
+      final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+      final accounts = _appKitModal!.session!.getAccounts(namespace: namespace) ?? [];
+      
+      if (accounts.isEmpty) return null;
+      
+      // Extract address from account string (format: "eip155:1:0x...")
+      return accounts.first.split(':').last;
+    }
     
-    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-    final accounts = _appKitModal!.session!.getAccounts(namespace: namespace) ?? [];
-    
-    if (accounts.isEmpty) return null;
-    
-    // Extract address from account string (format: "eip155:1:0x...")
-    return accounts.first.split(':').last;
+    return null;
   }
   
   String? get selectedNetwork => _appKitModal?.selectedChain?.name;
@@ -156,20 +165,36 @@ class ReownService {
       
       // Wait for the connection to establish or modal to be closed
       int attempts = 0;
+      bool modalClosed = false;
+      
       while (attempts < 60) { // Increased timeout to 30 seconds
         await Future.delayed(Duration(milliseconds: 500));
         attempts++;
         
-        // Check if connected
+        // Check if connected (includes both Reown and Phantom connections)
         if (isConnected && walletAddress != null) {
           print('Wallet connected successfully: $walletAddress');
           return walletAddress;
         }
         
-        // Check if modal is still open - if not, user likely cancelled
+        // Check if modal is closed
         try {
           if (!_appKitModal!.isOpen) {
-            print('Modal closed - user cancelled connection');
+            if (!modalClosed) {
+              print('Modal closed - checking for Phantom deep link connection...');
+              modalClosed = true;
+              // Give Phantom deep link more time to process
+              await Future.delayed(Duration(seconds: 3));
+              
+              // Check again after delay
+              if (isConnected && walletAddress != null) {
+                print('Phantom wallet connected via deep link: $walletAddress');
+                return walletAddress;
+              }
+            }
+            
+            // If still no connection after modal close and delay, user cancelled
+            print('No wallet connection detected after modal close');
             return null;
           }
         } catch (e) {
