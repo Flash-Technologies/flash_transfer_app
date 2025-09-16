@@ -36,12 +36,22 @@ class PhantomService {
       debugPrint('🔐 Nonce: ${nonce.substring(0, 20)}...');
       debugPrint('📦 Encrypted Data Length: ${encryptedData.length}');
       
-      // Try to decode the connection response
-      final walletAddress = await _decryptPhantomResponse(
-        publicKey, 
-        nonce, 
-        encryptedData
-      );
+      // For Phantom, the public key in the response is often the wallet's public key
+      // This is typically the Solana address
+      String? walletAddress;
+      
+      // First, try to use the public key as the address (common for Phantom)
+      if (_isValidSolanaAddress(publicKey)) {
+        walletAddress = publicKey;
+        debugPrint('🎯 Using public key as Solana address: $walletAddress');
+      } else {
+        // Fallback to decryption attempt
+        walletAddress = await _decryptPhantomResponse(
+          publicKey, 
+          nonce, 
+          encryptedData
+        );
+      }
       
       if (walletAddress != null && walletAddress.isNotEmpty) {
         _connectedWalletAddress = walletAddress;
@@ -49,6 +59,7 @@ class PhantomService {
         
         debugPrint('✅ Phantom wallet connected successfully!');
         debugPrint('🎯 Wallet Address: $walletAddress');
+        debugPrint('🌐 Network: Solana (Primary)');
         
         return walletAddress;
       } else {
