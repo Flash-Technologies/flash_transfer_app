@@ -338,7 +338,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
     try {
       print("🔥 [AUTH_PROVIDER] Google login - tokenType: '$tokenType', countryName: '$countryName'");
       
-      final request = SocialAuthRequest(token: idToken, countryName: countryName, tokenType: tokenType);
+      final request = SocialAuthRequest(token: idToken, countryName: countryName, tokenType: tokenType, from: 'mobile');
       print("🔥 [AUTH_PROVIDER] Request JSON: ${request.toJson()}");
       
       final response = await _authService.authenticateWithGoogle(request);

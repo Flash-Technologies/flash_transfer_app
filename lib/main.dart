@@ -6,6 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/services/reown_service.dart';
 import 'providers/auth_provider.dart';
 import 'app.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 final GoogleSignIn googleSignIn = GoogleSignIn(
   scopes: ['email', 'profile'],
@@ -18,6 +20,7 @@ const MethodChannel walletChannel = MethodChannel(
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
 
   final navigatorObserver = NavigatorObserver();
   initDeepLinkHandling();

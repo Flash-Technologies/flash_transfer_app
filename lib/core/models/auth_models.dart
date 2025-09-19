@@ -93,11 +93,13 @@ class SocialAuthRequest {
   final String token;
   final String countryName;
   final String? tokenType;
+  final String? from;
 
   SocialAuthRequest({
     required this.token, 
     required this.countryName,
     this.tokenType,
+    this.from,
   });
 
   Map<String, dynamic> toJson() {
@@ -107,6 +109,9 @@ class SocialAuthRequest {
     };
     if (tokenType != null) {
       json['tokenType'] = tokenType!;
+    }
+    if (from != null) {
+      json['from'] = from!;
     }
     return json;
   }
