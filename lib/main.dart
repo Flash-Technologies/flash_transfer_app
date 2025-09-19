@@ -9,6 +9,7 @@ import 'app.dart';
 
 final GoogleSignIn googleSignIn = GoogleSignIn(
   scopes: ['email', 'profile'],
+  serverClientId: '828995906505-tufntpoqtunsubobgg80f0o9tmbvhkgv.apps.googleusercontent.com',
 );
 
 const MethodChannel walletChannel = MethodChannel(

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "828995906505",
+    "project_id": "oscarproject-124ea",
+    "storage_bucket": "oscarproject-124ea.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:828995906505:android:b67e0535aab051e61c9618",
+        "android_client_info": {
+          "package_name": "com.example.flash_transfer_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "828995906505-fputm5qppldin7lqu1085io880pf95mp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.flash_transfer_app",
+            "certificate_hash": "813102e62340d09dbf29c61fd04f5e121ee80076"
+          }
+        },
+        {
+          "client_id": "828995906505-tufntpoqtunsubobgg80f0o9tmbvhkgv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgNuyag8R8gx79mhXYMdtG0Gk7CHJLHXo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "828995906505-tufntpoqtunsubobgg80f0o9tmbvhkgv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

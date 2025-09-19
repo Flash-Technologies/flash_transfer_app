@@ -180,7 +180,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       print("🎯 ==========================================");
       print("🎯 [SIGN_IN_SCREEN] COMPLETE GOOGLE ID TOKEN");
       print("🎯 ==========================================");
-      debugPrint(token);
+      debugPrint(token, );
       print("🎯 ==========================================");
       print("🎯 [SIGN_IN_SCREEN] END OF TOKEN");
       print("🎯 ==========================================");
@@ -241,6 +241,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       // Print the exact request data
       final requestData = {
         'token': token,
+        'tokenType' : 'firebase',
         'countryName': _userCountry ?? 'Unknown',
       };
       print("🧪 [SIGN_IN_SCREEN] =======================================");
@@ -260,7 +261,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
       final success = await ref
           .read(authProvider.notifier)
-          .loginWithGoogle(token, _userCountry ?? 'Unknown');
+          .loginWithGoogle( 'firebase',token, _userCountry ?? 'Unknown');
 
       // Check if still mounted
       if (!mounted) return;

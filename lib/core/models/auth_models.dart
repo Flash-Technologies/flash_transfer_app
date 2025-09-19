@@ -92,10 +92,24 @@ class CountryModel {
 class SocialAuthRequest {
   final String token;
   final String countryName;
+  final String? tokenType;
 
-  SocialAuthRequest({required this.token, required this.countryName});
+  SocialAuthRequest({
+    required this.token, 
+    required this.countryName,
+    this.tokenType,
+  });
 
-  Map<String, dynamic> toJson() => {'token': token, 'countryName': countryName};
+  Map<String, dynamic> toJson() {
+    final json = {
+      'token': token, 
+      'countryName': countryName,
+    };
+    if (tokenType != null) {
+      json['tokenType'] = tokenType!;
+    }
+    return json;
+  }
 }
 
 class WalletAuthRequest {

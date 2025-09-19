@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("dev.flutter.flutter-gradle-plugin")
+    id("com.google.gms.google-services")  // Add Firebase Google Services plugin
 }
 
 android {
@@ -38,6 +39,10 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")  // Updated
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     implementation("com.facebook.android:facebook-login:16.2.0")
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    // Firebase Auth
+    implementation("com.google.firebase:firebase-auth")
 }
 
 flutter {

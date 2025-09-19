@@ -162,6 +162,10 @@ class SocialLoginButtons extends ConsumerWidget {
       print("🎯 ==========================================");
       print("🎯 END OF TOKEN");
       print("🎯 ==========================================");
+      
+      // Debug print for complete token (for Postman testing)
+      debugPrint("🔥 [DEBUG] COMPLETE TOKEN FOR POSTMAN:");
+      debugPrint(token ?? "NULL_TOKEN");
 
       // Add token debugging
       if (token != null) {
@@ -254,6 +258,12 @@ class SocialLoginButtons extends ConsumerWidget {
       print('  -H "Content-Type: application/json" \\');
       print('  -d \'${json.encode(requestData)}\'');
       print("🧪 =======================================");
+      
+      // Debug: Print what we're about to send to the API
+      print("🔥 [DEBUG] CALLING loginWithGoogle with:");
+      print("🔥 tokenType: 'firebase'");
+      print("🔥 token: $token");
+      print("🔥 countryName: $countryName");
 
       // Show loading indicator
       scaffoldMessenger.showSnackBar(
@@ -262,7 +272,7 @@ class SocialLoginButtons extends ConsumerWidget {
 
       final success = await ref
           .read(authProvider.notifier)
-          .loginWithGoogle(token, countryName);
+          .loginWithGoogle('google', token ?? '', countryName);
 
       if (success) {
 

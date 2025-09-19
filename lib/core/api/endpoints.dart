@@ -13,13 +13,6 @@ class Endpoints {
   static const String appleAuth = '/api/user/authenticate-apple';
   static const String walletAuth = '/api/user/authenticate-wallet';
 
-  // Alternative endpoints to test if above doesn't work
-  // static const String googleAuth = '/api/user/authenticate-google';
-  // static const String googleAuth = '/api/auth/google';
-  // static const String googleAuth = '/api/user/google-auth';
-  // static const String googleAuth = '/api/v1/auth/google';
-  // static const String googleAuth = '/auth/google';
-
   // currency endpoints
   static const String exchangeRates = '$baseUrl/api/exchange/rates';
   static const String exchangeCalculate = '$baseUrl/api/exchange/calculate';

@@ -89,8 +89,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
       // Call auth provider with the country from selection
       final success = await authNotifier.loginWithGoogle(
+        'firebase',
         token,
-        _selectedCountry!.name,
+        _selectedCountry!.name, 
       );
 
       // Check if still mounted before updating state
