@@ -5,6 +5,8 @@ import '../core/models/api_response.dart';
 import '../core/models/auth_models.dart';
 import '../core/models/user.dart';
 import '../core/services/auth_service.dart';
+import '../core/services/reown_service.dart';
+import '../core/services/phantom_service.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'user_provider.dart';
@@ -600,6 +602,26 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> logout() async {
     await _authService.logout();
+    
+    // CRITICAL FIX: Reset all wallet connections on logout
+    try {
+      final reownService = ReownService.instance;
+      
+      // Reset all wallet connection state to ensure fresh selection on next login
+      if (reownService.isInitialized) {
+        await reownService.resetConnectionState();
+        print('🔌 [AUTH_PROVIDER] Wallet connection state reset during logout');
+      } else {
+        // If not initialized, just clear Phantom state
+        PhantomService.instance.disconnect();
+        print('🔌 [AUTH_PROVIDER] Phantom wallet disconnected during logout');
+      }
+      
+      print('🔌 [AUTH_PROVIDER] All wallet connections cleared during logout');
+    } catch (e) {
+      print('❌ [AUTH_PROVIDER] Error resetting wallets during logout: $e');
+    }
+    
     _updateState(
       state.copyWith(status: AuthStatus.unauthenticated, user: null),
     );

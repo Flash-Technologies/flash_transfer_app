@@ -219,20 +219,24 @@ class ReownService {
     
     // Listen to connection status changes
     _appKitModal!.onModalConnect.subscribe((ModalConnect? event) {
-      print('Wallet connected: ${event?.session.topic}');
+      print('🔗 Wallet connected: ${event?.session.topic}');
+      // Force refresh state when wallet connects
+      Future.delayed(Duration(milliseconds: 100), () {
+        print('🔗 Connection confirmed - wallet address: $walletAddress');
+      });
     });
     
     _appKitModal!.onModalDisconnect.subscribe((ModalDisconnect? event) {
-      print('Wallet disconnected: ${event?.topic}');
+      print('🔌 Wallet disconnected: ${event?.topic}');
     });
     
     _appKitModal!.onModalError.subscribe((ModalError? event) {
-      print('Modal error: ${event?.message}');
+      print('❌ Modal error: ${event?.message}');
     });
     
     // Listen to modal state changes to handle cancellations
     _appKitModal!.onModalNetworkChange.subscribe((ModalNetworkChange? event) {
-      print('Network changed');
+      print('🌐 Network changed');
     });
     
     // Additional session events can be added here when needed
@@ -261,11 +265,9 @@ class ReownService {
     try {
       print('Opening wallet modal for authentication...');
       
-      // If already connected, return the address
-      if (isConnected && walletAddress != null) {
-        print('Already connected, returning address: $walletAddress');
-        return walletAddress;
-      }
+      // IMPORTANT: Always reset state first to force fresh connection
+      print('Resetting wallet state to force fresh selection...');
+      await resetConnectionState();
       
       // Open modal and wait for connection
       await _appKitModal!.openModalView();
@@ -318,14 +320,46 @@ class ReownService {
   }
   
   Future<void> disconnect() async {
-    if (!isInitialized || !isConnected) return;
+    if (!isInitialized) return;
     
     try {
       print('Disconnecting wallet...');
-      await _appKitModal!.disconnect();
+      
+      // Disconnect Reown wallet if connected
+      if (_appKitModal!.isConnected) {
+        await _appKitModal!.disconnect();
+      }
+      
+      // Also disconnect Phantom if connected
+      PhantomService.instance.disconnect();
+      
+      print('All wallets disconnected successfully');
     } catch (e) {
       print('Error disconnecting wallet: $e');
       rethrow;
+    }
+  }
+  
+  /// Force reset the wallet connection state - useful when app restarts
+  /// and we want to ensure fresh wallet selection
+  Future<void> resetConnectionState() async {
+    try {
+      print('🔄 Resetting wallet connection state...');
+      
+      // Disconnect any existing connections
+      await disconnect();
+      
+      // Force modal to close if open
+      if (_appKitModal != null && _appKitModal!.isOpen) {
+        _appKitModal!.closeModal();
+      }
+      
+      // Small delay to allow cleanup
+      await Future.delayed(Duration(milliseconds: 300));
+      
+      print('✅ Wallet connection state reset successfully');
+    } catch (e) {
+      print('❌ Error resetting wallet connection state: $e');
     }
   }
   

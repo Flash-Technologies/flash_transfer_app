@@ -219,7 +219,7 @@ class _ReownWalletAuthButtonState extends ConsumerState<ReownWalletAuthButton> {
                   ),
                 ),
               )
-            else if (ReownService.instance.isConnected)
+            else if (ReownService.instance.isInitialized && ReownService.instance.isConnected)
               const Icon(
                 Icons.check_circle,
                 size: 24,
@@ -240,7 +240,7 @@ class _ReownWalletAuthButtonState extends ConsumerState<ReownWalletAuthButton> {
             Text(
               _isConnecting 
                   ? 'Connecting...' 
-                  : ReownService.instance.isConnected
+                  : (ReownService.instance.isInitialized && ReownService.instance.isConnected)
                       ? 'Connected'
                       : 'Wallet',
               style: const TextStyle(
