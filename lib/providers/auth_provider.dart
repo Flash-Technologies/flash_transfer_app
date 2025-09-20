@@ -603,23 +603,16 @@ class AuthNotifier extends StateNotifier<AuthState> {
   Future<void> logout() async {
     await _authService.logout();
     
-    // CRITICAL FIX: Reset all wallet connections on logout
+    // CRITICAL FIX: Complete reset of all wallet connections on logout
     try {
       final reownService = ReownService.instance;
       
-      // Reset all wallet connection state to ensure fresh selection on next login
-      if (reownService.isInitialized) {
-        await reownService.resetConnectionState();
-        print('🔌 [AUTH_PROVIDER] Wallet connection state reset during logout');
-      } else {
-        // If not initialized, just clear Phantom state
-        PhantomService.instance.disconnect();
-        print('🔌 [AUTH_PROVIDER] Phantom wallet disconnected during logout');
-      }
+      // Use the complete reset method that disposes everything
+      await reownService.resetForLogout();
+      print('🔌 [AUTH_PROVIDER] Complete wallet reset performed during logout');
       
-      print('🔌 [AUTH_PROVIDER] All wallet connections cleared during logout');
     } catch (e) {
-      print('❌ [AUTH_PROVIDER] Error resetting wallets during logout: $e');
+      print('❌ [AUTH_PROVIDER] Error during complete wallet reset on logout: $e');
     }
     
     _updateState(

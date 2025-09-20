@@ -82,7 +82,7 @@ class _ReownWalletAuthButtonState extends ConsumerState<ReownWalletAuthButton> {
         const SnackBar(content: Text('Opening wallet selection...')),
       );
       
-      String? walletAddress = await ReownService.instance.connectForAuth();
+      String? walletAddress = await ReownService.instance.connectForAuth(context: mounted ? context : null);
       
       // If initial connection returns null, check if Phantom connected via deep link
       if (walletAddress == null || walletAddress.isEmpty) {
@@ -174,10 +174,22 @@ class _ReownWalletAuthButtonState extends ConsumerState<ReownWalletAuthButton> {
       }
     } catch (e) {
       debugPrint('Reown wallet auth error: $e');
+      
+      // Provide specific error messages
+      String errorMessage = 'Wallet authentication error';
+      if (e.toString().contains('Context error')) {
+        errorMessage = 'Please restart the app and try again';
+      } else if (e.toString().contains('No context was found')) {
+        errorMessage = 'App needs to restart. Please close and reopen the app.';
+      } else {
+        errorMessage = 'Wallet connection failed. Please try again.';
+      }
+      
       scaffoldMessenger.showSnackBar(
         SnackBar(
-          content: Text('Wallet authentication error: ${e.toString()}'),
+          content: Text(errorMessage),
           backgroundColor: Colors.red,
+          duration: Duration(seconds: 4),
         ),
       );
     } finally {

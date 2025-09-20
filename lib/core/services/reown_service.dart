@@ -257,13 +257,23 @@ class ReownService {
   }
   
   // Connect wallet for authentication (sign in/sign up)
-  Future<String?> connectForAuth() async {
-    if (!isInitialized) {
-      throw Exception('ReownService not initialized');
-    }
-    
+  Future<String?> connectForAuth({BuildContext? context}) async {
     try {
       print('Opening wallet modal for authentication...');
+      
+      // Initialize if not already done and context is provided
+      if (!isInitialized && context != null) {
+        print('🔄 Initializing Reown service with context...');
+        await initialize(context);
+      } else if (isInitialized && context != null) {
+        // Update context for existing modal to fix context issues after logout
+        print('🔄 Updating context for existing modal...');
+        await updateContext(context);
+      }
+      
+      if (!isInitialized) {
+        throw Exception('ReownService not initialized and no context provided');
+      }
       
       // IMPORTANT: Always reset state first to force fresh connection
       print('Resetting wallet state to force fresh selection...');
@@ -315,6 +325,13 @@ class ReownService {
       return null;
     } catch (e) {
       print('Error in wallet authentication: $e');
+      
+      // Handle specific context-related errors
+      if (e.toString().contains('No context was found')) {
+        print('❌ Context error detected - this usually happens after logout');
+        throw Exception('Context error: Please try again. The app may need to reinitialize after logout.');
+      }
+      
       return null;
     }
   }
@@ -360,6 +377,33 @@ class ReownService {
       print('✅ Wallet connection state reset successfully');
     } catch (e) {
       print('❌ Error resetting wallet connection state: $e');
+    }
+  }
+  
+  /// Complete reset for logout - disposes everything
+  Future<void> resetForLogout() async {
+    try {
+      print('🔄 Performing complete reset for logout...');
+      
+      // First disconnect everything
+      await resetConnectionState();
+      
+      // Then dispose the modal completely
+      if (_appKitModal != null) {
+        try {
+          _appKitModal!.closeModal();
+        } catch (e) {
+          print('⚠️ Error closing modal during logout: $e');
+        }
+        _appKitModal = null;
+      }
+      
+      // Clear Phantom state
+      PhantomService.instance.disconnect();
+      
+      print('✅ Complete logout reset successful');
+    } catch (e) {
+      print('❌ Error during logout reset: $e');
     }
   }
   
