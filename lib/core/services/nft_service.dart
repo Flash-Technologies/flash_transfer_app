@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import '../api/api_client.dart';
 import '../api/endpoints.dart';
 import '../models/api_response.dart';
@@ -24,6 +25,16 @@ class NFTService {
 
       return NFTResponse.fromJson(response.data);
     } catch (e) {
+      // Handle DioException with valid JSON response body
+      if (e is DioException && e.response != null && e.response!.data != null) {
+        try {
+          // Try to parse the error response as valid NFTResponse
+          return NFTResponse.fromJson(e.response!.data);
+        } catch (parseError) {
+          // If parsing fails, throw the original error
+          throw Exception('Failed to fetch user NFTs: $e');
+        }
+      }
       throw Exception('Failed to fetch user NFTs: $e');
     }
   }

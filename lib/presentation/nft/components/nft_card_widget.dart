@@ -31,6 +31,7 @@ class _NFTCardWidgetState extends State<NFTCardWidget>
 
   bool _isPressed = false;
   bool _isImageLoaded = false;
+  bool _hasImageError = false;
 
   @override
   void initState() {
@@ -170,8 +171,11 @@ class _NFTCardWidgetState extends State<NFTCardWidget>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildImageSection(),
-          _buildContentSection(),
+          // Only show image section if there's a valid image URL and no error
+          if (widget.nft.imageUrl.isNotEmpty && !_hasImageError)
+            _buildImageSection(),
+          // Always show content section, but adjust styling when no image
+          _buildContentSection(hasImage: widget.nft.imageUrl.isNotEmpty && !_hasImageError),
         ],
       ),
     );
@@ -218,6 +222,11 @@ class _NFTCardWidgetState extends State<NFTCardWidget>
                 return _buildImagePlaceholder();
               },
               errorBuilder: (context, error, stackTrace) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (mounted) {
+                    setState(() => _hasImageError = true);
+                  }
+                });
                 return _buildErrorPlaceholder();
               },
             ),
@@ -329,35 +338,66 @@ class _NFTCardWidgetState extends State<NFTCardWidget>
     );
   }
 
-  Widget _buildContentSection() {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            widget.nft.name,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF181F30),
+  Widget _buildContentSection({bool hasImage = true}) {
+    return Container(
+      decoration: BoxDecoration(
+        // Add gradient background when no image to make it visually appealing
+        gradient: !hasImage ? LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: widget.nft.rarityGradient,
+        ) : null,
+        borderRadius: !hasImage 
+            ? BorderRadius.circular(20) 
+            : const BorderRadius.vertical(bottom: Radius.circular(20)),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(hasImage ? 16 : 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Add badges when no image
+            if (!hasImage) ...[
+              Row(
+                children: [
+                  NFTRarityBadge(rarity: widget.nft.rarity),
+                  const Spacer(),
+                  _buildBlockchainBadge(),
+                ],
+              ),
+              const SizedBox(height: 16),
+            ],
+            Text(
+              widget.nft.name,
+              style: TextStyle(
+                fontSize: hasImage ? 16 : 18,
+                fontWeight: FontWeight.bold,
+                color: hasImage ? const Color(0xFF181F30) : Colors.white,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            widget.nft.description,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey.shade600,
+            const SizedBox(height: 4),
+            Text(
+              widget.nft.description,
+              style: TextStyle(
+                fontSize: hasImage ? 12 : 14,
+                color: hasImage ? Colors.grey.shade600 : Colors.white.withOpacity(0.9),
+              ),
+              maxLines: hasImage ? 2 : 3,
+              overflow: TextOverflow.ellipsis,
             ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 12),
-          _buildBenefitsRow(),
-        ],
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(child: _buildBenefitsRow()),
+                // Add eligibility indicator when no image
+                if (!hasImage && widget.nft.isEligible)
+                  _buildEligibilityBadge(),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -422,6 +462,7 @@ class _NFTCardWidgetState extends State<NFTCardWidget>
 
   double _getCardHeight() {
     // Vary card heights for masonry effect
+    // When there's no image, we don't use this function
     switch (widget.nft.rarity) {
       case NFTRarity.common:
         return 160;

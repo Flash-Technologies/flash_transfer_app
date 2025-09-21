@@ -104,6 +104,7 @@ class _NFTScreenState extends ConsumerState<NFTScreen> with TickerProviderStateM
           _isLoading = false;
         });
       } else {
+        // Handle API response with success: false
         setState(() {
           _errorMessage = response.message ?? 'Failed to load NFTs';
           _isLoading = false;
@@ -488,18 +489,41 @@ class _NFTScreenState extends ConsumerState<NFTScreen> with TickerProviderStateM
   }
 
   Widget _buildErrorState() {
+    // Check if the error is related to no wallet connection
+    final errorLower = _errorMessage?.toLowerCase() ?? '';
+    bool isNoWalletError = errorLower == 'user has no connected wallet' ||
+                          errorLower == 'no wallet connected' ||
+                          errorLower.contains('no connected wallet') ||
+                          errorLower.contains('user has no connected wallet') ||
+                          errorLower.contains('no wallet') ||
+                          errorLower.contains('connect wallet') ||
+                          errorLower.contains('wallet not connected') ||
+                          errorLower.contains('has no connected wallet');
+    
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.error_outline,
-            size: 64,
-            color: Colors.red.shade400,
+          Container(
+            width: 120,
+            height: 120,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: isNoWalletError 
+                    ? [Colors.orange.shade200, Colors.orange.shade300]
+                    : [Colors.red.shade200, Colors.red.shade300],
+              ),
+              borderRadius: BorderRadius.circular(60),
+            ),
+            child: Icon(
+              isNoWalletError ? Icons.account_balance_wallet_outlined : Icons.error_outline,
+              size: 48,
+              color: isNoWalletError ? Colors.orange.shade600 : Colors.red.shade600,
+            ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
           Text(
-            'Error Loading NFTs',
+            isNoWalletError ? 'No Wallet Connected' : 'Error Loading NFTs',
             style: TextStyle(
               color: Colors.grey.shade700,
               fontSize: 18,
@@ -508,22 +532,34 @@ class _NFTScreenState extends ConsumerState<NFTScreen> with TickerProviderStateM
           ),
           const SizedBox(height: 8),
           Text(
-            _errorMessage ?? 'An error occurred',
+            isNoWalletError 
+                ? 'Please connect your wallet to view your NFT collection and unlock exclusive benefits.'
+                : _errorMessage ?? 'An error occurred while loading your NFTs',
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
           ),
           const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: _loadNFTs,
+          ElevatedButton.icon(
+            onPressed: isNoWalletError 
+                ? () {
+                    // Navigate to wallet connection or show wallet connection modal
+                    context.push('/profile'); // Assuming profile has wallet connection
+                  }
+                : _loadNFTs,
+            icon: Icon(
+              isNoWalletError ? Icons.account_balance_wallet : Icons.refresh,
+              color: Colors.white,
+            ),
+            label: Text(
+              isNoWalletError ? 'Connect Wallet' : 'Retry',
+              style: const TextStyle(color: Colors.white),
+            ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primary,
+              backgroundColor: isNoWalletError ? Colors.orange.shade600 : AppColors.primary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
-            ),
-            child: const Text(
-              'Retry',
-              style: TextStyle(color: Colors.white),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             ),
           ),
         ],
