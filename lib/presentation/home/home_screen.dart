@@ -7,6 +7,7 @@ import 'package:shimmer/shimmer.dart';
 import '../../providers/exchange_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../core/models/currency.dart';
+import '../../core/utils/currency_icon_mapper.dart';
 import 'widgets/recent_transactions_widget.dart';
 import '../common/notification_modal.dart';
 
@@ -511,24 +512,26 @@ class HomeScreen extends ConsumerWidget {
                       offset: const Offset(0, 2),
                     ),
                   ],
-                  // Temporarily commented out problematic image loading
-                  // image: selectedCurrency.logo != null
-                  //     ? DecorationImage(
-                  //         image: NetworkImage(selectedCurrency.logo!),
-                  //         fit: BoxFit.cover,
-                  //       )
-                  //     : null,
-                  color: Colors.grey.shade200, // Always use fallback color
+                  color: Colors.grey.shade200,
                 ),
-                child: Center(
-                  child: Text(
-                    selectedCurrency.code.substring(0, 1),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
+                child: CurrencyIconMapper.hasIcon(selectedCurrency.code)
+                    ? ClipOval(
+                        child: Image.asset(
+                          CurrencyIconMapper.getIconPath(selectedCurrency.code)!,
+                          width: 40,
+                          height: 40,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : Center(
+                        child: Text(
+                          selectedCurrency.code.substring(0, 1),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
               ),
               const SizedBox(width: 10),
               Text(
@@ -799,24 +802,26 @@ class HomeScreen extends ConsumerWidget {
                                         offset: const Offset(0, 2),
                                       ),
                                     ],
-                                    // Temporarily commented out problematic image loading
-                                    // image: currency.logo != null
-                                    //     ? DecorationImage(
-                                    //         image: NetworkImage(currency.logo!),
-                                    //         fit: BoxFit.cover,
-                                    //       )
-                                    //     : null,
-                                    color: Colors.grey.shade200, // Always use fallback color
+                                    color: Colors.grey.shade200,
                                   ),
-                                  child: Center(
-                                    child: Text(
-                                      currency.code.substring(0, 1),
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ),
+                                  child: CurrencyIconMapper.hasIcon(currency.code)
+                                      ? ClipOval(
+                                          child: Image.asset(
+                                            CurrencyIconMapper.getIconPath(currency.code)!,
+                                            width: 48,
+                                            height: 48,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        )
+                                      : Center(
+                                          child: Text(
+                                            currency.code.substring(0, 1),
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                        ),
                                 ),
                                 title: Text(
                                   currency.code,

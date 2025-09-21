@@ -10,6 +10,7 @@ import 'package:flash_transfer_app/providers/beneficiary_provider.dart';
 import 'package:flash_transfer_app/providers/exchange_provider.dart';
 import 'package:flash_transfer_app/presentation/common/app_button.dart';
 import 'package:flash_transfer_app/presentation/common/empty_receiver_state.dart';
+import 'package:flash_transfer_app/core/utils/currency_icon_mapper.dart';
 
 class ReceiverInfoScreen extends ConsumerStatefulWidget {
   final Beneficiary? selectedBeneficiary;
@@ -767,37 +768,32 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
           const SizedBox(height: 8),
           Row(
             children: [
-              // Temporarily commented out problematic image loading
-              // if (currencyLogo != null)
-              //   Container(
-              //     width: 20,
-              //     height: 20,
-              //     decoration: BoxDecoration(
-              //       shape: BoxShape.circle,
-              //       image: DecorationImage(
-              //         image: NetworkImage(currencyLogo),
-              //         fit: BoxFit.cover,
-              //       ),
-              //     ),
-              //   )
-              // else
-                Container(
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.grey.shade300,
-                  ),
-                  child: Center(
-                    child: Text(
-                      currency.substring(0, 1),
-                      style: const TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+              Container(
+                width: 20,
+                height: 20,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.grey.shade300,
                 ),
+                child: CurrencyIconMapper.hasIcon(currency)
+                    ? ClipOval(
+                        child: Image.asset(
+                          CurrencyIconMapper.getIconPath(currency)!,
+                          width: 20,
+                          height: 20,
+                          fit: BoxFit.cover,
+                        ),
+                      )
+                    : Center(
+                        child: Text(
+                          currency.substring(0, 1),
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+              ),
               const SizedBox(width: 6),
               Text(
                 currency,
