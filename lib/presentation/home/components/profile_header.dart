@@ -96,7 +96,7 @@ class _ProfileHeaderState extends State<ProfileHeader>
             child: Stack(
               children: [
                 Hero(
-                  tag: 'profile-avatar',
+                  tag: 'profile-avatar-header',
                   child: Container(
                     width: 120,
                     height: 120,

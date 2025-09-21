@@ -97,15 +97,10 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ],
                 ),
-                child: Image.asset(
-                  'assets/image/menu-fries.png',
-                  width: 24,
-                  height: 24,
-                  errorBuilder: (context, error, _) => const Icon(
-                    Icons.menu_rounded,
-                    size: 24,
-                    color: Color(0xFF181F30),
-                  ),
+                child: const Icon(
+                  Icons.menu_rounded,
+                  size: 24,
+                  color: Color(0xFF181F30),
                 ),
               ),
             ),
@@ -159,15 +154,10 @@ class HomeScreen extends ConsumerWidget {
               ),
               child: Stack(
                 children: [
-                  Image.asset(
-                    'assets/image/icons/notification-bell.png',
-                    width: 24,
-                    height: 24,
-                    errorBuilder: (context, error, _) => const Icon(
-                      Icons.notifications_rounded,
-                      size: 24,
-                      color: Color(0xFF181F30),
-                    ),
+                  const Icon(
+                    Icons.notifications_rounded,
+                    size: 24,
+                    color: Color(0xFF181F30),
                   ),
                   if (unreadCount > 0)
                     Positioned(
@@ -453,15 +443,10 @@ class HomeScreen extends ConsumerWidget {
                   ),
                 ],
               ),
-              child: Image.asset(
-                'assets/image/icons/exchange-vertical.png',
-                width: 32,
-                height: 32,
-                errorBuilder: (context, error, _) => const Icon(
-                  Icons.swap_vert_rounded,
-                  color: Color(0xFF2475FF),
-                  size: 32,
-                ),
+              child: const Icon(
+                Icons.swap_vert_rounded,
+                color: Color(0xFF2475FF),
+                size: 32,
               ),
             ),
           )
