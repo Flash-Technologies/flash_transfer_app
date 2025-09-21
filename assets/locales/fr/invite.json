@@ -1,0 +1,89 @@
+{
+    "screen": {
+      "title": "Inviter des Amis et Obtenir un Bonus",
+      "subtitle": "Invitez vos amis à se joindre et gagnez des bonus exclusifs pour chaque parrainage !",
+      "description": "Partagez Flash Transfer avec vos amis et votre famille. Vous recevez tous les deux des récompenses lorsqu'ils effectuent leur première transaction.",
+      "back": "Retour"
+    },
+    "header": {
+      "earnBonus": "Earn Bonus",
+      "referralRewards": "Referral Rewards",
+      "unlimitedEarnings": "Unlimited Earnings"
+    },
+    "actions": {
+      "invite": "Invite",
+      "invited": "Invited",
+      "inviteAgain": "Invite Again",
+      "share": "Share",
+      "copyLink": "Copy Link",
+      "sendInvite": "Send Invite",
+      "shareCode": "Share Code",
+      "viewHistory": "View History"
+    },
+    "sharing": {
+      "shareVia": "Share via",
+      "message": "Check out Flash Transfer! Send money worldwide quickly and securely. Use my referral code {code} to get started with a bonus!",
+      "emailSubject": "Join Flash Transfer and Get Bonus",
+      "emailBody": "Hi! I'm using Flash Transfer to send money worldwide. It's fast, secure, and affordable. Join using my referral code {code} and we both get a bonus on your first transaction!",
+      "whatsappMessage": "Hey! Try Flash Transfer for sending money worldwide. Use my code {code} for a welcome bonus! 💰",
+      "referralCode": "Your Referral Code",
+      "referralLink": "Your Referral Link"
+    },
+    "friends": {
+      "searchPlaceholder": "Search friends...",
+      "noFriends": "No friends found",
+      "addFromContacts": "Add from Contacts",
+      "importContacts": "Import Contacts",
+      "enterEmail": "Enter email address",
+      "enterPhone": "Enter phone number"
+    },
+    "stats": {
+      "totalInvited": "Total Invited",
+      "successfulReferrals": "Successful Referrals", 
+      "totalEarned": "Total Earned",
+      "pendingRewards": "Pending Rewards",
+      "thisMonth": "This Month",
+      "allTime": "All Time"
+    },
+    "rewards": {
+      "howItWorks": "How It Works",
+      "step1": "1. Share your referral code",
+      "step2": "2. Friend signs up and verifies",
+      "step3": "3. Friend makes first transaction",
+      "step4": "4. You both get rewards!",
+      "rewardAmount": "Reward Amount",
+      "minimumTransaction": "Minimum transaction amount",
+      "validityPeriod": "Valid for 30 days",
+      "terms": "Terms & Conditions"
+    },
+    "status": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "completed": "Completed",
+      "expired": "Expired",
+      "verified": "Verified",
+      "firstTransaction": "First Transaction Made"
+    },
+    "notifications": {
+      "linkCopied": "Referral link copied to clipboard",
+      "codeCopied": "Referral code copied to clipboard", 
+      "inviteSent": "Invite sent successfully",
+      "inviteResent": "Invite sent again",
+      "rewardEarned": "Congratulations! You earned {amount} from referral",
+      "friendJoined": "{name} joined using your referral!"
+    },
+    "errors": {
+      "invalidEmail": "Please enter a valid email address",
+      "invalidPhone": "Please enter a valid phone number",
+      "sendFailed": "Failed to send invite",
+      "loadFailed": "Failed to load invite data",
+      "shareError": "Unable to share at this time",
+      "networkError": "Network error occurred",
+      "retry": "Retry"
+    },
+    "empty": {
+      "noInvites": "No invites sent yet",
+      "description": "Start inviting friends to earn rewards together!",
+      "startInviting": "Start Inviting"
+    }
+  }

@@ -268,9 +268,45 @@ class _RecentTransactionsWidgetState extends ConsumerState<RecentTransactionsWid
   }
 
   String _getRecipientName(Transaction transaction) {
-    // Try to get recipient name from destination details or use wallet address
+    print('🔍 Getting recipient name for transaction: ${transaction.id}');
+    print('📄 Destination details: ${transaction.destinationDetails}');
+    
+    // Try to get recipient name from destination details
     if (transaction.destinationDetails != null) {
-      final walletAddress = transaction.destinationDetails!['walletAddress'] as String?;
+      final destinationDetails = transaction.destinationDetails!;
+      
+      // Check for customer info first (for fiat transfers)
+      if (destinationDetails['customerInfo'] != null) {
+        final customerInfo = destinationDetails['customerInfo'] as Map<String, dynamic>;
+        final firstName = customerInfo['firstName'] as String?;
+        final lastName = customerInfo['lastName'] as String?;
+        
+        if (firstName != null && lastName != null) {
+          final fullName = '$firstName $lastName'.trim();
+          print('✅ Found recipient name: $fullName');
+          return fullName;
+        } else if (firstName != null) {
+          print('✅ Found recipient first name: $firstName');
+          return firstName;
+        } else if (lastName != null) {
+          print('✅ Found recipient last name: $lastName');
+          return lastName;
+        }
+        
+        // Fallback to email if no name available
+        final email = customerInfo['email'] as String?;
+        if (email != null && email.isNotEmpty) {
+          // Get email prefix before @
+          final atIndex = email.indexOf('@');
+          if (atIndex > 0) {
+            return email.substring(0, atIndex);
+          }
+          return email;
+        }
+      }
+      
+      // Check for wallet address (for crypto transfers)
+      final walletAddress = destinationDetails['walletAddress'] as String?;
       if (walletAddress != null && walletAddress.isNotEmpty) {
         // Format wallet address as name-like display
         if (walletAddress.length > 8) {
@@ -278,7 +314,15 @@ class _RecentTransactionsWidgetState extends ConsumerState<RecentTransactionsWid
         }
         return walletAddress;
       }
+      
+      // Check for any other identifying information
+      final recipientName = destinationDetails['recipientName'] as String?;
+      if (recipientName != null && recipientName.isNotEmpty) {
+        return recipientName;
+      }
     }
+    
+    // Final fallback
     return 'Unknown Recipient';
   }
 

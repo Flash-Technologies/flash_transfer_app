@@ -288,7 +288,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
           const SizedBox(height: 20),
 
           // Friends List
-          _buildFriendsList(),
+          // _buildFriendsList(),
 
           const SizedBox(height: 20),
         ],
@@ -307,13 +307,13 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
         child: Column(
           children: [
             // Referral Stats
-            ReferralStatsWidget(
-              stats: _referralStats,
-            ).animate().fadeIn(
-              duration: const Duration(milliseconds: 600),
-            ),
+            // ReferralStatsWidget(
+            //   stats: _referralStats,
+            // ).animate().fadeIn(
+            //   duration: const Duration(milliseconds: 600),
+            // ),
 
-            const SizedBox(height: 20),
+            // const SizedBox(height: 20),
 
             // How It Works Section
             _buildHowItWorksSection().animate().slideY(
@@ -325,11 +325,11 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
             const SizedBox(height: 20),
 
             // Recent Activity
-            _buildRecentActivity().animate().slideY(
-              begin: 1,
-              duration: const Duration(milliseconds: 1000),
-              curve: Curves.easeOutBack,
-            ),
+            // _buildRecentActivity().animate().slideY(
+            //   begin: 1,
+            //   duration: const Duration(milliseconds: 1000),
+            //   curve: Curves.easeOutBack,
+            // ),
           ],
         ),
       ),

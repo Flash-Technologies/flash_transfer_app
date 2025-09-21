@@ -15,16 +15,64 @@ class TranslationService {
 
   Future<void> loadTranslations(String locale) async {
     try {
-      final String jsonString = await rootBundle.loadString(
-        'assets/locales/$locale/translation.json',
-      );
-      final Map<String, dynamic> loadedTranslations = json.decode(jsonString);
+      // List of translation files to load
+      final List<String> translationFiles = [
+        'translation.json',
+        'invite.json',
+        'privacy.json',
+        'contacts.json',
+        'crypto-payment.json',
+        'crypto.json',
+        'findLocation.json',
+        'footer.json',
+        'history.json',
+        'language.json',
+        'mobile.json',
+        'navigation.json',
+        'pending.json',
+        'profileDropdown.json',
+        'receiver.json',
+        'recipients.json',
+        'review.json',
+        'send-crypto.json',
+        'send.json',
+        'storeLocation.json',
+        'testimonials.json',
+        'track.json',
+        'transaction.json',
+        'transactionDetails.json',
+      ];
+
+      Map<String, dynamic> allTranslations = Map<String, dynamic>.from(_defaultTranslations);
       
-      // Merge with default translations to ensure all keys are available
-      _translations = _mergeTranslations(_defaultTranslations, loadedTranslations);
+      // Load each translation file and merge
+      for (String fileName in translationFiles) {
+        try {
+          final String jsonString = await rootBundle.loadString(
+            'assets/locales/$locale/$fileName',
+          );
+          final Map<String, dynamic> fileTranslations = json.decode(jsonString);
+          
+          // Extract the base name without extension to use as the key
+          final String baseKey = fileName.replaceAll('.json', '');
+          
+          // For main translation.json, merge directly
+          if (baseKey == 'translation') {
+            allTranslations = _mergeTranslations(allTranslations, fileTranslations);
+          } else {
+            // For other files, add them under their base key
+            allTranslations[baseKey] = fileTranslations;
+          }
+        } catch (e) {
+          print('Could not load translation file $fileName for $locale: $e');
+          // Continue loading other files
+        }
+      }
+      
+      _translations = allTranslations;
       _currentLocale = locale;
     } catch (e) {
-      print('Error loading translation file for $locale: $e');
+      print('Error loading translation files for $locale: $e');
       // Fallback to English if the locale file doesn't exist
       if (locale != 'en') {
         await loadTranslations('en');
@@ -80,6 +128,34 @@ class TranslationService {
 
   // Default translations as fallback
   static const Map<String, dynamic> _defaultTranslations = {
+    "invite": {
+      "screen": {
+        "title": "Invite Friends & Get Bonus",
+        "subtitle": "Invite your friends to join and earn exclusive bonuses for every referral!",
+        "description": "Share Flash Transfer with friends and family. You both get rewards when they make their first transaction.",
+        "back": "Back"
+      },
+      "actions": {
+        "invite": "Invite",
+        "share": "Share",
+        "copyLink": "Copy Link"
+      }
+    },
+    "privacy": {
+      "screen": {
+        "title": "Privacy Policy",
+        "subtitle": "Your privacy and data protection information",
+        "back": "Back",
+        "search": "Search in policy",
+        "readingProgress": "Reading Progress"
+      },
+      "sections": {
+        "introduction": {
+          "title": "Introduction",
+          "content": "At Flash Transfer, we respect your privacy. This Privacy Policy outlines how we collect, use, and protect your personal information."
+        }
+      }
+    },
     "screen": {
       "title": "Language",
       "searchPlaceholder": "Search Language",

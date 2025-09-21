@@ -435,16 +435,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     title: 'NFT',
                     onTap: () => context.push('/nft'),
                   ),
-                  ProfileMenuItemData(
-                    icon: Icons.emoji_events_outlined,
-                    title: 'My Rank',
-                    onTap: () => context.push('/rank'),
-                  ),
-                  ProfileMenuItemData(
-                    icon: Icons.credit_card_outlined,
-                    title: 'My Cards',
-                    onTap: () => context.push('/my-card'),
-                  ),
+                  // ProfileMenuItemData(
+                  //   icon: Icons.emoji_events_outlined,
+                  //   title: 'My Rank',
+                  //   onTap: () => context.push('/rank'),
+                  // ),
+                  // ProfileMenuItemData(
+                  //   icon: Icons.credit_card_outlined,
+                  //   title: 'My Cards',
+                  //   onTap: () => context.push('/my-card'),
+                  // ),
                   ProfileMenuItemData(
                     icon: Icons.share_outlined,
                     title: 'Refer a Friend',
@@ -465,11 +465,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     title: 'Language',
                     onTap: () => context.push('/language'),
                   ),
-                  ProfileMenuItemData(
-                    icon: Icons.settings_outlined,
-                    title: 'Settings',
-                    onTap: () => context.push('/settings'),
-                  ),
+                  // ProfileMenuItemData(
+                  //   icon: Icons.settings_outlined,
+                  //   title: 'Settings',
+                  //   onTap: () => context.push('/settings'),
+                  // ),
                   ProfileMenuItemData(
                     icon: Icons.privacy_tip_outlined,
                     title: 'Privacy Policy',

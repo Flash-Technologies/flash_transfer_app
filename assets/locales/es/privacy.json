@@ -1,0 +1,140 @@
+{
+    "screen": {
+      "title": "Política de Privacidad",
+      "subtitle": "Tu información de privacidad y protección de datos",
+      "lastUpdated": "Última actualización: {date}",
+      "effectiveDate": "Fecha efectiva: {date}",
+      "back": "Atrás",
+      "search": "Buscar en la política",
+      "readingProgress": "Progreso de Lectura"
+    },
+    "navigation": {
+      "contents": "Contents",
+      "jumpTo": "Jump to section",
+      "previousSection": "Previous Section",
+      "nextSection": "Next Section",
+      "backToTop": "Back to Top"
+    },
+    "sections": {
+      "introduction": {
+        "title": "Introduction",
+        "content": "At Flash Transfer, we respect your privacy. This Privacy Policy outlines how we collect, use, and protect your personal information."
+      },
+      "dataCollection": {
+        "title": "1. Information We Collect",
+        "personalInfo": {
+          "title": "Personal Information",
+          "content": "Name, email, phone number, payment details, and transaction history."
+        },
+        "nonPersonalInfo": {
+          "title": "Non-Personal Information", 
+          "content": "Device data, IP address, and app usage statistics."
+        }
+      },
+      "dataUsage": {
+        "title": "2. How We Use Your Information",
+        "processing": "To process money transfers and manage your account.",
+        "security": "For fraud prevention and security.",
+        "communication": "To send you updates or promotional materials (with your consent)."
+      },
+      "dataSharing": {
+        "title": "3. Sharing Your Information",
+        "serviceProviders": "With service providers (payment processors, identity verification).",
+        "legal": "For legal purposes or to prevent fraud."
+      },
+      "dataSecurity": {
+        "title": "4. Data Security",
+        "content": "We use encryption and other security measures to protect your data, but no system is entirely secure."
+      },
+      "userRights": {
+        "title": "5. Your Rights",
+        "content": "You can access, update, or delete your personal information. You can also opt-out of marketing communications."
+      },
+      "cookies": {
+        "title": "6. Cookies and Tracking",
+        "content": "We use cookies and similar technologies to improve your experience and analyze usage patterns."
+      },
+      "thirdParty": {
+        "title": "7. Third-Party Services",
+        "content": "We may use third-party services that have their own privacy policies."
+      },
+      "dataRetention": {
+        "title": "8. Data Retention",
+        "content": "We retain your data only as long as necessary for the purposes outlined in this policy."
+      },
+      "international": {
+        "title": "9. International Transfers",
+        "content": "Your data may be transferred to and processed in countries other than your own."
+      },
+      "minors": {
+        "title": "10. Children's Privacy", 
+        "content": "Our services are not intended for individuals under 18 years of age."
+      },
+      "changes": {
+        "title": "11. Changes to This Policy",
+        "content": "We may update this policy from time to time. We will notify you of any material changes."
+      },
+      "contact": {
+        "title": "12. Contact Us",
+        "content": "If you have questions about this policy, please contact us at privacy@flashtransfer.com"
+      }
+    },
+    "actions": {
+      "downloadPDF": "Download PDF",
+      "printPolicy": "Print Policy",
+      "sharePolicy": "Share Policy",
+      "reportIssue": "Report Issue",
+      "contactSupport": "Contact Support",
+      "requestData": "Request My Data",
+      "deleteAccount": "Delete Account"
+    },
+    "readingAids": {
+      "estimatedReadTime": "Estimated reading time: {minutes} minutes",
+      "wordsRead": "Words read: {current} of {total}",
+      "sectionsCompleted": "Sections completed: {current} of {total}",
+      "bookmark": "Bookmark",
+      "highlight": "Highlight",
+      "notes": "Add Note",
+      "fontSize": "Font Size",
+      "nightMode": "Night Mode"
+    },
+    "legal": {
+      "jurisdiction": "Governing Law",
+      "disputes": "Dispute Resolution", 
+      "compliance": "Regulatory Compliance",
+      "certifications": "Security Certifications",
+      "audits": "Third-Party Audits"
+    },
+    "dataTypes": {
+      "personal": "Personal Data",
+      "financial": "Financial Data",
+      "technical": "Technical Data",
+      "behavioral": "Behavioral Data",
+      "location": "Location Data",
+      "biometric": "Biometric Data"
+    },
+    "rights": {
+      "access": "Right to Access",
+      "rectification": "Right to Rectification",
+      "erasure": "Right to Erasure",
+      "portability": "Data Portability",
+      "restriction": "Restriction of Processing",
+      "objection": "Right to Object",
+      "withdraw": "Withdraw Consent"
+    },
+    "notifications": {
+      "bookmarkAdded": "Bookmark added",
+      "bookmarkRemoved": "Bookmark removed",
+      "textHighlighted": "Text highlighted",
+      "noteAdded": "Note added",
+      "downloadStarted": "Download started",
+      "copied": "Text copied to clipboard"
+    },
+    "errors": {
+      "loadFailed": "Failed to load privacy policy",
+      "downloadFailed": "Download failed",
+      "searchFailed": "Search failed",
+      "networkError": "Network error occurred",
+      "retry": "Retry"
+    }
+  }
