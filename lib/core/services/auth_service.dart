@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import '../api/api_client.dart';
 import '../api/endpoints.dart';
 import '../models/api_response.dart';
@@ -47,6 +48,20 @@ class AuthService {
         response.data,
         (json) => User.fromJson(json),
       );
+    } on DioException catch (e) {
+      // Handle structured API error responses (like wrong password)
+      if (e.response?.data is Map<String, dynamic>) {
+        final responseData = e.response!.data as Map<String, dynamic>;
+        if (responseData.containsKey('success') && responseData['success'] == false) {
+          // This is a proper API error response, parse it
+          return ApiResponse<User>.fromJson(
+            responseData,
+            (json) => User.fromJson(json),
+          );
+        }
+      }
+      // For other DioExceptions, return generic error
+      return ApiResponse<User>(success: false, message: e.toString());
     } catch (e) {
       return ApiResponse<User>(success: false, message: e.toString());
     }

@@ -188,6 +188,16 @@ class ApiClient {
         final statusCode = e.response?.statusCode;
         final responseData = e.response?.data;
 
+        // For API responses with structured error data, don't throw exception
+        // Let the service layer handle the response structure
+        if (responseData is Map<String, dynamic> && 
+            responseData.containsKey('success') && 
+            responseData['success'] == false) {
+          // This is a proper API error response, re-throw as DioException 
+          // so the auth service can parse it properly
+          throw e;
+        }
+
         if (responseData is Map<String, dynamic>) {
           final message = responseData['message'] ?? 'An error occurred';
           final errorDetails =

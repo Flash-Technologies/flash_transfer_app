@@ -466,7 +466,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
           SlideTransition(
             position: _headerSlideAnimation,
             child: Container(
-              padding: const EdgeInsets.fromLTRB(16, 56, 16, 24),
+              padding: EdgeInsets.fromLTRB(16, MediaQuery.of(context).padding.top + 16, 16, 24),
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: [
@@ -611,18 +611,18 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                             const SizedBox(height: 20),
 
                             // Password Field
-                            _buildFormField(
-                              label: 'Password',
-                              controller: _passwordController,
-                              focusNode: _passwordFocus,
-                              hintText: 'Leave empty to keep current password',
-                              isPassword: true,
-                              onFieldSubmitted: (_) =>
-                                  _emailFocus.requestFocus(),
-                              animationDelay: 800,
-                            ),
+                            // _buildFormField(
+                            //   label: 'Password',
+                            //   controller: _passwordController,
+                            //   focusNode: _passwordFocus,
+                            //   hintText: 'Leave empty to keep current password',
+                            //   isPassword: true,
+                            //   onFieldSubmitted: (_) =>
+                            //       _emailFocus.requestFocus(),
+                            //   animationDelay: 800,
+                            // ),
 
-                            const SizedBox(height: 20),
+                            // const SizedBox(height: 20),
 
                             // Email Field (Read-only)
                             _buildFormField(

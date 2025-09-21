@@ -24,6 +24,16 @@ class FlashTransferApp extends StatelessWidget {
             theme: appTheme,
             routerConfig: router,
             debugShowCheckedModeBanner: false,
+            builder: (context, child) {
+              // Ensure proper safe area handling across the entire app
+              return MediaQuery(
+                data: MediaQuery.of(context).copyWith(
+                  // Ensure padding is respected for system UI
+                  padding: MediaQuery.of(context).padding,
+                ),
+                child: child ?? const SizedBox(),
+              );
+            },
           );
         },
       ),

@@ -23,11 +23,14 @@ class HomeScreen extends ConsumerWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       body: SafeArea(
+        bottom: true, // Ensure bottom safe area is respected
         child: SingleChildScrollView(
           physics: const ClampingScrollPhysics(),
-            padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.04,
-              vertical: 16,
+            padding: EdgeInsets.only(
+              left: MediaQuery.of(context).size.width * 0.04,
+              right: MediaQuery.of(context).size.width * 0.04,
+              top: 16,
+              bottom: 16 + MediaQuery.of(context).padding.bottom, // Add extra bottom padding for navigation bar
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

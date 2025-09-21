@@ -17,7 +17,7 @@ class TransactionHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 56, 16, 24),
+      padding: EdgeInsets.fromLTRB(16, MediaQuery.of(context).padding.top + 16, 16, 24),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [

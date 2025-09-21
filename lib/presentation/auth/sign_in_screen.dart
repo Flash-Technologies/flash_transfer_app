@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../core/models/auth_models.dart';
 import '../../providers/auth_provider.dart';
+import '../../core/services/auth_service.dart';
 import '../../config/router.dart';
 import '../common/social_login_buttons.dart';
 import '../../main.dart' show googleSignIn;
@@ -124,7 +125,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       if (success) {
         _showAnimatedSnackBar('Login successful! Redirecting...', true);
 
-
         // Short delay to let the snackbar be visible
         await Future.delayed(const Duration(milliseconds: 1000));
 
@@ -134,10 +134,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         context.go('/home');
       } else {
         // Get error message from auth state
-        final errorMessage = ref.read(authProvider).message ?? 'Login failed';
+        final errorMessage = ref.read(authProvider).message ?? 'Incorrect password. Please try again.';
         debugPrint('Login failed with error: $errorMessage');
 
-        // Show error message
+        // Show error message - user stays on current page
         _showAnimatedSnackBar(errorMessage, false);
       }
     } catch (e) {
@@ -149,7 +149,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         _isLoading = false;
       });
 
-      _showAnimatedSnackBar('Error: ${e.toString()}', false);
+      _showAnimatedSnackBar('Authentication error. Please try again.', false);
     }
   }
 

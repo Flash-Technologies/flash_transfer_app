@@ -316,6 +316,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
             errorMessage = cdErrors['CD02']?.toString() ?? errorMessage;
           }
         }
+        
+        // Make error message more user-friendly
+        if (errorMessage.toLowerCase().contains('wrong password')) {
+          errorMessage = 'Incorrect password. Please try again.';
+        } else if (errorMessage.toLowerCase().contains('user not found')) {
+          errorMessage = 'No account found with this email.';
+        } else if (errorMessage.toLowerCase().contains('invalid email')) {
+          errorMessage = 'Please enter a valid email address.';
+        }
 
         state = state.copyWith(
           status: AuthStatus.unauthenticated,
