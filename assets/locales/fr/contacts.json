@@ -1,14 +1,29 @@
 {
- 
-      "heading": "Mes Contacts",
-      "subheading": "La maison est derrière, le monde est devant et il y a de nombreux chemins à parcourir à travers les ombres jusqu'au bout.",
-      "loading": "Chargement des contacts...",
-      "noContacts": "Vous n'avez pas encore de bénéficiaires",
-      "continue": "Continuer",
-      "addNew": "Ajouter",
-      "share": "Partager",
-      "errors": {
-        "fetchFailed": "Échec du chargement des contacts"
-      }
-    
+  "heading": "Mes Contacts",
+  "subheading": "La maison est derrière, le monde est devant et il y a de nombreux chemins à parcourir à travers les ombres jusqu'au bout.",
+  "loading": "Chargement des contacts...",
+  "noContacts": "Vous n'avez pas encore de bénéficiaires",
+  "continue": "Continuer",
+  "addNew": "Ajouter Nouveau",
+  "share": "Partager",
+  "back": "Retour",
+  "howCanWeHelp": "Comment pouvons-nous vous aider ?",
+  "helpDescription": "Il semble que vous ayez des problèmes avec notre système. Nous sommes là pour vous aider, alors n'hésitez pas à nous contacter.",
+  "subject": "Sujet",
+  "subjectHint": "Entrez votre sujet",
+  "email": "E-mail",
+  "emailHint": "Entrez votre e-mail",
+  "message": "Message",
+  "messageHint": "Tapez votre message...",
+  "messageSentSuccess": "Message envoyé avec succès ! Nous vous recontacterons bientôt.",
+  "messageFailed": "Échec de l'envoi du message. Veuillez réessayer.",
+  "errors": {
+    "fetchFailed": "Échec du chargement des contacts",
+    "emailRequired": "L'e-mail est requis",
+    "emailInvalid": "Veuillez entrer une adresse e-mail valide",
+    "subjectRequired": "Le sujet est requis",
+    "subjectMinLength": "Le sujet doit contenir au moins 3 caractères",
+    "messageRequired": "Le message est requis",
+    "messageMinLength": "Le message doit contenir au moins 10 caractères"
   }
+}

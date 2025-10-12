@@ -17,6 +17,7 @@
     "recipientGets": "Empfänger erhält",
     "continue": "Fortfahren",
     "cancel": "Abbrechen",
+    "completeExchangeDetails": "Bitte vervollständigen Sie die Austauschdetails",
     "noFee": "Keine Gebühr",
     "networkStatus": {
       "unknown": "Unbekannt",
@@ -201,6 +202,7 @@
     "date": "Datum",
     "reference": "Referenz",
     "transactionId": "Transaktions-ID",
+    "estimatedTime": "Geschätzte Zeit",
     "fee": "Gebühr",
     "send": "Gesendet",
     "receive": "Erhalten",

@@ -1,12 +1,29 @@
 {
-  "heading": "My Contacts",
-  "subheading": "Home is behind, the world ahead and there are many paths to tread through shadows to the edge.",
-  "loading": "Loading contacts...",
-  "noContacts": "You don't yet have any beneficiaries",
-  "continue": "Continue",
-  "addNew": "Add New",
-  "share": "Share",
+  "heading": "جهات الاتصال الخاصة بي",
+  "subheading": "المنزل وراءنا، العالم أمامنا وهناك العديد من المسارات للسير عبر الظلال إلى الحافة.",
+  "loading": "جاري تحميل جهات الاتصال...",
+  "noContacts": "ليس لديك أي مستفيدين حتى الآن",
+  "continue": "متابعة",
+  "addNew": "إضافة جديد",
+  "share": "مشاركة",
+  "back": "العودة",
+  "howCanWeHelp": "كيف يمكننا مساعدتك؟",
+  "helpDescription": "يبدو أن لديك مشاكل مع نظامنا. نحن هنا لمساعدتك، لذا يرجى التواصل معنا.",
+  "subject": "الموضوع",
+  "subjectHint": "أدخل موضوعك",
+  "email": "البريد الإلكتروني",
+  "emailHint": "أدخل بريدك الإلكتروني",
+  "message": "الرسالة",
+  "messageHint": "اكتب رسالتك...",
+  "messageSentSuccess": "تم إرسال الرسالة بنجاح! سنتواصل معك قريباً.",
+  "messageFailed": "فشل في إرسال الرسالة. يرجى المحاولة مرة أخرى.",
   "errors": {
-    "fetchFailed": "Failed to fetch contacts"
+    "fetchFailed": "فشل في جلب جهات الاتصال",
+    "emailRequired": "البريد الإلكتروني مطلوب",
+    "emailInvalid": "يرجى إدخال عنوان بريد إلكتروني صحيح",
+    "subjectRequired": "الموضوع مطلوب",
+    "subjectMinLength": "يجب أن يكون الموضوع 3 أحرف على الأقل",
+    "messageRequired": "الرسالة مطلوبة",
+    "messageMinLength": "يجب أن تكون الرسالة 10 أحرف على الأقل"
   }
 }

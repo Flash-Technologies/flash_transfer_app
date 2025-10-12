@@ -17,6 +17,7 @@
     "recipientGets": "Destinatário recebe",
     "continue": "Continuar",
     "cancel": "Cancelar",
+    "completeExchangeDetails": "Por favor, complete os detalhes da troca",
     "noFee": "Sem taxa",
     "networkStatus": {
       "unknown": "Desconhecido",
@@ -201,6 +202,7 @@
     "date": "Data",
     "reference": "Referência",
     "transactionId": "ID da transação",
+    "estimatedTime": "Tempo estimado",
     "fee": "Taxa",
     "send": "Enviado",
     "receive": "Recebido",

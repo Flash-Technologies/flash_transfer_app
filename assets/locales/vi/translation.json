@@ -17,6 +17,7 @@
     "recipientGets": "Người nhận được",
     "continue": "Tiếp tục",
     "cancel": "Hủy",
+    "completeExchangeDetails": "Vui lòng hoàn thành chi tiết trao đổi",
     "noFee": "Không phí",
     "networkStatus": {
       "unknown": "Không xác định",
@@ -201,6 +202,7 @@
     "date": "Ngày",
     "reference": "Tham chiếu",
     "transactionId": "ID giao dịch",
+    "estimatedTime": "Thời gian ước tính",
     "fee": "Phí",
     "send": "Đã gửi",
     "receive": "Đã nhận",

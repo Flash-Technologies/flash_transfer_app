@@ -17,6 +17,7 @@
     "recipientGets": "Ontvanger krijgt",
     "continue": "Doorgaan",
     "cancel": "Annuleren",
+    "completeExchangeDetails": "Vul de uitwisselingsdetails in",
     "noFee": "Geen kosten",
     "networkStatus": {
       "unknown": "Onbekend",
@@ -201,6 +202,7 @@
     "date": "Datum",
     "reference": "Referentie",
     "transactionId": "Transactie-ID",
+    "estimatedTime": "Geschatte tijd",
     "fee": "Kosten",
     "send": "Verzonden",
     "receive": "Ontvangen",

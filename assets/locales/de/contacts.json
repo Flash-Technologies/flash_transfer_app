@@ -1,12 +1,29 @@
 {
   "heading": "Meine Kontakte",
   "subheading": "Das Zuhause ist zurück, die Welt vor uns und es gibt viele Wege, um durch Schatten bis an den Rand zu gehen.",
-  "loading": "Kontakte werden laden",
+  "loading": "Kontakte werden geladen...",
   "noContacts": "Sie haben noch keine Begünstigten",
   "continue": "Weiter",
-  "addNew": "Hinzufügen",
-  "share": "Teil",
+  "addNew": "Neu hinzufügen",
+  "share": "Teilen",
+  "back": "Zurück",
+  "howCanWeHelp": "Wie können wir Ihnen helfen?",
+  "helpDescription": "Es scheint, als hätten Sie Probleme mit unserem System. Wir sind hier, um Ihnen zu helfen. Bitte kontaktieren Sie uns.",
+  "subject": "Betreff",
+  "subjectHint": "Geben Sie Ihren Betreff ein",
+  "email": "E-Mail",
+  "emailHint": "Geben Sie Ihre E-Mail ein",
+  "message": "Nachricht",
+  "messageHint": "Geben Sie Ihre Nachricht ein...",
+  "messageSentSuccess": "Nachricht erfolgreich gesendet! Wir werden uns bald bei Ihnen melden.",
+  "messageFailed": "Nachricht konnte nicht gesendet werden. Bitte versuchen Sie es erneut.",
   "errors": {
-    "fetchFailed": "Kontakte konnten nicht abgerufen werden"
+    "fetchFailed": "Kontakte konnten nicht abgerufen werden",
+    "emailRequired": "E-Mail ist erforderlich",
+    "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+    "subjectRequired": "Betreff ist erforderlich",
+    "subjectMinLength": "Betreff muss mindestens 3 Zeichen lang sein",
+    "messageRequired": "Nachricht ist erforderlich",
+    "messageMinLength": "Nachricht muss mindestens 10 Zeichen lang sein"
   }
 }

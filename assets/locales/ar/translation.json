@@ -17,6 +17,7 @@
     "recipientGets": "يحصل المستلم على",
     "continue": "متابعة",
     "cancel": "إلغاء",
+    "completeExchangeDetails": "يرجى إكمال تفاصيل التبادل",
     "noFee": "بدون رسوم",
     "networkStatus": {
       "unknown": "غير معروف",
@@ -201,6 +202,7 @@
     "date": "التاريخ",
     "reference": "المرجع",
     "transactionId": "معرف المعاملة",
+    "estimatedTime": "الوقت المتوقع",
     "fee": "الرسوم",
     "send": "مُرسل",
     "receive": "مُستلم",

@@ -1,14 +1,29 @@
 {
-    
-      "heading": "My Contacts",
-      "subheading": "Home is behind, the world ahead and there are many paths to tread through shadows to the edge.",
-      "loading": "Loading contacts...",
-      "noContacts": "You don't yet have any beneficiaries",
-      "continue": "Continue",
-      "addNew": "Add New",
-      "share": "Share",
-      "errors": {
-        "fetchFailed": "Failed to fetch contacts"
-      
-    }
+  "heading": "My Contacts",
+  "subheading": "Home is behind, the world ahead and there are many paths to tread through shadows to the edge.",
+  "loading": "Loading contacts...",
+  "noContacts": "You don't yet have any beneficiaries",
+  "continue": "Continue",
+  "addNew": "Add New",
+  "share": "Share",
+  "back": "Back",
+  "howCanWeHelp": "How can we help you?",
+  "helpDescription": "It looks like you have problems with our system. We are here to help you, so, please get in touch with us.",
+  "subject": "Subject",
+  "subjectHint": "Enter your subject",
+  "email": "Email",
+  "emailHint": "Enter your email",
+  "message": "Message",
+  "messageHint": "Type your message...",
+  "messageSentSuccess": "Message sent successfully! We'll get back to you soon.",
+  "messageFailed": "Failed to send message. Please try again.",
+  "errors": {
+    "fetchFailed": "Failed to fetch contacts",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email address",
+    "subjectRequired": "Subject is required",
+    "subjectMinLength": "Subject must be at least 3 characters",
+    "messageRequired": "Message is required",
+    "messageMinLength": "Message must be at least 10 characters"
   }
+}

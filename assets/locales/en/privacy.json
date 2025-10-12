@@ -22,6 +22,7 @@
       },
       "dataCollection": {
         "title": "1. Information We Collect",
+        "content": "We collect various types of information to provide and improve our services:",
         "personalInfo": {
           "title": "Personal Information",
           "content": "Name, email, phone number, payment details, and transaction history."
@@ -33,12 +34,14 @@
       },
       "dataUsage": {
         "title": "2. How We Use Your Information",
+        "content": "We use your information for the following purposes:",
         "processing": "To process money transfers and manage your account.",
         "security": "For fraud prevention and security.",
         "communication": "To send you updates or promotional materials (with your consent)."
       },
       "dataSharing": {
         "title": "3. Sharing Your Information",
+        "content": "We may share your information in limited circumstances:",
         "serviceProviders": "With service providers (payment processors, identity verification).",
         "legal": "For legal purposes or to prevent fraud."
       },
@@ -77,6 +80,23 @@
       "contact": {
         "title": "12. Contact Us",
         "content": "If you have questions about this policy, please contact us at privacy@flashtransfer.com"
+      }
+    },
+    "subsections": {
+      "transactionProcessing": {
+        "title": "Transaction Processing"
+      },
+      "securityFraudPrevention": {
+        "title": "Security & Fraud Prevention"
+      },
+      "communications": {
+        "title": "Communications"
+      },
+      "serviceProviders": {
+        "title": "Service Providers"
+      },
+      "legalRequirements": {
+        "title": "Legal Requirements"
       }
     },
     "actions": {

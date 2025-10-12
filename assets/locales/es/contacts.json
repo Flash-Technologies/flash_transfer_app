@@ -4,9 +4,26 @@
   "loading": "Cargando los contactos...",
   "noContacts": "Todavía no tiene ningún beneficiario",
   "continue": "Continuar",
-  "addNew": "Añadir noticia",
+  "addNew": "Añadir Nuevo",
   "share": "Compartir",
+  "back": "Atrás",
+  "howCanWeHelp": "¿Cómo podemos ayudarte?",
+  "helpDescription": "Parece que tienes problemas con nuestro sistema. Estamos aquí para ayudarte, así que ponte en contacto con nosotros.",
+  "subject": "Asunto",
+  "subjectHint": "Ingresa tu asunto",
+  "email": "Correo electrónico",
+  "emailHint": "Ingresa tu correo electrónico",
+  "message": "Mensaje",
+  "messageHint": "Escribe tu mensaje...",
+  "messageSentSuccess": "¡Mensaje enviado exitosamente! Te contactaremos pronto.",
+  "messageFailed": "Error al enviar el mensaje. Por favor intenta de nuevo.",
   "errors": {
-    "fetchFailed": "No se han podido recuperar los contactos"
+    "fetchFailed": "No se han podido recuperar los contactos",
+    "emailRequired": "El correo electrónico es requerido",
+    "emailInvalid": "Por favor ingresa una dirección de correo electrónico válida",
+    "subjectRequired": "El asunto es requerido",
+    "subjectMinLength": "El asunto debe tener al menos 3 caracteres",
+    "messageRequired": "El mensaje es requerido",
+    "messageMinLength": "El mensaje debe tener al menos 10 caracteres"
   }
 }

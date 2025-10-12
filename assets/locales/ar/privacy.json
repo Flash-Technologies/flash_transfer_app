@@ -21,26 +21,29 @@
         "content": "At Flash Transfer, we respect your privacy. This Privacy Policy outlines how we collect, use, and protect your personal information."
       },
       "dataCollection": {
-        "title": "1. Information We Collect",
+        "title": "1. المعلومات التي نجمعها",
+        "content": "نجمع أنواع مختلفة من المعلومات لتوفير وتحسين خدماتنا:",
         "personalInfo": {
-          "title": "Personal Information",
-          "content": "Name, email, phone number, payment details, and transaction history."
+          "title": "المعلومات الشخصية",
+          "content": "الاسم، البريد الإلكتروني، رقم الهاتف، تفاصيل الدفع، وتاريخ المعاملات."
         },
         "nonPersonalInfo": {
-          "title": "Non-Personal Information", 
-          "content": "Device data, IP address, and app usage statistics."
+          "title": "المعلومات غير الشخصية", 
+          "content": "بيانات الجهاز، عنوان IP، وإحصائيات استخدام التطبيق."
         }
       },
       "dataUsage": {
-        "title": "2. How We Use Your Information",
-        "processing": "To process money transfers and manage your account.",
-        "security": "For fraud prevention and security.",
-        "communication": "To send you updates or promotional materials (with your consent)."
+        "title": "2. كيف نستخدم معلوماتك",
+        "content": "نستخدم معلوماتك للأغراض التالية:",
+        "processing": "لمعالجة تحويلات الأموال وإدارة حسابك.",
+        "security": "لمنع الاحتيال والأمان.",
+        "communication": "لإرسال التحديثات أو المواد الترويجية لك (بموافقتك)."
       },
       "dataSharing": {
-        "title": "3. Sharing Your Information",
-        "serviceProviders": "With service providers (payment processors, identity verification).",
-        "legal": "For legal purposes or to prevent fraud."
+        "title": "3. مشاركة معلوماتك",
+        "content": "قد نشارك معلوماتك في ظروف محدودة:",
+        "serviceProviders": "مع مقدمي الخدمات (معالجات الدفع، التحقق من الهوية).",
+        "legal": "لأغراض قانونية أو لمنع الاحتيال."
       },
       "dataSecurity": {
         "title": "4. Data Security",
@@ -77,6 +80,23 @@
       "contact": {
         "title": "12. Contact Us",
         "content": "If you have questions about this policy, please contact us at privacy@flashtransfer.com"
+      }
+    },
+    "subsections": {
+      "transactionProcessing": {
+        "title": "معالجة المعاملات"
+      },
+      "securityFraudPrevention": {
+        "title": "الأمان ومنع الاحتيال"
+      },
+      "communications": {
+        "title": "الاتصالات"
+      },
+      "serviceProviders": {
+        "title": "مقدمو الخدمات"
+      },
+      "legalRequirements": {
+        "title": "المتطلبات القانونية"
       }
     },
     "actions": {

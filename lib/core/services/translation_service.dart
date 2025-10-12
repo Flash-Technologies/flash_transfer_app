@@ -165,7 +165,7 @@ class TranslationService {
       "sections": {
         "introduction": {
           "title": "Introduction",
-          "content": "At Flash Transfer, we respect your privacy. This Privacy Policy outlines how we collect, use, and protect your personal information."
+          "content": "Atasdfasdf Flash Tasdfasdfadsfransfer, we respect your privacy. This Privacy Policy outlines how we collect, use, and protect your personal information."
         }
       }
     },

@@ -1,12 +1,29 @@
 {
-  "heading": "My Contacts",
-  "subheading": "Home is behind, the world ahead and there are many paths to tread through shadows to the edge.",
-  "loading": "Loading contacts...",
-  "noContacts": "You don't yet have any beneficiaries",
-  "continue": "Continue",
-  "addNew": "Add New",
-  "share": "Share",
+  "heading": "Meus Contatos",
+  "subheading": "O lar está atrás, o mundo à frente e há muitos caminhos a percorrer através das sombras até a borda.",
+  "loading": "Carregando contatos...",
+  "noContacts": "Você ainda não tem beneficiários",
+  "continue": "Continuar",
+  "addNew": "Adicionar Novo",
+  "share": "Compartilhar",
+  "back": "Voltar",
+  "howCanWeHelp": "Como podemos ajudá-lo?",
+  "helpDescription": "Parece que você tem problemas com nosso sistema. Estamos aqui para ajudá-lo, então entre em contato conosco.",
+  "subject": "Assunto",
+  "subjectHint": "Digite seu assunto",
+  "email": "E-mail",
+  "emailHint": "Digite seu e-mail",
+  "message": "Mensagem",
+  "messageHint": "Digite sua mensagem...",
+  "messageSentSuccess": "Mensagem enviada com sucesso! Entraremos em contato em breve.",
+  "messageFailed": "Falha ao enviar mensagem. Tente novamente.",
   "errors": {
-    "fetchFailed": "Failed to fetch contacts"
+    "fetchFailed": "Falha ao buscar contatos",
+    "emailRequired": "E-mail é obrigatório",
+    "emailInvalid": "Por favor, insira um endereço de e-mail válido",
+    "subjectRequired": "Assunto é obrigatório",
+    "subjectMinLength": "Assunto deve ter pelo menos 3 caracteres",
+    "messageRequired": "Mensagem é obrigatória",
+    "messageMinLength": "Mensagem deve ter pelo menos 10 caracteres"
   }
 }

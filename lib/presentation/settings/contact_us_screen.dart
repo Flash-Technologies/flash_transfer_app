@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart';
 import '../../providers/contact_provider.dart';
+import '../../providers/language_provider.dart';
 
 class ContactUsScreen extends ConsumerStatefulWidget {
   const ContactUsScreen({super.key});
@@ -99,7 +100,7 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
     super.dispose();
   }
 
-  void _submitForm() async {
+  void _submitForm(String Function(String) tr) async {
     if (!_formKey.currentState!.validate()) {
       HapticFeedback.heavyImpact();
       return;
@@ -128,7 +129,7 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
                 Icon(Icons.check_circle, color: Colors.white),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Text('Message sent successfully! We\'ll get back to you soon.'),
+                  child: Text(tr('contacts.messageSentSuccess')),
                 ),
               ],
             ),
@@ -159,7 +160,7 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
               children: [
                 Icon(Icons.error, color: Colors.white),
                 const SizedBox(width: 12),
-                Expanded(child: Text('Failed to send message. Please try again.')),
+                Expanded(child: Text(tr('contacts.messageFailed'))),
               ],
             ),
             backgroundColor: Colors.red[600],
@@ -172,33 +173,33 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
     }
   }
 
-  String? _validateEmail(String? value) {
+  String? _validateEmail(String? value, String Function(String) tr) {
     if (value?.isEmpty ?? true) {
-      return 'Email is required';
+      return tr('contacts.errors.emailRequired');
     }
     final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
     if (!emailRegex.hasMatch(value!)) {
-      return 'Please enter a valid email address';
+      return tr('contacts.errors.emailInvalid');
     }
     return null;
   }
 
-  String? _validateSubject(String? value) {
+  String? _validateSubject(String? value, String Function(String) tr) {
     if (value?.isEmpty ?? true) {
-      return 'Subject is required';
+      return tr('contacts.errors.subjectRequired');
     }
     if (value!.length < 3) {
-      return 'Subject must be at least 3 characters';
+      return tr('contacts.errors.subjectMinLength');
     }
     return null;
   }
 
-  String? _validateMessage(String? value) {
+  String? _validateMessage(String? value, String Function(String) tr) {
     if (value?.isEmpty ?? true) {
-      return 'Message is required';
+      return tr('contacts.errors.messageRequired');
     }
     if (value!.length < 10) {
-      return 'Message must be at least 10 characters';
+      return tr('contacts.errors.messageMinLength');
     }
     return null;
   }
@@ -207,6 +208,7 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
   Widget build(BuildContext context) {
     final contactState = ref.watch(contactProvider);
     final theme = Theme.of(context);
+    final tr = ref.watch(translationHelperProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFEFF0F1),
@@ -221,7 +223,7 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 2),
                   ),
@@ -251,7 +253,7 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'Back',
+                            tr('contacts.back'),
                             style: TextStyle(
                               color: Colors.grey[700],
                               fontSize: 14,
@@ -293,8 +295,8 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
                                 borderRadius: BorderRadius.circular(16),
                                 gradient: LinearGradient(
                                   colors: [
-                                    theme.primaryColor.withOpacity(0.1),
-                                    Colors.blue.withOpacity(0.05),
+                                    theme.primaryColor.withValues(alpha: 0.1),
+                                    Colors.blue.withValues(alpha: 0.05),
                                   ],
                                 ),
                               ),
@@ -302,7 +304,7 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
                                 child: Icon(
                                   Icons.support_agent_rounded,
                                   size: 120,
-                                  color: theme.primaryColor.withOpacity(0.6),
+                                  color: theme.primaryColor.withValues(alpha: 0.6),
                                 ),
                               ),
                             ).animate().scale(
@@ -320,7 +322,7 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
                       Column(
                         children: [
                           Text(
-                            'How can we help you?',
+                            tr('contacts.howCanWeHelp'),
                             style: theme.textTheme.headlineSmall?.copyWith(
                               fontWeight: FontWeight.bold,
                               color: const Color(0xFF181F30),
@@ -333,7 +335,7 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
                           const SizedBox(height: 12),
                           
                           Text(
-                            'It looks like you have problems with our system. We are here to help you, so, please get in touch with us.',
+                            tr('contacts.helpDescription'),
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: const Color(0xFF6E757D),
                               height: 1.6,
@@ -356,7 +358,7 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: Colors.black.withValues(alpha: 0.05),
                               blurRadius: 10,
                               offset: const Offset(0, 2),
                             ),
@@ -367,11 +369,11 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
                           children: [
                             // Subject Field
                             _buildFormField(
-                              label: 'Subject',
+                              label: tr('contacts.subject'),
                               controller: _subjectController,
                               focusNode: _subjectFocus,
-                              validator: _validateSubject,
-                              hintText: 'Enter your subject',
+                              validator: (value) => _validateSubject(value, tr),
+                              hintText: tr('contacts.subjectHint'),
                               animationDelay: 900,
                               onFieldSubmitted: (_) => _emailFocus.requestFocus(),
                             ),
@@ -380,11 +382,11 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
 
                             // Email Field
                             _buildFormField(
-                              label: 'Email',
+                              label: tr('contacts.email'),
                               controller: _emailController,
                               focusNode: _emailFocus,
-                              validator: _validateEmail,
-                              hintText: 'Enter your email',
+                              validator: (value) => _validateEmail(value, tr),
+                              hintText: tr('contacts.emailHint'),
                               keyboardType: TextInputType.emailAddress,
                               animationDelay: 1000,
                               onFieldSubmitted: (_) => _messageFocus.requestFocus(),
@@ -394,14 +396,14 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
 
                             // Message Field
                             _buildFormField(
-                              label: 'Message',
+                              label: tr('contacts.message'),
                               controller: _messageController,
                               focusNode: _messageFocus,
-                              validator: _validateMessage,
-                              hintText: 'Type your message...',
+                              validator: (value) => _validateMessage(value, tr),
+                              hintText: tr('contacts.messageHint'),
                               maxLines: 5,
                               animationDelay: 1100,
-                              onFieldSubmitted: (_) => _submitForm(),
+                              onFieldSubmitted: (_) => _submitForm(tr),
                             ),
 
                             const SizedBox(height: 32),
@@ -411,7 +413,7 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
                               width: double.infinity,
                               height: 56,
                               child: ElevatedButton(
-                                onPressed: contactState.isLoading ? null : _submitForm,
+                                onPressed: contactState.isLoading ? null : () => _submitForm(tr),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: const Color(0xFFFFC000),
                                   foregroundColor: const Color(0xFF181F30),
@@ -433,7 +435,7 @@ class _ContactUsScreenState extends ConsumerState<ContactUsScreen>
                                         ),
                                       )
                                     : Text(
-                                        'Continue',
+                                        tr('contacts.continue'),
                                         style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w600,

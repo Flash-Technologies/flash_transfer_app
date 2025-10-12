@@ -135,12 +135,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     final featuresMenuItems = [
       ProfileMenuItemData(
         icon: Icons.view_in_ar_outlined,
-        title: tr('menu.nft'),
+        title: tr('profileDropdown.menu.nft'),
         onTap: () => context.push('/nft'),
       ),
       ProfileMenuItemData(
         icon: Icons.share_outlined,
-        title: tr('menu.referFriend'),
+        title: tr('profileDropdown.menu.referFriend'),
         onTap: () => context.push('/invite'),
       ),
     ];
@@ -148,23 +148,46 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     final settingsMenuItems = [
       ProfileMenuItemData(
         icon: Icons.notifications_outlined,
-        title: tr('menu.settings'), // Use generic settings or add notifications key
+        title: tr('profileDropdown.menu.settings'), // Use generic settings or add notifications key
         onTap: () => context.push('/notification'),
       ),
       ProfileMenuItemData(
         icon: Icons.language_outlined,
-        title: 'Language', // Keep as is since this is Language specific
+        title: tr('profileDropdown.menu.language'),
         onTap: () => context.push('/language'),
       ),
       ProfileMenuItemData(
         icon: Icons.privacy_tip_outlined,
-        title: 'Privacy Policy', // Keep as is
+        title: tr('profileDropdown.menu.privacyPolicy'),
         onTap: () => context.push('/privacy'),
       ),
       ProfileMenuItemData(
         icon: Icons.contact_support_outlined,
-        title: 'Contact Us', // Keep as is
-        onTap: () => context.push('/contact'),
+        title: tr('profileDropdown.menu.contactUs'),
+        onTap: () => context.push('/contact-us'),
+      ),
+    ];
+
+    final accountMenuItems = [
+      ProfileMenuItemData(
+        icon: Icons.person_outline,
+        title: tr('profileDropdown.menu.myProfile'),
+        onTap: () => context.push('/edit-profile'),
+      ),
+      ProfileMenuItemData(
+        icon: Icons.receipt_long_outlined,
+        title: tr('profileDropdown.menu.myTransaction'),
+        onTap: () => context.push('/transaction'),
+      ),
+      ProfileMenuItemData(
+        icon: Icons.people_outline,
+        title: tr('profileDropdown.menu.myRecipients'),
+        onTap: () => context.push('/recipients'),
+      ),
+      ProfileMenuItemData(
+        icon: Icons.track_changes_outlined,
+        title: tr('profileDropdown.menu.trackTransfer'),
+        onTap: () => context.push('/track-transfer'),
       ),
     ];
 
@@ -187,7 +210,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                           children: [
                             _buildProfileHeader(context, user),
                             const SizedBox(height: AppSizes.spacingSmall),
-                            _buildMenuItems(context),
+                            _buildMenuItems(context, accountMenuItems, featuresMenuItems, settingsMenuItems, tr),
                             const SizedBox(height: AppSizes.spacingXLarge),
                           ],
                         ),
@@ -418,7 +441,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     );
   }
 
-  Widget _buildMenuItems(BuildContext context) {
+  Widget _buildMenuItems(BuildContext context, List<ProfileMenuItemData> accountMenuItems, List<ProfileMenuItemData> featuresMenuItems, List<ProfileMenuItemData> settingsMenuItems, String Function(String) tr) {
     return SlideTransition(
       position: _slideAnimation,
       child: Container(
@@ -438,79 +461,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           children: [
             _buildMenuSection(
                 'Account',
-                [
-                  ProfileMenuItemData(
-                    icon: Icons.person_outline,
-                    title: 'My Profile',
-                    onTap: () => context.push('/edit-profile'),
-                  ),
-                  ProfileMenuItemData(
-                    icon: Icons.receipt_long_outlined,
-                    title: 'My Transactions',
-                    onTap: () => context.push('/transaction'),
-                  ),
-                  ProfileMenuItemData(
-                    icon: Icons.people_outline,
-                    title: 'My Recipients',
-                    onTap: () => context.push('/recipients'),
-                  ),
-                  ProfileMenuItemData(
-                    icon: Icons.track_changes_outlined,
-                    title: 'Track a Transfer',
-                    onTap: () => context.push('/track-transfer'),
-                  ),
-                  ProfileMenuItemData(
-                    icon: Icons.account_balance_wallet_outlined,
-                    title: 'Wallet',
-                    onTap: () => context.push('/wallet'),
-                  ),
-                ],
+                accountMenuItems,
                 0),
             _buildMenuSection(
                 'Features',
-                [
-                  ProfileMenuItemData(
-                    icon: Icons.view_in_ar_outlined,
-                    title: 'NFT',
-                    onTap: () => context.push('/nft'),
-                  ),
-                  ProfileMenuItemData(
-                    icon: Icons.share_outlined,
-                    title: 'Refer a Friend',
-                    onTap: () => context.push('/invite'),
-                  ),
-                ],
+                featuresMenuItems,
                 200),
             _buildMenuSection(
                 'Settings',
-                [
-                  ProfileMenuItemData(
-                    icon: Icons.notifications_outlined,
-                    title: 'Notifications',
-                    onTap: () => context.push('/notification'),
-                  ),
-                  ProfileMenuItemData(
-                    icon: Icons.language_outlined,
-                    title: 'Language',
-                    onTap: () => context.push('/language'),
-                  ),
-                  ProfileMenuItemData(
-                    icon: Icons.privacy_tip_outlined,
-                    title: 'Privacy Policy',
-                    onTap: () => context.push('/privacy'),
-                  ),
-                  ProfileMenuItemData(
-                    icon: Icons.contact_support_outlined,
-                    title: 'Contact Us',
-                    onTap: () => context.push('/contact'),
-                  ),
-                ],
+                settingsMenuItems,
                 400),
             const Divider(height: 1),
             ProfileMenuItem(
               data: ProfileMenuItemData(
                 icon: Icons.logout_outlined,
-                title: 'Log out',
+                title: tr('profileDropdown.menu.logout'),
                 isDestructive: true,
                 isLoading: _isLoggingOut,
                 onTap: () => _handleLogout(context),

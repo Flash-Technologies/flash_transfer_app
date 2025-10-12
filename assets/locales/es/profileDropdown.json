@@ -13,6 +13,9 @@
     "myCards": "My Cards",
     "referFriend": "Refer a Friend",
     "settings": "Setting",
+    "language": "Idioma",
+    "privacyPolicy": "Política de Privacidad",
+    "contactUs": "Contáctanos",
     "logout": "Log out"
   }
 }

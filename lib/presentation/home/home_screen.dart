@@ -1053,7 +1053,7 @@ class HomeScreen extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              isEnabled ? tr('landing.continue') : 'Please complete exchange details',
+              tr('landing.completeExchangeDetails'),
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -1154,7 +1154,7 @@ class HomeScreen extends ConsumerWidget {
           const SizedBox(height: 16),
           _buildInfoRow(
             icon: Icons.access_time_rounded,
-            label: tr('landing.estimatedTime'),
+            label: tr('transaction.estimatedTime'),
             value: state.calculation?.networkInfo?.humanReadableTime ?? 
                    (state.exchangeRate?.networkInfo?.humanReadableTime) ??
                    (state.exchangeRate != null

@@ -21,26 +21,29 @@
         "content": "At Flash Transfer, we respect your privacy. This Privacy Policy outlines how we collect, use, and protect your personal information."
       },
       "dataCollection": {
-        "title": "1. Information We Collect",
+        "title": "1. जानकारी जो हम एकत्र करते हैं",
+        "content": "हम अपनी सेवाओं को प्रदान करने और सुधारने के लिए विभिन्न प्रकार की जानकारी एकत्र करते हैं:",
         "personalInfo": {
-          "title": "Personal Information",
-          "content": "Name, email, phone number, payment details, and transaction history."
+          "title": "व्यक्तिगत जानकारी",
+          "content": "नाम, ईमेल, फोन नंबर, भुगतान विवरण और लेनदेन इतिहास।"
         },
         "nonPersonalInfo": {
-          "title": "Non-Personal Information", 
-          "content": "Device data, IP address, and app usage statistics."
+          "title": "गैर-व्यक्तिगत जानकारी", 
+          "content": "डिवाइस डेटा, आईपी पता और ऐप उपयोग सांख्यिकी।"
         }
       },
       "dataUsage": {
-        "title": "2. How We Use Your Information",
-        "processing": "To process money transfers and manage your account.",
-        "security": "For fraud prevention and security.",
-        "communication": "To send you updates or promotional materials (with your consent)."
+        "title": "2. हम आपकी जानकारी का उपयोग कैसे करते हैं",
+        "content": "हम आपकी जानकारी का उपयोग निम्नलिखित उद्देश्यों के लिए करते हैं:",
+        "processing": "धन हस्तांतरण को संसाधित करने और आपके खाते का प्रबंधन करने के लिए।",
+        "security": "धोखाधड़ी की रोकथाम और सुरक्षा के लिए।",
+        "communication": "आपको अपडेट या प्रचार सामग्री भेजने के लिए (आपकी सहमति के साथ)।"
       },
       "dataSharing": {
-        "title": "3. Sharing Your Information",
-        "serviceProviders": "With service providers (payment processors, identity verification).",
-        "legal": "For legal purposes or to prevent fraud."
+        "title": "3. आपकी जानकारी साझा करना",
+        "content": "हम आपकी जानकारी को सीमित परिस्थितियों में साझा कर सकते हैं:",
+        "serviceProviders": "सेवा प्रदाताओं के साथ (भुगतान प्रोसेसर, पहचान सत्यापन)।",
+        "legal": "कानूनी उद्देश्यों के लिए या धोखाधड़ी को रोकने के लिए।"
       },
       "dataSecurity": {
         "title": "4. Data Security",
@@ -77,6 +80,23 @@
       "contact": {
         "title": "12. Contact Us",
         "content": "If you have questions about this policy, please contact us at privacy@flashtransfer.com"
+      }
+    },
+    "subsections": {
+      "transactionProcessing": {
+        "title": "लेनदेन प्रसंस्करण"
+      },
+      "securityFraudPrevention": {
+        "title": "सुरक्षा और धोखाधड़ी रोकथाम"
+      },
+      "communications": {
+        "title": "संचार"
+      },
+      "serviceProviders": {
+        "title": "सेवा प्रदाता"
+      },
+      "legalRequirements": {
+        "title": "कानूनी आवश्यकताएं"
       }
     },
     "actions": {

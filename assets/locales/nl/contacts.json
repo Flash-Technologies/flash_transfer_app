@@ -1,12 +1,29 @@
 {
-  "heading": "Mijn Contact",
+  "heading": "Mijn Contacten",
   "subheading": "Thuis is achter, de wereld voor je en er zijn veel paden om door schaduwen naar de rand te gaan.",
-  "loading": "Contacten laden bezig...",
+  "loading": "Contacten laden...",
   "noContacts": "U heeft nog geen begunstigden",
   "continue": "Doorgaan",
-  "addNew": "Nieuw toevoegen",
+  "addNew": "Nieuw Toevoegen",
   "share": "Delen",
+  "back": "Terug",
+  "howCanWeHelp": "Hoe kunnen we je helpen?",
+  "helpDescription": "Het lijkt erop dat je problemen hebt met ons systeem. We zijn er om je te helpen, dus neem contact met ons op.",
+  "subject": "Onderwerp",
+  "subjectHint": "Voer je onderwerp in",
+  "email": "E-mail",
+  "emailHint": "Voer je e-mail in",
+  "message": "Bericht",
+  "messageHint": "Typ je bericht...",
+  "messageSentSuccess": "Bericht succesvol verzonden! We nemen snel contact met je op.",
+  "messageFailed": "Verzenden van bericht mislukt. Probeer het opnieuw.",
   "errors": {
-    "fetchFailed": "Ophalen van contacten mislukt"
+    "fetchFailed": "Ophalen van contacten mislukt",
+    "emailRequired": "E-mail is vereist",
+    "emailInvalid": "Voer een geldig e-mailadres in",
+    "subjectRequired": "Onderwerp is vereist",
+    "subjectMinLength": "Onderwerp moet minimaal 3 tekens bevatten",
+    "messageRequired": "Bericht is vereist",
+    "messageMinLength": "Bericht moet minimaal 10 tekens bevatten"
   }
 }

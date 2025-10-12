@@ -17,6 +17,7 @@
     "recipientGets": "प्राप्तकर्ता को मिलेगा",
     "continue": "जारी रखें",
     "cancel": "रद्द करें",
+    "completeExchangeDetails": "कृपया विनिमय विवरण पूरा करें",
     "noFee": "कोई शुल्क नहीं",
     "networkStatus": {
       "unknown": "अज्ञात",
@@ -201,6 +202,7 @@
     "date": "दिनांक",
     "reference": "संदर्भ",
     "transactionId": "लेन-देन आईडी",
+    "estimatedTime": "अनुमानित समय",
     "fee": "शुल्क",
     "send": "भेजा गया",
     "receive": "प्राप्त",

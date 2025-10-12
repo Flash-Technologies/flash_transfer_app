@@ -1,0 +1,30 @@
+{
+  "heading": "Danh Bạ Của Tôi",
+  "subheading": "Nhà ở phía sau, thế giới ở phía trước và có nhiều con đường để bước qua bóng tối đến rìa.",
+  "loading": "Đang tải danh bạ...",
+  "noContacts": "Bạn chưa có người thụ hưởng nào",
+  "continue": "Tiếp tục",
+  "addNew": "Thêm Mới",
+  "share": "Chia sẻ",
+  "back": "Quay lại",
+  "howCanWeHelp": "Chúng tôi có thể giúp gì cho bạn?",
+  "helpDescription": "Có vẻ như bạn đang gặp vấn đề với hệ thống của chúng tôi. Chúng tôi ở đây để giúp bạn, vui lòng liên hệ với chúng tôi.",
+  "subject": "Chủ đề",
+  "subjectHint": "Nhập chủ đề của bạn",
+  "email": "Email",
+  "emailHint": "Nhập email của bạn",
+  "message": "Tin nhắn",
+  "messageHint": "Nhập tin nhắn của bạn...",
+  "messageSentSuccess": "Tin nhắn đã được gửi thành công! Chúng tôi sẽ liên hệ lại với bạn sớm.",
+  "messageFailed": "Gửi tin nhắn thất bại. Vui lòng thử lại.",
+  "errors": {
+    "fetchFailed": "Không thể tải danh bạ",
+    "emailRequired": "Email là bắt buộc",
+    "emailInvalid": "Vui lòng nhập địa chỉ email hợp lệ",
+    "subjectRequired": "Chủ đề là bắt buộc",
+    "subjectMinLength": "Chủ đề phải có ít nhất 3 ký tự",
+    "messageRequired": "Tin nhắn là bắt buộc",
+    "messageMinLength": "Tin nhắn phải có ít nhất 10 ký tự"
+  }
+}
+

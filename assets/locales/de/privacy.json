@@ -1,12 +1,12 @@
 {
     "screen": {
-      "title": "Privacy Policy",
-      "subtitle": "Your privacy and data protection information",
-      "lastUpdated": "Last updated: {date}",
-      "effectiveDate": "Effective Date: {date}",
-      "back": "Back",
-      "search": "Search in policy",
-      "readingProgress": "Reading Progress"
+      "title": "Datenschutzrichtlinie",
+      "subtitle": "Ihre Datenschutz- und Datenschutzinformationen",
+      "lastUpdated": "Zuletzt aktualisiert: {date}",
+      "effectiveDate": "Gültigkeitsdatum: {date}",
+      "back": "Zurück",
+      "search": "In Richtlinie suchen",
+      "readingProgress": "Lesefortschritt"
     },
     "navigation": {
       "contents": "Contents",
@@ -17,30 +17,33 @@
     },
     "sections": {
       "introduction": {
-        "title": "Introduction",
-        "content": "At Flash Transfer, we respect your privacy. This Privacy Policy outlines how we collect, use, and protect your personal information."
+        "title": "Einführung",
+        "content": "Bei Flash Transfer respektieren wir Ihre Privatsphäre. Diese Datenschutzrichtlinie beschreibt, wie wir Ihre persönlichen Daten sammeln, verwenden und schützen."
       },
       "dataCollection": {
-        "title": "1. Information We Collect",
+        "title": "1. Informationen, die wir sammeln",
+        "content": "Wir sammeln verschiedene Arten von Informationen, um unsere Dienstleistungen zu erbringen und zu verbessern:",
         "personalInfo": {
-          "title": "Personal Information",
-          "content": "Name, email, phone number, payment details, and transaction history."
+          "title": "Persönliche Informationen",
+          "content": "Name, E-Mail, Telefonnummer, Zahlungsdetails und Transaktionsverlauf."
         },
         "nonPersonalInfo": {
-          "title": "Non-Personal Information", 
-          "content": "Device data, IP address, and app usage statistics."
+          "title": "Nicht-persönliche Informationen", 
+          "content": "Gerätedaten, IP-Adresse und App-Nutzungsstatistiken."
         }
       },
       "dataUsage": {
-        "title": "2. How We Use Your Information",
-        "processing": "To process money transfers and manage your account.",
-        "security": "For fraud prevention and security.",
-        "communication": "To send you updates or promotional materials (with your consent)."
+        "title": "2. Wie wir Ihre Informationen verwenden",
+        "content": "Wir verwenden Ihre Informationen für folgende Zwecke:",
+        "processing": "Zur Abwicklung von Geldtransfers und Verwaltung Ihres Kontos.",
+        "security": "Zur Betrugsprävention und Sicherheit.",
+        "communication": "Um Ihnen Updates oder Werbematerialien zu senden (mit Ihrer Zustimmung)."
       },
       "dataSharing": {
-        "title": "3. Sharing Your Information",
-        "serviceProviders": "With service providers (payment processors, identity verification).",
-        "legal": "For legal purposes or to prevent fraud."
+        "title": "3. Teilen Ihrer Informationen",
+        "content": "Wir können Ihre Informationen in begrenzten Umständen teilen:",
+        "serviceProviders": "Mit Dienstleistern (Zahlungsabwickler, Identitätsverifizierung).",
+        "legal": "Zu rechtlichen Zwecken oder zur Betrugsprävention."
       },
       "dataSecurity": {
         "title": "4. Data Security",
@@ -77,6 +80,23 @@
       "contact": {
         "title": "12. Contact Us",
         "content": "If you have questions about this policy, please contact us at privacy@flashtransfer.com"
+      }
+    },
+    "subsections": {
+      "transactionProcessing": {
+        "title": "Transaktionsabwicklung"
+      },
+      "securityFraudPrevention": {
+        "title": "Sicherheit & Betrugsprävention"
+      },
+      "communications": {
+        "title": "Kommunikation"
+      },
+      "serviceProviders": {
+        "title": "Dienstleister"
+      },
+      "legalRequirements": {
+        "title": "Rechtliche Anforderungen"
       }
     },
     "actions": {

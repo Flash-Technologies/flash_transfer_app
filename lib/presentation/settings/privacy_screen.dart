@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/services/translation_service.dart';
+import '../../providers/language_provider.dart';
 import '../../core/models/transaction_model.dart';
 import '../../core/models/sample_data.dart';
 import 'widgets/privacy_section_widget.dart';
@@ -127,6 +128,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen>
     });
   }
 
+
   void _searchContent(String query) {
     setState(() {
       _searchQuery = query;
@@ -196,6 +198,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen>
   @override
   Widget build(BuildContext context) {
     final translationService = TranslationService.instance;
+    final tr = ref.watch(translationHelperProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFEFF0F1),

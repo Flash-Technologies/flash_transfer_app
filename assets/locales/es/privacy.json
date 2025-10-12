@@ -21,26 +21,29 @@
         "content": "At Flash Transfer, we respect your privacy. This Privacy Policy outlines how we collect, use, and protect your personal information."
       },
       "dataCollection": {
-        "title": "1. Information We Collect",
+        "title": "1. Información que recopilamos",
+        "content": "Recopilamos varios tipos de información para proporcionar y mejorar nuestros servicios:",
         "personalInfo": {
-          "title": "Personal Information",
-          "content": "Name, email, phone number, payment details, and transaction history."
+          "title": "Información Personal",
+          "content": "Nombre, correo electrónico, número de teléfono, detalles de pago e historial de transacciones."
         },
         "nonPersonalInfo": {
-          "title": "Non-Personal Information", 
-          "content": "Device data, IP address, and app usage statistics."
+          "title": "Información No Personal", 
+          "content": "Datos del dispositivo, dirección IP y estadísticas de uso de la aplicación."
         }
       },
       "dataUsage": {
-        "title": "2. How We Use Your Information",
-        "processing": "To process money transfers and manage your account.",
-        "security": "For fraud prevention and security.",
-        "communication": "To send you updates or promotional materials (with your consent)."
+        "title": "2. Cómo usamos su información",
+        "content": "Utilizamos su información para los siguientes propósitos:",
+        "processing": "Para procesar transferencias de dinero y gestionar su cuenta.",
+        "security": "Para la prevención de fraudes y seguridad.",
+        "communication": "Para enviarle actualizaciones o materiales promocionales (con su consentimiento)."
       },
       "dataSharing": {
-        "title": "3. Sharing Your Information",
-        "serviceProviders": "With service providers (payment processors, identity verification).",
-        "legal": "For legal purposes or to prevent fraud."
+        "title": "3. Compartir su información",
+        "content": "Podemos compartir su información en circunstancias limitadas:",
+        "serviceProviders": "Con proveedores de servicios (procesadores de pagos, verificación de identidad).",
+        "legal": "Para propósitos legales o para prevenir fraudes."
       },
       "dataSecurity": {
         "title": "4. Data Security",
@@ -77,6 +80,23 @@
       "contact": {
         "title": "12. Contact Us",
         "content": "If you have questions about this policy, please contact us at privacy@flashtransfer.com"
+      }
+    },
+    "subsections": {
+      "transactionProcessing": {
+        "title": "Procesamiento de Transacciones"
+      },
+      "securityFraudPrevention": {
+        "title": "Seguridad y Prevención de Fraudes"
+      },
+      "communications": {
+        "title": "Comunicaciones"
+      },
+      "serviceProviders": {
+        "title": "Proveedores de Servicios"
+      },
+      "legalRequirements": {
+        "title": "Requisitos Legales"
       }
     },
     "actions": {

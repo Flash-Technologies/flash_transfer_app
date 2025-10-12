@@ -1,4 +1,5 @@
 import '../models/transaction_model.dart';
+import '../services/translation_service.dart';
 
 class SampleData {
   // Sample Transactions
@@ -394,87 +395,119 @@ class SampleData {
     ),
   ];
 
-  // Sample Privacy Sections
-  static List<PrivacySectionModel> get samplePrivacySections => [
-    PrivacySectionModel(
-      id: "introduction",
-      title: "Introduction",
-      content:
-          "At Flash Transfer, we respect your privacy. This Privacy Policy outlines how we collect, use, and protect your personal information.",
-    ),
-    PrivacySectionModel(
-      id: "dataCollection",
-      title: "1. Information We Collect",
-      content:
-          "We collect various types of information to provide and improve our services:",
-      subsections: [
-        PrivacySectionModel(
-          id: "personalInfo",
-          title: "Personal Information",
-          content:
-              "Name, email, phone number, payment details, and transaction history.",
-        ),
-        PrivacySectionModel(
-          id: "nonPersonalInfo",
-          title: "Non-Personal Information",
-          content: "Device data, IP address, and app usage statistics.",
-        ),
-      ],
-    ),
-    PrivacySectionModel(
-      id: "dataUsage",
-      title: "2. How We Use Your Information",
-      content: "We use your information for the following purposes:",
-      subsections: [
-        PrivacySectionModel(
-          id: "processing",
-          title: "Transaction Processing",
-          content: "To process money transfers and manage your account.",
-        ),
-        PrivacySectionModel(
-          id: "security",
-          title: "Security & Fraud Prevention",
-          content: "For fraud prevention and security purposes.",
-        ),
-        PrivacySectionModel(
-          id: "communication",
-          title: "Communications",
-          content:
-              "To send you updates or promotional materials (with your consent).",
-        ),
-      ],
-    ),
-    PrivacySectionModel(
-      id: "dataSharing",
-      title: "3. Sharing Your Information",
-      content: "We may share your information in limited circumstances:",
-      subsections: [
-        PrivacySectionModel(
-          id: "serviceProviders",
-          title: "Service Providers",
-          content:
-              "With service providers (payment processors, identity verification).",
-        ),
-        PrivacySectionModel(
-          id: "legal",
-          title: "Legal Requirements",
-          content: "For legal purposes or to prevent fraud.",
-        ),
-      ],
-    ),
-    PrivacySectionModel(
-      id: "dataSecurity",
-      title: "4. Data Security",
-      content:
-          "We use encryption and other security measures to protect your data, but no system is entirely secure.",
-    ),
-    PrivacySectionModel(
-      id: "userRights",
-      title: "5. Your Rights",
-      content:
-          "You can access, update, or delete your personal information. You can also opt-out of marketing communications.",
-    ),
-  ];
+  // Sample Privacy Sections - Now using TranslationService
+  static List<PrivacySectionModel> get samplePrivacySections {
+    final tr = TranslationService.instance.translate;
+    
+    return [
+      PrivacySectionModel(
+        id: "introduction",
+        title: tr('privacy.sections.introduction.title'),
+        content: tr('privacy.sections.introduction.content'),
+      ),
+      PrivacySectionModel(
+        id: "dataCollection", 
+        title: tr('privacy.sections.dataCollection.title'),
+        content: "We collect various types of information to provide and improve our services:",
+        subsections: [
+          PrivacySectionModel(
+            id: "personalInfo",
+            title: tr('privacy.sections.dataCollection.personalInfo.title'),
+            content: tr('privacy.sections.dataCollection.personalInfo.content'),
+          ),
+          PrivacySectionModel(
+            id: "nonPersonalInfo",
+            title: tr('privacy.sections.dataCollection.nonPersonalInfo.title'),
+            content: tr('privacy.sections.dataCollection.nonPersonalInfo.content'),
+          ),
+        ],
+      ),
+      PrivacySectionModel(
+        id: "dataUsage",
+        title: tr('privacy.sections.dataUsage.title'),
+        content: "We use your information for the following purposes:",
+        subsections: [
+          PrivacySectionModel(
+            id: "processing",
+            title: "Transaction Processing",
+            content: tr('privacy.sections.dataUsage.processing'),
+          ),
+          PrivacySectionModel(
+            id: "security",
+            title: "Security & Fraud Prevention", 
+            content: tr('privacy.sections.dataUsage.security'),
+          ),
+          PrivacySectionModel(
+            id: "communication",
+            title: "Communications",
+            content: tr('privacy.sections.dataUsage.communication'),
+          ),
+        ],
+      ),
+      PrivacySectionModel(
+        id: "dataSharing",
+        title: tr('privacy.sections.dataSharing.title'),
+        content: "We may share your information in limited circumstances:",
+        subsections: [
+          PrivacySectionModel(
+            id: "serviceProviders",
+            title: "Service Providers",
+            content: tr('privacy.sections.dataSharing.serviceProviders'),
+          ),
+          PrivacySectionModel(
+            id: "legal",
+            title: "Legal Requirements",
+            content: tr('privacy.sections.dataSharing.legal'),
+          ),
+        ],
+      ),
+      PrivacySectionModel(
+        id: "dataSecurity",
+        title: tr('privacy.sections.dataSecurity.title'),
+        content: tr('privacy.sections.dataSecurity.content'),
+      ),
+      PrivacySectionModel(
+        id: "userRights",
+        title: tr('privacy.sections.userRights.title'),
+        content: tr('privacy.sections.userRights.content'),
+      ),
+      PrivacySectionModel(
+        id: "cookies",
+        title: tr('privacy.sections.cookies.title'),
+        content: tr('privacy.sections.cookies.content'),
+      ),
+      PrivacySectionModel(
+        id: "thirdParty",
+        title: tr('privacy.sections.thirdParty.title'),
+        content: tr('privacy.sections.thirdParty.content'),
+      ),
+      PrivacySectionModel(
+        id: "dataRetention",
+        title: tr('privacy.sections.dataRetention.title'),
+        content: tr('privacy.sections.dataRetention.content'),
+      ),
+      PrivacySectionModel(
+        id: "international",
+        title: tr('privacy.sections.international.title'),
+        content: tr('privacy.sections.international.content'),
+      ),
+      PrivacySectionModel(
+        id: "minors",
+        title: tr('privacy.sections.minors.title'),
+        content: tr('privacy.sections.minors.content'),
+      ),
+      PrivacySectionModel(
+        id: "changes",
+        title: tr('privacy.sections.changes.title'),
+        content: tr('privacy.sections.changes.content'),
+      ),
+      PrivacySectionModel(
+        id: "contact",
+        title: tr('privacy.sections.contact.title'),
+        content: tr('privacy.sections.contact.content'),
+      ),
+    ];
+  }
 
   // Sample referral statistics
   static Map<String, dynamic> get referralStats => {

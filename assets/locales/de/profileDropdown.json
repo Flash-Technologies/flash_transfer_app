@@ -13,6 +13,9 @@
     "myCards": "Meine Karten",
     "referFriend": "Freund einladen",
     "settings": "Einstellungen",
+    "language": "Sprache",
+    "privacyPolicy": "Datenschutzrichtlinie",
+    "contactUs": "Kontakt",
     "logout": "Abmelden"
   }
 }
