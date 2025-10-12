@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flash_transfer_app/config/theme.dart';
 import 'package:flash_transfer_app/core/models/payment_details.dart';
+import 'package:flash_transfer_app/providers/payment_provider.dart';
+import 'package:flash_transfer_app/providers/exchange_provider.dart';
 
-class CashPaymentDetails extends StatefulWidget {
+class CashPaymentDetails extends ConsumerWidget {
   final PaymentDetails details;
 
   const CashPaymentDetails({
@@ -12,32 +15,31 @@ class CashPaymentDetails extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<CashPaymentDetails> createState() => _CashPaymentDetailsState();
-}
-
-class _CashPaymentDetailsState extends State<CashPaymentDetails> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final paymentState = ref.watch(paymentProvider);
+    final exchangeForm = ref.watch(exchangeFormProvider);
     
-    // Play the animation once then stop
-    _controller.forward();
+    // Get sender and recipient info from the provider
+    final senderInfo = paymentState.cashSenderInfo;
+    final recipientInfo = paymentState.cashRecipientInfo;
+    
+    return Column(
+      children: [
+        // Sender Details Section
+        _buildSenderSection(senderInfo, exchangeForm),
+        const SizedBox(height: 16),
+        
+        // Receiver Details Section  
+        _buildReceiverSection(recipientInfo, exchangeForm),
+        const SizedBox(height: 16),
+        
+        // Transaction Details Section
+        _buildTransactionSection(),
+      ],
+    );
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildSenderSection(Map<String, dynamic>? senderInfo, exchangeForm) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -55,70 +57,298 @@ class _CashPaymentDetailsState extends State<CashPaymentDetails> with SingleTick
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header
           const Text(
-            "Payment Details",
+            "Sender Details",
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
               color: Color(0xFF273240),
             ),
           ),
-          
           const SizedBox(height: 16),
           
-          // Cash Payment
+          // Sender info
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                "Cash Payment",
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Color(0xFF6E757D),
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Colors.orange.shade100,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Icon(
+                  Icons.person,
+                  color: Colors.orange.shade600,
+                  size: 24,
                 ),
               ),
-              Image.asset(
-                'assets/images/dollar.png',
-                width: 24,
-                height: 24,
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      senderInfo != null 
+                          ? '${senderInfo['firstName'] ?? ''} ${senderInfo['lastName'] ?? ''}'
+                          : 'Sai Bhilare bhaijaan',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF273240),
+                      ),
+                    ),
+                    Text(
+                      senderInfo?['country'] != null 
+                          ? _getCountryName(senderInfo!['country'])
+                          : 'India',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF6E757D),
+                      ),
+                    ),
+                    Text(
+                      '${exchangeForm.fromCurrency?.code ?? 'ETH'} Wallet',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF6E757D),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
           
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
           
-          // Optional: Fund source and purpose if they exist
-          if (widget.details.fundSource != null)
-            _buildDetailRow(
-              label: "Source of funds",
-              value: widget.details.fundSource!,
+          // Source of funds and Purpose
+          _buildDetailRow("Source of funds", "SAVINGS"),
+          const SizedBox(height: 8),
+          _buildDetailRow("Purpose of transaction", "EDUCATION"),
+          const SizedBox(height: 8),
+          _buildDetailRow("Coverage Area", "West & Central Africa"),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildReceiverSection(Map<String, dynamic>? recipientInfo, exchangeForm) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Receiver details",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF273240),
             ),
+          ),
+          const SizedBox(height: 16),
           
-          if (widget.details.purpose != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 12.0),
-              child: _buildDetailRow(
-                label: "Purpose",
-                value: widget.details.purpose!,
+          // Receiver info
+          Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade100,
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Icon(
+                  Icons.person,
+                  color: Colors.blue.shade600,
+                  size: 24,
+                ),
               ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      recipientInfo != null 
+                          ? '${recipientInfo['firstName'] ?? ''} ${recipientInfo['lastName'] ?? ''}'
+                          : 'Abu Alaeddine',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF273240),
+                      ),
+                    ),
+                    Text(
+                      recipientInfo?['cashPickupCountry'] != null 
+                          ? _getCountryName(recipientInfo!['cashPickupCountry'])
+                          : 'Cote d\'Ivoire',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Color(0xFF6E757D),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          
+          const SizedBox(height: 16),
+          
+          // Cash pickup details
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade100,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.monetization_on,
+                      color: Colors.green.shade600,
+                      size: 16,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Cash Pickup',
+                      style: TextStyle(
+                        color: Colors.green.shade600,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          
+          const SizedBox(height: 12),
+          
+          _buildDetailRow("Blockchain Network", "ETHEREUM"),
+          const SizedBox(height: 8),
+          _buildDetailRow("Receiver Country", recipientInfo?['cashPickupCountry'] != null 
+              ? _getCountryName(recipientInfo!['cashPickupCountry'])
+              : 'Cote d\'Ivoire'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTransactionSection() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "Transaction Details",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Color(0xFF273240),
             ),
+          ),
+          const SizedBox(height: 16),
           
-          // Cash payment animation
-          Center(
-            child: SizedBox(
-              height: 120,
-              width: 120,
-              child: Lottie.asset(
-                'assets/LottieFiles/cashPayment.json',
-                controller: _controller,
-                fit: BoxFit.contain,
-                onLoaded: (composition) {
-                  // Optional: adjust controller duration to match composition
-                  _controller.duration = composition.duration;
-                  _controller.forward();
-                },
-              ),
+          _buildDetailRow("You sent", "0.000001 ETH"),
+          const SizedBox(height: 8),
+          _buildDetailRow("Transfer rate", "1 ETH = 100 XOF", isRate: true),
+          const SizedBox(height: 16),
+          
+          const Divider(),
+          const SizedBox(height: 16),
+          
+          _buildDetailRow("Total to pay", "0.000001 ETH", isBold: true),
+          const SizedBox(height: 8),
+          _buildDetailRow("Recipient Gets", "0.000001 XOF", isBold: true),
+          
+          const SizedBox(height: 16),
+          
+          // Availability
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.red.shade50,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.red.shade200),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.access_time,
+                  color: Colors.red.shade600,
+                  size: 16,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Availability',
+                        style: TextStyle(
+                          color: Colors.red.shade700,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Text(
+                        'Transaction unavailable at this time',
+                        style: TextStyle(
+                          color: Colors.red.shade600,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade100,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    'Unavailable',
+                    style: TextStyle(
+                      color: Colors.red.shade700,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -126,10 +356,7 @@ class _CashPaymentDetailsState extends State<CashPaymentDetails> with SingleTick
     );
   }
 
-  Widget _buildDetailRow({
-    required String label,
-    required String value,
-  }) {
+  Widget _buildDetailRow(String label, String value, {bool isBold = false, bool isRate = false}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -140,15 +367,50 @@ class _CashPaymentDetailsState extends State<CashPaymentDetails> with SingleTick
             color: Color(0xFF6E757D),
           ),
         ),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
+        Row(
+          children: [
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: isBold ? FontWeight.w600 : FontWeight.normal,
+                color: isBold ? Color(0xFF273240) : Color(0xFF273240),
+              ),
+            ),
+            if (isRate)
+              Container(
+                margin: const EdgeInsets.only(left: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade100,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  'LIVE',
+                  style: TextStyle(
+                    color: Colors.green.shade600,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+          ],
         ),
       ],
     );
+  }
+
+  String _getCountryName(String countryCode) {
+    final countries = {
+      'CI': 'Cote d\'Ivoire',
+      'SN': 'Senegal',
+      'ML': 'Mali',
+      'BJ': 'Benin',
+      'BF': 'Burkina Faso',
+      'TG': 'Togo',
+      'NE': 'Niger',
+      'GW': 'Guinea-Bissau',
+    };
+    return countries[countryCode] ?? countryCode;
   }
 }

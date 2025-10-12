@@ -93,8 +93,15 @@ flutter:
     - assets/images/wallets/
     - assets/icons/
     - assets/LottieFiles/
-    - assets/locales/
-    # - assets/images/wallets/
+    - assets/locales/en/
+    - assets/locales/de/
+    - assets/locales/fr/
+    - assets/locales/es/
+    - assets/locales/ar/
+    - assets/locales/hi/
+    - assets/locales/nl/
+    - assets/locales/pt/
+    - assets/locales/vi/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

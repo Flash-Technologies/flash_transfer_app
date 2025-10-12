@@ -6,6 +6,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../providers/exchange_provider.dart';
 import '../../providers/notification_provider.dart';
+import '../../providers/language_provider.dart';
 import '../../core/models/currency.dart';
 import '../../core/utils/currency_icon_mapper.dart';
 import 'widgets/recent_transactions_widget.dart';
@@ -19,6 +20,7 @@ class HomeScreen extends ConsumerWidget {
     final exchangeForm = ref.watch(exchangeFormProvider);
     final currenciesAsync = ref.watch(currenciesProvider);
     final unreadCount = ref.watch(unreadNotificationCountProvider);
+    final tr = ref.watch(translationHelperProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
@@ -57,12 +59,12 @@ class HomeScreen extends ConsumerWidget {
                     .fadeIn(duration: 600.ms, delay: 400.ms)
                     .slideY(begin: 0.2, end: 0),
                 const SizedBox(height: 24),
-                _buildExchangeInfo(context, exchangeForm)
+                _buildExchangeInfo(context, ref, exchangeForm)
                     .animate()
                     .fadeIn(duration: 600.ms, delay: 600.ms)
                     .slideX(begin: -0.1, end: 0),
                 const SizedBox(height: 32),
-                _buildRecentTransactions(context)
+                _buildRecentTransactions(context, ref)
                     .animate()
                     .fadeIn(duration: 600.ms, delay: 800.ms),
               ],
@@ -198,6 +200,7 @@ class HomeScreen extends ConsumerWidget {
     WidgetRef ref,
     ExchangeFormState state,
   ) {
+    final tr = ref.watch(translationHelperProvider);
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -242,9 +245,9 @@ class HomeScreen extends ConsumerWidget {
                           ),
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: const Text(
-                          'Send',
-                          style: TextStyle(
+                        child: Text(
+                          tr('landing.send'),
+                          style: const TextStyle(
                             fontSize: 14,
                             color: Color(0xFF1976D2),
                             fontWeight: FontWeight.w600,
@@ -298,7 +301,7 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ),
                   Text(
-                    'Amount to Send',
+                    tr('landing.amountSend'),
                     style: TextStyle(
                       fontSize: 14,
                       color: const Color(0xFF181F30).withOpacity(0.7),
@@ -351,9 +354,9 @@ class HomeScreen extends ConsumerWidget {
                           ),
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: const Text(
-                          'Receive',
-                          style: TextStyle(
+                        child: Text(
+                          tr('landing.receive'),
+                          style: const TextStyle(
                             fontSize: 14,
                             color: Color(0xFFF57C00),
                             fontWeight: FontWeight.w600,
@@ -411,7 +414,7 @@ class HomeScreen extends ConsumerWidget {
                     ),
                   ),
                   Text(
-                    'Amount Received',
+                    tr('landing.receiveAmount'),
                     style: TextStyle(
                       fontSize: 14,
                       color: const Color(0xFF181F30).withOpacity(0.7),
@@ -999,6 +1002,7 @@ class HomeScreen extends ConsumerWidget {
 
   Widget _buildContinueButton(BuildContext context, WidgetRef ref) {
     final exchangeForm = ref.watch(exchangeFormProvider);
+    final tr = ref.watch(translationHelperProvider);
 
     // Check if continue button should be enabled
     final sendAmount = double.tryParse(exchangeForm.sendAmount) ?? 0;
@@ -1049,7 +1053,7 @@ class HomeScreen extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              isEnabled ? 'Continue' : 'Please complete exchange details',
+              isEnabled ? tr('landing.continue') : 'Please complete exchange details',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -1071,7 +1075,8 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildExchangeInfo(BuildContext context, ExchangeFormState state) {
+  Widget _buildExchangeInfo(BuildContext context, WidgetRef ref, ExchangeFormState state) {
+    final tr = ref.watch(translationHelperProvider);
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -1096,7 +1101,7 @@ class HomeScreen extends ConsumerWidget {
         children: [
           _buildInfoRow(
             icon: Icons.currency_exchange_rounded,
-            label: 'Exchange Rate',
+            label: tr('landing.exchangeRate'),
             value: state.exchangeRate != null
                 ? '1 ${state.fromCurrency?.code ?? ''} = ${_formatExchangeRate(state.exchangeRate!.rate)} ${state.toCurrency?.code ?? ''}'
                 : state.calculation != null 
@@ -1117,7 +1122,7 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             _buildInfoRow(
               icon: Icons.business_rounded,
-              label: 'Platform Fee',
+              label: tr('landing.fee'),
               value: '${state.calculation!.feeBreakdown!.fees.platformCharges.toStringAsFixed(6)} ${state.calculation?.feeCurrency}',
               isLoading: state.isLoading,
             ),
@@ -1139,7 +1144,7 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             _buildInfoRow(
               icon: Icons.attach_money_rounded,
-              label: 'Fee',
+              label: tr('landing.fee'),
               value: state.calculation != null
                   ? '+${state.calculation!.fee.toStringAsFixed(2)} ${state.calculation?.feeCurrency}'
                   : '—',
@@ -1149,7 +1154,7 @@ class HomeScreen extends ConsumerWidget {
           const SizedBox(height: 16),
           _buildInfoRow(
             icon: Icons.access_time_rounded,
-            label: 'Estimated Time',
+            label: tr('landing.estimatedTime'),
             value: state.calculation?.networkInfo?.humanReadableTime ?? 
                    (state.exchangeRate?.networkInfo?.humanReadableTime) ??
                    (state.exchangeRate != null
@@ -1233,7 +1238,7 @@ class HomeScreen extends ConsumerWidget {
           ] else ...[
             _buildInfoRow(
               icon: Icons.payment_rounded,
-              label: 'Total to Pay',
+              label: tr('landing.totalToPay'),
               value: state.sendAmount.isNotEmpty && state.calculation != null
                   ? '${state.calculation!.totalAmount.toStringAsFixed(2)} ${state.fromCurrency?.code ?? ''}'
                   : '—',
@@ -1244,7 +1249,7 @@ class HomeScreen extends ConsumerWidget {
           ],
           _buildInfoRow(
             icon: Icons.account_balance_wallet_rounded,
-            label: 'Recipient Gets',
+            label: tr('landing.recipientGets'),
             value: state.calculation != null
                 ? '${_formatExchangeRate(state.calculation!.receivedAmount)} ${state.toCurrency?.code ?? ''}'
                 : '—',
@@ -1333,7 +1338,7 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildRecentTransactions(BuildContext context) {
+  Widget _buildRecentTransactions(BuildContext context, WidgetRef ref) {
     return const RecentTransactionsWidget();
   }
 

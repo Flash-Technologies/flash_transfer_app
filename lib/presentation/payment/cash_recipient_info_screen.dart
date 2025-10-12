@@ -164,7 +164,7 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
   
   Widget _buildTitle() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
           'Recipient Information',
@@ -181,7 +181,6 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
             fontSize: 14,
             color: Colors.grey[600],
           ),
-          textAlign: TextAlign.center,
         ),
       ],
     );

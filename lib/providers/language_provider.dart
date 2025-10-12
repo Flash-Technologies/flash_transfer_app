@@ -46,7 +46,13 @@ class LanguageNotifier extends StateNotifier<LanguageState> {
   static const String _languageKey = 'selected_language';
 
   LanguageNotifier() : super(_initialState) {
+    _initializeTranslations();
     _loadSavedLanguage();
+  }
+
+  Future<void> _initializeTranslations() async {
+    // Ensure English translations are loaded by default
+    await TranslationService.instance.loadTranslations('en');
   }
 
   static final _availableLanguages = [
@@ -146,6 +152,8 @@ class LanguageNotifier extends StateNotifier<LanguageState> {
           isLoading: false,
         );
       } else {
+        // If no saved language, load English translations as default
+        await TranslationService.instance.loadTranslations('en');
         state = state.copyWith(isLoading: false);
       }
     } catch (e) {
@@ -167,7 +175,7 @@ class LanguageNotifier extends StateNotifier<LanguageState> {
       // Load translations for the new language
       await TranslationService.instance.loadTranslations(language.code);
 
-      // Update state
+      // Update state - this will trigger rebuilds across the app
       state = state.copyWith(currentLanguage: language, isLoading: false);
 
       return true;
@@ -244,4 +252,18 @@ final filteredLanguagesProvider = Provider<List<LanguageModel>>((ref) {
 
 final languageErrorProvider = Provider<String?>((ref) {
   return ref.watch(languageProvider).error;
+});
+
+// Translation provider that rebuilds when language changes
+final translationProvider = Provider<TranslationService>((ref) {
+  // Watch language changes to trigger rebuilds
+  ref.watch(currentLanguageProvider);
+  return TranslationService.instance;
+});
+
+// Translation helper provider
+final translationHelperProvider = Provider<String Function(String, [Map<String, String>?])>((ref) {
+  // Watch language changes to trigger rebuilds
+  ref.watch(currentLanguageProvider);
+  return TranslationService.instance.translate;
 });

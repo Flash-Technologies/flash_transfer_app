@@ -6,6 +6,7 @@ import 'core/services/storage_service.dart';
 import 'core/services/facebook_service.dart';
 import 'core/services/translation_service.dart';
 import 'providers/auth_provider.dart';
+import 'providers/language_provider.dart';
 
 class FlashTransferApp extends StatelessWidget {
   const FlashTransferApp({Key? key}) : super(key: key);
@@ -17,6 +18,8 @@ class FlashTransferApp extends StatelessWidget {
         builder: (context, ref, _) {
           // Initialize auth provider early
           ref.watch(authProvider);
+          // Watch language provider to trigger rebuilds when language changes
+          ref.watch(languageProvider);
           final router = ref.watch(routerProvider);
 
           return MaterialApp.router(
@@ -48,6 +51,6 @@ Future<void> initApp() async {
   // Initialize Facebook SDK
   await FacebookService.initialize();
   
-  // Initialize Translation Service
+  // Initialize Translation Service with default language
   await TranslationService.instance.loadTranslations('en');
 }

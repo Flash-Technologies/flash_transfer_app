@@ -368,41 +368,40 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
           ),
           const SizedBox(height: 16),
           
-          // ID Type and Number
-          Row(
+          // ID Type and Number - Stack vertically to prevent overflow
+          Column(
             children: [
-              Expanded(
-                child: DropdownButtonFormField<String>(
-                  value: _selectedIdType,
-                  decoration: InputDecoration(
-                    labelText: 'ID Type',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  items: _idTypes.map((type) {
-                    return DropdownMenuItem(
-                      value: type,
-                      child: Text(type),
-                    );
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedIdType = value;
-                    });
-                  },
-                ),
+              // ID Type dropdown
+              _buildCustomDropdown(
+                label: 'ID Type',
+                value: _selectedIdType,
+                items: _idTypes,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedIdType = value;
+                  });
+                },
               ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: TextFormField(
-                  controller: _idNumberController,
-                  decoration: InputDecoration(
-                    labelText: 'ID Number',
-                    hintText: 'Enter ID number',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+              const SizedBox(height: 16),
+              // ID Number field
+              TextFormField(
+                controller: _idNumberController,
+                decoration: InputDecoration(
+                  labelText: 'ID Number',
+                  hintText: 'Enter ID number',
+                  filled: true,
+                  fillColor: const Color(0xFFF8F9FA),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: const BorderSide(color: Color(0xFF2475FF), width: 2),
                   ),
                 ),
               ),
@@ -493,33 +492,10 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
           ),
           const SizedBox(height: 16),
           
-          DropdownButtonFormField<String>(
+          _buildCustomCountryDropdown(
+            label: 'Select country',
             value: _selectedCountry,
-            decoration: InputDecoration(
-              labelText: 'Select country',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
-                borderSide: const BorderSide(color: Color(0xFF2475FF), width: 2),
-              ),
-            ),
-            items: _countries.map((country) {
-              return DropdownMenuItem(
-                value: country['code'],
-                child: Row(
-                  children: [
-                    Text(
-                      country['flag']!,
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(country['name']!),
-                  ],
-                ),
-              );
-            }).toList(),
+            countries: _countries,
             onChanged: (value) {
               setState(() {
                 _selectedCountry = value;
@@ -595,6 +571,109 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // Custom dropdown for ID Type
+  Widget _buildCustomDropdown({
+    required String label,
+    required String? value,
+    required List<String> items,
+    required ValueChanged<String?> onChanged,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8F9FA),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: value,
+          hint: Text(
+            label,
+            style: TextStyle(
+              color: Colors.grey.shade600,
+              fontSize: 16,
+            ),
+          ),
+          isExpanded: true,
+          icon: Icon(Icons.arrow_drop_down, color: Colors.grey.shade600),
+          items: items.map((item) {
+            return DropdownMenuItem(
+              value: item,
+              child: Text(
+                item,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Color(0xFF181F30),
+                ),
+              ),
+            );
+          }).toList(),
+          onChanged: onChanged,
+        ),
+      ),
+    );
+  }
+
+  // Custom dropdown for Country
+  Widget _buildCustomCountryDropdown({
+    required String label,
+    required String? value,
+    required List<Map<String, String>> countries,
+    required ValueChanged<String?> onChanged,
+    String? Function(String?)? validator,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8F9FA),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          value: value,
+          hint: Text(
+            label,
+            style: TextStyle(
+              color: Colors.grey.shade600,
+              fontSize: 16,
+            ),
+          ),
+          isExpanded: true,
+          icon: Icon(Icons.arrow_drop_down, color: Colors.grey.shade600),
+          items: countries.map((country) {
+            return DropdownMenuItem(
+              value: country['code'],
+              child: Row(
+                children: [
+                  Text(
+                    country['flag']!,
+                    style: const TextStyle(fontSize: 20),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      country['name']!,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFF181F30),
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }).toList(),
+          onChanged: onChanged,
+        ),
       ),
     );
   }

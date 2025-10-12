@@ -14,63 +14,66 @@ class TranslationService {
   String get currentLocale => _currentLocale;
 
   Future<void> loadTranslations(String locale) async {
+    print('🌍 [TRANSLATION] Starting to load translations for locale: $locale');
+    
     try {
-      // List of translation files to load
-      final List<String> translationFiles = [
-        'translation.json',
+      // Start with empty translations instead of defaults
+      Map<String, dynamic> allTranslations = {};
+      
+      // First, try to load the main translation.json file
+      try {
+        final String jsonString = await rootBundle.loadString(
+          'assets/locales/$locale/translation.json',
+        );
+        print('✅ [TRANSLATION] Successfully loaded translation.json for $locale');
+        print('📄 [TRANSLATION] Content length: ${jsonString.length} characters');
+        
+        final Map<String, dynamic> mainTranslations = json.decode(jsonString);
+        allTranslations = _mergeTranslations(allTranslations, mainTranslations);
+        
+        print('🔍 [TRANSLATION] Main translation keys loaded: ${mainTranslations.keys.toList()}');
+        
+        // Check if landing section exists
+        if (mainTranslations.containsKey('landing')) {
+          final landingSection = mainTranslations['landing'] as Map<String, dynamic>;
+          print('🏠 [TRANSLATION] Landing section keys: ${landingSection.keys.toList()}');
+        } else {
+          print('❌ [TRANSLATION] No landing section found in translation.json!');
+        }
+        
+      } catch (e) {
+        print('❌ [TRANSLATION] Failed to load main translation.json for $locale: $e');
+        throw Exception('Main translation file not found for $locale');
+      }
+      
+      // Load other translation files (optional)
+      final List<String> optionalFiles = [
         'invite.json',
         'privacy.json',
-        'contacts.json',
-        'crypto-payment.json',
-        'crypto.json',
-        'findLocation.json',
-        'footer.json',
-        'history.json',
         'language.json',
-        'mobile.json',
-        'navigation.json',
-        'pending.json',
         'profileDropdown.json',
-        'receiver.json',
         'recipients.json',
-        'review.json',
-        'send-crypto.json',
-        'send.json',
-        'storeLocation.json',
-        'testimonials.json',
-        'track.json',
-        'transaction.json',
-        'transactionDetails.json',
       ];
-
-      Map<String, dynamic> allTranslations = Map<String, dynamic>.from(_defaultTranslations);
       
-      // Load each translation file and merge
-      for (String fileName in translationFiles) {
+      for (String fileName in optionalFiles) {
         try {
           final String jsonString = await rootBundle.loadString(
             'assets/locales/$locale/$fileName',
           );
           final Map<String, dynamic> fileTranslations = json.decode(jsonString);
-          
-          // Extract the base name without extension to use as the key
           final String baseKey = fileName.replaceAll('.json', '');
-          
-          // For main translation.json, merge directly
-          if (baseKey == 'translation') {
-            allTranslations = _mergeTranslations(allTranslations, fileTranslations);
-          } else {
-            // For other files, add them under their base key
-            allTranslations[baseKey] = fileTranslations;
-          }
+          allTranslations[baseKey] = fileTranslations;
+          print('✅ [TRANSLATION] Loaded optional file: $fileName');
         } catch (e) {
-          print('Could not load translation file $fileName for $locale: $e');
-          // Continue loading other files
+          print('⚠️ [TRANSLATION] Optional file $fileName not found for $locale (this is OK)');
         }
       }
       
       _translations = allTranslations;
       _currentLocale = locale;
+      
+      print('🎉 [TRANSLATION] Successfully loaded translations for $locale');
+      print('📊 [TRANSLATION] Total translation sections: ${allTranslations.keys.toList()}');
     } catch (e) {
       print('Error loading translation files for $locale: $e');
       // Fallback to English if the locale file doesn't exist
@@ -98,23 +101,33 @@ class TranslationService {
 
   String translate(String key, [Map<String, String>? params]) {
     if (_translations == null) {
-      print('Translations not loaded, initializing with default locale...');
-      _translations = _defaultTranslations;
+      print('❌ [TRANSLATE] Translations not loaded for key: $key');
+      return key;
     }
+
+    print('🔍 [TRANSLATE] Looking for key: $key in locale: $_currentLocale');
+    print('📊 [TRANSLATE] Available top-level keys: ${_translations!.keys.toList()}');
 
     final keys = key.split('.');
     dynamic value = _translations;
 
-    for (final k in keys) {
+    for (int i = 0; i < keys.length; i++) {
+      final k = keys[i];
       if (value is Map<String, dynamic> && value.containsKey(k)) {
         value = value[k];
+        print('✅ [TRANSLATE] Found key part: $k (${i + 1}/${keys.length})');
       } else {
-        print('Translation key not found: $key');
+        print('❌ [TRANSLATE] Key part not found: $k');
+        if (value is Map<String, dynamic>) {
+          print('🔍 [TRANSLATE] Available keys at this level: ${value.keys.toList()}');
+        }
+        print('❌ [TRANSLATE] Full key not found: $key');
         return key;
       }
     }
 
     String result = value.toString();
+    print('✅ [TRANSLATE] Found translation for $key: $result');
 
     // Replace parameters
     if (params != null) {

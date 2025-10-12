@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -81,30 +82,8 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
       final success = await ref.read(languageProvider.notifier).changeLanguage(language);
       
       if (success && mounted) {
-        // Show success snackbar
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                Icon(
-                  Icons.check_circle,
-                  color: Colors.white,
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text('Language changed to ${language.name}'),
-                ),
-              ],
-            ),
-            backgroundColor: Colors.green[600],
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            margin: const EdgeInsets.all(16),
-            duration: const Duration(seconds: 3),
-          ),
-        );
+        // Show restart dialog
+        _showRestartDialog(context, language);
       } else {
         // Show error snackbar
         ScaffoldMessenger.of(context).showSnackBar(
@@ -140,6 +119,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
     final currentLanguage = ref.watch(currentLanguageProvider);
     final isLoading = ref.watch(isLanguageLoadingProvider);
     final error = ref.watch(languageErrorProvider);
+    final tr = ref.watch(translationHelperProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFEFF0F1),
@@ -181,7 +161,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'Back',
+                            tr('screen.back'),
                             style: TextStyle(
                               color: Colors.grey[700],
                               fontSize: 14,
@@ -201,7 +181,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                   // Title
                   Expanded(
                     child: Text(
-                      'Language',
+                      tr('screen.title'),
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: const Color(0xFF181F30),
@@ -226,7 +206,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                   children: [
                     // Search bar
                     LanguageSearchBar(
-                      hintText: 'Search Language',
+                      hintText: tr('screen.searchPlaceholder'),
                       onChanged: (query) {
                         ref.read(languageProvider.notifier).searchLanguages(query);
                       },
@@ -253,13 +233,13 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                           ],
                         ),
                         child: isLoading
-                            ? const Center(
+                            ? Center(
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    CircularProgressIndicator(),
-                                    SizedBox(height: 16),
-                                    Text('Loading languages...'),
+                                    const CircularProgressIndicator(),
+                                    const SizedBox(height: 16),
+                                    Text(tr('confirmation.loading')),
                                   ],
                                 ),
                               )
@@ -275,7 +255,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                                         ),
                                         const SizedBox(height: 16),
                                         Text(
-                                          'Error loading languages',
+                                          tr('errors.loadFailed'),
                                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                             fontWeight: FontWeight.w600,
                                           ),
@@ -310,7 +290,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                                             ),
                                             const SizedBox(height: 16),
                                             Text(
-                                              'No languages found',
+                                              tr('errors.noLanguagesFound'),
                                               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                                 fontWeight: FontWeight.w600,
                                                 color: Colors.grey[600],
@@ -318,7 +298,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                                             ),
                                             const SizedBox(height: 8),
                                             Text(
-                                              'Try adjusting your search query',
+                                              tr('errors.tryAdjustingSearch'),
                                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                                 color: Colors.grey[500],
                                               ),
@@ -357,5 +337,43 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
         ],
       ),
     );
+  }
+
+  void _showRestartDialog(BuildContext context, LanguageModel language) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text('Language Changed'),
+        content: Text(
+          'Language has been changed to ${language.name}. For the best experience, the app should be restarted. Would you like to restart now?'
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('Later'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _restartApp();
+            },
+            child: const Text('Restart Now'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _restartApp() {
+    if (Platform.isAndroid) {
+      // For Android, exit and let the OS restart the app
+      exit(0);
+    } else if (Platform.isIOS) {
+      // For iOS, exit (iOS doesn't allow programmatic restart)
+      exit(0);
+    }
   }
 }

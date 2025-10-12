@@ -6,6 +6,7 @@ import 'package:flash_transfer_app/presentation/common/app_button.dart';
 import 'package:flash_transfer_app/presentation/common/notification_modal.dart';
 import 'package:flash_transfer_app/providers/user_provider.dart';
 import 'package:flash_transfer_app/providers/auth_provider.dart';
+import 'package:flash_transfer_app/providers/language_provider.dart';
 import 'package:flash_transfer_app/presentation/home/components/profile_menu_item.dart';
 import 'package:flash_transfer_app/config/constants.dart';
 import 'package:flash_transfer_app/core/models/user.dart';
@@ -128,6 +129,44 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
     final userState = ref.watch(userProvider);
     final user = userState.user;
     final isLoading = userState.isLoading;
+    final tr = ref.watch(translationHelperProvider);
+
+    // Create menu items with translations
+    final featuresMenuItems = [
+      ProfileMenuItemData(
+        icon: Icons.view_in_ar_outlined,
+        title: tr('menu.nft'),
+        onTap: () => context.push('/nft'),
+      ),
+      ProfileMenuItemData(
+        icon: Icons.share_outlined,
+        title: tr('menu.referFriend'),
+        onTap: () => context.push('/invite'),
+      ),
+    ];
+
+    final settingsMenuItems = [
+      ProfileMenuItemData(
+        icon: Icons.notifications_outlined,
+        title: tr('menu.settings'), // Use generic settings or add notifications key
+        onTap: () => context.push('/notification'),
+      ),
+      ProfileMenuItemData(
+        icon: Icons.language_outlined,
+        title: 'Language', // Keep as is since this is Language specific
+        onTap: () => context.push('/language'),
+      ),
+      ProfileMenuItemData(
+        icon: Icons.privacy_tip_outlined,
+        title: 'Privacy Policy', // Keep as is
+        onTap: () => context.push('/privacy'),
+      ),
+      ProfileMenuItemData(
+        icon: Icons.contact_support_outlined,
+        title: 'Contact Us', // Keep as is
+        onTap: () => context.push('/contact'),
+      ),
+    ];
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -435,16 +474,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     title: 'NFT',
                     onTap: () => context.push('/nft'),
                   ),
-                  // ProfileMenuItemData(
-                  //   icon: Icons.emoji_events_outlined,
-                  //   title: 'My Rank',
-                  //   onTap: () => context.push('/rank'),
-                  // ),
-                  // ProfileMenuItemData(
-                  //   icon: Icons.credit_card_outlined,
-                  //   title: 'My Cards',
-                  //   onTap: () => context.push('/my-card'),
-                  // ),
                   ProfileMenuItemData(
                     icon: Icons.share_outlined,
                     title: 'Refer a Friend',
@@ -465,11 +494,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                     title: 'Language',
                     onTap: () => context.push('/language'),
                   ),
-                  // ProfileMenuItemData(
-                  //   icon: Icons.settings_outlined,
-                  //   title: 'Settings',
-                  //   onTap: () => context.push('/settings'),
-                  // ),
                   ProfileMenuItemData(
                     icon: Icons.privacy_tip_outlined,
                     title: 'Privacy Policy',
@@ -478,7 +502,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                   ProfileMenuItemData(
                     icon: Icons.contact_support_outlined,
                     title: 'Contact Us',
-                    onTap: () => context.push('/contact-us'),
+                    onTap: () => context.push('/contact'),
                   ),
                 ],
                 400),
