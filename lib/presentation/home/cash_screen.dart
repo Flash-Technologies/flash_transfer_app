@@ -12,6 +12,7 @@ import 'package:flash_transfer_app/presentation/common/icons/payment_icons.dart'
 import 'package:flash_transfer_app/presentation/home/components/frequent_receipts_section.dart';
 import 'package:flash_transfer_app/presentation/home/components/recent_receipts_section.dart';
 import 'package:flash_transfer_app/providers/exchange_provider.dart';
+import 'package:flash_transfer_app/providers/payment_provider.dart';
 
 class CashScreen extends ConsumerStatefulWidget {
   const CashScreen({Key? key}) : super(key: key);
@@ -578,6 +579,12 @@ class _CashScreenState extends ConsumerState<CashScreen> {
     final exchangeForm = ref.watch(exchangeFormProvider);
     final receivingCurrency = exchangeForm.toCurrency;
     final isReceivingCrypto = receivingCurrency?.type == 'CRYPTO';
+    final isSendingCrypto = exchangeForm.fromCurrency?.type == 'CRYPTO';
+
+    // Determine which options should be enabled
+    bool cryptoEnabled = isReceivingCrypto;
+    bool mobileEnabled = !isReceivingCrypto;
+    bool cashEnabled = isSendingCrypto && !isReceivingCrypto;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -622,7 +629,9 @@ class _CashScreenState extends ConsumerState<CashScreen> {
           Text(
             isReceivingCrypto
                 ? '💡 Crypto must be received in a crypto wallet'
-                : '💡 Choose mobile money for fiat payments',
+                : isSendingCrypto 
+                    ? '💡 Choose mobile money or cash for fiat payments'
+                    : '💡 Choose mobile money for fiat payments',
             style: TextStyle(
               color: Colors.grey[600],
               fontSize: 12,
@@ -631,30 +640,46 @@ class _CashScreenState extends ConsumerState<CashScreen> {
           ),
         ],
         const SizedBox(height: 20),
-        Row(
-          children: [
-            Expanded(
-              child: _buildReceiverOption(
-                title: 'Crypto\nWallet',
-                value: 'wallet',
-                isEnabled: isReceivingCrypto,
+        
+        // Always show all 3 options with appropriate enabled/disabled states
+        SizedBox(
+          height: MediaQuery.of(context).size.height * 0.15,
+          child: Row(
+            children: [
+              // Crypto Wallet
+              Expanded(
+                child: _buildCompactReceiverOption(
+                  title: 'Crypto\nWallet',
+                  value: 'wallet',
+                  isEnabled: cryptoEnabled,
+                ),
               ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: _buildReceiverOption(
-                title: 'Mobile\nMoney',
-                value: 'mobile',
-                isEnabled: !isReceivingCrypto,
+              const SizedBox(width: 12),
+              // Mobile Money
+              Expanded(
+                child: _buildCompactReceiverOption(
+                  title: 'Mobile\nMoney',
+                  value: 'mobile',
+                  isEnabled: mobileEnabled,
+                ),
               ),
-            ),
-          ],
+              const SizedBox(width: 12),
+              // Cash Money
+              Expanded(
+                child: _buildCompactReceiverOption(
+                  title: 'Cash\nMoney',
+                  value: 'cash',
+                  isEnabled: cashEnabled,
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildReceiverOption({
+  Widget _buildCompactReceiverOption({
     required String title,
     required String value,
     bool isEnabled = true,
@@ -670,17 +695,16 @@ class _CashScreenState extends ConsumerState<CashScreen> {
                 setState(() => activeReceive = value);
               }
             : null,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(16),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeOutCubic,
-          height: MediaQuery.of(context).size.height * 0.20,
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
           decoration: BoxDecoration(
             color: isEnabled
                 ? (isActive ? Colors.white : const Color(0xFFFAFAFA))
                 : Colors.grey.shade100,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: isActive
                   ? const Color(0xFF2475FF)
@@ -693,13 +717,13 @@ class _CashScreenState extends ConsumerState<CashScreen> {
               if (isActive)
                 BoxShadow(
                   color: const Color(0xFF2475FF).withOpacity(0.2),
-                  blurRadius: 16,
-                  offset: const Offset(0, 4),
+                  blurRadius: 12,
+                  offset: const Offset(0, 3),
                 )
-              else
+              else if (isEnabled)
                 BoxShadow(
                   color: Colors.black.withOpacity(0.05),
-                  blurRadius: 8,
+                  blurRadius: 6,
                   offset: const Offset(0, 2),
                 ),
             ],
@@ -712,8 +736,8 @@ class _CashScreenState extends ConsumerState<CashScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      height: 56,
-                      width: 56,
+                      height: 45,
+                      width: 45,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: isActive
@@ -728,10 +752,10 @@ class _CashScreenState extends ConsumerState<CashScreen> {
                         shape: BoxShape.circle,
                       ),
                       child: Center(
-                        child: _getLottieAnimation(value, isActive, 40),
+                        child: _getLottieAnimation(value, isActive, 32),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 8),
                     Text(
                       title,
                       style: TextStyle(
@@ -739,8 +763,8 @@ class _CashScreenState extends ConsumerState<CashScreen> {
                             ? const Color(0xFF2475FF)
                             : const Color(0xFF424242),
                         fontWeight:
-                            isActive ? FontWeight.w700 : FontWeight.w600,
-                        fontSize: 14,
+                            isActive ? FontWeight.w700 : FontWeight.w500,
+                        fontSize: 12,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -749,27 +773,27 @@ class _CashScreenState extends ConsumerState<CashScreen> {
               ),
               if (!isEnabled)
                 Positioned(
-                  top: 8,
-                  right: 8,
+                  top: 6,
+                  right: 6,
                   child: Icon(
                     Icons.lock_rounded,
-                    size: 16,
+                    size: 14,
                     color: Colors.grey.shade500,
                   ),
                 ),
               if (isActive)
                 Positioned(
-                  top: 8,
-                  right: 8,
+                  top: 6,
+                  right: 6,
                   child: Container(
-                    width: 20,
-                    height: 20,
+                    width: 18,
+                    height: 18,
                     decoration: const BoxDecoration(
                       color: Color(0xFF2475FF),
                       shape: BoxShape.circle,
                     ),
                     child:
-                        const Icon(Icons.check, color: Colors.white, size: 12),
+                        const Icon(Icons.check, color: Colors.white, size: 10),
                   ),
                 ),
             ],
@@ -779,6 +803,7 @@ class _CashScreenState extends ConsumerState<CashScreen> {
     );
   }
 
+
   Widget _buildActionButtons() {
     return Column(
       children: [
@@ -786,6 +811,10 @@ class _CashScreenState extends ConsumerState<CashScreen> {
         ElevatedButton(
           onPressed: () {
             HapticFeedback.mediumImpact();
+            // Set payment methods in the provider before navigation
+            ref.read(paymentProvider.notifier).setActivePay(activePay);
+            ref.read(paymentProvider.notifier).setActiveReceive(activeReceive);
+            
             context.push('/add-new').then((_) {
               // After adding new contact, you might want to navigate to receiver info
             });
@@ -882,6 +911,10 @@ class _CashScreenState extends ConsumerState<CashScreen> {
           });
 
           if (contact != null) {
+            // Set payment methods in the provider
+            ref.read(paymentProvider.notifier).setActivePay(activePay);
+            ref.read(paymentProvider.notifier).setActiveReceive(activeReceive);
+            
             context.push('/receiver-info', extra: contact);
 
             ScaffoldMessenger.of(context).showSnackBar(

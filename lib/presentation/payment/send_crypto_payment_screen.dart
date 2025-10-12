@@ -371,8 +371,19 @@ class _SendCryptoPaymentScreenState
         // Set the selected network in payment provider
         ref.read(paymentProvider.notifier).setSelectedNetwork(selectedNetwork!);
 
-        // Navigate to next screen with aggregator
-        context.push('/select-payment');
+        // Check if this is crypto-to-cash flow
+        final exchangeForm = ref.read(exchangeFormProvider);
+        final paymentState = ref.read(paymentProvider);
+        final isCryptoToCash = exchangeForm.fromCurrency?.type == 'CRYPTO' && 
+                               paymentState.activeReceive == 'cash';
+
+        if (isCryptoToCash) {
+          // Navigate to sender information screen for crypto-to-cash
+          context.push('/cash-sender-info');
+        } else {
+          // Navigate to payment method selection for other flows
+          context.push('/select-payment');
+        }
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColors.primaryYellow,

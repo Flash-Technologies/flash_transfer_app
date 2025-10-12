@@ -38,6 +38,8 @@ class PaymentState {
   final PaymentStatus transactionStatus;
   final String? errorMessage;
   final Map<String, dynamic>? mobileMoneyDetails;
+  final Map<String, dynamic>? cashSenderInfo;
+  final Map<String, dynamic>? cashRecipientInfo;
 
   PaymentState({
     this.activePay = 'cash',
@@ -52,6 +54,8 @@ class PaymentState {
     this.transactionStatus = PaymentStatus.idle,
     this.errorMessage,
     this.mobileMoneyDetails,
+    this.cashSenderInfo,
+    this.cashRecipientInfo,
   });
 
   PaymentState copyWith({
@@ -68,6 +72,8 @@ class PaymentState {
     String? errorMessage,
     bool clearError = false,
     Map<String, dynamic>? mobileMoneyDetails,
+    Map<String, dynamic>? cashSenderInfo,
+    Map<String, dynamic>? cashRecipientInfo,
   }) {
     return PaymentState(
       activePay: activePay ?? this.activePay,
@@ -83,6 +89,8 @@ class PaymentState {
       transactionStatus: transactionStatus ?? this.transactionStatus,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       mobileMoneyDetails: mobileMoneyDetails ?? this.mobileMoneyDetails,
+      cashSenderInfo: cashSenderInfo ?? this.cashSenderInfo,
+      cashRecipientInfo: cashRecipientInfo ?? this.cashRecipientInfo,
     );
   }
 
@@ -402,6 +410,14 @@ class PaymentNotifier extends StateNotifier<PaymentState> {
       );
       return false;
     }
+  }
+
+  void setCashSenderInfo(Map<String, dynamic> senderInfo) {
+    state = state.copyWith(cashSenderInfo: senderInfo);
+  }
+
+  void setCashRecipientInfo(Map<String, dynamic> recipientInfo) {
+    state = state.copyWith(cashRecipientInfo: recipientInfo);
   }
 
   void clearError() {

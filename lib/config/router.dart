@@ -11,6 +11,8 @@ import 'package:flash_transfer_app/presentation/payment/payment_complete_screen.
 import 'package:flash_transfer_app/presentation/payment/components/payment_completion_screen.dart';
 import 'package:flash_transfer_app/presentation/payment/select_payment_screen.dart';
 import 'package:flash_transfer_app/presentation/payment/send_crypto_payment_screen.dart';
+import 'package:flash_transfer_app/presentation/payment/cash_sender_info_screen.dart';
+import 'package:flash_transfer_app/presentation/payment/cash_recipient_info_screen.dart';
 import 'package:flash_transfer_app/presentation/review/review_details_screen.dart';
 import 'package:flash_transfer_app/presentation/transaction/invite_screen.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +26,6 @@ import '../presentation/auth/set_identity_screen.dart';
 import '../presentation/auth/verification_screen.dart';
 import '../presentation/auth/success_screen.dart';
 import '../presentation/home/home_screen.dart';
-import '../core/services/auth_service.dart';
 import '../providers/auth_provider.dart';
 import 'package:flash_transfer_app/presentation/home/profile_screen.dart';
 import 'package:flash_transfer_app/presentation/settings/edit_profile_screen.dart';
@@ -372,6 +373,16 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/send-crypto-payment',
         builder: (context, state) => const SendCryptoPaymentScreen(),
+      ),
+
+      GoRoute(
+        path: '/cash-sender-info',
+        builder: (context, state) => const CashSenderInfoScreen(),
+      ),
+
+      GoRoute(
+        path: '/cash-recipient-info',
+        builder: (context, state) => const CashRecipientInfoScreen(),
       ),
 
       // Wallet screen
