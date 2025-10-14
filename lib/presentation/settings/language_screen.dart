@@ -1,10 +1,8 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../core/models/language_model.dart';
 import '../../providers/language_provider.dart';
-import 'widgets/language_selection_modal.dart';
 import 'widgets/language_search_bar.dart';
 import 'widgets/language_list_item.dart';
 import 'widgets/language_confirmation_dialog.dart';
@@ -82,11 +80,43 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
       final success = await ref.read(languageProvider.notifier).changeLanguage(language);
       
       if (success && mounted) {
-        // Show restart dialog
-        _showRestartDialog(context, language);
+        // Show success snackbar
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Colors.white,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text('Language changed successfully to ${language.name}!'),
+                ),
+              ],
+            ),
+            backgroundColor: Colors.green[600],
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            margin: const EdgeInsets.all(16),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+        
+        // Pop back to previous screen after a short delay
+        Future.delayed(const Duration(milliseconds: 1500), () {
+          if (mounted) {
+            Navigator.of(context).pop();
+          }
+        });
+        }
       } else {
         // Show error snackbar
-        ScaffoldMessenger.of(context).showSnackBar(
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Row(
               children: [
@@ -108,13 +138,13 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
             margin: const EdgeInsets.all(16),
           ),
         );
+        }
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final languageState = ref.watch(languageProvider);
     final filteredLanguages = ref.watch(filteredLanguagesProvider);
     final currentLanguage = ref.watch(currentLanguageProvider);
     final isLoading = ref.watch(isLanguageLoadingProvider);
@@ -134,7 +164,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                 color: Colors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 2),
                   ),
@@ -226,7 +256,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                           borderRadius: BorderRadius.circular(16),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: Colors.black.withValues(alpha: 0.05),
                               blurRadius: 10,
                               offset: const Offset(0, 2),
                             ),
@@ -273,7 +303,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                                           onPressed: () {
                                             ref.read(languageProvider.notifier).clearError();
                                           },
-                                          child: const Text('Retry'),
+                                          child: Text(tr('errors.retry')),
                                         ),
                                       ],
                                     ),
@@ -339,41 +369,4 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
     );
   }
 
-  void _showRestartDialog(BuildContext context, LanguageModel language) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('Language Changed'),
-        content: Text(
-          'Language has been changed to ${language.name}. For the best experience, the app should be restarted. Would you like to restart now?'
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            child: const Text('Later'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              _restartApp();
-            },
-            child: const Text('Restart Now'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _restartApp() {
-    if (Platform.isAndroid) {
-      // For Android, exit and let the OS restart the app
-      exit(0);
-    } else if (Platform.isIOS) {
-      // For iOS, exit (iOS doesn't allow programmatic restart)
-      exit(0);
-    }
-  }
 }

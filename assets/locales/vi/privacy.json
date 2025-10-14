@@ -21,72 +21,97 @@
         "content": "At Flash Transfer, we respect your privacy. This Privacy Policy outlines how we collect, use, and protect your personal information."
       },
       "dataCollection": {
-        "title": "1. Information We Collect",
+        "title": "1. Thông tin chúng tôi thu thập",
+        "content": "Chúng tôi thu thập các loại thông tin khác nhau để cung cấp và cải thiện dịch vụ của chúng tôi:",
         "personalInfo": {
-          "title": "Personal Information",
-          "content": "Name, email, phone number, payment details, and transaction history."
+          "title": "Thông tin Cá nhân",
+          "content": "Tên, email, số điện thoại, chi tiết thanh toán và lịch sử giao dịch."
         },
         "nonPersonalInfo": {
-          "title": "Non-Personal Information", 
-          "content": "Device data, IP address, and app usage statistics."
+          "title": "Thông tin Không Cá nhân", 
+          "content": "Dữ liệu thiết bị, địa chỉ IP và thống kê sử dụng ứng dụng."
         }
       },
       "dataUsage": {
-        "title": "2. How We Use Your Information",
-        "processing": "To process money transfers and manage your account.",
-        "security": "For fraud prevention and security.",
-        "communication": "To send you updates or promotional materials (with your consent)."
+        "title": "2. Cách chúng tôi sử dụng thông tin của bạn",
+        "content": "Chúng tôi sử dụng thông tin của bạn cho các mục đích sau:",
+        "processing": "Để xử lý chuyển tiền và quản lý tài khoản của bạn.",
+        "security": "Để ngăn chặn gian lận và bảo mật.",
+        "communication": "Để gửi cho bạn cập nhật hoặc tài liệu quảng cáo (với sự đồng ý của bạn)."
       },
       "dataSharing": {
-        "title": "3. Sharing Your Information",
-        "serviceProviders": "With service providers (payment processors, identity verification).",
-        "legal": "For legal purposes or to prevent fraud."
+        "title": "3. Chia sẻ thông tin của bạn",
+        "content": "Chúng tôi có thể chia sẻ thông tin của bạn trong những trường hợp hạn chế:",
+        "serviceProviders": "Với các nhà cung cấp dịch vụ (bộ xử lý thanh toán, xác minh danh tính).",
+        "legal": "Vì mục đích pháp lý hoặc để ngăn chặn gian lận."
       },
       "dataSecurity": {
-        "title": "4. Data Security",
-        "content": "We use encryption and other security measures to protect your data, but no system is entirely secure."
+        "title": "4. Bảo mật Dữ liệu",
+        "content": "Chúng tôi sử dụng mã hóa và các biện pháp bảo mật khác để bảo vệ dữ liệu của bạn, nhưng không có hệ thống nào hoàn toàn an toàn."
       },
       "userRights": {
-        "title": "5. Your Rights",
-        "content": "You can access, update, or delete your personal information. You can also opt-out of marketing communications."
+        "title": "5. Quyền của Bạn",
+        "content": "Bạn có thể truy cập, cập nhật hoặc xóa thông tin cá nhân của mình. Bạn cũng có thể từ chối các thông tin liên lạc tiếp thị."
       },
       "cookies": {
-        "title": "6. Cookies and Tracking",
-        "content": "We use cookies and similar technologies to improve your experience and analyze usage patterns."
+        "title": "6. Cookie và Theo dõi",
+        "content": "Chúng tôi sử dụng cookie và các công nghệ tương tự để cải thiện trải nghiệm của bạn và phân tích các mẫu sử dụng."
       },
       "thirdParty": {
-        "title": "7. Third-Party Services",
-        "content": "We may use third-party services that have their own privacy policies."
+        "title": "7. Dịch vụ Bên thứ ba",
+        "content": "Chúng tôi có thể sử dụng các dịch vụ bên thứ ba có chính sách bảo mật riêng của họ."
       },
       "dataRetention": {
-        "title": "8. Data Retention",
-        "content": "We retain your data only as long as necessary for the purposes outlined in this policy."
+        "title": "8. Lưu trữ Dữ liệu",
+        "content": "Chúng tôi chỉ lưu giữ dữ liệu của bạn trong thời gian cần thiết cho các mục đích được nêu trong chính sách này."
       },
       "international": {
-        "title": "9. International Transfers",
-        "content": "Your data may be transferred to and processed in countries other than your own."
+        "title": "9. Chuyển giao Quốc tế",
+        "content": "Dữ liệu của bạn có thể được chuyển giao và xử lý ở các quốc gia khác ngoài quốc gia của bạn."
       },
       "minors": {
-        "title": "10. Children's Privacy", 
-        "content": "Our services are not intended for individuals under 18 years of age."
+        "title": "10. Quyền riêng tư của Trẻ em", 
+        "content": "Dịch vụ của chúng tôi không dành cho những cá nhân dưới 18 tuổi."
       },
       "changes": {
-        "title": "11. Changes to This Policy",
-        "content": "We may update this policy from time to time. We will notify you of any material changes."
+        "title": "11. Thay đổi Chính sách này",
+        "content": "Chúng tôi có thể cập nhật chính sách này theo thời gian. Chúng tôi sẽ thông báo cho bạn về bất kỳ thay đổi quan trọng nào."
       },
       "contact": {
-        "title": "12. Contact Us",
-        "content": "If you have questions about this policy, please contact us at privacy@flashtransfer.com"
+        "title": "12. Liên hệ",
+        "content": "Nếu bạn có câu hỏi về chính sách này, vui lòng liên hệ với chúng tôi tại privacy@flashtransfer.com"
+      }
+    },
+    "subsections": {
+      "transactionProcessing": {
+        "title": "Xử lý Giao dịch"
+      },
+      "securityFraudPrevention": {
+        "title": "Bảo mật và Ngăn chặn Gian lận"
+      },
+      "communications": {
+        "title": "Truyền thông"
+      },
+      "serviceProviders": {
+        "title": "Nhà cung cấp Dịch vụ"
+      },
+      "legalRequirements": {
+        "title": "Yêu cầu Pháp lý"
       }
     },
     "actions": {
-      "downloadPDF": "Download PDF",
-      "printPolicy": "Print Policy",
-      "sharePolicy": "Share Policy",
-      "reportIssue": "Report Issue",
-      "contactSupport": "Contact Support",
-      "requestData": "Request My Data",
-      "deleteAccount": "Delete Account"
+      "downloadPDF": "Tải xuống PDF",
+      "printPolicy": "In Chính sách",
+      "sharePolicy": "Chia sẻ Chính sách",
+      "reportIssue": "Báo cáo Vấn đề",
+      "contactSupport": "Liên hệ Hỗ trợ",
+      "requestData": "Yêu cầu Dữ liệu của Tôi",
+      "deleteAccount": "Xóa Tài khoản"
+    },
+    "footer": {
+      "questionsTitle": "Câu hỏi về Chính sách Bảo mật của chúng tôi?",
+      "contactText": "Liên hệ với nhóm bảo mật của chúng tôi tại privacy@flashtransfer.com",
+      "lastUpdated": "Cập nhật lần cuối: 24 tháng 6, 2024"
     },
     "readingAids": {
       "estimatedReadTime": "Estimated reading time: {minutes} minutes",

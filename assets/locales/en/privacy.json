@@ -108,6 +108,11 @@
       "requestData": "Request My Data",
       "deleteAccount": "Delete Account"
     },
+    "footer": {
+      "questionsTitle": "Questions about our Privacy Policy?",
+      "contactText": "Contact our privacy team at privacy@flashtransfer.com",
+      "lastUpdated": "Last updated: June 24, 2024"
+    },
     "readingAids": {
       "estimatedReadTime": "Estimated reading time: {minutes} minutes",
       "wordsRead": "Words read: {current} of {total}",

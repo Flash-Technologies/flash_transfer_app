@@ -210,5 +210,28 @@
       "download": "Télécharger le reçu",
       "repeatTransaction": "Renvoyer"
     }
+  },
+  "notifications": {
+    "screen": {
+      "title": "Notifications",
+      "markAllRead": "Tout marquer comme lu",
+      "loading": "Chargement des notifications...",
+      "failedToLoad": "Échec du chargement des notifications",
+      "retry": "Réessayer",
+      "emptyState": "Aucune notification pour le moment",
+      "emptyDescription": "Lorsque vous recevrez des notifications, elles apparaîtront ici."
+    },
+    "types": {
+      "transactionCompleted": "Transaction terminée",
+      "transactionFailed": "Transaction échouée",
+      "paymentReceived": "Paiement reçu",
+      "paymentSent": "Paiement envoyé",
+      "walletConnected": "Portefeuille connecté",
+      "walletDisconnected": "Portefeuille déconnecté",
+      "exchangeRateUpdate": "Mise à jour du taux de change",
+      "systemMaintenance": "Maintenance système",
+      "securityAlert": "Alerte de sécurité",
+      "promotion": "Promotion"
+    }
   }
 }

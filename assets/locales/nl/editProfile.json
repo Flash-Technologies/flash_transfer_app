@@ -1,0 +1,54 @@
+{
+  "screen": {
+    "title": "Profiel Bewerken",
+    "back": "Terug"
+  },
+  "avatar": {
+    "changePhoto": "Foto Wijzigen"
+  },
+  "form": {
+    "firstName": "Voornaam",
+    "lastName": "Achternaam",
+    "password": "Wachtwoord",
+    "emailAddress": "E-mailadres",
+    "emailCannotChange": "E-mailadres (Kan niet worden gewijzigd)",
+    "dateOfBirth": "Geboortedatum",
+    "permanentAddress": "Vast Adres",
+    "presentAddress": "Huidig Adres",
+    "countryRegion": "Land/Regio",
+    "city": "Stad",
+    "state": "Provincie",
+    "zip": "Postcode",
+    "save": "Opslaan"
+  },
+  "hints": {
+    "firstName": "Jan",
+    "lastName": "de Vries",
+    "password": "Leeg laten om huidig wachtwoord te behouden",
+    "email": "jandevries@gmail.com",
+    "permanentAddress": "Amsterdam, Nederland",
+    "presentAddress": "Amsterdam, Nederland",
+    "city": "Amsterdam",
+    "state": "Noord-Holland",
+    "zip": "1012",
+    "selectDateOfBirth": "Selecteer Geboortedatum",
+    "selectCountry": "Selecteer Land"
+  },
+  "photoOptions": {
+    "takePhoto": "Foto Maken",
+    "chooseFromGallery": "Kies uit Galerij"
+  },
+  "countryPicker": {
+    "title": "Selecteer Land"
+  },
+  "messages": {
+    "profileUpdatedSuccess": "Profiel succesvol bijgewerkt!",
+    "profileUpdateFailed": "Profiel bijwerken mislukt. Probeer het opnieuw.",
+    "required": "Vereist"
+  },
+  "validation": {
+    "emailRequired": "E-mail is vereist",
+    "emailInvalid": "Voer een geldig e-mailadres in"
+  }
+}
+

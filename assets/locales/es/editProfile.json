@@ -1,0 +1,54 @@
+{
+  "screen": {
+    "title": "Editar Perfil",
+    "back": "Atrás"
+  },
+  "avatar": {
+    "changePhoto": "Cambiar Foto"
+  },
+  "form": {
+    "firstName": "Nombre",
+    "lastName": "Apellido",
+    "password": "Contraseña",
+    "emailAddress": "Dirección de Correo",
+    "emailCannotChange": "Dirección de Correo (No se puede cambiar)",
+    "dateOfBirth": "Fecha de Nacimiento",
+    "permanentAddress": "Dirección Permanente",
+    "presentAddress": "Dirección Actual",
+    "countryRegion": "País/Región",
+    "city": "Ciudad",
+    "state": "Estado",
+    "zip": "Código Postal",
+    "save": "Guardar"
+  },
+  "hints": {
+    "firstName": "Carlos",
+    "lastName": "García",
+    "password": "Dejar vacío para mantener la contraseña actual",
+    "email": "carlosgarcia@gmail.com",
+    "permanentAddress": "Madrid, España",
+    "presentAddress": "Madrid, España",
+    "city": "Madrid",
+    "state": "Madrid",
+    "zip": "28001",
+    "selectDateOfBirth": "Seleccionar Fecha de Nacimiento",
+    "selectCountry": "Seleccionar País"
+  },
+  "photoOptions": {
+    "takePhoto": "Tomar Foto",
+    "chooseFromGallery": "Elegir de la Galería"
+  },
+  "countryPicker": {
+    "title": "Seleccionar País"
+  },
+  "messages": {
+    "profileUpdatedSuccess": "¡Perfil actualizado exitosamente!",
+    "profileUpdateFailed": "Error al actualizar el perfil. Por favor intenta de nuevo.",
+    "required": "Requerido"
+  },
+  "validation": {
+    "emailRequired": "El correo electrónico es requerido",
+    "emailInvalid": "Por favor ingresa una dirección de correo electrónico válida"
+  }
+}
+

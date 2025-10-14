@@ -1,0 +1,54 @@
+{
+  "screen": {
+    "title": "Editar Perfil",
+    "back": "Voltar"
+  },
+  "avatar": {
+    "changePhoto": "Alterar Foto"
+  },
+  "form": {
+    "firstName": "Nome",
+    "lastName": "Sobrenome",
+    "password": "Senha",
+    "emailAddress": "Endereço de E-mail",
+    "emailCannotChange": "Endereço de E-mail (Não pode ser alterado)",
+    "dateOfBirth": "Data de Nascimento",
+    "permanentAddress": "Endereço Permanente",
+    "presentAddress": "Endereço Atual",
+    "countryRegion": "País/Região",
+    "city": "Cidade",
+    "state": "Estado",
+    "zip": "CEP",
+    "save": "Salvar"
+  },
+  "hints": {
+    "firstName": "João",
+    "lastName": "Silva",
+    "password": "Deixar vazio para manter a senha atual",
+    "email": "joaosilva@gmail.com",
+    "permanentAddress": "São Paulo, Brasil",
+    "presentAddress": "São Paulo, Brasil",
+    "city": "São Paulo",
+    "state": "SP",
+    "zip": "01000-000",
+    "selectDateOfBirth": "Selecionar Data de Nascimento",
+    "selectCountry": "Selecionar País"
+  },
+  "photoOptions": {
+    "takePhoto": "Tirar Foto",
+    "chooseFromGallery": "Escolher da Galeria"
+  },
+  "countryPicker": {
+    "title": "Selecionar País"
+  },
+  "messages": {
+    "profileUpdatedSuccess": "Perfil atualizado com sucesso!",
+    "profileUpdateFailed": "Falha ao atualizar perfil. Tente novamente.",
+    "required": "Obrigatório"
+  },
+  "validation": {
+    "emailRequired": "E-mail é obrigatório",
+    "emailInvalid": "Por favor, insira um endereço de e-mail válido"
+  }
+}
+

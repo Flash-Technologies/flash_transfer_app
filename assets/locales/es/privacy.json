@@ -46,40 +46,40 @@
         "legal": "Para propósitos legales o para prevenir fraudes."
       },
       "dataSecurity": {
-        "title": "4. Data Security",
-        "content": "We use encryption and other security measures to protect your data, but no system is entirely secure."
+        "title": "4. Seguridad de Datos",
+        "content": "Utilizamos encriptación y otras medidas de seguridad para proteger sus datos, pero ningún sistema es completamente seguro."
       },
       "userRights": {
-        "title": "5. Your Rights",
-        "content": "You can access, update, or delete your personal information. You can also opt-out of marketing communications."
+        "title": "5. Sus Derechos",
+        "content": "Puede acceder, actualizar o eliminar su información personal. También puede optar por no recibir comunicaciones de marketing."
       },
       "cookies": {
-        "title": "6. Cookies and Tracking",
-        "content": "We use cookies and similar technologies to improve your experience and analyze usage patterns."
+        "title": "6. Cookies y Seguimiento",
+        "content": "Utilizamos cookies y tecnologías similares para mejorar su experiencia y analizar patrones de uso."
       },
       "thirdParty": {
-        "title": "7. Third-Party Services",
-        "content": "We may use third-party services that have their own privacy policies."
+        "title": "7. Servicios de Terceros",
+        "content": "Podemos utilizar servicios de terceros que tienen sus propias políticas de privacidad."
       },
       "dataRetention": {
-        "title": "8. Data Retention",
-        "content": "We retain your data only as long as necessary for the purposes outlined in this policy."
+        "title": "8. Retención de Datos",
+        "content": "Conservamos sus datos solo el tiempo necesario para los propósitos descritos en esta política."
       },
       "international": {
-        "title": "9. International Transfers",
-        "content": "Your data may be transferred to and processed in countries other than your own."
+        "title": "9. Transferencias Internacionales",
+        "content": "Sus datos pueden ser transferidos y procesados en países distintos al suyo."
       },
       "minors": {
-        "title": "10. Children's Privacy", 
-        "content": "Our services are not intended for individuals under 18 years of age."
+        "title": "10. Privacidad de Menores", 
+        "content": "Nuestros servicios no están destinados a personas menores de 18 años."
       },
       "changes": {
-        "title": "11. Changes to This Policy",
-        "content": "We may update this policy from time to time. We will notify you of any material changes."
+        "title": "11. Cambios en esta Política",
+        "content": "Podemos actualizar esta política de vez en cuando. Le notificaremos de cualquier cambio material."
       },
       "contact": {
-        "title": "12. Contact Us",
-        "content": "If you have questions about this policy, please contact us at privacy@flashtransfer.com"
+        "title": "12. Contáctanos",
+        "content": "Si tiene preguntas sobre esta política, contáctenos en privacy@flashtransfer.com"
       }
     },
     "subsections": {
@@ -100,13 +100,18 @@
       }
     },
     "actions": {
-      "downloadPDF": "Download PDF",
-      "printPolicy": "Print Policy",
-      "sharePolicy": "Share Policy",
-      "reportIssue": "Report Issue",
-      "contactSupport": "Contact Support",
-      "requestData": "Request My Data",
-      "deleteAccount": "Delete Account"
+      "downloadPDF": "Descargar PDF",
+      "printPolicy": "Imprimir Política",
+      "sharePolicy": "Compartir Política",
+      "reportIssue": "Reportar Problema",
+      "contactSupport": "Contactar Soporte",
+      "requestData": "Solicitar Mis Datos",
+      "deleteAccount": "Eliminar Cuenta"
+    },
+    "footer": {
+      "questionsTitle": "¿Preguntas sobre nuestra Política de Privacidad?",
+      "contactText": "Contacte a nuestro equipo de privacidad en privacy@flashtransfer.com",
+      "lastUpdated": "Última actualización: 24 de junio de 2024"
     },
     "readingAids": {
       "estimatedReadTime": "Estimated reading time: {minutes} minutes",

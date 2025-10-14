@@ -46,40 +46,40 @@
         "legal": "Zu rechtlichen Zwecken oder zur Betrugsprävention."
       },
       "dataSecurity": {
-        "title": "4. Data Security",
-        "content": "We use encryption and other security measures to protect your data, but no system is entirely secure."
+        "title": "4. Datensicherheit",
+        "content": "Wir verwenden Verschlüsselung und andere Sicherheitsmaßnahmen zum Schutz Ihrer Daten, aber kein System ist vollständig sicher."
       },
       "userRights": {
-        "title": "5. Your Rights",
-        "content": "You can access, update, or delete your personal information. You can also opt-out of marketing communications."
+        "title": "5. Ihre Rechte",
+        "content": "Sie können auf Ihre persönlichen Informationen zugreifen, sie aktualisieren oder löschen. Sie können auch Marketing-Kommunikationen abbestellen."
       },
       "cookies": {
-        "title": "6. Cookies and Tracking",
-        "content": "We use cookies and similar technologies to improve your experience and analyze usage patterns."
+        "title": "6. Cookies und Tracking",
+        "content": "Wir verwenden Cookies und ähnliche Technologien, um Ihre Erfahrung zu verbessern und Nutzungsmuster zu analysieren."
       },
       "thirdParty": {
-        "title": "7. Third-Party Services",
-        "content": "We may use third-party services that have their own privacy policies."
+        "title": "7. Drittanbieter-Dienste",
+        "content": "Wir können Drittanbieter-Dienste verwenden, die ihre eigenen Datenschutzrichtlinien haben."
       },
       "dataRetention": {
-        "title": "8. Data Retention",
-        "content": "We retain your data only as long as necessary for the purposes outlined in this policy."
+        "title": "8. Datenspeicherung",
+        "content": "Wir speichern Ihre Daten nur so lange, wie es für die in dieser Richtlinie beschriebenen Zwecke erforderlich ist."
       },
       "international": {
-        "title": "9. International Transfers",
-        "content": "Your data may be transferred to and processed in countries other than your own."
+        "title": "9. Internationale Übertragungen",
+        "content": "Ihre Daten können in Länder außerhalb Ihres eigenen Landes übertragen und verarbeitet werden."
       },
       "minors": {
-        "title": "10. Children's Privacy", 
-        "content": "Our services are not intended for individuals under 18 years of age."
+        "title": "10. Datenschutz von Kindern", 
+        "content": "Unsere Dienste sind nicht für Personen unter 18 Jahren bestimmt."
       },
       "changes": {
-        "title": "11. Changes to This Policy",
-        "content": "We may update this policy from time to time. We will notify you of any material changes."
+        "title": "11. Änderungen an dieser Richtlinie",
+        "content": "Wir können diese Richtlinie von Zeit zu Zeit aktualisieren. Wir werden Sie über wesentliche Änderungen informieren."
       },
       "contact": {
-        "title": "12. Contact Us",
-        "content": "If you have questions about this policy, please contact us at privacy@flashtransfer.com"
+        "title": "12. Kontakt",
+        "content": "Wenn Sie Fragen zu dieser Richtlinie haben, kontaktieren Sie uns bitte unter privacy@flashtransfer.com"
       }
     },
     "subsections": {
@@ -100,13 +100,18 @@
       }
     },
     "actions": {
-      "downloadPDF": "Download PDF",
-      "printPolicy": "Print Policy",
-      "sharePolicy": "Share Policy",
-      "reportIssue": "Report Issue",
-      "contactSupport": "Contact Support",
-      "requestData": "Request My Data",
-      "deleteAccount": "Delete Account"
+      "downloadPDF": "PDF herunterladen",
+      "printPolicy": "Richtlinie drucken",
+      "sharePolicy": "Richtlinie teilen",
+      "reportIssue": "Problem melden",
+      "contactSupport": "Support kontaktieren",
+      "requestData": "Meine Daten anfordern",
+      "deleteAccount": "Konto löschen"
+    },
+    "footer": {
+      "questionsTitle": "Fragen zu unserer Datenschutzrichtlinie?",
+      "contactText": "Kontaktieren Sie unser Datenschutzteam unter privacy@flashtransfer.com",
+      "lastUpdated": "Zuletzt aktualisiert: 24. Juni 2024"
     },
     "readingAids": {
       "estimatedReadTime": "Estimated reading time: {minutes} minutes",

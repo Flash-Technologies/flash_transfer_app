@@ -210,5 +210,28 @@
       "download": "रसीद डाउनलोड करें",
       "repeatTransaction": "फिर से भेजें"
     }
+  },
+  "notifications": {
+    "screen": {
+      "title": "सूचनाएं",
+      "markAllRead": "सभी को पढ़ा हुआ चिह्नित करें",
+      "loading": "सूचनाएं लोड हो रही हैं...",
+      "failedToLoad": "सूचनाएं लोड करने में विफल",
+      "retry": "पुनः प्रयास करें",
+      "emptyState": "अभी तक कोई सूचना नहीं",
+      "emptyDescription": "जब आपको सूचनाएं मिलेंगी, वे यहां दिखाई देंगी।"
+    },
+    "types": {
+      "transactionCompleted": "लेनदेन पूरा हुआ",
+      "transactionFailed": "लेनदेन विफल",
+      "paymentReceived": "भुगतान प्राप्त हुआ",
+      "paymentSent": "भुगतान भेजा गया",
+      "walletConnected": "वॉलेट जुड़ा",
+      "walletDisconnected": "वॉलेट डिस्कनेक्ट",
+      "exchangeRateUpdate": "विनिमय दर अपडेट",
+      "systemMaintenance": "सिस्टम रखरखाव",
+      "securityAlert": "सुरक्षा चेतावनी",
+      "promotion": "प्रमोशन"
+    }
   }
 }

@@ -1,0 +1,54 @@
+{
+  "screen": {
+    "title": "تعديل الملف الشخصي",
+    "back": "العودة"
+  },
+  "avatar": {
+    "changePhoto": "تغيير الصورة"
+  },
+  "form": {
+    "firstName": "الاسم الأول",
+    "lastName": "الاسم الأخير",
+    "password": "كلمة المرور",
+    "emailAddress": "عنوان البريد الإلكتروني",
+    "emailCannotChange": "عنوان البريد الإلكتروني (لا يمكن تغييره)",
+    "dateOfBirth": "تاريخ الميلاد",
+    "permanentAddress": "العنوان الدائم",
+    "presentAddress": "العنوان الحالي",
+    "countryRegion": "البلد/المنطقة",
+    "city": "المدينة",
+    "state": "الولاية",
+    "zip": "الرمز البريدي",
+    "save": "حفظ"
+  },
+  "hints": {
+    "firstName": "أحمد",
+    "lastName": "محمد",
+    "password": "اترك فارغاً للاحتفاظ بكلمة المرور الحالية",
+    "email": "ahmedmohamed@gmail.com",
+    "permanentAddress": "الرياض، المملكة العربية السعودية",
+    "presentAddress": "الرياض، المملكة العربية السعودية",
+    "city": "الرياض",
+    "state": "منطقة الرياض",
+    "zip": "12345",
+    "selectDateOfBirth": "اختر تاريخ الميلاد",
+    "selectCountry": "اختر البلد"
+  },
+  "photoOptions": {
+    "takePhoto": "التقط صورة",
+    "chooseFromGallery": "اختر من المعرض"
+  },
+  "countryPicker": {
+    "title": "اختر البلد"
+  },
+  "messages": {
+    "profileUpdatedSuccess": "تم تحديث الملف الشخصي بنجاح!",
+    "profileUpdateFailed": "فشل في تحديث الملف الشخصي. يرجى المحاولة مرة أخرى.",
+    "required": "مطلوب"
+  },
+  "validation": {
+    "emailRequired": "البريد الإلكتروني مطلوب",
+    "emailInvalid": "يرجى إدخال عنوان بريد إلكتروني صحيح"
+  }
+}
+

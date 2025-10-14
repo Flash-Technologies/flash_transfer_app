@@ -210,5 +210,28 @@
       "download": "Tải xuống biên lai",
       "repeatTransaction": "Gửi lại"
     }
+  },
+  "notifications": {
+    "screen": {
+      "title": "Thông báo",
+      "markAllRead": "Đánh dấu tất cả là đã đọc",
+      "loading": "Đang tải thông báo...",
+      "failedToLoad": "Không thể tải thông báo",
+      "retry": "Thử lại",
+      "emptyState": "Chưa có thông báo nào",
+      "emptyDescription": "Khi bạn nhận được thông báo, chúng sẽ xuất hiện ở đây."
+    },
+    "types": {
+      "transactionCompleted": "Giao dịch hoàn thành",
+      "transactionFailed": "Giao dịch thất bại",
+      "paymentReceived": "Đã nhận thanh toán",
+      "paymentSent": "Đã gửi thanh toán",
+      "walletConnected": "Ví đã kết nối",
+      "walletDisconnected": "Ví đã ngắt kết nối",
+      "exchangeRateUpdate": "Cập nhật tỷ giá",
+      "systemMaintenance": "Bảo trì hệ thống",
+      "securityAlert": "Cảnh báo bảo mật",
+      "promotion": "Khuyến mãi"
+    }
   }
 }

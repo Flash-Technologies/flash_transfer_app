@@ -408,7 +408,7 @@ class SampleData {
       PrivacySectionModel(
         id: "dataCollection", 
         title: tr('privacy.sections.dataCollection.title'),
-        content: "We collect various types of information to provide and improve our services:",
+        content: tr('privacy.sections.dataCollection.content'),
         subsections: [
           PrivacySectionModel(
             id: "personalInfo",
@@ -425,21 +425,21 @@ class SampleData {
       PrivacySectionModel(
         id: "dataUsage",
         title: tr('privacy.sections.dataUsage.title'),
-        content: "We use your information for the following purposes:",
+        content: tr('privacy.sections.dataUsage.content'),
         subsections: [
           PrivacySectionModel(
             id: "processing",
-            title: "Transaction Processing",
+            title: tr('privacy.subsections.transactionProcessing.title'),
             content: tr('privacy.sections.dataUsage.processing'),
           ),
           PrivacySectionModel(
             id: "security",
-            title: "Security & Fraud Prevention", 
+            title: tr('privacy.subsections.securityFraudPrevention.title'), 
             content: tr('privacy.sections.dataUsage.security'),
           ),
           PrivacySectionModel(
             id: "communication",
-            title: "Communications",
+            title: tr('privacy.subsections.communications.title'),
             content: tr('privacy.sections.dataUsage.communication'),
           ),
         ],
@@ -447,16 +447,16 @@ class SampleData {
       PrivacySectionModel(
         id: "dataSharing",
         title: tr('privacy.sections.dataSharing.title'),
-        content: "We may share your information in limited circumstances:",
+        content: tr('privacy.sections.dataSharing.content'),
         subsections: [
           PrivacySectionModel(
             id: "serviceProviders",
-            title: "Service Providers",
+            title: tr('privacy.subsections.serviceProviders.title'),
             content: tr('privacy.sections.dataSharing.serviceProviders'),
           ),
           PrivacySectionModel(
             id: "legal",
-            title: "Legal Requirements",
+            title: tr('privacy.subsections.legalRequirements.title'),
             content: tr('privacy.sections.dataSharing.legal'),
           ),
         ],

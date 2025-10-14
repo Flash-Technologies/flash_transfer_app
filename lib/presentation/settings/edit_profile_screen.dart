@@ -5,9 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../providers/profile_provider.dart';
 import '../../providers/user_provider.dart';
-import '../../core/models/user.dart';
-import '../common/country_picker.dart';
-import '../common/date_picker_widget.dart';
+import '../../providers/language_provider.dart';
 import 'dart:io';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
@@ -191,6 +189,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
 
   Future<void> _pickImage() async {
     HapticFeedback.lightImpact();
+    final tr = ref.read(translationHelperProvider);
 
     final ImagePicker picker = ImagePicker();
 
@@ -209,7 +208,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                 Icons.camera_alt,
                 color: Theme.of(context).primaryColor,
               ),
-              title: Text('Take Photo'),
+              title: Text(tr('editProfile.photoOptions.takePhoto')),
               onTap: () async {
                 Navigator.pop(context);
                 final image = await picker.pickImage(
@@ -227,7 +226,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                 Icons.photo_library,
                 color: Theme.of(context).primaryColor,
               ),
-              title: Text('Choose from Gallery'),
+              title: Text(tr('editProfile.photoOptions.chooseFromGallery')),
               onTap: () async {
                 Navigator.pop(context);
                 final image = await picker.pickImage(
@@ -247,6 +246,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
   }
 
   void _showCountryPicker() {
+    final tr = ref.read(translationHelperProvider);
     // Implementation would use the existing CountryPicker widget
     // For now, showing a simple selection
     showModalBottomSheet(
@@ -264,7 +264,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
             Container(
               padding: const EdgeInsets.all(16),
               child: Text(
-                'Select Country',
+                tr('editProfile.countryPicker.title'),
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -370,7 +370,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
               children: [
                 Icon(Icons.check_circle, color: Colors.white),
                 const SizedBox(width: 12),
-                Expanded(child: Text('Profile updated successfully!')),
+                Expanded(child: Text(ref.read(translationHelperProvider)('editProfile.messages.profileUpdatedSuccess'))),
               ],
             ),
             backgroundColor: Colors.green[600],
@@ -425,7 +425,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                 Icon(Icons.error, color: Colors.white),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Text('Failed to update profile. Please try again.'),
+                  child: Text(ref.read(translationHelperProvider)('editProfile.messages.profileUpdateFailed')),
                 ),
               ],
             ),
@@ -444,9 +444,8 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
   @override
   Widget build(BuildContext context) {
     final profileState = ref.watch(profileProvider);
-    final userState = ref.watch(userProvider);
-    final user = userState.user;
     final theme = Theme.of(context);
+    final tr = ref.watch(translationHelperProvider);
 
     // Listen for user data changes and repopulate form
     ref.listen<UserState>(userProvider, (previous, next) {
@@ -501,7 +500,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'Back',
+                            tr('editProfile.screen.back'),
                             style: TextStyle(
                               color: Colors.grey[700],
                               fontSize: 14,
@@ -521,7 +520,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                   // Title
                   Expanded(
                     child: Text(
-                      'Edit Profile',
+                      tr('editProfile.screen.title'),
                       style: theme.textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: const Color(0xFF181F30),
@@ -578,12 +577,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                               children: [
                                 Expanded(
                                   child: _buildFormField(
-                                    label: 'First Name',
+                                    label: tr('editProfile.form.firstName'),
                                     controller: _firstNameController,
                                     focusNode: _firstNameFocus,
-                                    hintText: 'Alex',
+                                    hintText: tr('editProfile.hints.firstName'),
                                     validator: (value) => value?.isEmpty == true
-                                        ? 'Required'
+                                        ? tr('editProfile.messages.required')
                                         : null,
                                     onFieldSubmitted: (_) =>
                                         _lastNameFocus.requestFocus(),
@@ -593,12 +592,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                                 const SizedBox(width: 16),
                                 Expanded(
                                   child: _buildFormField(
-                                    label: 'Last Name',
+                                    label: tr('editProfile.form.lastName'),
                                     controller: _lastNameController,
                                     focusNode: _lastNameFocus,
-                                    hintText: 'Smith',
+                                    hintText: tr('editProfile.hints.lastName'),
                                     validator: (value) => value?.isEmpty == true
-                                        ? 'Required'
+                                        ? tr('editProfile.messages.required')
                                         : null,
                                     onFieldSubmitted: (_) =>
                                         _passwordFocus.requestFocus(),
@@ -626,10 +625,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
 
                             // Email Field (Read-only)
                             _buildFormField(
-                              label: 'Email Address (Cannot be changed)',
+                              label: tr('editProfile.form.emailCannotChange'),
                               controller: _emailController,
                               focusNode: _emailFocus,
-                              hintText: 'alexsmith@gmail.com',
+                              hintText: tr('editProfile.hints.email'),
                               keyboardType: TextInputType.emailAddress,
                               validator:
                                   null, // No validation needed for read-only field
@@ -648,10 +647,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
 
                             // Address Fields
                             _buildFormField(
-                              label: 'Permanent Address',
+                              label: tr('editProfile.form.permanentAddress'),
                               controller: _permanentAddressController,
                               focusNode: _permanentAddressFocus,
-                              hintText: 'San Jose, California, USA',
+                              hintText: tr('editProfile.hints.permanentAddress'),
                               onFieldSubmitted: (_) =>
                                   _presentAddressFocus.requestFocus(),
                               animationDelay: 1100,
@@ -660,10 +659,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                             const SizedBox(height: 20),
 
                             _buildFormField(
-                              label: 'Present Address',
+                              label: tr('editProfile.form.presentAddress'),
                               controller: _presentAddressController,
                               focusNode: _presentAddressFocus,
-                              hintText: 'San Jose, California, USA',
+                              hintText: tr('editProfile.hints.presentAddress'),
                               onFieldSubmitted: (_) =>
                                   _cityFocus.requestFocus(),
                               animationDelay: 1200,
@@ -677,12 +676,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                             const SizedBox(height: 20),
 
                             _buildFormField(
-                              label: 'City*',
+                              label: tr('editProfile.form.city') + '*',
                               controller: _cityController,
                               focusNode: _cityFocus,
-                              hintText: 'San Jose',
+                              hintText: tr('editProfile.hints.city'),
                               validator: (value) =>
-                                  value?.isEmpty == true ? 'Required' : null,
+                                  value?.isEmpty == true ? tr('editProfile.messages.required') : null,
                               onFieldSubmitted: (_) =>
                                   _stateFocus.requestFocus(),
                               animationDelay: 1400,
@@ -695,12 +694,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                               children: [
                                 Expanded(
                                   child: _buildFormField(
-                                    label: 'State*',
+                                    label: tr('editProfile.form.state') + '*',
                                     controller: _stateController,
                                     focusNode: _stateFocus,
-                                    hintText: 'CA',
+                                    hintText: tr('editProfile.hints.state'),
                                     validator: (value) => value?.isEmpty == true
-                                        ? 'Required'
+                                        ? tr('editProfile.messages.required')
                                         : null,
                                     onFieldSubmitted: (_) =>
                                         _zipFocus.requestFocus(),
@@ -710,13 +709,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                                 const SizedBox(width: 16),
                                 Expanded(
                                   child: _buildFormField(
-                                    label: 'ZIP*',
+                                    label: tr('editProfile.form.zip') + '*',
                                     controller: _zipController,
                                     focusNode: _zipFocus,
-                                    hintText: '24742',
+                                    hintText: tr('editProfile.hints.zip'),
                                     keyboardType: TextInputType.number,
                                     validator: (value) => value?.isEmpty == true
-                                        ? 'Required'
+                                        ? tr('editProfile.messages.required')
                                         : null,
                                     onFieldSubmitted: (_) => _saveProfile(),
                                     animationDelay: 1600,
@@ -760,7 +759,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                                           ),
                                         )
                                       : Text(
-                                          'Save',
+                                          tr('editProfile.form.save'),
                                           style: TextStyle(
                                             fontSize: 16,
                                             fontWeight: FontWeight.w600,
@@ -959,11 +958,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
   }
 
   Widget _buildDateField({required int animationDelay}) {
+    final tr = ref.watch(translationHelperProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Date of Birth',
+          tr('editProfile.form.dateOfBirth'),
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -986,7 +986,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
                   child: Text(
                     _selectedDate != null
                         ? '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
-                        : 'Select Date of Birth',
+                        : tr('editProfile.hints.selectDateOfBirth'),
                     style: TextStyle(
                       fontSize: 14,
                       color: _selectedDate != null
@@ -1010,11 +1010,12 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
   }
 
   Widget _buildCountryField({required int animationDelay}) {
+    final tr = ref.watch(translationHelperProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Country/Region',
+          tr('editProfile.form.countryRegion'),
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
@@ -1035,7 +1036,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
               children: [
                 Expanded(
                   child: Text(
-                    _selectedCountry ?? 'Select Country',
+                    _selectedCountry ?? tr('editProfile.hints.selectCountry'),
                     style: TextStyle(
                       fontSize: 14,
                       color: _selectedCountry != null
@@ -1062,14 +1063,4 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
         );
   }
 
-  String? _validateEmail(String? value) {
-    if (value?.isEmpty ?? true) {
-      return 'Email is required';
-    }
-    final emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
-    if (!emailRegex.hasMatch(value!)) {
-      return 'Please enter a valid email address';
-    }
-    return null;
-  }
 }

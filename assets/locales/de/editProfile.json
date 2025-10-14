@@ -1,0 +1,54 @@
+{
+  "screen": {
+    "title": "Profil bearbeiten",
+    "back": "Zurück"
+  },
+  "avatar": {
+    "changePhoto": "Foto ändern"
+  },
+  "form": {
+    "firstName": "Vorname",
+    "lastName": "Nachname",
+    "password": "Passwort",
+    "emailAddress": "E-Mail-Adresse",
+    "emailCannotChange": "E-Mail-Adresse (kann nicht geändert werden)",
+    "dateOfBirth": "Geburtsdatum",
+    "permanentAddress": "Ständige Adresse",
+    "presentAddress": "Aktuelle Adresse",
+    "countryRegion": "Land/Region",
+    "city": "Stadt",
+    "state": "Bundesland",
+    "zip": "PLZ",
+    "save": "Speichern"
+  },
+  "hints": {
+    "firstName": "Max",
+    "lastName": "Müller",
+    "password": "Leer lassen, um aktuelles Passwort zu behalten",
+    "email": "maxmueller@gmail.com",
+    "permanentAddress": "Berlin, Deutschland",
+    "presentAddress": "Berlin, Deutschland",
+    "city": "Berlin",
+    "state": "Berlin",
+    "zip": "10115",
+    "selectDateOfBirth": "Geburtsdatum auswählen",
+    "selectCountry": "Land auswählen"
+  },
+  "photoOptions": {
+    "takePhoto": "Foto aufnehmen",
+    "chooseFromGallery": "Aus Galerie wählen"
+  },
+  "countryPicker": {
+    "title": "Land auswählen"
+  },
+  "messages": {
+    "profileUpdatedSuccess": "Profil erfolgreich aktualisiert!",
+    "profileUpdateFailed": "Profil konnte nicht aktualisiert werden. Bitte versuchen Sie es erneut.",
+    "required": "Erforderlich"
+  },
+  "validation": {
+    "emailRequired": "E-Mail ist erforderlich",
+    "emailInvalid": "Bitte geben Sie eine gültige E-Mail-Adresse ein"
+  }
+}
+

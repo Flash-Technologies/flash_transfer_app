@@ -41,6 +41,18 @@ class TranslationService {
           print('❌ [TRANSLATION] No landing section found in translation.json!');
         }
         
+        // Check if notifications section exists
+        if (mainTranslations.containsKey('notifications')) {
+          final notificationsSection = mainTranslations['notifications'] as Map<String, dynamic>;
+          print('🔔 [TRANSLATION] Notifications section keys: ${notificationsSection.keys.toList()}');
+          if (notificationsSection.containsKey('screen')) {
+            final screenSection = notificationsSection['screen'] as Map<String, dynamic>;
+            print('📱 [TRANSLATION] Notifications screen keys: ${screenSection.keys.toList()}');
+          }
+        } else {
+          print('❌ [TRANSLATION] No notifications section found in translation.json!');
+        }
+        
       } catch (e) {
         print('❌ [TRANSLATION] Failed to load main translation.json for $locale: $e');
         throw Exception('Main translation file not found for $locale');
@@ -53,6 +65,8 @@ class TranslationService {
         'language.json',
         'profileDropdown.json',
         'recipients.json',
+        'contacts.json',
+        'editProfile.json',
       ];
       
       for (String fileName in optionalFiles) {

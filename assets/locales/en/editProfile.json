@@ -1,0 +1,54 @@
+{
+  "screen": {
+    "title": "Edit Profile",
+    "back": "Back"
+  },
+  "avatar": {
+    "changePhoto": "Change Photo"
+  },
+  "form": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "password": "Password",
+    "emailAddress": "Email Address",
+    "emailCannotChange": "Email Address (Cannot be changed)",
+    "dateOfBirth": "Date of Birth",
+    "permanentAddress": "Permanent Address",
+    "presentAddress": "Present Address",
+    "countryRegion": "Country/Region",
+    "city": "City",
+    "state": "State",
+    "zip": "ZIP",
+    "save": "Save"
+  },
+  "hints": {
+    "firstName": "Alex",
+    "lastName": "Smith",
+    "password": "Leave empty to keep current password",
+    "email": "alexsmith@gmail.com",
+    "permanentAddress": "San Jose, California, USA",
+    "presentAddress": "San Jose, California, USA",
+    "city": "San Jose",
+    "state": "CA",
+    "zip": "24742",
+    "selectDateOfBirth": "Select Date of Birth",
+    "selectCountry": "Select Country"
+  },
+  "photoOptions": {
+    "takePhoto": "Take Photo",
+    "chooseFromGallery": "Choose from Gallery"
+  },
+  "countryPicker": {
+    "title": "Select Country"
+  },
+  "messages": {
+    "profileUpdatedSuccess": "Profile updated successfully!",
+    "profileUpdateFailed": "Failed to update profile. Please try again.",
+    "required": "Required"
+  },
+  "validation": {
+    "emailRequired": "Email is required",
+    "emailInvalid": "Please enter a valid email address"
+  }
+}
+

@@ -210,5 +210,28 @@
       "download": "Baixar recibo",
       "repeatTransaction": "Enviar novamente"
     }
+  },
+  "notifications": {
+    "screen": {
+      "title": "Notificações",
+      "markAllRead": "Marcar todas como lidas",
+      "loading": "Carregando notificações...",
+      "failedToLoad": "Falha ao carregar notificações",
+      "retry": "Tentar novamente",
+      "emptyState": "Ainda não há notificações",
+      "emptyDescription": "Quando você receber notificações, elas aparecerão aqui."
+    },
+    "types": {
+      "transactionCompleted": "Transação concluída",
+      "transactionFailed": "Transação falhou",
+      "paymentReceived": "Pagamento recebido",
+      "paymentSent": "Pagamento enviado",
+      "walletConnected": "Carteira conectada",
+      "walletDisconnected": "Carteira desconectada",
+      "exchangeRateUpdate": "Atualização da taxa de câmbio",
+      "systemMaintenance": "Manutenção do sistema",
+      "securityAlert": "Alerta de segurança",
+      "promotion": "Promoção"
+    }
   }
 }

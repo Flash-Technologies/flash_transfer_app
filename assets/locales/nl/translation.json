@@ -210,5 +210,28 @@
       "download": "Bon downloaden",
       "repeatTransaction": "Opnieuw versturen"
     }
+  },
+  "notifications": {
+    "screen": {
+      "title": "Meldingen",
+      "markAllRead": "Alles als gelezen markeren",
+      "loading": "Meldingen laden...",
+      "failedToLoad": "Laden van meldingen mislukt",
+      "retry": "Opnieuw proberen",
+      "emptyState": "Nog geen meldingen",
+      "emptyDescription": "Wanneer je meldingen ontvangt, verschijnen ze hier."
+    },
+    "types": {
+      "transactionCompleted": "Transactie voltooid",
+      "transactionFailed": "Transactie mislukt",
+      "paymentReceived": "Betaling ontvangen",
+      "paymentSent": "Betaling verzonden",
+      "walletConnected": "Portemonnee verbonden",
+      "walletDisconnected": "Portemonnee losgekoppeld",
+      "exchangeRateUpdate": "Wisselkoers update",
+      "systemMaintenance": "Systeemonderhoud",
+      "securityAlert": "Beveiligingswaarschuwing",
+      "promotion": "Promotie"
+    }
   }
 }

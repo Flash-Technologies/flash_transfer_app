@@ -210,5 +210,28 @@
       "download": "Beleg herunterladen",
       "repeatTransaction": "Erneut senden"
     }
+  },
+  "notifications": {
+    "screen": {
+      "title": "Benachrichtigungen",
+      "markAllRead": "Alle als gelesen markieren",
+      "loading": "Benachrichtigungen werden geladen...",
+      "failedToLoad": "Benachrichtigungen konnten nicht geladen werden",
+      "retry": "Wiederholen",
+      "emptyState": "Noch keine Benachrichtigungen",
+      "emptyDescription": "Wenn Sie Benachrichtigungen erhalten, werden sie hier angezeigt."
+    },
+    "types": {
+      "transactionCompleted": "Transaktion abgeschlossen",
+      "transactionFailed": "Transaktion fehlgeschlagen",
+      "paymentReceived": "Zahlung erhalten",
+      "paymentSent": "Zahlung gesendet",
+      "walletConnected": "Brieftasche verbunden",
+      "walletDisconnected": "Brieftasche getrennt",
+      "exchangeRateUpdate": "Wechselkurs-Update",
+      "systemMaintenance": "Systemwartung",
+      "securityAlert": "Sicherheitswarnung",
+      "promotion": "Werbung"
+    }
   }
 }

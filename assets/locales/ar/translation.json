@@ -210,5 +210,28 @@
       "download": "تحميل الإيصال",
       "repeatTransaction": "إرسال مرة أخرى"
     }
+  },
+  "notifications": {
+    "screen": {
+      "title": "الإشعارات",
+      "markAllRead": "تحديد الكل كمقروء",
+      "loading": "جاري تحميل الإشعارات...",
+      "failedToLoad": "فشل في تحميل الإشعارات",
+      "retry": "إعادة المحاولة",
+      "emptyState": "لا توجد إشعارات حتى الآن",
+      "emptyDescription": "عندما تستلم إشعارات، ستظهر هنا."
+    },
+    "types": {
+      "transactionCompleted": "تمت المعاملة",
+      "transactionFailed": "فشلت المعاملة",
+      "paymentReceived": "تم استلام الدفع",
+      "paymentSent": "تم إرسال الدفع",
+      "walletConnected": "تم ربط المحفظة",
+      "walletDisconnected": "تم قطع ربط المحفظة",
+      "exchangeRateUpdate": "تحديث سعر الصرف",
+      "systemMaintenance": "صيانة النظام",
+      "securityAlert": "تنبيه أمني",
+      "promotion": "عرض ترويجي"
+    }
   }
 }

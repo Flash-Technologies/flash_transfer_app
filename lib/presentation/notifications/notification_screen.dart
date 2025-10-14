@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../providers/notification_provider.dart';
+import '../../providers/language_provider.dart';
 import 'widgets/notification_card_widget.dart';
 
 class NotificationScreen extends ConsumerStatefulWidget {
@@ -50,6 +51,11 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     final notificationState = ref.watch(notificationProvider);
+    final tr = ref.watch(translationHelperProvider);
+    
+    // Debug: Check what translation we're getting
+    final titleTranslation = tr('notifications.screen.title');
+    print('🐛 [DEBUG] Notification title translation: "$titleTranslation"');
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
@@ -60,9 +66,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
           icon: const Icon(Icons.arrow_back, color: Color(0xFF181F30)),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
-          'Notifications',
-          style: TextStyle(
+        title: Text(
+          tr('notifications.screen.title'),
+          style: const TextStyle(
             color: Color(0xFF181F30),
             fontSize: 20,
             fontWeight: FontWeight.w700,
@@ -74,9 +80,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
               onPressed: () {
                 ref.read(notificationProvider.notifier).markAllAsRead();
               },
-              child: const Text(
-                'Mark all read',
-                style: TextStyle(
+              child: Text(
+                tr('notifications.screen.markAllRead'),
+                style: const TextStyle(
                   color: Color(0xFFFFC000),
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -110,17 +116,18 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   }
 
   Widget _buildLoadingState() {
-    return const Center(
+    final tr = ref.watch(translationHelperProvider);
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircularProgressIndicator(
+          const CircularProgressIndicator(
             color: Color(0xFFFFC000),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
-            'Loading notifications...',
-            style: TextStyle(
+            tr('notifications.screen.loading'),
+            style: const TextStyle(
               color: Color(0xFF6E757D),
               fontSize: 16,
               fontWeight: FontWeight.w500,
@@ -132,6 +139,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   }
 
   Widget _buildErrorState(String error) {
+    final tr = ref.watch(translationHelperProvider);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -153,7 +161,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
             ),
             const SizedBox(height: 24),
             Text(
-              'Failed to load notifications',
+              tr('notifications.screen.failedToLoad'),
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
@@ -183,9 +191,9 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: const Text(
-                'Retry',
-                style: TextStyle(
+              child: Text(
+                tr('notifications.screen.retry'),
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
@@ -198,6 +206,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
   }
 
   Widget _buildEmptyState() {
+    final tr = ref.watch(translationHelperProvider);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -218,18 +227,18 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            const Text(
-              'No notifications yet',
-              style: TextStyle(
+            Text(
+              tr('notifications.screen.emptyState'),
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF181F30),
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              'When you receive notifications, they\'ll appear here.',
-              style: TextStyle(
+            Text(
+              tr('notifications.screen.emptyDescription'),
+              style: const TextStyle(
                 fontSize: 14,
                 color: Color(0xFF6E757D),
               ),

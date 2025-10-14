@@ -211,5 +211,28 @@
       "download": "Download Receipt",
       "repeatTransaction": "Send Again"
     }
+  },
+  "notifications": {
+    "screen": {
+      "title": "Notifications",
+      "markAllRead": "Mark all read",
+      "loading": "Loading notifications...",
+      "failedToLoad": "Failed to load notifications",
+      "retry": "Retry",
+      "emptyState": "No notifications yet",
+      "emptyDescription": "When you receive notifications, they'll appear here."
+    },
+    "types": {
+      "transactionCompleted": "Transaction Completed",
+      "transactionFailed": "Transaction Failed",
+      "paymentReceived": "Payment Received",
+      "paymentSent": "Payment Sent",
+      "walletConnected": "Wallet Connected",
+      "walletDisconnected": "Wallet Disconnected",
+      "exchangeRateUpdate": "Exchange Rate Update",
+      "systemMaintenance": "System Maintenance",
+      "securityAlert": "Security Alert",
+      "promotion": "Promotion"
+    }
   }
 }

@@ -46,40 +46,40 @@
         "legal": "Voor wettelijke doeleinden of om fraude te voorkomen."
       },
       "dataSecurity": {
-        "title": "4. Data Security",
-        "content": "We use encryption and other security measures to protect your data, but no system is entirely secure."
+        "title": "4. Gegevensbeveiliging",
+        "content": "We gebruiken versleuteling en andere beveiligingsmaatregelen om uw gegevens te beschermen, maar geen systeem is volledig veilig."
       },
       "userRights": {
-        "title": "5. Your Rights",
-        "content": "You can access, update, or delete your personal information. You can also opt-out of marketing communications."
+        "title": "5. Uw Rechten",
+        "content": "U kunt toegang krijgen tot, bijwerken of verwijderen van uw persoonlijke informatie. U kunt zich ook afmelden voor marketingcommunicatie."
       },
       "cookies": {
-        "title": "6. Cookies and Tracking",
-        "content": "We use cookies and similar technologies to improve your experience and analyze usage patterns."
+        "title": "6. Cookies en Tracking",
+        "content": "We gebruiken cookies en vergelijkbare technologieën om uw ervaring te verbeteren en gebruiks patronen te analyseren."
       },
       "thirdParty": {
-        "title": "7. Third-Party Services",
-        "content": "We may use third-party services that have their own privacy policies."
+        "title": "7. Diensten van Derden",
+        "content": "We kunnen diensten van derden gebruiken die hun eigen privacybeleid hebben."
       },
       "dataRetention": {
-        "title": "8. Data Retention",
-        "content": "We retain your data only as long as necessary for the purposes outlined in this policy."
+        "title": "8. Gegevensbehoud",
+        "content": "We bewaren uw gegevens alleen zo lang als nodig voor de doeleinden die in dit beleid zijn uiteengezet."
       },
       "international": {
-        "title": "9. International Transfers",
-        "content": "Your data may be transferred to and processed in countries other than your own."
+        "title": "9. Internationale Overdrachten",
+        "content": "Uw gegevens kunnen worden overgedragen en verwerkt in landen anders dan uw eigen land."
       },
       "minors": {
-        "title": "10. Children's Privacy", 
-        "content": "Our services are not intended for individuals under 18 years of age."
+        "title": "10. Privacy van Kinderen", 
+        "content": "Onze diensten zijn niet bedoeld voor personen onder de 18 jaar."
       },
       "changes": {
-        "title": "11. Changes to This Policy",
-        "content": "We may update this policy from time to time. We will notify you of any material changes."
+        "title": "11. Wijzigingen aan dit Beleid",
+        "content": "We kunnen dit beleid van tijd tot tijd bijwerken. We zullen u op de hoogte stellen van eventuele materiële wijzigingen."
       },
       "contact": {
-        "title": "12. Contact Us",
-        "content": "If you have questions about this policy, please contact us at privacy@flashtransfer.com"
+        "title": "12. Neem Contact Op",
+        "content": "Als u vragen heeft over dit beleid, neem dan contact met ons op via privacy@flashtransfer.com"
       }
     },
     "subsections": {
@@ -100,13 +100,18 @@
       }
     },
     "actions": {
-      "downloadPDF": "Download PDF",
-      "printPolicy": "Print Policy",
-      "sharePolicy": "Share Policy",
-      "reportIssue": "Report Issue",
-      "contactSupport": "Contact Support",
-      "requestData": "Request My Data",
-      "deleteAccount": "Delete Account"
+      "downloadPDF": "PDF Downloaden",
+      "printPolicy": "Beleid Afdrukken",
+      "sharePolicy": "Beleid Delen",
+      "reportIssue": "Probleem Melden",
+      "contactSupport": "Contact Opnemen",
+      "requestData": "Mijn Gegevens Aanvragen",
+      "deleteAccount": "Account Verwijderen"
+    },
+    "footer": {
+      "questionsTitle": "Vragen over ons Privacybeleid?",
+      "contactText": "Neem contact op met ons privacyteam via privacy@flashtransfer.com",
+      "lastUpdated": "Laatst bijgewerkt: 24 juni 2024"
     },
     "readingAids": {
       "estimatedReadTime": "Estimated reading time: {minutes} minutes",

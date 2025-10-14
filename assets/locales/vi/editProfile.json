@@ -1,0 +1,54 @@
+{
+  "screen": {
+    "title": "Chỉnh Sửa Hồ Sơ",
+    "back": "Quay lại"
+  },
+  "avatar": {
+    "changePhoto": "Thay đổi Ảnh"
+  },
+  "form": {
+    "firstName": "Tên",
+    "lastName": "Họ",
+    "password": "Mật khẩu",
+    "emailAddress": "Địa chỉ Email",
+    "emailCannotChange": "Địa chỉ Email (Không thể thay đổi)",
+    "dateOfBirth": "Ngày sinh",
+    "permanentAddress": "Địa chỉ Thường trú",
+    "presentAddress": "Địa chỉ Hiện tại",
+    "countryRegion": "Quốc gia/Vùng",
+    "city": "Thành phố",
+    "state": "Tỉnh/Thành",
+    "zip": "Mã bưu điện",
+    "save": "Lưu"
+  },
+  "hints": {
+    "firstName": "Minh",
+    "lastName": "Nguyễn",
+    "password": "Để trống để giữ mật khẩu hiện tại",
+    "email": "minhnguyen@gmail.com",
+    "permanentAddress": "Hà Nội, Việt Nam",
+    "presentAddress": "Hà Nội, Việt Nam",
+    "city": "Hà Nội",
+    "state": "Hà Nội",
+    "zip": "100000",
+    "selectDateOfBirth": "Chọn Ngày sinh",
+    "selectCountry": "Chọn Quốc gia"
+  },
+  "photoOptions": {
+    "takePhoto": "Chụp Ảnh",
+    "chooseFromGallery": "Chọn từ Thư viện"
+  },
+  "countryPicker": {
+    "title": "Chọn Quốc gia"
+  },
+  "messages": {
+    "profileUpdatedSuccess": "Cập nhật hồ sơ thành công!",
+    "profileUpdateFailed": "Cập nhật hồ sơ thất bại. Vui lòng thử lại.",
+    "required": "Bắt buộc"
+  },
+  "validation": {
+    "emailRequired": "Email là bắt buộc",
+    "emailInvalid": "Vui lòng nhập địa chỉ email hợp lệ"
+  }
+}
+

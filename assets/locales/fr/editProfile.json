@@ -1,0 +1,54 @@
+{
+  "screen": {
+    "title": "Modifier le Profil",
+    "back": "Retour"
+  },
+  "avatar": {
+    "changePhoto": "Changer la Photo"
+  },
+  "form": {
+    "firstName": "Prénom",
+    "lastName": "Nom de Famille",
+    "password": "Mot de Passe",
+    "emailAddress": "Adresse E-mail",
+    "emailCannotChange": "Adresse E-mail (Ne peut pas être modifiée)",
+    "dateOfBirth": "Date de Naissance",
+    "permanentAddress": "Adresse Permanente",
+    "presentAddress": "Adresse Actuelle",
+    "countryRegion": "Pays/Région",
+    "city": "Ville",
+    "state": "État",
+    "zip": "Code Postal",
+    "save": "Enregistrer"
+  },
+  "hints": {
+    "firstName": "Pierre",
+    "lastName": "Dubois",
+    "password": "Laisser vide pour conserver le mot de passe actuel",
+    "email": "pierredubois@gmail.com",
+    "permanentAddress": "Paris, France",
+    "presentAddress": "Paris, France",
+    "city": "Paris",
+    "state": "Île-de-France",
+    "zip": "75001",
+    "selectDateOfBirth": "Sélectionner la Date de Naissance",
+    "selectCountry": "Sélectionner le Pays"
+  },
+  "photoOptions": {
+    "takePhoto": "Prendre une Photo",
+    "chooseFromGallery": "Choisir dans la Galerie"
+  },
+  "countryPicker": {
+    "title": "Sélectionner le Pays"
+  },
+  "messages": {
+    "profileUpdatedSuccess": "Profil mis à jour avec succès !",
+    "profileUpdateFailed": "Échec de la mise à jour du profil. Veuillez réessayer.",
+    "required": "Requis"
+  },
+  "validation": {
+    "emailRequired": "L'e-mail est requis",
+    "emailInvalid": "Veuillez entrer une adresse e-mail valide"
+  }
+}
+

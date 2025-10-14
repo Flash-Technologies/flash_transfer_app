@@ -1,0 +1,54 @@
+{
+  "screen": {
+    "title": "प्रोफ़ाइल संपादित करें",
+    "back": "वापस"
+  },
+  "avatar": {
+    "changePhoto": "फोटो बदलें"
+  },
+  "form": {
+    "firstName": "पहला नाम",
+    "lastName": "अंतिम नाम",
+    "password": "पासवर्ड",
+    "emailAddress": "ईमेल पता",
+    "emailCannotChange": "ईमेल पता (बदला नहीं जा सकता)",
+    "dateOfBirth": "जन्म तिथि",
+    "permanentAddress": "स्थायी पता",
+    "presentAddress": "वर्तमान पता",
+    "countryRegion": "देश/क्षेत्र",
+    "city": "शहर",
+    "state": "राज्य",
+    "zip": "ज़िप कोड",
+    "save": "सहेजें"
+  },
+  "hints": {
+    "firstName": "राज",
+    "lastName": "शर्मा",
+    "password": "वर्तमान पासवर्ड रखने के लिए खाली छोड़ें",
+    "email": "rajsharma@gmail.com",
+    "permanentAddress": "दिल्ली, भारत",
+    "presentAddress": "दिल्ली, भारत",
+    "city": "दिल्ली",
+    "state": "दिल्ली",
+    "zip": "110001",
+    "selectDateOfBirth": "जन्म तिथि चुनें",
+    "selectCountry": "देश चुनें"
+  },
+  "photoOptions": {
+    "takePhoto": "फोटो लें",
+    "chooseFromGallery": "गैलरी से चुनें"
+  },
+  "countryPicker": {
+    "title": "देश चुनें"
+  },
+  "messages": {
+    "profileUpdatedSuccess": "प्रोफ़ाइल सफलतापूर्वक अपडेट हो गई!",
+    "profileUpdateFailed": "प्रोफ़ाइल अपडेट करने में विफल। कृपया पुनः प्रयास करें।",
+    "required": "आवश्यक"
+  },
+  "validation": {
+    "emailRequired": "ईमेल आवश्यक है",
+    "emailInvalid": "कृपया एक वैध ईमेल पता दर्ज करें"
+  }
+}
+

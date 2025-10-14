@@ -385,9 +385,9 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen>
       ),
       child: Column(
         children: [
-          const Text(
-            'Questions about our Privacy Policy?',
-            style: TextStyle(
+          Text(
+            TranslationService.instance.translate('privacy.footer.questionsTitle'),
+            style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Color(0xFF181F30),
@@ -398,7 +398,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen>
           const SizedBox(height: 12),
 
           Text(
-            'Contact our privacy team at privacy@flashtransfer.com',
+            TranslationService.instance.translate('privacy.footer.contactText'),
             style: TextStyle(fontSize: 14, color: Colors.grey[600]),
             textAlign: TextAlign.center,
           ),
@@ -411,7 +411,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen>
                 child: OutlinedButton.icon(
                   onPressed: _downloadPolicy,
                   icon: const Icon(Icons.download),
-                  label: const Text('Download PDF'),
+                  label: Text(TranslationService.instance.translate('privacy.actions.downloadPDF')),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
@@ -427,7 +427,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen>
                 child: ElevatedButton.icon(
                   onPressed: _contactSupport,
                   icon: const Icon(Icons.support_agent),
-                  label: const Text('Contact Support'),
+                  label: Text(TranslationService.instance.translate('privacy.actions.contactSupport')),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF2475FF),
                     foregroundColor: Colors.white,
@@ -445,7 +445,7 @@ class _PrivacyScreenState extends ConsumerState<PrivacyScreen>
           const SizedBox(height: 16),
 
           Text(
-            'Last updated: June 24, 2024',
+            TranslationService.instance.translate('privacy.footer.lastUpdated'),
             style: TextStyle(fontSize: 12, color: Colors.grey[500]),
           ),
         ],
