@@ -77,5 +77,99 @@
     "placeholder": "ट्रैकिंग नंबर दर्ज करें (FTN)",
     "searching": "खोज रहे हैं...",
     "clear": "खोज साफ़ करें"
+  },
+  "individualTransaction": {
+    "header": {
+      "title": "लेनदेन विवरण"
+    },
+    "paymentAction": {
+      "title": "भुगतान आवश्यक",
+      "subtitle": "आगे बढ़ने के लिए अपना क्रिप्टो भुगतान पूरा करें",
+      "amountToPay": "भुगतान करने की राशि",
+      "network": "नेटवर्क",
+      "trackingNumber": "ट्रैकिंग नंबर",
+      "ethereum": "एथेरियम",
+      "successMessage": "भुगतान पूरा हुआ! लेनदेन: {hash}..."
+    },
+    "statusCard": {
+      "copy": "कॉपी करें"
+    },
+    "transactionDetails": {
+      "title": "लेनदेन विवरण",
+      "youSending": "आप भेज रहे हैं",
+      "includingFee": "शुल्क सहित",
+      "recipientGets": "प्राप्तकर्ता को मिलता है",
+      "duration": "अवधि",
+      "started": "शुरू किया गया"
+    },
+    "timeline": {
+      "title": "लेनदेन समयरेखा",
+      "duration": "अवधि: {duration}",
+      "transactionCompleted": "लेनदेन पूर्ण",
+      "paymentCallbackReceived": "भुगतान कॉलबैक प्राप्त",
+      "blockchainConfirmation": "ब्लॉकचेन पुष्टि",
+      "confirmedOn": "{network} पर पुष्ट",
+      "waitingForConfirmations": "पुष्टि की प्रतीक्षा में",
+      "paymentProcessing": "भुगतान प्रसंस्करण",
+      "transactionStarted": "लेनदेन शुरू"
+    },
+    "feeBreakdown": {
+      "title": "शुल्क विवरण",
+      "baseAmount": "मूल राशि",
+      "platformFee": "प्लेटफॉर्म शुल्क",
+      "serviceFee": "सेवा शुल्क",
+      "loyaltyDiscount": "वफादारी छूट",
+      "nftDiscount": "NFT छूट",
+      "total": "कुल"
+    },
+    "transactionInfo": {
+      "title": "लेनदेन जानकारी",
+      "referenceId": "संदर्भ आईडी",
+      "type": "प्रकार",
+      "created": "बनाया गया",
+      "completed": "पूर्ण",
+      "blockchainTx": "ब्लॉकचेन TX",
+      "copy": "कॉपी करें"
+    },
+    "actionButtons": {
+      "trackAnother": "दूसरा लेनदेन ट्रैक करें",
+      "backToHome": "होम पर वापस"
+    },
+    "loading": {
+      "message": "लेनदेन विवरण लोड हो रहे हैं..."
+    },
+    "clipboard": {
+      "copied": "क्लिपबोर्ड पर कॉपी किया गया: {text}"
+    },
+    "timeFormat": {
+      "daysAgo": "{days} दिन पहले",
+      "hoursAgo": "{hours} घंटे पहले",
+      "minutesAgo": "{minutes} मिनट पहले",
+      "justNow": "अभी",
+      "ongoing": "(चल रहा है)",
+      "lessThanMinute": "< 1मि"
+    }
+  },
+  "timeline": {
+    "title": "लेनदेन समयरेखा",
+    "updated": "अपडेट किया गया",
+    "viewMore": "और देखें",
+    "viewLess": "कम देखें",
+    "monitoringMessage": "लेनदेन हमारे केंद्रीकृत सिस्टम द्वारा मॉनिटर किया जा रहा है",
+    "event": "घटना",
+    "error": "त्रुटि",
+    "amount": "राशि",
+    "transactionCreated": "लेनदेन बनाया गया",
+    "transactionProcessing": "लेनदेन प्रसंस्करण",
+    "transactionSuccess": "लेनदेन सफल",
+    "transactionFailure": "लेनदेन असफल",
+    "systemEvent": "सिस्टम घटना",
+    "paymentConfirmed": "भुगतान पुष्ट",
+    "monitoring": "निगरानी",
+    "timeFormat": {
+      "secondsAgo": "{seconds} सेकंड पहले",
+      "minutesAgo": "{minutes} मिनट पहले",
+      "hoursAgo": "{hours} घंटे पहले"
+    }
   }
 }

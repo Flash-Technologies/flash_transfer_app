@@ -77,5 +77,99 @@
     "placeholder": "Ingresa el número de seguimiento (FTN)",
     "searching": "Buscando...",
     "clear": "Limpiar búsqueda"
+  },
+  "individualTransaction": {
+    "header": {
+      "title": "Detalles de la Transacción"
+    },
+    "paymentAction": {
+      "title": "Pago Requerido",
+      "subtitle": "Completa tu pago en criptomonedas para continuar",
+      "amountToPay": "Cantidad a Pagar",
+      "network": "Red",
+      "trackingNumber": "Número de Seguimiento",
+      "ethereum": "Ethereum",
+      "successMessage": "¡Pago completado! Transacción: {hash}..."
+    },
+    "statusCard": {
+      "copy": "Copiar"
+    },
+    "transactionDetails": {
+      "title": "Detalles de la Transacción",
+      "youSending": "Estás Enviando",
+      "includingFee": "Incluyendo comisión",
+      "recipientGets": "El Destinatario Recibe",
+      "duration": "Duración",
+      "started": "Iniciado"
+    },
+    "timeline": {
+      "title": "Cronología de la Transacción",
+      "duration": "Duración: {duration}",
+      "transactionCompleted": "Transacción Completada",
+      "paymentCallbackReceived": "Callback de Pago Recibido",
+      "blockchainConfirmation": "Confirmación de Blockchain",
+      "confirmedOn": "Confirmado en {network}",
+      "waitingForConfirmations": "Esperando confirmaciones",
+      "paymentProcessing": "Procesando Pago",
+      "transactionStarted": "Transacción Iniciada"
+    },
+    "feeBreakdown": {
+      "title": "Desglose de Comisiones",
+      "baseAmount": "Cantidad Base",
+      "platformFee": "Comisión de Plataforma",
+      "serviceFee": "Comisión de Servicio",
+      "loyaltyDiscount": "Descuento por Lealtad",
+      "nftDiscount": "Descuento NFT",
+      "total": "Total"
+    },
+    "transactionInfo": {
+      "title": "Información de la Transacción",
+      "referenceId": "ID de Referencia",
+      "type": "Tipo",
+      "created": "Creado",
+      "completed": "Completado",
+      "blockchainTx": "TX de Blockchain",
+      "copy": "Copiar"
+    },
+    "actionButtons": {
+      "trackAnother": "Rastrear Otra Transacción",
+      "backToHome": "Volver al Inicio"
+    },
+    "loading": {
+      "message": "Cargando detalles de la transacción..."
+    },
+    "clipboard": {
+      "copied": "Copiado al portapapeles: {text}"
+    },
+    "timeFormat": {
+      "daysAgo": "hace {days}d",
+      "hoursAgo": "hace {hours}h",
+      "minutesAgo": "hace {minutes}m",
+      "justNow": "Ahora mismo",
+      "ongoing": "(en curso)",
+      "lessThanMinute": "< 1m"
+    }
+  },
+  "timeline": {
+    "title": "Cronología de la Transacción",
+    "updated": "Actualizado",
+    "viewMore": "Ver Más",
+    "viewLess": "Ver Menos",
+    "monitoringMessage": "La transacción está siendo monitoreada por nuestro sistema centralizado",
+    "event": "Evento",
+    "error": "Error",
+    "amount": "Cantidad",
+    "transactionCreated": "Transacción Creada",
+    "transactionProcessing": "Procesando Transacción",
+    "transactionSuccess": "Transacción Exitosa",
+    "transactionFailure": "Fallo en la Transacción",
+    "systemEvent": "Evento del Sistema",
+    "paymentConfirmed": "Pago Confirmado",
+    "monitoring": "Monitoreo",
+    "timeFormat": {
+      "secondsAgo": "hace {seconds}s",
+      "minutesAgo": "hace {minutes}m",
+      "hoursAgo": "hace {hours}h"
+    }
   }
 }

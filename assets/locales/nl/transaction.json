@@ -77,5 +77,99 @@
     "placeholder": "Voer trackingnummer in (FTN)",
     "searching": "Zoeken...",
     "clear": "Zoekopdracht wissen"
+  },
+  "individualTransaction": {
+    "header": {
+      "title": "Transactiedetails"
+    },
+    "paymentAction": {
+      "title": "Betaling Vereist",
+      "subtitle": "Voltooi je crypto-betaling om door te gaan",
+      "amountToPay": "Te Betalen Bedrag",
+      "network": "Netwerk",
+      "trackingNumber": "Trackingnummer",
+      "ethereum": "Ethereum",
+      "successMessage": "Betaling voltooid! Transactie: {hash}..."
+    },
+    "statusCard": {
+      "copy": "Kopiëren"
+    },
+    "transactionDetails": {
+      "title": "Transactiedetails",
+      "youSending": "Je Verstuurt",
+      "includingFee": "Inclusief kosten",
+      "recipientGets": "Ontvanger Krijgt",
+      "duration": "Duur",
+      "started": "Gestart"
+    },
+    "timeline": {
+      "title": "Transactie Tijdlijn",
+      "duration": "Duur: {duration}",
+      "transactionCompleted": "Transactie Voltooid",
+      "paymentCallbackReceived": "Betalings-callback Ontvangen",
+      "blockchainConfirmation": "Blockchain Bevestiging",
+      "confirmedOn": "Bevestigd op {network}",
+      "waitingForConfirmations": "Wachten op bevestigingen",
+      "paymentProcessing": "Betaling Verwerken",
+      "transactionStarted": "Transactie Gestart"
+    },
+    "feeBreakdown": {
+      "title": "Kostenspecificatie",
+      "baseAmount": "Basisbedrag",
+      "platformFee": "Platformkosten",
+      "serviceFee": "Servicekosten",
+      "loyaltyDiscount": "Loyaliteitskorting",
+      "nftDiscount": "NFT Korting",
+      "total": "Totaal"
+    },
+    "transactionInfo": {
+      "title": "Transactie-informatie",
+      "referenceId": "Referentie ID",
+      "type": "Type",
+      "created": "Aangemaakt",
+      "completed": "Voltooid",
+      "blockchainTx": "Blockchain TX",
+      "copy": "Kopiëren"
+    },
+    "actionButtons": {
+      "trackAnother": "Andere Transactie Volgen",
+      "backToHome": "Terug naar Home"
+    },
+    "loading": {
+      "message": "Transactiedetails laden..."
+    },
+    "clipboard": {
+      "copied": "Gekopieerd naar klembord: {text}"
+    },
+    "timeFormat": {
+      "daysAgo": "{days}d geleden",
+      "hoursAgo": "{hours}u geleden",
+      "minutesAgo": "{minutes}m geleden",
+      "justNow": "Zojuist",
+      "ongoing": "(lopend)",
+      "lessThanMinute": "< 1m"
+    }
+  },
+  "timeline": {
+    "title": "Transactie Tijdlijn",
+    "updated": "Bijgewerkt",
+    "viewMore": "Meer Bekijken",
+    "viewLess": "Minder Bekijken",
+    "monitoringMessage": "Transactie wordt gemonitord door ons gecentraliseerde systeem",
+    "event": "Gebeurtenis",
+    "error": "Fout",
+    "amount": "Bedrag",
+    "transactionCreated": "Transactie Aangemaakt",
+    "transactionProcessing": "Transactie Verwerking",
+    "transactionSuccess": "Transactie Succesvol",
+    "transactionFailure": "Transactie Mislukt",
+    "systemEvent": "Systeemgebeurtenis",
+    "paymentConfirmed": "Betaling Bevestigd",
+    "monitoring": "Monitoring",
+    "timeFormat": {
+      "secondsAgo": "{seconds}s geleden",
+      "minutesAgo": "{minutes}m geleden",
+      "hoursAgo": "{hours}u geleden"
+    }
   }
 }

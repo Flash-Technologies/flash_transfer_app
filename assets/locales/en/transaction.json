@@ -149,5 +149,27 @@
         "ongoing": "(ongoing)",
         "lessThanMinute": "< 1m"
       }
+    },
+    "timeline": {
+      "title": "Transaction Timeline",
+      "updated": "Updated",
+      "viewMore": "View More",
+      "viewLess": "View Less",
+      "monitoringMessage": "Transaction is being monitored by our centralized system",
+      "event": "Event",
+      "error": "Error",
+      "amount": "Amount",
+      "transactionCreated": "Transaction Created",
+      "transactionProcessing": "Transaction Processing",
+      "transactionSuccess": "Transaction Success",
+      "transactionFailure": "Transaction Failure",
+      "systemEvent": "System Event",
+      "paymentConfirmed": "Payment Confirmed",
+      "monitoring": "Monitoring",
+      "timeFormat": {
+        "secondsAgo": "{seconds}s ago",
+        "minutesAgo": "{minutes}m ago",
+        "hoursAgo": "{hours}h ago"
+      }
     }
   }

@@ -89,7 +89,7 @@ class _IndividualTransactionScreenState
   }
   
   Widget _buildPaymentActionCard(Transaction transaction) {
-    final tr = ref.read(translationHelperProvider);
+    final tr = ref.watch(translationHelperProvider);
     
     return Container(
       width: double.infinity,
@@ -280,7 +280,7 @@ class _IndividualTransactionScreenState
   }
 
   Widget _buildHeader() {
-    final tr = ref.read(translationHelperProvider);
+    final tr = ref.watch(translationHelperProvider);
     
     return Container(
       color: Colors.white,
@@ -509,7 +509,7 @@ class _IndividualTransactionScreenState
                 GestureDetector(
                   onTap: () => _copyToClipboard(transaction.trackingNumber),
                   child: Text(
-                    ref.read(translationHelperProvider)('transaction.individualTransaction.statusCard.copy'),
+                    ref.watch(translationHelperProvider)('transaction.individualTransaction.statusCard.copy'),
                     style: const TextStyle(
                       fontSize: 12,
                       color: Color(0xFF2475FF),
@@ -529,7 +529,7 @@ class _IndividualTransactionScreenState
   }
 
   Widget _buildTransactionDetailsCard(Transaction transaction) {
-    final tr = ref.read(translationHelperProvider);
+    final tr = ref.watch(translationHelperProvider);
     
     return _buildCard(
       title: tr('transaction.individualTransaction.transactionDetails.title'),
@@ -592,7 +592,7 @@ class _IndividualTransactionScreenState
   }
 
   Widget _buildTimelineCard(Transaction transaction) {
-    final tr = ref.read(translationHelperProvider);
+    final tr = ref.watch(translationHelperProvider);
     
     return _buildCard(
       title: tr('transaction.individualTransaction.timeline.title'),
@@ -639,7 +639,7 @@ class _IndividualTransactionScreenState
   }
 
   Widget _buildFeeBreakdownCard(Transaction transaction) {
-    final tr = ref.read(translationHelperProvider);
+    final tr = ref.watch(translationHelperProvider);
     final feeDetails = transaction.feeDetails;
     
     return _buildCard(
@@ -686,7 +686,7 @@ class _IndividualTransactionScreenState
   }
 
   Widget _buildTransactionInfoCard(Transaction transaction) {
-    final tr = ref.read(translationHelperProvider);
+    final tr = ref.watch(translationHelperProvider);
     
     return _buildCard(
       title: tr('transaction.individualTransaction.transactionInfo.title'),
@@ -927,7 +927,7 @@ class _IndividualTransactionScreenState
   }
 
   Widget _buildActionButtons() {
-    final tr = ref.read(translationHelperProvider);
+    final tr = ref.watch(translationHelperProvider);
     
     return Container(
       padding: const EdgeInsets.all(16),
@@ -995,7 +995,7 @@ class _IndividualTransactionScreenState
   }
 
   Widget _buildLoadingState() {
-    final tr = ref.read(translationHelperProvider);
+    final tr = ref.watch(translationHelperProvider);
     
     return Center(
       child: Column(
@@ -1036,7 +1036,7 @@ class _IndividualTransactionScreenState
   }
 
   String _formatRelativeTime(DateTime dateTime) {
-    final tr = ref.read(translationHelperProvider);
+    final tr = ref.watch(translationHelperProvider);
     final now = DateTime.now();
     final difference = now.difference(dateTime);
 
@@ -1052,7 +1052,7 @@ class _IndividualTransactionScreenState
   }
 
   String _calculateDuration(Transaction transaction) {
-    final tr = ref.read(translationHelperProvider);
+    final tr = ref.watch(translationHelperProvider);
     
     if (transaction.completedAt != null) {
       final duration = transaction.completedAt!.difference(transaction.createdAt);
@@ -1087,7 +1087,7 @@ class _IndividualTransactionScreenState
   }
 
   void _copyToClipboard(String text) {
-    final tr = ref.read(translationHelperProvider);
+    final tr = ref.watch(translationHelperProvider);
     
     Clipboard.setData(ClipboardData(text: text));
     HapticFeedback.lightImpact();

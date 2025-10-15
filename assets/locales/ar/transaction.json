@@ -77,5 +77,99 @@
     "placeholder": "أدخل رقم التتبع (FTN)",
     "searching": "جاري البحث...",
     "clear": "مسح البحث"
+  },
+  "individualTransaction": {
+    "header": {
+      "title": "تفاصيل المعاملة"
+    },
+    "paymentAction": {
+      "title": "مطلوب دفع",
+      "subtitle": "أكمل دفع العملة المشفرة للمتابعة",
+      "amountToPay": "المبلغ المطلوب دفعه",
+      "network": "الشبكة",
+      "trackingNumber": "رقم التتبع",
+      "ethereum": "إيثيريوم",
+      "successMessage": "تم إكمال الدفع! المعاملة: {hash}..."
+    },
+    "statusCard": {
+      "copy": "نسخ"
+    },
+    "transactionDetails": {
+      "title": "تفاصيل المعاملة",
+      "youSending": "أنت ترسل",
+      "includingFee": "شامل الرسوم",
+      "recipientGets": "يحصل المستلم على",
+      "duration": "المدة",
+      "started": "بدأت"
+    },
+    "timeline": {
+      "title": "الجدول الزمني للمعاملة",
+      "duration": "المدة: {duration}",
+      "transactionCompleted": "اكتملت المعاملة",
+      "paymentCallbackReceived": "تم استلام استدعاء الدفع",
+      "blockchainConfirmation": "تأكيد البلوك تشين",
+      "confirmedOn": "تم التأكيد على {network}",
+      "waitingForConfirmations": "في انتظار التأكيدات",
+      "paymentProcessing": "معالجة الدفع",
+      "transactionStarted": "بدأت المعاملة"
+    },
+    "feeBreakdown": {
+      "title": "تفصيل الرسوم",
+      "baseAmount": "المبلغ الأساسي",
+      "platformFee": "رسوم المنصة",
+      "serviceFee": "رسوم الخدمة",
+      "loyaltyDiscount": "خصم الولاء",
+      "nftDiscount": "خصم NFT",
+      "total": "الإجمالي"
+    },
+    "transactionInfo": {
+      "title": "معلومات المعاملة",
+      "referenceId": "رقم المرجع",
+      "type": "النوع",
+      "created": "تم الإنشاء",
+      "completed": "مكتمل",
+      "blockchainTx": "معاملة البلوك تشين",
+      "copy": "نسخ"
+    },
+    "actionButtons": {
+      "trackAnother": "تتبع معاملة أخرى",
+      "backToHome": "العودة للرئيسية"
+    },
+    "loading": {
+      "message": "جاري تحميل تفاصيل المعاملة..."
+    },
+    "clipboard": {
+      "copied": "تم النسخ إلى الحافظة: {text}"
+    },
+    "timeFormat": {
+      "daysAgo": "منذ {days} يوم",
+      "hoursAgo": "منذ {hours} ساعة",
+      "minutesAgo": "منذ {minutes} دقيقة",
+      "justNow": "الآن",
+      "ongoing": "(مستمر)",
+      "lessThanMinute": "< 1د"
+    }
+  },
+  "timeline": {
+    "title": "الجدول الزمني للمعاملة",
+    "updated": "محدث",
+    "viewMore": "عرض المزيد",
+    "viewLess": "عرض أقل",
+    "monitoringMessage": "يتم مراقبة المعاملة بواسطة نظامنا المركزي",
+    "event": "حدث",
+    "error": "خطأ",
+    "amount": "المبلغ",
+    "transactionCreated": "تم إنشاء المعاملة",
+    "transactionProcessing": "معالجة المعاملة",
+    "transactionSuccess": "نجحت المعاملة",
+    "transactionFailure": "فشلت المعاملة",
+    "systemEvent": "حدث النظام",
+    "paymentConfirmed": "تم تأكيد الدفع",
+    "monitoring": "مراقبة",
+    "timeFormat": {
+      "secondsAgo": "منذ {seconds} ثانية",
+      "minutesAgo": "منذ {minutes} دقيقة",
+      "hoursAgo": "منذ {hours} ساعة"
+    }
   }
 }

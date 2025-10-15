@@ -77,5 +77,99 @@
     "placeholder": "Nhập số theo dõi (FTN)",
     "searching": "Đang tìm kiếm...",
     "clear": "Xóa tìm kiếm"
+  },
+  "individualTransaction": {
+    "header": {
+      "title": "Chi Tiết Giao Dịch"
+    },
+    "paymentAction": {
+      "title": "Yêu Cầu Thanh Toán",
+      "subtitle": "Hoàn tất thanh toán tiền mã hóa để tiếp tục",
+      "amountToPay": "Số Tiền Cần Thanh Toán",
+      "network": "Mạng",
+      "trackingNumber": "Số Theo Dõi",
+      "ethereum": "Ethereum",
+      "successMessage": "Thanh toán hoàn tất! Giao dịch: {hash}..."
+    },
+    "statusCard": {
+      "copy": "Sao chép"
+    },
+    "transactionDetails": {
+      "title": "Chi Tiết Giao Dịch",
+      "youSending": "Bạn Đang Gửi",
+      "includingFee": "Bao gồm phí",
+      "recipientGets": "Người Nhận Được",
+      "duration": "Thời Gian",
+      "started": "Đã Bắt Đầu"
+    },
+    "timeline": {
+      "title": "Dòng Thời Gian Giao Dịch",
+      "duration": "Thời gian: {duration}",
+      "transactionCompleted": "Giao Dịch Hoàn Thành",
+      "paymentCallbackReceived": "Nhận Callback Thanh Toán",
+      "blockchainConfirmation": "Xác Nhận Blockchain",
+      "confirmedOn": "Đã xác nhận trên {network}",
+      "waitingForConfirmations": "Đang chờ xác nhận",
+      "paymentProcessing": "Xử Lý Thanh Toán",
+      "transactionStarted": "Giao Dịch Bắt Đầu"
+    },
+    "feeBreakdown": {
+      "title": "Chi Tiết Phí",
+      "baseAmount": "Số Tiền Cơ Bản",
+      "platformFee": "Phí Nền Tảng",
+      "serviceFee": "Phí Dịch Vụ",
+      "loyaltyDiscount": "Giảm Giá Khách Hàng Thân Thiết",
+      "nftDiscount": "Giảm Giá NFT",
+      "total": "Tổng Cộng"
+    },
+    "transactionInfo": {
+      "title": "Thông Tin Giao Dịch",
+      "referenceId": "ID Tham Chiếu",
+      "type": "Loại",
+      "created": "Đã Tạo",
+      "completed": "Hoàn Thành",
+      "blockchainTx": "TX Blockchain",
+      "copy": "Sao chép"
+    },
+    "actionButtons": {
+      "trackAnother": "Theo Dõi Giao Dịch Khác",
+      "backToHome": "Về Trang Chủ"
+    },
+    "loading": {
+      "message": "Đang tải chi tiết giao dịch..."
+    },
+    "clipboard": {
+      "copied": "Đã sao chép vào clipboard: {text}"
+    },
+    "timeFormat": {
+      "daysAgo": "{days} ngày trước",
+      "hoursAgo": "{hours} giờ trước",
+      "minutesAgo": "{minutes} phút trước",
+      "justNow": "Vừa xong",
+      "ongoing": "(đang diễn ra)",
+      "lessThanMinute": "< 1p"
+    }
+  },
+  "timeline": {
+    "title": "Dòng Thời Gian Giao Dịch",
+    "updated": "Đã cập nhật",
+    "viewMore": "Xem Thêm",
+    "viewLess": "Xem Ít Hơn",
+    "monitoringMessage": "Giao dịch đang được giám sát bởi hệ thống tập trung của chúng tôi",
+    "event": "Sự kiện",
+    "error": "Lỗi",
+    "amount": "Số tiền",
+    "transactionCreated": "Giao Dịch Được Tạo",
+    "transactionProcessing": "Xử Lý Giao Dịch",
+    "transactionSuccess": "Giao Dịch Thành Công",
+    "transactionFailure": "Giao Dịch Thất Bại",
+    "systemEvent": "Sự Kiện Hệ Thống",
+    "paymentConfirmed": "Thanh Toán Được Xác Nhận",
+    "monitoring": "Giám Sát",
+    "timeFormat": {
+      "secondsAgo": "{seconds} giây trước",
+      "minutesAgo": "{minutes} phút trước",
+      "hoursAgo": "{hours} giờ trước"
+    }
   }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flash_transfer_app/config/ui_constants.dart';
+import 'package:flash_transfer_app/providers/language_provider.dart';
 import 'package:intl/intl.dart';
 
-class TransactionTimelineWidget extends StatefulWidget {
+class TransactionTimelineWidget extends ConsumerStatefulWidget {
   final List<dynamic>? enhancedTimeline;
   final Map<String, dynamic>? statusDetails;
   
@@ -13,14 +15,15 @@ class TransactionTimelineWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<TransactionTimelineWidget> createState() => _TransactionTimelineWidgetState();
+  ConsumerState<TransactionTimelineWidget> createState() => _TransactionTimelineWidgetState();
 }
 
-class _TransactionTimelineWidgetState extends State<TransactionTimelineWidget> {
+class _TransactionTimelineWidgetState extends ConsumerState<TransactionTimelineWidget> {
   bool _isExpanded = false;
   
   @override
   Widget build(BuildContext context) {
+    final tr = ref.watch(translationHelperProvider);
     final timeline = widget.enhancedTimeline ?? [];
     if (timeline.isEmpty && widget.statusDetails == null) {
       return SizedBox.shrink();
@@ -58,19 +61,24 @@ class _TransactionTimelineWidgetState extends State<TransactionTimelineWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Transaction Timeline',
-                style: AppTextStyles.heading3.copyWith(
-                  fontWeight: FontWeight.bold,
+              Expanded(
+                child: Text(
+                  tr('transaction.timeline.title'),
+                  style: AppTextStyles.heading3.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
               if (widget.statusDetails?['lastChecked'] != null)
-                Text(
-                  'Updated: ${_formatLastChecked(widget.statusDetails!['lastChecked'])}',
-                  style: AppTextStyles.caption.copyWith(
-                    color: AppColors.textSecondary,
+                Flexible(
+                  child: Text(
+                    '${tr('transaction.timeline.updated')}: ${_formatLastChecked(widget.statusDetails!['lastChecked'], tr)}',
+                    style: AppTextStyles.caption.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.end,
                   ),
                 ),
             ],
@@ -95,7 +103,7 @@ class _TransactionTimelineWidgetState extends State<TransactionTimelineWidget> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      _isExpanded ? 'View Less' : 'View More',
+                      _isExpanded ? tr('transaction.timeline.viewLess') : tr('transaction.timeline.viewMore'),
                       style: AppTextStyles.bodyMedium.copyWith(
                         color: AppColors.primaryBlue,
                         fontWeight: FontWeight.w600,
@@ -135,7 +143,7 @@ class _TransactionTimelineWidgetState extends State<TransactionTimelineWidget> {
                   SizedBox(width: AppSpacing.marginS),
                   Expanded(
                     child: Text(
-                      'Transaction is being monitored by our centralized system',
+                      tr('transaction.timeline.monitoringMessage'),
                       style: AppTextStyles.caption.copyWith(
                         color: AppColors.primaryBlue,
                       ),
@@ -151,6 +159,7 @@ class _TransactionTimelineWidgetState extends State<TransactionTimelineWidget> {
   }
   
   Widget _buildTimelineItem(Map<String, dynamic> item) {
+    final tr = ref.watch(translationHelperProvider);
     final icon = _getIconForEvent(item);
     final color = _getColorForEvent(item);
     final isLastItem = widget.enhancedTimeline?.last == item;
@@ -202,7 +211,7 @@ class _TransactionTimelineWidgetState extends State<TransactionTimelineWidget> {
                   children: [
                     Expanded(
                       child: Text(
-                        item['title'] ?? item['eventType'] ?? 'Event',
+                        item['title'] ?? _getTranslatedEventType(item['eventType'], tr) ?? tr('transaction.timeline.event'),
                         style: AppTextStyles.bodyMedium.copyWith(
                           fontWeight: FontWeight.w600,
                           color: color,
@@ -244,7 +253,7 @@ class _TransactionTimelineWidgetState extends State<TransactionTimelineWidget> {
                       children: [
                         if (item['details']['errorMessage'] != null)
                           Text(
-                            'Error: ${item['details']['errorMessage']}',
+                            '${tr('transaction.timeline.error')}: ${item['details']['errorMessage']}',
                             style: AppTextStyles.caption.copyWith(
                               color: AppColors.error,
                               fontSize: 11,
@@ -252,7 +261,7 @@ class _TransactionTimelineWidgetState extends State<TransactionTimelineWidget> {
                           ),
                         if (item['details']['amount'] != null)
                           Text(
-                            'Amount: ${item['details']['amount']}',
+                            '${tr('transaction.timeline.amount')}: ${item['details']['amount']}',
                             style: AppTextStyles.caption.copyWith(
                               fontSize: 11,
                             ),
@@ -306,18 +315,39 @@ class _TransactionTimelineWidgetState extends State<TransactionTimelineWidget> {
     }
   }
   
-  String _formatLastChecked(String timestamp) {
+  String _getTranslatedEventType(String? eventType, Function tr) {
+    switch (eventType) {
+      case 'TRANSACTION_CREATED':
+        return tr('transaction.timeline.transactionCreated');
+      case 'TRANSACTION_PROCESSING':
+        return tr('transaction.timeline.transactionProcessing');
+      case 'TRANSACTION_SUCCESS':
+        return tr('transaction.timeline.transactionSuccess');
+      case 'TRANSACTION_FAILURE':
+        return tr('transaction.timeline.transactionFailure');
+      case 'SYSTEM_EVENT':
+        return tr('transaction.timeline.systemEvent');
+      case 'PAYMENT_CONFIRMED':
+        return tr('transaction.timeline.paymentConfirmed');
+      case 'MONITORING':
+        return tr('transaction.timeline.monitoring');
+      default:
+        return tr('transaction.timeline.event');
+    }
+  }
+
+  String _formatLastChecked(String timestamp, Function tr) {
     try {
       final date = DateTime.parse(timestamp);
       final now = DateTime.now();
       final difference = now.difference(date);
       
       if (difference.inSeconds < 60) {
-        return '${difference.inSeconds}s ago';
+        return tr('transaction.timeline.timeFormat.secondsAgo', {'seconds': difference.inSeconds});
       } else if (difference.inMinutes < 60) {
-        return '${difference.inMinutes}m ago';
+        return tr('transaction.timeline.timeFormat.minutesAgo', {'minutes': difference.inMinutes});
       } else if (difference.inHours < 24) {
-        return '${difference.inHours}h ago';
+        return tr('transaction.timeline.timeFormat.hoursAgo', {'hours': difference.inHours});
       } else {
         return DateFormat('MMM dd, HH:mm').format(date);
       }

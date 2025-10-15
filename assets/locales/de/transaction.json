@@ -77,5 +77,99 @@
     "placeholder": "Tracking-Nummer eingeben (FTN)",
     "searching": "Suche läuft...",
     "clear": "Suche löschen"
+  },
+  "individualTransaction": {
+    "header": {
+      "title": "Transaktionsdetails"
+    },
+    "paymentAction": {
+      "title": "Zahlung erforderlich",
+      "subtitle": "Schließen Sie Ihre Krypto-Zahlung ab, um fortzufahren",
+      "amountToPay": "Zu zahlender Betrag",
+      "network": "Netzwerk",
+      "trackingNumber": "Tracking-Nummer",
+      "ethereum": "Ethereum",
+      "successMessage": "Zahlung abgeschlossen! Transaktion: {hash}..."
+    },
+    "statusCard": {
+      "copy": "Kopieren"
+    },
+    "transactionDetails": {
+      "title": "Transaktionsdetails",
+      "youSending": "Sie senden",
+      "includingFee": "Inklusive Gebühr",
+      "recipientGets": "Empfänger erhält",
+      "duration": "Dauer",
+      "started": "Gestartet"
+    },
+    "timeline": {
+      "title": "Transaktions-Zeitlinie",
+      "duration": "Dauer: {duration}",
+      "transactionCompleted": "Transaktion abgeschlossen",
+      "paymentCallbackReceived": "Zahlungsrückruf erhalten",
+      "blockchainConfirmation": "Blockchain-Bestätigung",
+      "confirmedOn": "Bestätigt auf {network}",
+      "waitingForConfirmations": "Warten auf Bestätigungen",
+      "paymentProcessing": "Zahlungsverarbeitung",
+      "transactionStarted": "Transaktion gestartet"
+    },
+    "feeBreakdown": {
+      "title": "Gebührenaufschlüsselung",
+      "baseAmount": "Grundbetrag",
+      "platformFee": "Plattformgebühr",
+      "serviceFee": "Servicegebühr",
+      "loyaltyDiscount": "Treuerabatt",
+      "nftDiscount": "NFT-Rabatt",
+      "total": "Gesamt"
+    },
+    "transactionInfo": {
+      "title": "Transaktionsinformationen",
+      "referenceId": "Referenz-ID",
+      "type": "Typ",
+      "created": "Erstellt",
+      "completed": "Abgeschlossen",
+      "blockchainTx": "Blockchain-TX",
+      "copy": "Kopieren"
+    },
+    "actionButtons": {
+      "trackAnother": "Andere Transaktion verfolgen",
+      "backToHome": "Zurück zur Startseite"
+    },
+    "loading": {
+      "message": "Transaktionsdetails werden geladen..."
+    },
+    "clipboard": {
+      "copied": "In Zwischenablage kopiert: {text}"
+    },
+    "timeFormat": {
+      "daysAgo": "vor {days}T",
+      "hoursAgo": "vor {hours}Std",
+      "minutesAgo": "vor {minutes}Min",
+      "justNow": "Gerade jetzt",
+      "ongoing": "(laufend)",
+      "lessThanMinute": "< 1Min"
+    }
+  },
+  "timeline": {
+    "title": "Transaktions-Zeitlinie",
+    "updated": "Aktualisiert",
+    "viewMore": "Mehr anzeigen",
+    "viewLess": "Weniger anzeigen",
+    "monitoringMessage": "Die Transaktion wird von unserem zentralisierten System überwacht",
+    "event": "Ereignis",
+    "error": "Fehler",
+    "amount": "Betrag",
+    "transactionCreated": "Transaktion erstellt",
+    "transactionProcessing": "Transaktion wird verarbeitet",
+    "transactionSuccess": "Transaktion erfolgreich",
+    "transactionFailure": "Transaktion fehlgeschlagen",
+    "systemEvent": "Systemereignis",
+    "paymentConfirmed": "Zahlung bestätigt",
+    "monitoring": "Überwachung",
+    "timeFormat": {
+      "secondsAgo": "vor {seconds}s",
+      "minutesAgo": "vor {minutes}m",
+      "hoursAgo": "vor {hours}h"
+    }
   }
 }

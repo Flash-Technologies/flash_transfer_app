@@ -569,6 +569,7 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
 
   Widget _buildDetailRow(String label, String value, {bool isLast = false}) {
     final isTotal = label.contains('Total');
+    final isPaymentAddress = label.toLowerCase().contains('payment address');
 
     return Container(
       padding: EdgeInsets.symmetric(vertical: AppSpacing.paddingS),
@@ -582,26 +583,67 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
                 ),
               ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
-              fontWeight: isTotal ? FontWeight.w600 : FontWeight.normal,
+      child: isPaymentAddress
+          ? Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+                SizedBox(height: AppSpacing.paddingS),
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(AppSpacing.paddingS),
+                  decoration: BoxDecoration(
+                    color: AppColors.iconBackground.withOpacity(0.3),
+                    borderRadius: BorderRadius.circular(AppRadius.radiusS),
+                    border: Border.all(
+                      color: AppColors.border.withOpacity(0.3),
+                      width: 1,
+                    ),
+                  ),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Text(
+                      value,
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                        color: AppColors.textPrimary,
+                        fontFamily: 'monospace',
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  label,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                    fontWeight: isTotal ? FontWeight.w600 : FontWeight.normal,
+                  ),
+                ),
+                Flexible(
+                  child: Text(
+                    value,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: isTotal ? 18 : 14,
+                      color: isTotal ? AppColors.textPrimary : AppColors.textPrimary,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
-          ),
-          Text(
-            value,
-            style: AppTextStyles.bodyMedium.copyWith(
-              fontWeight: FontWeight.w600,
-              fontSize: isTotal ? 18 : 14,
-              color: isTotal ? AppColors.textPrimary : AppColors.textPrimary,
-            ),
-          ),
-        ],
-      ),
     );
   }
 

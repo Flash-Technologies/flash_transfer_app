@@ -707,6 +707,37 @@ class _BizaoConfigModalState extends ConsumerState<BizaoConfigModal>
               color: Color(0xFF181F30),
               fontWeight: FontWeight.w500,
             ),
+            selectedItemBuilder: (BuildContext context) {
+              return items.map<Widget>((String item) {
+                return Container(
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: AppTheme.primaryColor,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          item,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF181F30),
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList();
+            },
             items: items.map((item) {
               return DropdownMenuItem<String>(
                 value: item,
