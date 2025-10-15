@@ -43,7 +43,185 @@
       "address": "पता",
       "notProvided": "उपलब्ध नहीं"
     }
+  },
+  "progress": {
+    "receiverInfo": {
+      "label": "प्राप्तकर्ता की जानकारी",
+      "description": "जानकारी दर्ज करें"
+    },
+    "receiverMethod": {
+      "label": "प्राप्तकर्ता की विधि",
+      "description": "जानकारी दर्ज करें"
+    },
+    "reviewDetails": {
+      "label": "विवरण की समीक्षा करें",
+      "description": "जानकारी दर्ज करें"
+    },
+    "paymentComplete": {
+      "label": "भुगतान पूर्ण",
+      "description": "जानकारी दर्ज करें"
+    }
+  },
+  "header": {
+    "title": "विवरण की समीक्षा करें",
+    "subheading": "मान्य करने से पहले अपने ऑर्डर का सारांश देखें।"
+  },
+  "detailsScreen": {
+    "progressTitle": "प्राप्तकर्ता की जानकारी",
+    "progressSubtitle": "जानकारी दर्ज करें।",
+    "title": "विवरण की समीक्षा करें",
+    "subtitle": "सभी विवरण की जानकारी की जांच करें।",
+    "buttons": {
+      "confirm": "पुष्टि करें",
+      "creating": "लेन-देन बनाया जा रहा है...",
+      "cancel": "रद्द करें"
+    },
+    "errors": {
+      "missingNetwork": "कृपया वापस जाएं और पहले एक ब्लॉकचेन नेटवर्क चुनें",
+      "missingCryptoAddress": "कृपया वापस जाएं और पहले अपना क्रिप्टो पता पुष्ट करें",
+      "missingExchangeData": "एक्सचेंज फॉर्म डेटा गुम है। कृपया होम स्क्रीन पर वापस जाएं।",
+      "invalidAmount": "अमान्य राशि। कृपया अपना एक्सचेंज फॉर्म जांचें।",
+      "transactionFailed": "लेन-देन बनाने में विफल"
+    }
+  },
+  "buttons": {
+    "cancel": "रद्द करें",
+    "processing": "प्रसंस्करण...",
+    "confirm": "पुष्टि करें",
+    "calculating": "गणना चल रही है...",
+    "edit": "संपादित करें"
+  },
+  "sections": {
+    "amount": {
+      "title": "राशि",
+      "editAmount": "राशि संपादित करें"
+    },
+    "transferSummary": {
+      "title": "ट्रांसफर सारांश",
+      "updating": "अपडेट हो रहा है...",
+      "amountToSend": "भेजने की राशि",
+      "transferFee": "ट्रांसफर शुल्क",
+      "feeWaived": "शुल्क माफ",
+      "totalCost": "कुल लागत",
+      "totalToRecipient": "प्राप्तकर्ता को कुल",
+      "exchangeRate": "विनिमय दर",
+      "networkCongestion": "नेटवर्क भीड़",
+      "congestionLow": "कम",
+      "congestionMedium": "मध्यम",
+      "congestionHigh": "उच्च",
+      "totalToPay": "कुल भुगतान",
+      "recipientGets": "प्राप्तकर्ता को मिलेगा",
+      "availability": "उपलब्धता",
+      "transactionUnavailable": "यह लेन-देन इस समय उपलब्ध नहीं है"
+    },
+    "senderDetails": {
+      "title": "प्रेषक विवरण",
+      "kyc": "केवाईसी",
+      "mobileProvider": "मोबाइल प्रदाता",
+      "phoneNumber": "फोन नंबर",
+      "sourceOfFunds": "धन का स्रोत",
+      "purposeOfTransaction": "लेन-देन का उद्देश्य"
+    },
+    "receiverDetails": {
+      "title": "प्राप्तकर्ता विवरण",
+      "walletAddress": "वॉलेट पता",
+      "blockchainNetwork": "ब्लॉकचेन नेटवर्क",
+      "mobileNumber": "मोबाइल नंबर",
+      "mobileProvider": "मोबाइल प्रदाता",
+      "receiverCountry": "प्राप्तकर्ता देश",
+      "youSent": "आपने भेजा",
+      "transferRate": "ट्रांसफर दर",
+      "fee": "शुल्क"
+    }
+  },
+  "paymentMethods": {
+    "bankTransfer": "बैंक ट्रांसफर",
+    "creditCard": "क्रेडिट कार्ड",
+    "cash": "नकद",
+    "mobileMoney": "मोबाइल मनी",
+    "wallet": "वॉलेट",
+    "cashPickup": "नकद प्राप्ति",
+    "cryptoWallet": "{{currency}} वॉलेट"
+  },
+  "errors": {
+    "somethingWentWrong": "कुछ गलत हुआ",
+    "networkError": "नेटवर्क त्रुटि: लेन-देन का अनुमान नहीं लगा सका",
+    "transactionFailed": "लेन-देन विफल"
+  },
+  "cryptoDetails": {
+    "senderDetails": {
+      "title": "प्रेषक विवरण",
+      "sourceOfFunds": "धन का स्रोत",
+      "purposeOfTransaction": "लेन-देन का उद्देश्य",
+      "coverageArea": "कवरेज क्षेत्र",
+      "savings": "बचत",
+      "education": "शिक्षा",
+      "westCentralAfrica": "पश्चिम और मध्य अफ्रीका"
+    },
+    "mobileProvider": {
+      "title": "मोबाइल मनी ({provider})",
+      "mobileProvider": "मोबाइल प्रदाता",
+      "phoneNumber": "फोन नंबर",
+      "providerDetails": "प्रदाता विवरण",
+      "show": "दिखाएं",
+      "serviceCode": "सेवा कोड",
+      "apiMethod": "API विधि",
+      "securePayment": {
+        "title": "सुरक्षित मोबाइल भुगतान",
+        "description": "आपका मोबाइल मनी भुगतान हमारे विश्वसनीय भुगतान नेटवर्क के माध्यम से सुरक्षित रूप से संसाधित किया जाएगा"
+      }
+    },
+    "receiverDetails": {
+      "title": "प्राप्तकर्ता विवरण",
+      "walletAddress": "वॉलेट पता",
+      "blockchainNetwork": "ब्लॉकचेन नेटवर्क",
+      "receiverCountry": "प्राप्तकर्ता देश",
+      "ethWallet": "ETH वॉलेट",
+      "coteDeIvoire": "कोत दिवुआर",
+      "ethereum": "इथेरियम"
+    },
+    "feeBreakdown": {
+      "title": "शुल्क विवरण",
+      "youSent": "आपने भेजा",
+      "transferRate": "ट्रांसफर दर",
+      "live": "लाइव",
+      "rateId": "दर ID: {id}",
+      "platformCharges": "प्लेटफॉर्म शुल्क",
+      "networkFee": "नेटवर्क शुल्क",
+      "loyaltyDiscount": "वफादारी छूट",
+      "nftDiscount": "NFT धारक छूट",
+      "totalSavings": "कुल बचत",
+      "totalToPay": "कुल भुगतान",
+      "recipientGets": "प्राप्तकर्ता को मिलेगा",
+      "showDetails": "विवरण दिखाएं",
+      "rawValues": "कच्चे मान",
+      "networkStatus": "नेटवर्क स्थिति",
+      "normal": "सामान्य",
+      "availability": "उपलब्धता"
+    },
+    "amountSummary": {
+      "title": "राशि",
+      "transferSummary": "ट्रांसफर सारांश",
+      "raw": "कच्चा",
+      "amountToSend": "भेजने की राशि",
+      "transferFee": "ट्रांसफर शुल्क",
+      "totalCost": "कुल लागत",
+      "totalToRecipient": "प्राप्तकर्ता को कुल",
+      "exchangeRate": "विनिमय दर",
+      "networkCongestion": "नेटवर्क भीड़",
+      "medium": "मध्यम"
+    },
+    "providers": {
+      "orangeMoney": "Orange Money",
+      "wave": "Wave",
+      "mtn": "MTN",
+      "moovMoney": "Moov Money",
+      "mobileMoneyProvider": "मोबाइल मनी प्रदाता"
+    },
+    "actions": {
+      "copiedToClipboard": "क्लिपबोर्ड पर कॉपी किया गया",
+      "addressCopied": "पता क्लिपबोर्ड पर कॉपी किया गया",
+      "rateCopied": "दर क्लिपबोर्ड पर कॉपी की गई"
+    }
   }
 }
-
-

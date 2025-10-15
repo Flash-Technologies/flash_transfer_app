@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../providers/tracking_provider.dart';
+import '../../../providers/language_provider.dart';
 
 class TransferSearchWidget extends ConsumerStatefulWidget {
   final Function(String)? onSearch;
@@ -56,6 +57,8 @@ class _TransferSearchWidgetState extends ConsumerState<TransferSearchWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final tr = ref.watch(translationHelperProvider);
+    
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -76,7 +79,7 @@ class _TransferSearchWidgetState extends ConsumerState<TransferSearchWidget> {
           fontWeight: FontWeight.w500,
         ),
         decoration: InputDecoration(
-          hintText: 'Enter tracking number (FTN)',
+          hintText: tr('transaction.search.placeholder'),
           hintStyle: const TextStyle(
             color: Color(0xFF6E757D),
             fontSize: 14,
@@ -96,6 +99,7 @@ class _TransferSearchWidgetState extends ConsumerState<TransferSearchWidget> {
                 )
               : IconButton(
                   icon: const Icon(Icons.clear),
+                  tooltip: tr('transaction.search.clear'),
                   onPressed: () {
                     _searchController.clear();
                   },

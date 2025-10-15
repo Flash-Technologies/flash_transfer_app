@@ -43,10 +43,7 @@
       "address": "Adresse",
       "notProvided": "Non fourni"
     }
-  }
-}
-
-{
+  },
   "progress": {
     "receiverInfo": {
       "label": "Infos du destinataire",
@@ -68,6 +65,24 @@
   "header": {
     "title": "Vérifier les détails",
     "subheading": "Vérifiez le résumé de votre commande avant de valider."
+  },
+  "detailsScreen": {
+    "progressTitle": "Informations du destinataire",
+    "progressSubtitle": "Entrez les informations.",
+    "title": "Vérifier les Détails",
+    "subtitle": "Vérifiez toutes les informations des détails.",
+    "buttons": {
+      "confirm": "Confirmer",
+      "creating": "Création de la Transaction...",
+      "cancel": "Annuler"
+    },
+    "errors": {
+      "missingNetwork": "Veuillez revenir en arrière et sélectionner d'abord un réseau blockchain",
+      "missingCryptoAddress": "Veuillez revenir en arrière et confirmer d'abord votre adresse crypto",
+      "missingExchangeData": "Données du formulaire d'échange manquantes. Veuillez revenir à l'écran principal.",
+      "invalidAmount": "Montant invalide. Veuillez vérifier votre formulaire d'échange.",
+      "transactionFailed": "Échec de la création de la transaction"
+    }
   },
   "buttons": {
     "cancel": "Annuler",
@@ -132,5 +147,81 @@
     "somethingWentWrong": "Une erreur s'est produite",
     "networkError": "Erreur réseau: Impossible d'estimer la transaction",
     "transactionFailed": "La transaction a échoué"
+  },
+  "cryptoDetails": {
+    "senderDetails": {
+      "title": "Détails de l'expéditeur",
+      "sourceOfFunds": "Source des fonds",
+      "purposeOfTransaction": "Objet de la transaction",
+      "coverageArea": "Zone de couverture",
+      "savings": "ÉPARGNE",
+      "education": "ÉDUCATION",
+      "westCentralAfrica": "Afrique de l'Ouest et Centrale"
+    },
+    "mobileProvider": {
+      "title": "Mobile Money ({provider})",
+      "mobileProvider": "Opérateur mobile",
+      "phoneNumber": "Numéro de téléphone",
+      "providerDetails": "Détails du fournisseur",
+      "show": "Afficher",
+      "serviceCode": "Code de service",
+      "apiMethod": "Méthode API",
+      "securePayment": {
+        "title": "Paiement mobile sécurisé",
+        "description": "Votre paiement mobile sera traité en toute sécurité via notre réseau de paiement de confiance"
+      }
+    },
+    "receiverDetails": {
+      "title": "Détails du destinataire",
+      "walletAddress": "Adresse du portefeuille",
+      "blockchainNetwork": "Réseau blockchain",
+      "receiverCountry": "Pays du destinataire",
+      "ethWallet": "Portefeuille ETH",
+      "coteDeIvoire": "Côte d'Ivoire",
+      "ethereum": "ETHEREUM"
+    },
+    "feeBreakdown": {
+      "title": "Répartition des frais",
+      "youSent": "Vous avez envoyé",
+      "transferRate": "Taux de transfert",
+      "live": "EN DIRECT",
+      "rateId": "ID du taux: {id}",
+      "platformCharges": "Frais de plateforme",
+      "networkFee": "Frais de réseau",
+      "loyaltyDiscount": "Remise de fidélité",
+      "nftDiscount": "Remise détenteur NFT",
+      "totalSavings": "Économies totales",
+      "totalToPay": "Total à payer",
+      "recipientGets": "Le destinataire reçoit",
+      "showDetails": "Afficher les détails",
+      "rawValues": "Valeurs brutes",
+      "networkStatus": "État du réseau",
+      "normal": "Normal",
+      "availability": "Disponibilité"
+    },
+    "amountSummary": {
+      "title": "Montant",
+      "transferSummary": "Résumé du transfert",
+      "raw": "Brut",
+      "amountToSend": "Montant à envoyer",
+      "transferFee": "Frais de transfert",
+      "totalCost": "Coût total",
+      "totalToRecipient": "Total au destinataire",
+      "exchangeRate": "Taux de change",
+      "networkCongestion": "Congestion du réseau",
+      "medium": "Moyen"
+    },
+    "providers": {
+      "orangeMoney": "Orange Money",
+      "wave": "Wave",
+      "mtn": "MTN",
+      "moovMoney": "Moov Money",
+      "mobileMoneyProvider": "Fournisseur Mobile Money"
+    },
+    "actions": {
+      "copiedToClipboard": "Copié dans le presse-papiers",
+      "addressCopied": "Adresse copiée dans le presse-papiers",
+      "rateCopied": "Taux copié dans le presse-papiers"
+    }
   }
 }

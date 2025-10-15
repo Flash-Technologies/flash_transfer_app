@@ -1,0 +1,81 @@
+{
+  "screen": {
+    "title": "Minhas Transações",
+    "subtitle": "Visualizar e gerenciar seu histórico de transações",
+    "emptyState": "Ainda não há transações",
+    "emptyDescription": "Seu histórico de transações aparecerá aqui assim que você começar a enviar dinheiro",
+    "pullToRefresh": "Puxe para atualizar",
+    "loading": "Carregando transações...",
+    "back": "Voltar"
+  },
+  "transaction": {
+    "send": "Enviar",
+    "receive": "Receber",
+    "pending": "Pendente",
+    "completed": "Concluído",
+    "failed": "Falhou",
+    "cancelled": "Cancelado",
+    "processing": "Processando",
+    "amount": "Quantia",
+    "date": "Data",
+    "recipient": "Destinatário",
+    "sender": "Remetente",
+    "transactionId": "ID da Transação",
+    "fee": "Taxa",
+    "total": "Total",
+    "reference": "Referência"
+  },
+  "status": {
+    "success": "Sucesso",
+    "failed": "Falhou",
+    "pending": "Pendente",
+    "processing": "Processando",
+    "cancelled": "Cancelado"
+  },
+  "filters": {
+    "all": "Todas",
+    "sent": "Enviadas",
+    "received": "Recebidas",
+    "thisMonth": "Este Mês",
+    "lastMonth": "Mês Passado",
+    "last7Days": "Últimos 7 Dias",
+    "last30Days": "Últimos 30 Dias",
+    "customRange": "Intervalo Personalizado"
+  },
+  "actions": {
+    "viewDetails": "Ver Detalhes",
+    "download": "Baixar Recibo",
+    "share": "Compartilhar",
+    "repeatTransaction": "Repetir Transação",
+    "cancel": "Cancelar Transação",
+    "retry": "Tentar Novamente",
+    "trackTransfer": "Rastrear Transferência"
+  },
+  "currencies": {
+    "usd": "USD",
+    "eur": "EUR",
+    "gbp": "GBP",
+    "cad": "CAD",
+    "btc": "BTC",
+    "eth": "ETH",
+    "usdt": "USDT"
+  },
+  "time": {
+    "today": "Hoje",
+    "yesterday": "Ontem",
+    "thisWeek": "Esta Semana",
+    "lastWeek": "Semana Passada",
+    "older": "Mais Antigo"
+  },
+  "errors": {
+    "loadFailed": "Falha ao carregar transações",
+    "networkError": "Erro de rede ocorreu",
+    "retry": "Tentar Novamente",
+    "noConnection": "Sem conexão com a internet"
+  },
+  "search": {
+    "placeholder": "Digite o número de rastreamento (FTN)",
+    "searching": "Pesquisando...",
+    "clear": "Limpar pesquisa"
+  }
+}

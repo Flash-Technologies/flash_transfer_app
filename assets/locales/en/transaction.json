@@ -72,5 +72,82 @@
       "networkError": "Network error occurred",
       "retry": "Retry",
       "noConnection": "No internet connection"
+    },
+    "search": {
+      "placeholder": "Enter tracking number (FTN)",
+      "searching": "Searching...",
+      "clear": "Clear search"
+    },
+    "individualTransaction": {
+      "header": {
+        "title": "Transaction Details"
+      },
+      "paymentAction": {
+        "title": "Payment Required",
+        "subtitle": "Complete your crypto payment to proceed",
+        "amountToPay": "Amount to Pay",
+        "network": "Network",
+        "trackingNumber": "Tracking Number",
+        "ethereum": "Ethereum",
+        "successMessage": "Payment completed! Transaction: {hash}..."
+      },
+      "statusCard": {
+        "copy": "Copy"
+      },
+      "transactionDetails": {
+        "title": "Transaction Details",
+        "youSending": "You're Sending",
+        "includingFee": "Including fee",
+        "recipientGets": "Recipient Gets",
+        "duration": "Duration",
+        "started": "Started"
+      },
+      "timeline": {
+        "title": "Transaction Timeline",
+        "duration": "Duration: {duration}",
+        "transactionCompleted": "Transaction Completed",
+        "paymentCallbackReceived": "Payment Callback Received",
+        "blockchainConfirmation": "Blockchain Confirmation",
+        "confirmedOn": "Confirmed on {network}",
+        "waitingForConfirmations": "Waiting for confirmations",
+        "paymentProcessing": "Payment Processing",
+        "transactionStarted": "Transaction Started"
+      },
+      "feeBreakdown": {
+        "title": "Fee Breakdown",
+        "baseAmount": "Base Amount",
+        "platformFee": "Platform Fee",
+        "serviceFee": "Service Fee",
+        "loyaltyDiscount": "Loyalty Discount",
+        "nftDiscount": "NFT Discount",
+        "total": "Total"
+      },
+      "transactionInfo": {
+        "title": "Transaction Info",
+        "referenceId": "Reference ID",
+        "type": "Type",
+        "created": "Created",
+        "completed": "Completed",
+        "blockchainTx": "Blockchain TX",
+        "copy": "Copy"
+      },
+      "actionButtons": {
+        "trackAnother": "Track Another Transaction",
+        "backToHome": "Back to Home"
+      },
+      "loading": {
+        "message": "Loading transaction details..."
+      },
+      "clipboard": {
+        "copied": "Copied to clipboard: {text}"
+      },
+      "timeFormat": {
+        "daysAgo": "{days}d ago",
+        "hoursAgo": "{hours}h ago",
+        "minutesAgo": "{minutes}m ago",
+        "justNow": "Just now",
+        "ongoing": "(ongoing)",
+        "lessThanMinute": "< 1m"
+      }
     }
   }

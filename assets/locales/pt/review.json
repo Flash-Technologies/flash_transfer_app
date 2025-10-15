@@ -43,94 +43,185 @@
       "address": "Endereço",
       "notProvided": "Não informado"
     }
-  }
-}
-
-{
+  },
   "progress": {
     "receiverInfo": {
-      "label": "Receiver's info",
-      "description": "Enter the informations"
+      "label": "Informações do destinatário",
+      "description": "Inserir as informações"
     },
     "receiverMethod": {
-      "label": "Receiver's Method",
-      "description": "Enter the informations"
+      "label": "Método do destinatário",
+      "description": "Inserir as informações"
     },
     "reviewDetails": {
-      "label": "Review Details",
-      "description": "Enter the informations"
+      "label": "Revisar detalhes",
+      "description": "Inserir as informações"
     },
     "paymentComplete": {
-      "label": "Payment Complete",
-      "description": "Enter the informations"
+      "label": "Pagamento concluído",
+      "description": "Inserir as informações"
     }
   },
   "header": {
-    "title": "Review Details",
-    "subheading": "Check the summary of your order before validating."
+    "title": "Revisar detalhes",
+    "subheading": "Verifique o resumo do seu pedido antes de validar."
+  },
+  "detailsScreen": {
+    "progressTitle": "Informações do destinatário",
+    "progressSubtitle": "Inserir as informações.",
+    "title": "Revisar Detalhes",
+    "subtitle": "Verifique todas as informações dos detalhes.",
+    "buttons": {
+      "confirm": "Confirmar",
+      "creating": "Criando Transação...",
+      "cancel": "Cancelar"
+    },
+    "errors": {
+      "missingNetwork": "Por favor, volte e selecione primeiro uma rede blockchain",
+      "missingCryptoAddress": "Por favor, volte e confirme primeiro seu endereço crypto",
+      "missingExchangeData": "Dados do formulário de câmbio em falta. Por favor, volte à tela inicial.",
+      "invalidAmount": "Quantidade inválida. Por favor, verifique seu formulário de câmbio.",
+      "transactionFailed": "Falha ao criar a transação"
+    }
   },
   "buttons": {
-    "cancel": "Cancel",
-    "processing": "Processing...",
-    "confirm": "Confirm",
-    "calculating": "Calculating...",
-    "edit": "Edit"
+    "cancel": "Cancelar",
+    "processing": "Processando...",
+    "confirm": "Confirmar",
+    "calculating": "Calculando...",
+    "edit": "Editar"
   },
   "sections": {
     "amount": {
-      "title": "Amount",
-      "editAmount": "Edit Amount"
+      "title": "Valor",
+      "editAmount": "Editar valor"
     },
     "transferSummary": {
-      "title": "Transfer Summary",
-      "updating": "Updating...",
-      "amountToSend": "Amount to send",
-      "transferFee": "Transfer Fee",
-      "feeWaived": "Fee Waived",
-      "totalCost": "Total Cost",
-      "totalToRecipient": "Total to recipient",
-      "exchangeRate": "Exchange Rate",
-      "networkCongestion": "Network Congestion",
-      "congestionLow": "Low",
-      "congestionMedium": "Medium",
-      "congestionHigh": "High",
-      "totalToPay": "Total to pay",
-      "recipientGets": "Recipient Gets",
-      "availability": "Availability",
-      "transactionUnavailable": "Transaction unavailable at this time"
+      "title": "Resumo da transferência",
+      "updating": "Atualizando...",
+      "amountToSend": "Valor a enviar",
+      "transferFee": "Taxa de transferência",
+      "feeWaived": "Taxa dispensada",
+      "totalCost": "Custo total",
+      "totalToRecipient": "Total ao destinatário",
+      "exchangeRate": "Taxa de câmbio",
+      "networkCongestion": "Congestionamento da rede",
+      "congestionLow": "Baixo",
+      "congestionMedium": "Médio",
+      "congestionHigh": "Alto",
+      "totalToPay": "Total a pagar",
+      "recipientGets": "O destinatário recebe",
+      "availability": "Disponibilidade",
+      "transactionUnavailable": "Transação indisponível no momento"
     },
     "senderDetails": {
-      "title": "Sender Details",
+      "title": "Detalhes do remetente",
       "kyc": "KYC",
-      "mobileProvider": "Mobile Provider",
-      "phoneNumber": "Phone Number",
-      "sourceOfFunds": "Source of funds",
-      "purposeOfTransaction": "Purpose of transaction"
+      "mobileProvider": "Operadora móvel",
+      "phoneNumber": "Número de telefone",
+      "sourceOfFunds": "Origem dos fundos",
+      "purposeOfTransaction": "Finalidade da transação"
     },
     "receiverDetails": {
-      "title": "Receiver details",
-      "walletAddress": "Wallet Address",
-      "blockchainNetwork": "Blockchain Network",
-      "mobileNumber": "Mobile Number",
-      "mobileProvider": "Mobile Provider",
-      "receiverCountry": "Receiver Country",
-      "youSent": "You sent",
-      "transferRate": "Transfer rate",
-      "fee": "Fee"
+      "title": "Detalhes do destinatário",
+      "walletAddress": "Endereço da carteira",
+      "blockchainNetwork": "Rede blockchain",
+      "mobileNumber": "Número móvel",
+      "mobileProvider": "Operadora móvel",
+      "receiverCountry": "País do destinatário",
+      "youSent": "Você enviou",
+      "transferRate": "Taxa de transferência",
+      "fee": "Taxa"
     }
   },
   "paymentMethods": {
-    "bankTransfer": "Bank Transfer",
-    "creditCard": "Credit Card",
-    "cash": "Cash",
+    "bankTransfer": "Transferência bancária",
+    "creditCard": "Cartão de crédito",
+    "cash": "Dinheiro",
     "mobileMoney": "Mobile Money",
-    "wallet": "Wallet",
-    "cashPickup": "Cash Pickup",
-    "cryptoWallet": "{{currency}} Wallet"
+    "wallet": "Carteira",
+    "cashPickup": "Retirada em dinheiro",
+    "cryptoWallet": "Carteira {{currency}}"
   },
   "errors": {
-    "somethingWentWrong": "Something went wrong",
-    "networkError": "Network error: Could not estimate transaction",
-    "transactionFailed": "Transaction failed"
+    "somethingWentWrong": "Algo deu errado",
+    "networkError": "Erro de rede: Não foi possível estimar a transação",
+    "transactionFailed": "Transação falhou"
+  },
+  "cryptoDetails": {
+    "senderDetails": {
+      "title": "Detalhes do remetente",
+      "sourceOfFunds": "Origem dos fundos",
+      "purposeOfTransaction": "Finalidade da transação",
+      "coverageArea": "Área de cobertura",
+      "savings": "POUPANÇAS",
+      "education": "EDUCAÇÃO",
+      "westCentralAfrica": "África Ocidental e Central"
+    },
+    "mobileProvider": {
+      "title": "Mobile Money ({provider})",
+      "mobileProvider": "Operadora móvel",
+      "phoneNumber": "Número de telefone",
+      "providerDetails": "Detalhes do fornecedor",
+      "show": "Mostrar",
+      "serviceCode": "Código de serviço",
+      "apiMethod": "Método API",
+      "securePayment": {
+        "title": "Pagamento móvel seguro",
+        "description": "Seu pagamento móvel será processado com segurança através da nossa rede de pagamento confiável"
+      }
+    },
+    "receiverDetails": {
+      "title": "Detalhes do destinatário",
+      "walletAddress": "Endereço da carteira",
+      "blockchainNetwork": "Rede blockchain",
+      "receiverCountry": "País do destinatário",
+      "ethWallet": "Carteira ETH",
+      "coteDeIvoire": "Costa do Marfim",
+      "ethereum": "ETHEREUM"
+    },
+    "feeBreakdown": {
+      "title": "Discriminação de taxas",
+      "youSent": "Você enviou",
+      "transferRate": "Taxa de transferência",
+      "live": "AO VIVO",
+      "rateId": "ID da taxa: {id}",
+      "platformCharges": "Taxas da plataforma",
+      "networkFee": "Taxa de rede",
+      "loyaltyDiscount": "Desconto de fidelidade",
+      "nftDiscount": "Desconto para portadores de NFT",
+      "totalSavings": "Total de economias",
+      "totalToPay": "Total a pagar",
+      "recipientGets": "O destinatário recebe",
+      "showDetails": "Mostrar detalhes",
+      "rawValues": "Valores brutos",
+      "networkStatus": "Status da rede",
+      "normal": "Normal",
+      "availability": "Disponibilidade"
+    },
+    "amountSummary": {
+      "title": "Valor",
+      "transferSummary": "Resumo da transferência",
+      "raw": "Bruto",
+      "amountToSend": "Valor a enviar",
+      "transferFee": "Taxa de transferência",
+      "totalCost": "Custo total",
+      "totalToRecipient": "Total ao destinatário",
+      "exchangeRate": "Taxa de câmbio",
+      "networkCongestion": "Congestionamento da rede",
+      "medium": "Médio"
+    },
+    "providers": {
+      "orangeMoney": "Orange Money",
+      "wave": "Wave",
+      "mtn": "MTN",
+      "moovMoney": "Moov Money",
+      "mobileMoneyProvider": "Provedor de Mobile Money"
+    },
+    "actions": {
+      "copiedToClipboard": "Copiado para a área de transferência",
+      "addressCopied": "Endereço copiado para a área de transferência",
+      "rateCopied": "Taxa copiada para a área de transferência"
+    }
   }
 }

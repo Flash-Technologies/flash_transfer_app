@@ -43,6 +43,100 @@
       "address": "العنوان",
       "notProvided": "غير متوفر"
     }
+  },
+  "detailsScreen": {
+    "progressTitle": "معلومات المستلم",
+    "progressSubtitle": "أدخل المعلومات.",
+    "title": "مراجعة التفاصيل",
+    "subtitle": "تحقق من جميع تفاصيل المعلومات.",
+    "buttons": {
+      "confirm": "تأكيد",
+      "creating": "إنشاء العملية...",
+      "cancel": "إلغاء"
+    },
+    "errors": {
+      "missingNetwork": "يرجى العودة واختيار شبكة البلوكشين أولاً",
+      "missingCryptoAddress": "يرجى العودة وتأكيد عنوان العملة المشفرة أولاً",
+      "missingExchangeData": "بيانات نموذج الصرف مفقودة. يرجى العودة إلى الشاشة الرئيسية.",
+      "invalidAmount": "مبلغ غير صالح. يرجى التحقق من نموذج الصرف الخاص بك.",
+      "transactionFailed": "فشل في إنشاء العملية"
+    }
+  },
+  "cryptoDetails": {
+    "senderDetails": {
+      "title": "تفاصيل المرسل",
+      "sourceOfFunds": "مصدر الأموال",
+      "purposeOfTransaction": "غرض العملية",
+      "coverageArea": "منطقة التغطية",
+      "savings": "مدخرات",
+      "education": "تعليم",
+      "westCentralAfrica": "غرب ووسط أفريقيا"
+    },
+    "mobileProvider": {
+      "title": "الأموال المحمولة ({provider})",
+      "mobileProvider": "مزود الهاتف المحمول",
+      "phoneNumber": "رقم الهاتف",
+      "providerDetails": "تفاصيل المزود",
+      "show": "إظهار",
+      "serviceCode": "رمز الخدمة",
+      "apiMethod": "طريقة API",
+      "securePayment": {
+        "title": "دفع محمول آمن",
+        "description": "سيتم معالجة دفعتك المحمولة بأمان من خلال شبكة الدفع الموثوقة لدينا"
+      }
+    },
+    "receiverDetails": {
+      "title": "تفاصيل المستلم",
+      "walletAddress": "عنوان المحفظة",
+      "blockchainNetwork": "شبكة البلوكشين",
+      "receiverCountry": "بلد المستلم",
+      "ethWallet": "محفظة ETH",
+      "coteDeIvoire": "ساحل العاج",
+      "ethereum": "إيثيريوم"
+    },
+    "feeBreakdown": {
+      "title": "تفصيل الرسوم",
+      "youSent": "لقد أرسلت",
+      "transferRate": "سعر التحويل",
+      "live": "مباشر",
+      "rateId": "معرف السعر: {id}",
+      "platformCharges": "رسوم المنصة",
+      "networkFee": "رسوم الشبكة",
+      "loyaltyDiscount": "خصم الولاء",
+      "nftDiscount": "خصم حامل NFT",
+      "totalSavings": "إجمالي التوفير",
+      "totalToPay": "إجمالي المبلغ للدفع",
+      "recipientGets": "المستلم يحصل على",
+      "showDetails": "إظهار التفاصيل",
+      "rawValues": "القيم الأولية",
+      "networkStatus": "حالة الشبكة",
+      "normal": "عادي",
+      "availability": "التوافر"
+    },
+    "amountSummary": {
+      "title": "المبلغ",
+      "transferSummary": "ملخص التحويل",
+      "raw": "أولي",
+      "amountToSend": "المبلغ للإرسال",
+      "transferFee": "رسوم التحويل",
+      "totalCost": "التكلفة الإجمالية",
+      "totalToRecipient": "الإجمالي للمستلم",
+      "exchangeRate": "سعر الصرف",
+      "networkCongestion": "ازدحام الشبكة",
+      "medium": "متوسط"
+    },
+    "providers": {
+      "orangeMoney": "Orange Money",
+      "wave": "Wave",
+      "mtn": "MTN",
+      "moovMoney": "Moov Money",
+      "mobileMoneyProvider": "مزود الأموال المحمولة"
+    },
+    "actions": {
+      "copiedToClipboard": "تم النسخ إلى الحافظة",
+      "addressCopied": "تم نسخ العنوان إلى الحافظة",
+      "rateCopied": "تم نسخ السعر إلى الحافظة"
+    }
   }
 }
 

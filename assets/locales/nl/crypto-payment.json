@@ -1,4 +1,15 @@
 {
+  "screen": {
+    "title": "Crypto Betaling Verzenden",
+    "subtitle": "Crypto naar Cash Transfer", 
+    "description": "Selecteer je voorkeursblockchain-netwerk om door te gaan met crypto naar mobiel geld transfer.",
+    "networkSelection": {
+      "title": "Blockchain Netwerk Selecteren",
+      "availableNetworks": "Beschikbare netwerken voor {currency}",
+      "noNetworksAvailable": "Geen netwerken beschikbaar voor geselecteerde cryptocurrency",
+      "continue": "Doorgaan"
+    }
+  },
   "loading": {
     "transactionDetails": "Transactiegegevens worden geladen..."
   },

@@ -55,6 +55,88 @@
     "errorSelectProvider": "Sélectionnez d'abord Mobile Money",
     "missingData": "Données de transaction manquantes. Revenez en arrière et complétez le formulaire.",
     "estimateFailed": "Impossible d'obtenir l'estimation. Veuillez réessayer."
+  },
+  "mobileMoneyForm": {
+    "title": "Informations Téléphoniques",
+    "selectedProvider": "Fournisseur Sélectionné: {provider}",
+    "customerInformation": "Informations Client",
+    "fields": {
+      "firstName": "Prénom *",
+      "firstNameHint": "Entrez votre prénom",
+      "lastName": "Nom *",
+      "lastNameHint": "Entrez votre nom",
+      "emailAddress": "Adresse E-mail *",
+      "emailHint": "Entrez votre adresse e-mail",
+      "country": "Pays",
+      "mobileNumber": "Numéro Mobile *",
+      "mobileNumberHint": "Entrez le numéro mobile CI (ex. 07123456)"
+    },
+    "supportNote": "ne prend actuellement en charge que la Côte d'Ivoire",
+    "buttons": {
+      "cancel": "Annuler",
+      "submit": "Soumettre",
+      "submitting": "Soumission en cours..."
+    }
+  },
+  "completionScreen": {
+    "status": {
+      "pending": "Paiement en attente",
+      "complete": "Paiement terminé",
+      "processing": "Traitement du paiement",
+      "failed": "Paiement échoué",
+      "description": "Votre transaction est en cours de traitement"
+    },
+    "tracking": {
+      "label": "Numéro de suivi (FTN): {trackingNumber}",
+      "copied": "Numéro de suivi copié dans le presse-papiers!"
+    },
+    "transactionDetails": {
+      "youSent": "Vous avez envoyé",
+      "transferRate": "Taux de transfert",
+      "fee": "Frais",
+      "transferTime": "Temps de transfert",
+      "recipientGets": "Le destinataire reçoit",
+      "totalToPay": "Total à payer",
+      "status": "Statut",
+      "createdOn": "Créé le",
+      "baseFee": "Frais de base",
+      "nftDiscount": "Remise NFT",
+      "loyaltyDiscount": "Remise de fidélité",
+      "trackingNumber": "Numéro de suivi",
+      "transactionType": "Type de transaction"
+    },
+    "paymentInstructions": {
+      "title": "Instructions de paiement",
+      "subtitle": "Envoyez exactement {amount} {currency} à l'adresse fournie pour continuer.",
+      "recipientAddress": "Adresse du destinataire",
+      "amount": "Montant",
+      "network": "Réseau",
+      "currencyType": "Type de devise",
+      "copiedToClipboard": "Copié dans le presse-papiers!"
+    },
+    "notifications": {
+      "paymentSent": "Paiement envoyé!",
+      "paymentSentDesc": "votre paiement #{id} a été envoyé",
+      "paymentFailed": "Paiement échoué!",
+      "paymentFailedDesc": "votre paiement #{id} a échoué",
+      "inviteFriend": "Inviter un ami",
+      "inviteFriendDesc": "Inscription confirmée via le lien d'affiliation"
+    },
+    "buttons": {
+      "trackOrder": "Suivre la commande",
+      "backToHome": "Retour à l'accueil",
+      "connectWallet": "Connecter le portefeuille et payer"
+    },
+    "errors": {
+      "transactionDataNotAvailable": "Données de transaction non disponibles",
+      "walletConnectionFailed": "Échec de la connexion du portefeuille",
+      "transactionFailed": "Transaction échouée",
+      "error": "Erreur: {message}"
+    },
+    "success": {
+      "transactionSent": "Transaction envoyée! Hash: {hash}...",
+      "transactionSuccessful": "Transaction réussie! Hash: {hash}..."
+    }
   }
 }
 

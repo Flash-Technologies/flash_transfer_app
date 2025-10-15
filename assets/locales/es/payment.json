@@ -55,6 +55,88 @@
     "errorSelectProvider": "Primero seleccione el Mobile Money",
     "missingData": "Faltan datos de transacción. Vuelva y complete el formulario.",
     "estimateFailed": "No se pudo obtener la estimación. Inténtalo de nuevo."
+  },
+  "mobileMoneyForm": {
+    "title": "Información Telefónica",
+    "selectedProvider": "Proveedor Seleccionado: {provider}",
+    "customerInformation": "Información del Cliente",
+    "fields": {
+      "firstName": "Nombre *",
+      "firstNameHint": "Ingrese su nombre",
+      "lastName": "Apellido *",
+      "lastNameHint": "Ingrese su apellido",
+      "emailAddress": "Dirección de Correo *",
+      "emailHint": "Ingrese su dirección de correo",
+      "country": "País",
+      "mobileNumber": "Número Móvil *",
+      "mobileNumberHint": "Ingrese número móvil CI (ej. 07123456)"
+    },
+    "supportNote": "actualmente solo apoya Costa de Marfil",
+    "buttons": {
+      "cancel": "Cancelar",
+      "submit": "Enviar",
+      "submitting": "Enviando..."
+    }
+  },
+  "completionScreen": {
+    "status": {
+      "pending": "Pago pendiente",
+      "complete": "Pago completado",
+      "processing": "Procesando pago",
+      "failed": "Pago fallido",
+      "description": "Su transacción está siendo procesada"
+    },
+    "tracking": {
+      "label": "Número de seguimiento (FTN): {trackingNumber}",
+      "copied": "¡Número de seguimiento copiado al portapapeles!"
+    },
+    "transactionDetails": {
+      "youSent": "Enviaste",
+      "transferRate": "Tasa de transferencia",
+      "fee": "Comisión",
+      "transferTime": "Tiempo de transferencia",
+      "recipientGets": "El destinatario recibe",
+      "totalToPay": "Total a pagar",
+      "status": "Estado",
+      "createdOn": "Creado en",
+      "baseFee": "Comisión base",
+      "nftDiscount": "Descuento NFT",
+      "loyaltyDiscount": "Descuento de lealtad",
+      "trackingNumber": "Número de seguimiento",
+      "transactionType": "Tipo de transacción"
+    },
+    "paymentInstructions": {
+      "title": "Instrucciones de pago",
+      "subtitle": "Envía exactamente {amount} {currency} a la dirección proporcionada para continuar.",
+      "recipientAddress": "Dirección del destinatario",
+      "amount": "Cantidad",
+      "network": "Red",
+      "currencyType": "Tipo de moneda",
+      "copiedToClipboard": "¡Copiado al portapapeles!"
+    },
+    "notifications": {
+      "paymentSent": "¡Pago enviado!",
+      "paymentSentDesc": "su pago #{id} ha sido enviado",
+      "paymentFailed": "¡Pago fallido!",
+      "paymentFailedDesc": "su pago #{id} ha fallado",
+      "inviteFriend": "Invitar amigo",
+      "inviteFriendDesc": "Registro confirmado a través del enlace de afiliado"
+    },
+    "buttons": {
+      "trackOrder": "Rastrear pedido",
+      "backToHome": "Volver al inicio",
+      "connectWallet": "Conectar cartera y pagar"
+    },
+    "errors": {
+      "transactionDataNotAvailable": "Datos de transacción no disponibles",
+      "walletConnectionFailed": "Falló la conexión de la cartera",
+      "transactionFailed": "Transacción falló",
+      "error": "Error: {message}"
+    },
+    "success": {
+      "transactionSent": "¡Transacción enviada! Hash: {hash}...",
+      "transactionSuccessful": "¡Transacción exitosa! Hash: {hash}..."
+    }
   }
 }
 

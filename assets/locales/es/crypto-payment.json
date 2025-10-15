@@ -1,4 +1,15 @@
 {
+  "screen": {
+    "title": "Enviar Pago de Criptomoneda",
+    "subtitle": "Transferencia de Cripto a Efectivo", 
+    "description": "Selecciona tu red blockchain preferida para continuar con la transferencia de cripto a dinero móvil.",
+    "networkSelection": {
+      "title": "Seleccionar Red Blockchain",
+      "availableNetworks": "Redes disponibles para {currency}",
+      "noNetworksAvailable": "No hay redes disponibles para la criptomoneda seleccionada",
+      "continue": "Continuar"
+    }
+  },
   "loading": {
     "transactionDetails": "Cargando detalles de la transacción..."
   },

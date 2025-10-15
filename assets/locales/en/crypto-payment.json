@@ -1,4 +1,15 @@
 {
+    "screen": {
+      "title": "Send Crypto Payment",
+      "subtitle": "Crypto to Cash Transfer",
+      "description": "Select your preferred blockchain network to continue with crypto to mobile money transfer.",
+      "networkSelection": {
+        "title": "Select Blockchain Network",
+        "availableNetworks": "Available networks for {currency}",
+        "noNetworksAvailable": "No networks available for selected cryptocurrency",
+        "continue": "Continue"
+      }
+    },
     "loading": {
       "transactionDetails": "Loading transaction details..."
     },

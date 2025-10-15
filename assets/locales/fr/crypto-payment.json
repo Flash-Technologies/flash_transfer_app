@@ -1,4 +1,15 @@
 {
+  "screen": {
+    "title": "Envoyer Paiement Crypto",
+    "subtitle": "Transfert Crypto vers Espèces", 
+    "description": "Sélectionnez votre réseau blockchain préféré pour continuer avec le transfert crypto vers mobile money.",
+    "networkSelection": {
+      "title": "Sélectionner Réseau Blockchain",
+      "availableNetworks": "Réseaux disponibles pour {currency}",
+      "noNetworksAvailable": "Aucun réseau disponible pour la cryptomonnaie sélectionnée",
+      "continue": "Continuer"
+    }
+  },
     "loading": {
       "transactionDetails": "Chargement des détails de la transaction..."
     },

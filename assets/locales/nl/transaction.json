@@ -1,0 +1,81 @@
+{
+  "screen": {
+    "title": "Mijn Transacties",
+    "subtitle": "Bekijk en beheer uw transactiegeschiedenis",
+    "emptyState": "Nog geen transacties",
+    "emptyDescription": "Uw transactiegeschiedenis verschijnt hier zodra u begint met geld versturen",
+    "pullToRefresh": "Trek om te vernieuwen",
+    "loading": "Transacties laden...",
+    "back": "Terug"
+  },
+  "transaction": {
+    "send": "Versturen",
+    "receive": "Ontvangen",
+    "pending": "In behandeling",
+    "completed": "Voltooid",
+    "failed": "Mislukt",
+    "cancelled": "Geannuleerd",
+    "processing": "Verwerken",
+    "amount": "Bedrag",
+    "date": "Datum",
+    "recipient": "Ontvanger",
+    "sender": "Verzender",
+    "transactionId": "Transactie ID",
+    "fee": "Kosten",
+    "total": "Totaal",
+    "reference": "Referentie"
+  },
+  "status": {
+    "success": "Succes",
+    "failed": "Mislukt",
+    "pending": "In behandeling",
+    "processing": "Verwerken",
+    "cancelled": "Geannuleerd"
+  },
+  "filters": {
+    "all": "Alle",
+    "sent": "Verzonden",
+    "received": "Ontvangen",
+    "thisMonth": "Deze Maand",
+    "lastMonth": "Vorige Maand",
+    "last7Days": "Laatste 7 Dagen",
+    "last30Days": "Laatste 30 Dagen",
+    "customRange": "Aangepast Bereik"
+  },
+  "actions": {
+    "viewDetails": "Details Bekijken",
+    "download": "Ontvangstbewijs Downloaden",
+    "share": "Delen",
+    "repeatTransaction": "Transactie Herhalen",
+    "cancel": "Transactie Annuleren",
+    "retry": "Opnieuw Proberen",
+    "trackTransfer": "Overdracht Volgen"
+  },
+  "currencies": {
+    "usd": "USD",
+    "eur": "EUR",
+    "gbp": "GBP",
+    "cad": "CAD",
+    "btc": "BTC",
+    "eth": "ETH",
+    "usdt": "USDT"
+  },
+  "time": {
+    "today": "Vandaag",
+    "yesterday": "Gisteren",
+    "thisWeek": "Deze Week",
+    "lastWeek": "Vorige Week",
+    "older": "Ouder"
+  },
+  "errors": {
+    "loadFailed": "Laden van transacties mislukt",
+    "networkError": "Netwerkfout opgetreden",
+    "retry": "Opnieuw Proberen",
+    "noConnection": "Geen internetverbinding"
+  },
+  "search": {
+    "placeholder": "Voer trackingnummer in (FTN)",
+    "searching": "Zoeken...",
+    "clear": "Zoekopdracht wissen"
+  }
+}

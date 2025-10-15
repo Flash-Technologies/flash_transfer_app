@@ -66,6 +66,24 @@
     "title": "Gegevens controleren",
     "subheading": "Controleer de samenvatting van uw bestelling voordat u bevestigt."
   },
+  "detailsScreen": {
+    "progressTitle": "Informatie ontvanger",
+    "progressSubtitle": "Voer de informatie in.",
+    "title": "Gegevens Controleren",
+    "subtitle": "Controleer alle detailinformatie.",
+    "buttons": {
+      "confirm": "Bevestigen",
+      "creating": "Transactie Aanmaken...",
+      "cancel": "Annuleren"
+    },
+    "errors": {
+      "missingNetwork": "Ga terug en selecteer eerst een blockchain-netwerk",
+      "missingCryptoAddress": "Ga terug en bevestig eerst uw crypto-adres",
+      "missingExchangeData": "Wisselformuliergegevens ontbreken. Ga terug naar het startscherm.",
+      "invalidAmount": "Ongeldig bedrag. Controleer uw wisselformulier.",
+      "transactionFailed": "Transactie aanmaken mislukt"
+    }
+  },
   "buttons": {
     "cancel": "Annuleren",
     "processing": "Bezig...",
@@ -129,5 +147,81 @@
     "somethingWentWrong": "Er is iets misgegaan",
     "networkError": "Netwerkfout: Kon transactie niet schatten",
     "transactionFailed": "Transactie mislukt"
+  },
+  "cryptoDetails": {
+    "senderDetails": {
+      "title": "Details afzender",
+      "sourceOfFunds": "Herkomst van de middelen",
+      "purposeOfTransaction": "Doel van de transactie",
+      "coverageArea": "Dekkingsgebied",
+      "savings": "BESPARINGEN",
+      "education": "ONDERWIJS",
+      "westCentralAfrica": "West- en Centraal-Afrika"
+    },
+    "mobileProvider": {
+      "title": "Mobiel Geld ({provider})",
+      "mobileProvider": "Mobiele aanbieder",
+      "phoneNumber": "Telefoonnummer",
+      "providerDetails": "Aanbiederdetails",
+      "show": "Tonen",
+      "serviceCode": "Servicecode",
+      "apiMethod": "API-methode",
+      "securePayment": {
+        "title": "Veilige mobiele betaling",
+        "description": "Uw mobiele geldbetaling wordt veilig verwerkt via ons vertrouwde betalingsnetwerk"
+      }
+    },
+    "receiverDetails": {
+      "title": "Details ontvanger",
+      "walletAddress": "Wallet-adres",
+      "blockchainNetwork": "Blockchain-netwerk",
+      "receiverCountry": "Land van ontvanger",
+      "ethWallet": "ETH-wallet",
+      "coteDeIvoire": "Ivoorkust",
+      "ethereum": "ETHEREUM"
+    },
+    "feeBreakdown": {
+      "title": "Uitsplitsing kosten",
+      "youSent": "U heeft verzonden",
+      "transferRate": "Overdrachtskoers",
+      "live": "LIVE",
+      "rateId": "Koers ID: {id}",
+      "platformCharges": "Platformkosten",
+      "networkFee": "Netwerkkosten",
+      "loyaltyDiscount": "Loyaliteitskorting",
+      "nftDiscount": "NFT-houder korting",
+      "totalSavings": "Totale besparingen",
+      "totalToPay": "Totaal te betalen",
+      "recipientGets": "Ontvanger ontvangt",
+      "showDetails": "Details tonen",
+      "rawValues": "Ruwe waarden",
+      "networkStatus": "Netwerkstatus",
+      "normal": "Normaal",
+      "availability": "Beschikbaarheid"
+    },
+    "amountSummary": {
+      "title": "Bedrag",
+      "transferSummary": "Overzicht overdracht",
+      "raw": "Ruw",
+      "amountToSend": "Te verzenden bedrag",
+      "transferFee": "Overdrachtskosten",
+      "totalCost": "Totale kosten",
+      "totalToRecipient": "Totaal naar ontvanger",
+      "exchangeRate": "Wisselkoers",
+      "networkCongestion": "Netwerkcongestie",
+      "medium": "Gemiddeld"
+    },
+    "providers": {
+      "orangeMoney": "Orange Money",
+      "wave": "Wave",
+      "mtn": "MTN",
+      "moovMoney": "Moov Money",
+      "mobileMoneyProvider": "Mobiel Geld Aanbieder"
+    },
+    "actions": {
+      "copiedToClipboard": "Gekopieerd naar klembord",
+      "addressCopied": "Adres gekopieerd naar klembord",
+      "rateCopied": "Koers gekopieerd naar klembord"
+    }
   }
 }

@@ -1,0 +1,81 @@
+{
+  "screen": {
+    "title": "Meine Transaktionen",
+    "subtitle": "Anzeigen und Verwalten Ihres Transaktionsverlaufs",
+    "emptyState": "Noch keine Transaktionen",
+    "emptyDescription": "Ihr Transaktionsverlauf wird hier angezeigt, sobald Sie anfangen, Geld zu senden",
+    "pullToRefresh": "Zum Aktualisieren ziehen",
+    "loading": "Transaktionen werden geladen...",
+    "back": "Zurück"
+  },
+  "transaction": {
+    "send": "Senden",
+    "receive": "Empfangen",
+    "pending": "Ausstehend",
+    "completed": "Abgeschlossen",
+    "failed": "Fehlgeschlagen",
+    "cancelled": "Storniert",
+    "processing": "Verarbeitung",
+    "amount": "Betrag",
+    "date": "Datum",
+    "recipient": "Empfänger",
+    "sender": "Absender",
+    "transactionId": "Transaktions-ID",
+    "fee": "Gebühr",
+    "total": "Gesamt",
+    "reference": "Referenz"
+  },
+  "status": {
+    "success": "Erfolgreich",
+    "failed": "Fehlgeschlagen",
+    "pending": "Ausstehend",
+    "processing": "Verarbeitung",
+    "cancelled": "Storniert"
+  },
+  "filters": {
+    "all": "Alle",
+    "sent": "Gesendet",
+    "received": "Empfangen",
+    "thisMonth": "Dieser Monat",
+    "lastMonth": "Letzter Monat",
+    "last7Days": "Letzte 7 Tage",
+    "last30Days": "Letzte 30 Tage",
+    "customRange": "Benutzerdefinierter Bereich"
+  },
+  "actions": {
+    "viewDetails": "Details anzeigen",
+    "download": "Beleg herunterladen",
+    "share": "Teilen",
+    "repeatTransaction": "Transaktion wiederholen",
+    "cancel": "Transaktion stornieren",
+    "retry": "Wiederholen",
+    "trackTransfer": "Überweisung verfolgen"
+  },
+  "currencies": {
+    "usd": "USD",
+    "eur": "EUR",
+    "gbp": "GBP",
+    "cad": "CAD",
+    "btc": "BTC",
+    "eth": "ETH",
+    "usdt": "USDT"
+  },
+  "time": {
+    "today": "Heute",
+    "yesterday": "Gestern",
+    "thisWeek": "Diese Woche",
+    "lastWeek": "Letzte Woche",
+    "older": "Älter"
+  },
+  "errors": {
+    "loadFailed": "Transaktionen konnten nicht geladen werden",
+    "networkError": "Netzwerkfehler aufgetreten",
+    "retry": "Wiederholen",
+    "noConnection": "Keine Internetverbindung"
+  },
+  "search": {
+    "placeholder": "Tracking-Nummer eingeben (FTN)",
+    "searching": "Suche läuft...",
+    "clear": "Suche löschen"
+  }
+}

@@ -43,10 +43,7 @@
       "address": "Dirección",
       "notProvided": "No proporcionado"
     }
-  }
-}
-
-{
+  },
   "progress": {
     "receiverInfo": {
       "label": "Información del destinatario",
@@ -69,11 +66,29 @@
     "title": "Detalles de la reseña",
     "subheading": "Consulta el resumen de tu pedido antes de validarlo."
   },
+  "detailsScreen": {
+    "progressTitle": "Información del receptor",
+    "progressSubtitle": "Introduzca la información.",
+    "title": "Revisar Detalles",
+    "subtitle": "Verifique toda la información de los detalles.",
+    "buttons": {
+      "confirm": "Confirmar",
+      "creating": "Creando Transacción...",
+      "cancel": "Cancelar"
+    },
+    "errors": {
+      "missingNetwork": "Por favor regrese y seleccione primero una red blockchain",
+      "missingCryptoAddress": "Por favor regrese y confirme primero su dirección crypto",
+      "missingExchangeData": "Faltan datos del formulario de intercambio. Por favor regrese a la pantalla principal.",
+      "invalidAmount": "Cantidad inválida. Por favor verifique su formulario de intercambio.",
+      "transactionFailed": "Error al crear la transacción"
+    }
+  },
   "buttons": {
     "cancel": "Cancelar",
     "processing": "Procesando...",
     "confirm": "Confirmar",
-    "calculating": "Calculating...",
+    "calculating": "Calculando...",
     "edit": "Editar"
   },
   "sections": {
@@ -88,7 +103,7 @@
       "transferFee": "Tarifa de transferencia",
       "feeWaived": "Cargo por Renuncia",
       "totalCost": "Comercio total",
-      "totalToRecipient": "Total to Recipient",
+      "totalToRecipient": "Total al Destinatario",
       "exchangeRate": "Tasa de cambio",
       "networkCongestion": "congestión de red",
       "congestionLow": "Baja",
@@ -110,7 +125,7 @@
     "receiverDetails": {
       "title": "Detalles del destinatario",
       "walletAddress": "Dirección de la Billetera",
-      "blockchainNetwork": "Red de cadena de bloques .............................. .. .......................................................................................................",
+      "blockchainNetwork": "Red de cadena de bloques",
       "mobileNumber": "Número de teléfono móvil",
       "mobileProvider": "Proveedor de telefonía móvil",
       "receiverCountry": "País receptor",
@@ -132,5 +147,81 @@
     "somethingWentWrong": "Se ha producido un error.",
     "networkError": "Error de red: no se ha podido estimar la transacción",
     "transactionFailed": "Transacción fallida"
+  },
+  "cryptoDetails": {
+    "senderDetails": {
+      "title": "Detalles del remitente",
+      "sourceOfFunds": "Origen de los fondos",
+      "purposeOfTransaction": "Propósito de la transacción",
+      "coverageArea": "Área de cobertura",
+      "savings": "AHORROS",
+      "education": "EDUCACIÓN",
+      "westCentralAfrica": "África Occidental y Central"
+    },
+    "mobileProvider": {
+      "title": "Dinero Móvil ({provider})",
+      "mobileProvider": "Proveedor móvil",
+      "phoneNumber": "Número de teléfono",
+      "providerDetails": "Detalles del proveedor",
+      "show": "Mostrar",
+      "serviceCode": "Código de servicio",
+      "apiMethod": "Método API",
+      "securePayment": {
+        "title": "Pago móvil seguro",
+        "description": "Su pago de dinero móvil será procesado de forma segura a través de nuestra red de pago confiable"
+      }
+    },
+    "receiverDetails": {
+      "title": "Detalles del destinatario",
+      "walletAddress": "Dirección de la billetera",
+      "blockchainNetwork": "Red blockchain",
+      "receiverCountry": "País del destinatario",
+      "ethWallet": "Billetera ETH",
+      "coteDeIvoire": "Costa de Marfil",
+      "ethereum": "ETHEREUM"
+    },
+    "feeBreakdown": {
+      "title": "Desglose de tarifas",
+      "youSent": "Usted envió",
+      "transferRate": "Tasa de transferencia",
+      "live": "EN VIVO",
+      "rateId": "ID de tasa: {id}",
+      "platformCharges": "Cargos de la plataforma",
+      "networkFee": "Tarifa de red",
+      "loyaltyDiscount": "Descuento por lealtad",
+      "nftDiscount": "Descuento para poseedores de NFT",
+      "totalSavings": "Ahorros totales",
+      "totalToPay": "Total a pagar",
+      "recipientGets": "El destinatario recibe",
+      "showDetails": "Mostrar detalles",
+      "rawValues": "Valores brutos",
+      "networkStatus": "Estado de la red",
+      "normal": "Normal",
+      "availability": "Disponibilidad"
+    },
+    "amountSummary": {
+      "title": "Cantidad",
+      "transferSummary": "Resumen de transferencia",
+      "raw": "Bruto",
+      "amountToSend": "Cantidad a enviar",
+      "transferFee": "Tarifa de transferencia",
+      "totalCost": "Costo total",
+      "totalToRecipient": "Total al destinatario",
+      "exchangeRate": "Tipo de cambio",
+      "networkCongestion": "Congestión de red",
+      "medium": "Medio"
+    },
+    "providers": {
+      "orangeMoney": "Orange Money",
+      "wave": "Wave",
+      "mtn": "MTN",
+      "moovMoney": "Moov Money",
+      "mobileMoneyProvider": "Proveedor de dinero móvil"
+    },
+    "actions": {
+      "copiedToClipboard": "Copiado al portapapeles",
+      "addressCopied": "Dirección copiada al portapapeles",
+      "rateCopied": "Tasa copiada al portapapeles"
+    }
   }
 }

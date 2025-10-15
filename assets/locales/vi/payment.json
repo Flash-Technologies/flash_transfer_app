@@ -55,6 +55,88 @@
     "errorSelectProvider": "Vui lòng chọn Mobile Money trước",
     "missingData": "Thiếu dữ liệu giao dịch. Quay lại và hoàn tất biểu mẫu.",
     "estimateFailed": "Không thể lấy ước tính. Vui lòng thử lại."
+  },
+  "mobileMoneyForm": {
+    "title": "Thông Tin Điện Thoại",
+    "selectedProvider": "Nhà Cung Cấp Đã Chọn: {provider}",
+    "customerInformation": "Thông Tin Khách Hàng",
+    "fields": {
+      "firstName": "Tên *",
+      "firstNameHint": "Nhập tên của bạn",
+      "lastName": "Họ *",
+      "lastNameHint": "Nhập họ của bạn",
+      "emailAddress": "Địa Chỉ Email *",
+      "emailHint": "Nhập địa chỉ email của bạn",
+      "country": "Quốc Gia",
+      "mobileNumber": "Số Điện Thoại Di Động *",
+      "mobileNumberHint": "Nhập số điện thoại di động CI (vd. 07123456)"
+    },
+    "supportNote": "hiện tại chỉ hỗ trợ Bờ Biển Ngà",
+    "buttons": {
+      "cancel": "Hủy",
+      "submit": "Gửi",
+      "submitting": "Đang gửi..."
+    }
+  },
+  "completionScreen": {
+    "status": {
+      "pending": "Thanh toán đang chờ",
+      "complete": "Thanh toán hoàn tất",
+      "processing": "Đang xử lý thanh toán",
+      "failed": "Thanh toán thất bại",
+      "description": "Giao dịch của bạn đang được xử lý"
+    },
+    "tracking": {
+      "label": "Số theo dõi (FTN): {trackingNumber}",
+      "copied": "Số theo dõi đã được sao chép vào clipboard!"
+    },
+    "transactionDetails": {
+      "youSent": "Bạn đã gửi",
+      "transferRate": "Tỷ lệ chuyển đổi",
+      "fee": "Phí",
+      "transferTime": "Thời gian chuyển",
+      "recipientGets": "Người nhận được",
+      "totalToPay": "Tổng thanh toán",
+      "status": "Trạng thái",
+      "createdOn": "Được tạo vào",
+      "baseFee": "Phí cơ bản",
+      "nftDiscount": "Giảm giá NFT",
+      "loyaltyDiscount": "Giảm giá thành viên",
+      "trackingNumber": "Số theo dõi",
+      "transactionType": "Loại giao dịch"
+    },
+    "paymentInstructions": {
+      "title": "Hướng dẫn thanh toán",
+      "subtitle": "Gửi chính xác {amount} {currency} đến địa chỉ được cung cấp để tiếp tục.",
+      "recipientAddress": "Địa chỉ người nhận",
+      "amount": "Số tiền",
+      "network": "Mạng",
+      "currencyType": "Loại tiền tệ",
+      "copiedToClipboard": "Đã sao chép vào clipboard!"
+    },
+    "notifications": {
+      "paymentSent": "Thanh toán đã gửi!",
+      "paymentSentDesc": "thanh toán #{id} của bạn đã được gửi",
+      "paymentFailed": "Thanh toán thất bại!",
+      "paymentFailedDesc": "thanh toán #{id} của bạn đã thất bại",
+      "inviteFriend": "Mời bạn bè",
+      "inviteFriendDesc": "Đăng ký được xác nhận qua liên kết giới thiệu"
+    },
+    "buttons": {
+      "trackOrder": "Theo dõi đơn hàng",
+      "backToHome": "Về trang chủ",
+      "connectWallet": "Kết nối ví và thanh toán"
+    },
+    "errors": {
+      "transactionDataNotAvailable": "Dữ liệu giao dịch không có sẵn",
+      "walletConnectionFailed": "Kết nối ví thất bại",
+      "transactionFailed": "Giao dịch thất bại",
+      "error": "Lỗi: {message}"
+    },
+    "success": {
+      "transactionSent": "Giao dịch đã gửi! Hash: {hash}...",
+      "transactionSuccessful": "Giao dịch thành công! Hash: {hash}..."
+    }
   }
 }
 

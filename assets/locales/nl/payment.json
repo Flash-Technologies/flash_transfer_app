@@ -55,6 +55,88 @@
     "errorSelectProvider": "Selecteer eerst Mobile Money",
     "missingData": "Transactiegegevens ontbreken. Ga terug en vul het formulier in.",
     "estimateFailed": "Kon de schatting niet ophalen. Probeer het opnieuw."
+  },
+  "mobileMoneyForm": {
+    "title": "Telefoon Informatie",
+    "selectedProvider": "Geselecteerde Provider: {provider}",
+    "customerInformation": "Klantinformatie",
+    "fields": {
+      "firstName": "Voornaam *",
+      "firstNameHint": "Voer uw voornaam in",
+      "lastName": "Achternaam *",
+      "lastNameHint": "Voer uw achternaam in",
+      "emailAddress": "E-mailadres *",
+      "emailHint": "Voer uw e-mailadres in",
+      "country": "Land",
+      "mobileNumber": "Mobiel Nummer *",
+      "mobileNumberHint": "Voer CI mobiel nummer in (bijv. 07123456)"
+    },
+    "supportNote": "ondersteunt momenteel alleen Ivoorkust",
+    "buttons": {
+      "cancel": "Annuleren",
+      "submit": "Indienen",
+      "submitting": "Indienen..."
+    }
+  },
+  "completionScreen": {
+    "status": {
+      "pending": "Betaling in afwachting",
+      "complete": "Betaling voltooid",
+      "processing": "Betaling verwerken",
+      "failed": "Betaling mislukt",
+      "description": "Uw transactie wordt verwerkt"
+    },
+    "tracking": {
+      "label": "Volgnummer (FTN): {trackingNumber}",
+      "copied": "Volgnummer gekopieerd naar klembord!"
+    },
+    "transactionDetails": {
+      "youSent": "U heeft verzonden",
+      "transferRate": "Overdrachtstarieven",
+      "fee": "Vergoeding",
+      "transferTime": "Overdrachtstijd",
+      "recipientGets": "Ontvanger krijgt",
+      "totalToPay": "Totaal te betalen",
+      "status": "Status",
+      "createdOn": "Gemaakt op",
+      "baseFee": "Basisvergoeding",
+      "nftDiscount": "NFT-korting",
+      "loyaltyDiscount": "Loyaliteitskorting",
+      "trackingNumber": "Volgnummer",
+      "transactionType": "Transactietype"
+    },
+    "paymentInstructions": {
+      "title": "Betalingsinstructies",
+      "subtitle": "Stuur precies {amount} {currency} naar het opgegeven adres om door te gaan.",
+      "recipientAddress": "Ontvangstadres",
+      "amount": "Bedrag",
+      "network": "Netwerk",
+      "currencyType": "Valuta type",
+      "copiedToClipboard": "Gekopieerd naar klembord!"
+    },
+    "notifications": {
+      "paymentSent": "Betaling verzonden!",
+      "paymentSentDesc": "uw betaling #{id} is verzonden",
+      "paymentFailed": "Betaling mislukt!",
+      "paymentFailedDesc": "uw betaling #{id} is mislukt",
+      "inviteFriend": "Vriend uitnodigen",
+      "inviteFriendDesc": "Registratie bevestigd via affiliate link"
+    },
+    "buttons": {
+      "trackOrder": "Bestelling volgen",
+      "backToHome": "Terug naar home",
+      "connectWallet": "Portemonnee verbinden & betalen"
+    },
+    "errors": {
+      "transactionDataNotAvailable": "Transactiegegevens niet beschikbaar",
+      "walletConnectionFailed": "Portemonnee verbinding mislukt",
+      "transactionFailed": "Transactie mislukt",
+      "error": "Fout: {message}"
+    },
+    "success": {
+      "transactionSent": "Transactie verzonden! Hash: {hash}...",
+      "transactionSuccessful": "Transactie succesvol! Hash: {hash}..."
+    }
   }
 }
 

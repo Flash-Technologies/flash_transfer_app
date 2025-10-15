@@ -55,6 +55,88 @@
     "errorSelectProvider": "يرجى اختيار الموبايل موني أولاً",
     "missingData": "بيانات المعاملة مفقودة. الرجاء الرجوع واستكمال النموذج.",
     "estimateFailed": "فشل في الحصول على التقدير. حاول مرة أخرى."
+  },
+  "mobileMoneyForm": {
+    "title": "معلومات الهاتف",
+    "selectedProvider": "المزود المختار: {provider}",
+    "customerInformation": "معلومات العميل",
+    "fields": {
+      "firstName": "الاسم الأول *",
+      "firstNameHint": "أدخل اسمك الأول",
+      "lastName": "اسم العائلة *",
+      "lastNameHint": "أدخل اسم عائلتك",
+      "emailAddress": "عنوان البريد الإلكتروني *",
+      "emailHint": "أدخل عنوان بريدك الإلكتروني",
+      "country": "البلد",
+      "mobileNumber": "رقم الهاتف المحمول *",
+      "mobileNumberHint": "أدخل رقم الهاتف المحمول CI (مثلاً، 07123456)"
+    },
+    "supportNote": "يدعم حالياً ساحل العاج فقط",
+    "buttons": {
+      "cancel": "إلغاء",
+      "submit": "إرسال",
+      "submitting": "جارٍ الإرسال..."
+    }
+  },
+  "completionScreen": {
+    "status": {
+      "pending": "الدفع قيد الانتظار",
+      "complete": "تم الدفع",
+      "processing": "جارٍ معالجة الدفع",
+      "failed": "فشل الدفع",
+      "description": "جارٍ معالجة معاملتك"
+    },
+    "tracking": {
+      "label": "رقم التتبع (FTN): {trackingNumber}",
+      "copied": "تم نسخ رقم التتبع إلى الحافظة!"
+    },
+    "transactionDetails": {
+      "youSent": "أرسلت",
+      "transferRate": "سعر التحويل",
+      "fee": "الرسوم",
+      "transferTime": "وقت التحويل",
+      "recipientGets": "يحصل المستلم",
+      "totalToPay": "إجمالي المبلغ المطلوب دفعه",
+      "status": "الحالة",
+      "createdOn": "تم الإنشاء في",
+      "baseFee": "الرسوم الأساسية",
+      "nftDiscount": "خصم NFT",
+      "loyaltyDiscount": "خصم الولاء",
+      "trackingNumber": "رقم التتبع",
+      "transactionType": "نوع المعاملة"
+    },
+    "paymentInstructions": {
+      "title": "تعليمات الدفع",
+      "subtitle": "أرسل بالضبط {amount} {currency} إلى العنوان المقدم للمتابعة.",
+      "recipientAddress": "عنوان المستلم",
+      "amount": "المبلغ",
+      "network": "الشبكة",
+      "currencyType": "نوع العملة",
+      "copiedToClipboard": "تم النسخ إلى الحافظة!"
+    },
+    "notifications": {
+      "paymentSent": "تم إرسال الدفع!",
+      "paymentSentDesc": "تم إرسال دفعتك #{id}",
+      "paymentFailed": "فشل الدفع!",
+      "paymentFailedDesc": "فشلت دفعتك #{id}",
+      "inviteFriend": "دعوة صديق",
+      "inviteFriendDesc": "تم تأكيد التسجيل عبر رابط الإحالة"
+    },
+    "buttons": {
+      "trackOrder": "تتبع الطلب",
+      "backToHome": "العودة للرئيسية",
+      "connectWallet": "ربط المحفظة والدفع"
+    },
+    "errors": {
+      "transactionDataNotAvailable": "بيانات المعاملة غير متوفرة",
+      "walletConnectionFailed": "فشل في ربط المحفظة",
+      "transactionFailed": "فشلت المعاملة",
+      "error": "خطأ: {message}"
+    },
+    "success": {
+      "transactionSent": "تم إرسال المعاملة! الهاش: {hash}...",
+      "transactionSuccessful": "نجحت المعاملة! الهاش: {hash}..."
+    }
   }
 }
 

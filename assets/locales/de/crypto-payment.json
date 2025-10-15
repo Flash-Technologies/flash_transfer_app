@@ -1,4 +1,15 @@
 {
+  "screen": {
+    "title": "Krypto-Zahlung senden",
+    "subtitle": "Krypto zu Bargeld Transfer", 
+    "description": "Wählen Sie Ihr bevorzugtes Blockchain-Netzwerk aus, um mit der Krypto-zu-Mobile-Money-Übertragung fortzufahren.",
+    "networkSelection": {
+      "title": "Blockchain-Netzwerk auswählen",
+      "availableNetworks": "Verfügbare Netzwerke für {currency}",
+      "noNetworksAvailable": "Keine Netzwerke für die ausgewählte Kryptowährung verfügbar",
+      "continue": "Weiter"
+    }
+  },
   "loading": {
     "transactionDetails": "Transaktionsdetails werden geladen..."
   },

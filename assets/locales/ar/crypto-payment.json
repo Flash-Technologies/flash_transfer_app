@@ -1,4 +1,15 @@
 {
+  "screen": {
+    "title": "إرسال دفع العملة المشفرة",
+    "subtitle": "تحويل العملة المشفرة إلى النقد", 
+    "description": "اختر شبكة البلوك تشين المفضلة لديك لمتابعة تحويل العملة المشفرة إلى الأموال المحمولة.",
+    "networkSelection": {
+      "title": "اختر شبكة البلوك تشين",
+      "availableNetworks": "الشبكات المتاحة لـ {currency}",
+      "noNetworksAvailable": "لا توجد شبكات متاحة للعملة المشفرة المحددة",
+      "continue": "متابعة"
+    }
+  },
   "loading": {
     "transactionDetails": "Loading transaction details..."
   },

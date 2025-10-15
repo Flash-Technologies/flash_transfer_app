@@ -1,0 +1,13 @@
+{
+  "screen": {
+    "title": "Gửi Thanh Toán Crypto",
+    "subtitle": "Chuyển Crypto sang Tiền Mặt", 
+    "description": "Chọn mạng blockchain ưa thích của bạn để tiếp tục chuyển crypto sang tiền di động.",
+    "networkSelection": {
+      "title": "Chọn Mạng Blockchain",
+      "availableNetworks": "Mạng có sẵn cho {currency}",
+      "noNetworksAvailable": "Không có mạng nào khả dụng cho tiền mã hóa đã chọn",
+      "continue": "Tiếp tục"
+    }
+  }
+}

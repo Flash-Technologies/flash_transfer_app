@@ -274,7 +274,7 @@ class _PaymentCompleteScreenState extends ConsumerState<PaymentCompleteScreen>
             const SizedBox(width: 8),
             Expanded(
               child: const Text(
-                'Tracking number (FTN): 771 824 9542',
+                'Tracking sdfsdf (FTN): 771 824 9542',
                 style: TextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w500,

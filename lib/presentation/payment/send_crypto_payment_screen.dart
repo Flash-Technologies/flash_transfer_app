@@ -5,6 +5,7 @@ import 'package:flash_transfer_app/config/ui_constants.dart';
 import 'package:flash_transfer_app/providers/payment_provider.dart';
 import 'package:flash_transfer_app/providers/exchange_provider.dart';
 import 'package:flash_transfer_app/core/services/network_mapping_service.dart';
+import 'package:flash_transfer_app/providers/language_provider.dart';
 
 // Wallet balance model
 class WalletBalance {
@@ -156,18 +157,28 @@ class _SendCryptoPaymentScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Send Crypto Payment',
-                  style: AppTextStyles.heading3.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final tr = ref.watch(translationHelperProvider);
+                    return Text(
+                      tr('crypto-payment.screen.title'),
+                      style: AppTextStyles.heading3.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  },
                 ),
                 SizedBox(height: AppSpacing.marginXS),
-                Text(
-                  'Crypto to Cash Transfer',
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final tr = ref.watch(translationHelperProvider);
+                    return Text(
+                      tr('crypto-payment.screen.subtitle'),
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -181,19 +192,29 @@ class _SendCryptoPaymentScreenState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Send Crypto Payment',
-          style: AppTextStyles.heading2.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
+        Consumer(
+          builder: (context, ref, child) {
+            final tr = ref.watch(translationHelperProvider);
+            return Text(
+              tr('crypto-payment.screen.title'),
+              style: AppTextStyles.heading2.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            );
+          },
         ),
         SizedBox(height: AppSpacing.marginS),
-        Text(
-          'Select your preferred blockchain network to continue with crypto to mobile money transfer.',
-          style: AppTextStyles.bodyMedium.copyWith(
-            color: AppColors.textSecondary,
-            height: 1.4,
-          ),
+        Consumer(
+          builder: (context, ref, child) {
+            final tr = ref.watch(translationHelperProvider);
+            return Text(
+              tr('crypto-payment.screen.description'),
+              style: AppTextStyles.bodyMedium.copyWith(
+                color: AppColors.textSecondary,
+                height: 1.4,
+              ),
+            );
+          },
         ),
       ],
     );
@@ -206,19 +227,29 @@ class _SendCryptoPaymentScreenState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Select Blockchain Network',
-          style: AppTextStyles.heading3.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
+        Consumer(
+          builder: (context, ref, child) {
+            final tr = ref.watch(translationHelperProvider);
+            return Text(
+              tr('crypto-payment.screen.networkSelection.title'),
+              style: AppTextStyles.heading3.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+            );
+          },
         ),
         if (cryptoCode != null) ...[
           SizedBox(height: AppSpacing.marginS),
-          Text(
-            'Available networks for $cryptoCode',
-            style: AppTextStyles.bodySmall.copyWith(
-              color: AppColors.textSecondary,
-            ),
+          Consumer(
+            builder: (context, ref, child) {
+              final tr = ref.watch(translationHelperProvider);
+              return Text(
+                tr('crypto-payment.screen.networkSelection.availableNetworks', {'currency': cryptoCode}),
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              );
+            },
           ),
         ],
         SizedBox(height: AppSpacing.marginM),
@@ -230,11 +261,16 @@ class _SendCryptoPaymentScreenState
               borderRadius: BorderRadius.circular(AppRadius.radiusM),
               border: Border.all(color: AppColors.error.withOpacity(0.3)),
             ),
-            child: Text(
-              'No networks available for selected cryptocurrency',
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.error,
-              ),
+            child: Consumer(
+              builder: (context, ref, child) {
+                final tr = ref.watch(translationHelperProvider);
+                return Text(
+                  tr('crypto-payment.screen.networkSelection.noNetworksAvailable'),
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.error,
+                  ),
+                );
+              },
             ),
           ),
         ] else if (availableNetworks.length <= 3) ...[
@@ -395,11 +431,16 @@ class _SendCryptoPaymentScreenState
         ),
         minimumSize: const Size(double.infinity, 56),
       ),
-      child: Text(
-        'Continue',
-        style: AppTextStyles.buttonMedium.copyWith(
-          color: AppColors.textPrimary,
-        ),
+      child: Consumer(
+        builder: (context, ref, child) {
+          final tr = ref.watch(translationHelperProvider);
+          return Text(
+            tr('crypto-payment.screen.networkSelection.continue'),
+            style: AppTextStyles.buttonMedium.copyWith(
+              color: AppColors.textPrimary,
+            ),
+          );
+        },
       ),
     );
   }

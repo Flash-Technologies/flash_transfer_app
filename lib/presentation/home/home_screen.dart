@@ -1091,14 +1091,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              tr('landing.completeExchangeDetails'),
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.5,
-                color:
-                    isEnabled ? const Color(0xFF181F30) : Colors.grey.shade600,
+            Flexible(
+              child: Text(
+                tr('landing.completeExchangeDetails'),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.5,
+                  color:
+                      isEnabled ? const Color(0xFF181F30) : Colors.grey.shade600,
+                ),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                textAlign: TextAlign.center,
               ),
             ),
             if (isEnabled) ...[

@@ -5,6 +5,7 @@ import 'package:flash_transfer_app/config/theme.dart';
 import 'package:flash_transfer_app/providers/payment_provider.dart';
 import 'package:flash_transfer_app/providers/exchange_provider.dart';
 import 'package:flash_transfer_app/providers/user_provider.dart';
+import 'package:flash_transfer_app/providers/language_provider.dart';
 
 class ComprehensiveCryptoDetails extends ConsumerStatefulWidget {
   const ComprehensiveCryptoDetails({Key? key}) : super(key: key);
@@ -22,6 +23,7 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
     final paymentState = ref.watch(paymentProvider);
     final exchangeForm = ref.watch(exchangeFormProvider);
     final userState = ref.watch(userProvider);
+    final tr = ref.watch(translationHelperProvider);
     final estimateData = paymentState.estimateData;
     final mobileMoneyDetails = paymentState.mobileMoneyDetails;
     
@@ -32,131 +34,131 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
     return Column(
       children: [
         // Sender Details Section
-        _buildSenderDetailsSection(userState.user, mobileMoneyDetails),
+        _buildSenderDetailsSection(userState.user, mobileMoneyDetails, tr),
         
         const SizedBox(height: 16),
         
         // Mobile Money Provider Details
-        _buildMobileProviderSection(mobileMoneyDetails),
+        _buildMobileProviderSection(mobileMoneyDetails, tr),
         
         const SizedBox(height: 16),
         
         // Receiver Details Section  
-        _buildReceiverDetailsSection(paymentState),
+        _buildReceiverDetailsSection(paymentState, tr),
         
         const SizedBox(height: 16),
         
         // Fee Breakdown Section
-        _buildFeeBreakdownSection(estimateData, exchangeForm),
+        _buildFeeBreakdownSection(estimateData, exchangeForm, tr),
         
         const SizedBox(height: 16),
         
         // Amount Summary Section
-        _buildAmountSummarySection(estimateData, exchangeForm),
+        _buildAmountSummarySection(estimateData, exchangeForm, tr),
       ],
     );
   }
 
-  Widget _buildSenderDetailsSection(user, mobileMoneyDetails) {
+  Widget _buildSenderDetailsSection(user, mobileMoneyDetails, Function tr) {
     return _buildSectionCard(
-      title: "Sender Details",
+      title: tr('review.cryptoDetails.senderDetails.title'),
       child: Column(
         children: [
           _buildUserRow(
             name: "${user?.firstName ?? ''} ${user?.lastName ?? ''}",
             country: user?.countryName ?? 'Unknown',
-            subtitle: "Mobile Money (${_getProviderDisplayName(mobileMoneyDetails?['provider'])})",
+            subtitle: "Mobile Money (${_getProviderDisplayName(mobileMoneyDetails?['provider'], tr)})",
           ),
           const SizedBox(height: 12),
-          _buildDetailRow("Source of funds", "SAVINGS"),
-          _buildDetailRow("Purpose of transaction", "EDUCATION"), 
-          _buildDetailRow("Coverage Area", "West & Central Africa"),
+          _buildDetailRow(tr('review.cryptoDetails.senderDetails.sourceOfFunds'), tr('review.cryptoDetails.senderDetails.savings')),
+          _buildDetailRow(tr('review.cryptoDetails.senderDetails.purposeOfTransaction'), tr('review.cryptoDetails.senderDetails.education')), 
+          _buildDetailRow(tr('review.cryptoDetails.senderDetails.coverageArea'), tr('review.cryptoDetails.senderDetails.westCentralAfrica')),
         ],
       ),
     );
   }
 
-  Widget _buildMobileProviderSection(mobileMoneyDetails) {
+  Widget _buildMobileProviderSection(mobileMoneyDetails, Function tr) {
     final provider = mobileMoneyDetails?['provider'] ?? 'wave';
     
     return _buildSectionCard(
-      title: "Mobile Money (${_getProviderDisplayName(provider)})",
+      title: tr('review.cryptoDetails.mobileProvider.title').replaceAll('{provider}', _getProviderDisplayName(provider, tr)),
       child: Column(
         children: [
-          _buildDetailRow("Mobile Provider", _getProviderDisplayName(provider)),
-          _buildDetailRow("Phone Number", mobileMoneyDetails?['phoneNumber'] ?? 'N/A'),
-          _buildExpandableProviderDetails(provider, mobileMoneyDetails),
+          _buildDetailRow(tr('review.cryptoDetails.mobileProvider.mobileProvider'), _getProviderDisplayName(provider, tr)),
+          _buildDetailRow(tr('review.cryptoDetails.mobileProvider.phoneNumber'), mobileMoneyDetails?['phoneNumber'] ?? 'N/A'),
+          _buildExpandableProviderDetails(provider, mobileMoneyDetails, tr),
           const SizedBox(height: 12),
-          _buildSecurePaymentIndicator(),
+          _buildSecurePaymentIndicator(tr),
         ],
       ),
     );
   }
 
-  Widget _buildReceiverDetailsSection(paymentState) {
+  Widget _buildReceiverDetailsSection(paymentState, Function tr) {
     final walletAddress = paymentState.selectedWalletAddress ?? 'N/A';
     
     return _buildSectionCard(
-      title: "Receiver details",
+      title: tr('review.cryptoDetails.receiverDetails.title'),
       child: Column(
         children: [
           _buildUserRow(
             name: "Abu Alaeddine",
-            country: "Cote d'Ivoire", 
-            subtitle: "ETH Wallet",
+            country: tr('review.cryptoDetails.receiverDetails.coteDeIvoire'), 
+            subtitle: tr('review.cryptoDetails.receiverDetails.ethWallet'),
           ),
           const SizedBox(height: 12),
-          _buildDetailRowWithCopy("Wallet Address", walletAddress),
-          _buildDetailRow("Blockchain Network", "ETHEREUM"),
-          _buildDetailRow("Receiver Country", "Cote d'Ivoire"),
+          _buildDetailRowWithCopy(tr('review.cryptoDetails.receiverDetails.walletAddress'), walletAddress, tr),
+          _buildDetailRow(tr('review.cryptoDetails.receiverDetails.blockchainNetwork'), tr('review.cryptoDetails.receiverDetails.ethereum')),
+          _buildDetailRow(tr('review.cryptoDetails.receiverDetails.receiverCountry'), tr('review.cryptoDetails.receiverDetails.coteDeIvoire')),
         ],
       ),
     );
   }
 
-  Widget _buildFeeBreakdownSection(estimateData, exchangeForm) {
+  Widget _buildFeeBreakdownSection(estimateData, exchangeForm, Function tr) {
     final fees = estimateData.fees;
     final discounts = estimateData.discounts;
     
     return _buildSectionCard(
-      title: "Fee Breakdown",
+      title: tr('review.cryptoDetails.feeBreakdown.title'),
       child: Column(
         children: [
-          _buildDetailRowWithFullValue("You sent", "${estimateData.request.amount}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}"),
-          _buildDetailRowWithFullValue("Transfer rate", "LIVE", ""),
-          _buildTransferRateRow(estimateData.exchangeRate.rate, exchangeForm),
-          _buildDetailRowWithFullValue("Platform Charges", "+${fees.platformCharges}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}"),
-          _buildDetailRowWithFullValue("Network Fee", "+${fees.gasFee}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}"),
+          _buildDetailRowWithFullValue(tr('review.cryptoDetails.feeBreakdown.youSent'), "${estimateData.request.amount}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}"),
+          _buildDetailRowWithFullValue(tr('review.cryptoDetails.feeBreakdown.transferRate'), tr('review.cryptoDetails.feeBreakdown.live'), ""),
+          _buildTransferRateRow(estimateData.exchangeRate.rate, exchangeForm, tr),
+          _buildDetailRowWithFullValue(tr('review.cryptoDetails.feeBreakdown.platformCharges'), "+${fees.platformCharges}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}"),
+          _buildDetailRowWithFullValue(tr('review.cryptoDetails.feeBreakdown.networkFee'), "+${fees.gasFee}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}"),
           
           // Discounts - using fees properties directly for amounts
           if (fees.loyaltyDiscount > 0)
-            _buildDiscountRow("Loyalty Discount", discounts.loyalty.rank.isNotEmpty ? discounts.loyalty.rank : "SILVER", "-${fees.loyaltyDiscount}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}"),
+            _buildDiscountRow(tr('review.cryptoDetails.feeBreakdown.loyaltyDiscount'), discounts.loyalty.rank.isNotEmpty ? discounts.loyalty.rank : "SILVER", "-${fees.loyaltyDiscount}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}"),
           
           if (fees.nftDiscount > 0)
-            _buildDiscountRow("NFT Holder Discount", discounts.nft.rarity.isNotEmpty ? discounts.nft.rarity : "COMMON", "-${fees.nftDiscount}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}"),
+            _buildDiscountRow(tr('review.cryptoDetails.feeBreakdown.nftDiscount'), discounts.nft.rarity.isNotEmpty ? discounts.nft.rarity : "COMMON", "-${fees.nftDiscount}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}"),
           
-          _buildDetailRowWithFullValue("Total Savings", "-${fees.totalDiscount}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}"),
+          _buildDetailRowWithFullValue(tr('review.cryptoDetails.feeBreakdown.totalSavings'), "-${fees.totalDiscount}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}"),
           
           const Divider(),
           
-          _buildToggleRawValues(),
+          _buildToggleRawValues(tr),
           
           const SizedBox(height: 8),
           
-          _buildDetailRowWithFullValue("Total to pay", "${fees.totalFee + estimateData.request.amount}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}", isTotal: true),
-          _buildDetailRowWithFullValue("Recipient Gets", "${estimateData.results.cryptoAmountToReceive}", "${exchangeForm.toCurrency?.code ?? 'ETH'}", isTotal: true),
+          _buildDetailRowWithFullValue(tr('review.cryptoDetails.feeBreakdown.totalToPay'), "${fees.totalFee + estimateData.request.amount}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}", isTotal: true),
+          _buildDetailRowWithFullValue(tr('review.cryptoDetails.feeBreakdown.recipientGets'), "${estimateData.results.cryptoAmountToReceive}", "${exchangeForm.toCurrency?.code ?? 'ETH'}", isTotal: true),
           
           const SizedBox(height: 12),
           
-          _buildNetworkStatus(estimateData.networkInfo),
+          _buildNetworkStatus(estimateData.networkInfo, tr),
         ],
       ),
     );
   }
 
-  Widget _buildAmountSummarySection(estimateData, exchangeForm) {
+  Widget _buildAmountSummarySection(estimateData, exchangeForm, Function tr) {
     return _buildSectionCard(
-      title: "Amount",
+      title: tr('review.cryptoDetails.amountSummary.title'),
       titleWidget: Row(
         children: [
           Container(
@@ -172,13 +174,13 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
           Text("${estimateData.request.amount} ${exchangeForm.fromCurrency?.code ?? 'XOF'}"),
         ],
       ),
-      subtitle: "Mobile Money (${_getProviderDisplayName(ref.read(paymentProvider).mobileMoneyDetails?['provider'])})",
+      subtitle: "Mobile Money (${_getProviderDisplayName(ref.read(paymentProvider).mobileMoneyDetails?['provider'], tr)})",
       child: Column(
         children: [
-          const Text("Transfer Summary", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+          Text(tr('review.cryptoDetails.amountSummary.transferSummary'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
           
-          _buildToggleButton("Raw", _showRawValues, (value) {
+          _buildToggleButton(tr('review.cryptoDetails.amountSummary.raw'), _showRawValues, (value) {
             setState(() {
               _showRawValues = value;
             });
@@ -186,21 +188,21 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
           
           const SizedBox(height: 12),
           
-          _buildDetailRowWithFullValue("Amount to send", "${estimateData.results.totalAmountToPay}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}"),
-          _buildDetailRowWithFullValue("Transfer Fee", "${estimateData.fees.totalFee}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}"),
-          _buildDetailRowWithFullValue("Total Cost", "${estimateData.results.totalAmountToPay}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}"),
-          _buildDetailRowWithFullValue("Total to recipient", "${estimateData.results.cryptoAmountToReceive}", "${exchangeForm.toCurrency?.code ?? 'ETH'}"),
-          _buildDetailRowWithFullValue("Exchange Rate", "1 ${exchangeForm.fromCurrency?.code ?? 'XOF'} = ${estimateData.exchangeRate.rate} ${exchangeForm.toCurrency?.code ?? 'ETH'}", ""),
-          _buildDetailRow("Network Congestion", "Medium"),
+          _buildDetailRowWithFullValue(tr('review.cryptoDetails.amountSummary.amountToSend'), "${estimateData.results.totalAmountToPay}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}"),
+          _buildDetailRowWithFullValue(tr('review.cryptoDetails.amountSummary.transferFee'), "${estimateData.fees.totalFee}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}"),
+          _buildDetailRowWithFullValue(tr('review.cryptoDetails.amountSummary.totalCost'), "${estimateData.results.totalAmountToPay}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}"),
+          _buildDetailRowWithFullValue(tr('review.cryptoDetails.amountSummary.totalToRecipient'), "${estimateData.results.cryptoAmountToReceive}", "${exchangeForm.toCurrency?.code ?? 'ETH'}"),
+          _buildDetailRowWithFullValue(tr('review.cryptoDetails.amountSummary.exchangeRate'), "1 ${exchangeForm.fromCurrency?.code ?? 'XOF'} = ${estimateData.exchangeRate.rate} ${exchangeForm.toCurrency?.code ?? 'ETH'}", ""),
+          _buildDetailRow(tr('review.cryptoDetails.amountSummary.networkCongestion'), tr('review.cryptoDetails.amountSummary.medium')),
           
           const Divider(),
           
-          _buildDetailRowWithFullValue("Total to pay", "${estimateData.results.totalAmountToPay}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}", isTotal: true),
-          _buildDetailRowWithFullValue("Recipient Gets", "${estimateData.results.cryptoAmountToReceive}", "${exchangeForm.toCurrency?.code ?? 'ETH'}", isTotal: true),
+          _buildDetailRowWithFullValue(tr('review.cryptoDetails.amountSummary.totalToPay'), "${estimateData.results.totalAmountToPay}", "${exchangeForm.fromCurrency?.code ?? 'XOF'}", isTotal: true),
+          _buildDetailRowWithFullValue(tr('review.cryptoDetails.feeBreakdown.recipientGets'), "${estimateData.results.cryptoAmountToReceive}", "${exchangeForm.toCurrency?.code ?? 'ETH'}", isTotal: true),
           
           const SizedBox(height: 12),
           
-          _buildAvailabilityIndicator(estimateData.networkInfo),
+          _buildAvailabilityIndicator(estimateData.networkInfo, tr),
         ],
       ),
     );
@@ -352,7 +354,7 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
                 if (value.isNotEmpty) {
                   Clipboard.setData(ClipboardData(text: "$value $currency".trim()));
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Copied to clipboard')),
+                    SnackBar(content: Text(ref.read(translationHelperProvider)('review.cryptoDetails.actions.copiedToClipboard'))),
                   );
                 }
               },
@@ -379,7 +381,7 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
     );
   }
 
-  Widget _buildDetailRowWithCopy(String label, String value) {
+  Widget _buildDetailRowWithCopy(String label, String value, Function tr) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Column(
@@ -397,7 +399,7 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
             onTap: () {
               Clipboard.setData(ClipboardData(text: value));
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Address copied to clipboard')),
+                SnackBar(content: Text(tr('review.cryptoDetails.actions.addressCopied'))),
               );
             },
             child: Container(
@@ -429,15 +431,15 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
     );
   }
 
-  Widget _buildTransferRateRow(double rate, exchangeForm) {
+  Widget _buildTransferRateRow(double rate, exchangeForm, Function tr) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Rate ID: 1757875041080",
-            style: TextStyle(
+          Text(
+            tr('review.cryptoDetails.feeBreakdown.rateId').replaceAll('{id}', '1757875041080'),
+            style: const TextStyle(
               fontSize: 12,
               color: Color(0xFF9E9E9E),
             ),
@@ -447,7 +449,7 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
             onTap: () {
               Clipboard.setData(ClipboardData(text: "1 ${exchangeForm.fromCurrency?.code ?? 'XOF'} = $rate ${exchangeForm.toCurrency?.code ?? 'ETH'}"));
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Rate copied to clipboard')),
+                SnackBar(content: Text(tr('review.cryptoDetails.actions.rateCopied'))),
               );
             },
             child: Container(
@@ -532,7 +534,7 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
     );
   }
 
-  Widget _buildToggleRawValues() {
+  Widget _buildToggleRawValues(Function tr) {
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -542,9 +544,9 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
-            "Show Details",
-            style: TextStyle(
+          Text(
+            tr('review.cryptoDetails.feeBreakdown.showDetails'),
+            style: const TextStyle(
               fontSize: 14,
               color: AppTheme.primaryColor,
               fontWeight: FontWeight.w500,
@@ -553,7 +555,7 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
           Row(
             children: [
               Text(
-                "Raw Values",
+                tr('review.cryptoDetails.feeBreakdown.rawValues'),
                 style: TextStyle(
                   fontSize: 12,
                   color: Colors.grey.shade600,
@@ -594,7 +596,7 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
     );
   }
 
-  Widget _buildNetworkStatus(networkInfo) {
+  Widget _buildNetworkStatus(networkInfo, Function tr) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -616,9 +618,9 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "Network Status",
-                style: TextStyle(
+              Text(
+                tr('review.cryptoDetails.feeBreakdown.networkStatus'),
+                style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
                   color: Colors.black,
@@ -640,9 +642,9 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
               color: Colors.orange.shade400,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Text(
-              "Normal",
-              style: TextStyle(
+            child: Text(
+              tr('review.cryptoDetails.feeBreakdown.normal'),
+              style: const TextStyle(
                 fontSize: 12,
                 color: Colors.white,
                 fontWeight: FontWeight.w600,
@@ -654,7 +656,7 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
     );
   }
 
-  Widget _buildAvailabilityIndicator(networkInfo) {
+  Widget _buildAvailabilityIndicator(networkInfo, Function tr) {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
@@ -673,9 +675,9 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
             child: const Icon(Icons.flash_on, size: 12, color: Colors.white),
           ),
           const SizedBox(width: 8),
-          const Text(
-            "Availability",
-            style: TextStyle(
+          Text(
+            tr('review.cryptoDetails.feeBreakdown.availability'),
+            style: const TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
               color: Colors.black,
@@ -702,7 +704,7 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
     );
   }
 
-  Widget _buildExpandableProviderDetails(String provider, mobileMoneyDetails) {
+  Widget _buildExpandableProviderDetails(String provider, mobileMoneyDetails, Function tr) {
     return Column(
       children: [
         GestureDetector(
@@ -714,9 +716,9 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                "Provider Details",
-                style: TextStyle(
+              Text(
+                tr('review.cryptoDetails.mobileProvider.providerDetails'),
+                style: const TextStyle(
                   fontSize: 14,
                   color: AppTheme.primaryColor,
                   fontWeight: FontWeight.w500,
@@ -724,9 +726,9 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
               ),
               Row(
                 children: [
-                  const Text(
-                    "Show",
-                    style: TextStyle(
+                  Text(
+                    tr('review.cryptoDetails.mobileProvider.show'),
+                    style: const TextStyle(
                       fontSize: 12,
                       color: Color(0xFF9E9E9E),
                     ),
@@ -742,14 +744,14 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
         ),
         if (_showProviderDetails) ...[
           const SizedBox(height: 8),
-          _buildDetailRow("Service Code", mobileMoneyDetails?['serviceCode'] ?? 'N/A'),
-          _buildDetailRow("API Method", mobileMoneyDetails?['apiPaymentMethod'] ?? 'N/A'),
+          _buildDetailRow(tr('review.cryptoDetails.mobileProvider.serviceCode'), mobileMoneyDetails?['serviceCode'] ?? 'N/A'),
+          _buildDetailRow(tr('review.cryptoDetails.mobileProvider.apiMethod'), mobileMoneyDetails?['apiPaymentMethod'] ?? 'N/A'),
         ],
       ],
     );
   }
 
-  Widget _buildSecurePaymentIndicator() {
+  Widget _buildSecurePaymentIndicator(Function tr) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -769,21 +771,21 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
             child: const Icon(Icons.check, size: 14, color: Colors.white),
           ),
           const SizedBox(width: 12),
-          const Expanded(
+          Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Secure Mobile Payment",
-                  style: TextStyle(
+                  tr('review.cryptoDetails.mobileProvider.securePayment.title'),
+                  style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
                   ),
                 ),
                 Text(
-                  "Your mobile money payment will be processed securely through our trusted payment network",
-                  style: TextStyle(
+                  tr('review.cryptoDetails.mobileProvider.securePayment.description'),
+                  style: const TextStyle(
                     fontSize: 12,
                     color: Color(0xFF6E757D),
                   ),
@@ -796,18 +798,18 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
     );
   }
 
-  String _getProviderDisplayName(String? provider) {
+  String _getProviderDisplayName(String? provider, Function tr) {
     switch (provider?.toLowerCase()) {
       case 'orange':
-        return 'Orange Money';
+        return tr('review.cryptoDetails.providers.orangeMoney');
       case 'wave':
-        return 'Wave';
+        return tr('review.cryptoDetails.providers.wave');
       case 'mtn':
-        return 'MTN';
+        return tr('review.cryptoDetails.providers.mtn');
       case 'moov':
-        return 'Moov Money';
+        return tr('review.cryptoDetails.providers.moovMoney');
       default:
-        return 'Mobile Money Provider';
+        return tr('review.cryptoDetails.providers.mobileMoneyProvider');
     }
   }
 }

@@ -55,6 +55,88 @@
     "errorSelectProvider": "Selecione primeiro o Mobile Money",
     "missingData": "Dados da transação ausentes. Volte e complete o formulário.",
     "estimateFailed": "Não foi possível obter a estimativa. Tente novamente."
+  },
+  "mobileMoneyForm": {
+    "title": "Informações do Telefone",
+    "selectedProvider": "Provedor Selecionado: {provider}",
+    "customerInformation": "Informações do Cliente",
+    "fields": {
+      "firstName": "Primeiro Nome *",
+      "firstNameHint": "Digite seu primeiro nome",
+      "lastName": "Último Nome *",
+      "lastNameHint": "Digite seu último nome",
+      "emailAddress": "Endereço de E-mail *",
+      "emailHint": "Digite seu endereço de e-mail",
+      "country": "País",
+      "mobileNumber": "Número Móvel *",
+      "mobileNumberHint": "Digite número móvel CI (ex. 07123456)"
+    },
+    "supportNote": "atualmente suporta apenas Costa do Marfim",
+    "buttons": {
+      "cancel": "Cancelar",
+      "submit": "Enviar",
+      "submitting": "Enviando..."
+    }
+  },
+  "completionScreen": {
+    "status": {
+      "pending": "Pagamento pendente",
+      "complete": "Pagamento concluído",
+      "processing": "Processando pagamento",
+      "failed": "Pagamento falhou",
+      "description": "Sua transação está sendo processada"
+    },
+    "tracking": {
+      "label": "Número de rastreamento (FTN): {trackingNumber}",
+      "copied": "Número de rastreamento copiado para a área de transferência!"
+    },
+    "transactionDetails": {
+      "youSent": "Você enviou",
+      "transferRate": "Taxa de transferência",
+      "fee": "Taxa",
+      "transferTime": "Tempo de transferência",
+      "recipientGets": "Destinatário recebe",
+      "totalToPay": "Total a pagar",
+      "status": "Status",
+      "createdOn": "Criado em",
+      "baseFee": "Taxa base",
+      "nftDiscount": "Desconto NFT",
+      "loyaltyDiscount": "Desconto de fidelidade",
+      "trackingNumber": "Número de rastreamento",
+      "transactionType": "Tipo de transação"
+    },
+    "paymentInstructions": {
+      "title": "Instruções de pagamento",
+      "subtitle": "Envie exatamente {amount} {currency} para o endereço fornecido para continuar.",
+      "recipientAddress": "Endereço do destinatário",
+      "amount": "Quantia",
+      "network": "Rede",
+      "currencyType": "Tipo de moeda",
+      "copiedToClipboard": "Copiado para a área de transferência!"
+    },
+    "notifications": {
+      "paymentSent": "Pagamento enviado!",
+      "paymentSentDesc": "seu pagamento #{id} foi enviado",
+      "paymentFailed": "Pagamento falhou!",
+      "paymentFailedDesc": "seu pagamento #{id} falhou",
+      "inviteFriend": "Convidar amigo",
+      "inviteFriendDesc": "Registro confirmado via link de afiliado"
+    },
+    "buttons": {
+      "trackOrder": "Rastrear pedido",
+      "backToHome": "Voltar ao início",
+      "connectWallet": "Conectar carteira e pagar"
+    },
+    "errors": {
+      "transactionDataNotAvailable": "Dados da transação não disponíveis",
+      "walletConnectionFailed": "Falha na conexão da carteira",
+      "transactionFailed": "Transação falhou",
+      "error": "Erro: {message}"
+    },
+    "success": {
+      "transactionSent": "Transação enviada! Hash: {hash}...",
+      "transactionSuccessful": "Transação bem-sucedida! Hash: {hash}..."
+    }
   }
 }
 

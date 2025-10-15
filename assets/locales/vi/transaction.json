@@ -1,0 +1,81 @@
+{
+  "screen": {
+    "title": "Giao Dịch Của Tôi",
+    "subtitle": "Xem và quản lý lịch sử giao dịch của bạn",
+    "emptyState": "Chưa có giao dịch nào",
+    "emptyDescription": "Lịch sử giao dịch của bạn sẽ xuất hiện ở đây khi bạn bắt đầu gửi tiền",
+    "pullToRefresh": "Kéo để làm mới",
+    "loading": "Đang tải giao dịch...",
+    "back": "Quay lại"
+  },
+  "transaction": {
+    "send": "Gửi",
+    "receive": "Nhận",
+    "pending": "Đang chờ",
+    "completed": "Hoàn thành",
+    "failed": "Thất bại",
+    "cancelled": "Đã hủy",
+    "processing": "Đang xử lý",
+    "amount": "Số tiền",
+    "date": "Ngày",
+    "recipient": "Người nhận",
+    "sender": "Người gửi",
+    "transactionId": "ID Giao Dịch",
+    "fee": "Phí",
+    "total": "Tổng cộng",
+    "reference": "Tham chiếu"
+  },
+  "status": {
+    "success": "Thành công",
+    "failed": "Thất bại",
+    "pending": "Đang chờ",
+    "processing": "Đang xử lý",
+    "cancelled": "Đã hủy"
+  },
+  "filters": {
+    "all": "Tất cả",
+    "sent": "Đã gửi",
+    "received": "Đã nhận",
+    "thisMonth": "Tháng này",
+    "lastMonth": "Tháng trước",
+    "last7Days": "7 ngày qua",
+    "last30Days": "30 ngày qua",
+    "customRange": "Phạm vi tùy chỉnh"
+  },
+  "actions": {
+    "viewDetails": "Xem chi tiết",
+    "download": "Tải biên lai",
+    "share": "Chia sẻ",
+    "repeatTransaction": "Lặp lại giao dịch",
+    "cancel": "Hủy giao dịch",
+    "retry": "Thử lại",
+    "trackTransfer": "Theo dõi chuyển khoản"
+  },
+  "currencies": {
+    "usd": "USD",
+    "eur": "EUR",
+    "gbp": "GBP",
+    "cad": "CAD",
+    "btc": "BTC",
+    "eth": "ETH",
+    "usdt": "USDT"
+  },
+  "time": {
+    "today": "Hôm nay",
+    "yesterday": "Hôm qua",
+    "thisWeek": "Tuần này",
+    "lastWeek": "Tuần trước",
+    "older": "Cũ hơn"
+  },
+  "errors": {
+    "loadFailed": "Không thể tải giao dịch",
+    "networkError": "Lỗi mạng đã xảy ra",
+    "retry": "Thử lại",
+    "noConnection": "Không có kết nối internet"
+  },
+  "search": {
+    "placeholder": "Nhập số theo dõi (FTN)",
+    "searching": "Đang tìm kiếm...",
+    "clear": "Xóa tìm kiếm"
+  }
+}

@@ -55,6 +55,88 @@
     "errorSelectProvider": "Bitte zuerst Mobile Money auswählen",
     "missingData": "Transaktionsdaten fehlen. Bitte zurückgehen und das Formular ausfüllen.",
     "estimateFailed": "Schätzung konnte nicht abgerufen werden. Bitte erneut versuchen."
+  },
+  "mobileMoneyForm": {
+    "title": "Telefon-Informationen",
+    "selectedProvider": "Ausgewählter Anbieter: {provider}",
+    "customerInformation": "Kundeninformationen",
+    "fields": {
+      "firstName": "Vorname *",
+      "firstNameHint": "Geben Sie Ihren Vornamen ein",
+      "lastName": "Nachname *",
+      "lastNameHint": "Geben Sie Ihren Nachnamen ein",
+      "emailAddress": "E-Mail-Adresse *",
+      "emailHint": "Geben Sie Ihre E-Mail-Adresse ein",
+      "country": "Land",
+      "mobileNumber": "Handynummer *",
+      "mobileNumberHint": "Geben Sie CI-Handynummer ein (z.B. 07123456)"
+    },
+    "supportNote": "unterstützt derzeit nur die Elfenbeinküste",
+    "buttons": {
+      "cancel": "Abbrechen",
+      "submit": "Absenden",
+      "submitting": "Wird gesendet..."
+    }
+  },
+  "completionScreen": {
+    "status": {
+      "pending": "Zahlung ausstehend",
+      "complete": "Zahlung abgeschlossen",
+      "processing": "Zahlung wird verarbeitet",
+      "failed": "Zahlung fehlgeschlagen",
+      "description": "Ihre Transaktion wird verarbeitet"
+    },
+    "tracking": {
+      "label": "Verfolgungsnummer (FTN): {trackingNumber}",
+      "copied": "Verfolgungsnummer in Zwischenablage kopiert!"
+    },
+    "transactionDetails": {
+      "youSent": "Sie haben gesendet",
+      "transferRate": "Übertragungsrate",
+      "fee": "Gebühr",
+      "transferTime": "Übertragungszeit",
+      "recipientGets": "Empfänger erhält",
+      "totalToPay": "Gesamt zu zahlen",
+      "status": "Status",
+      "createdOn": "Erstellt am",
+      "baseFee": "Grundgebühr",
+      "nftDiscount": "NFT-Rabatt",
+      "loyaltyDiscount": "Treue-Rabatt",
+      "trackingNumber": "Verfolgungsnummer",
+      "transactionType": "Transaktionstyp"
+    },
+    "paymentInstructions": {
+      "title": "Zahlungsanweisungen",
+      "subtitle": "Senden Sie genau {amount} {currency} an die angegebene Adresse, um fortzufahren.",
+      "recipientAddress": "Empfängeradresse",
+      "amount": "Betrag",
+      "network": "Netzwerk",
+      "currencyType": "Währungstyp",
+      "copiedToClipboard": "In Zwischenablage kopiert!"
+    },
+    "notifications": {
+      "paymentSent": "Zahlung gesendet!",
+      "paymentSentDesc": "Ihre Zahlung #{id} wurde gesendet",
+      "paymentFailed": "Zahlung fehlgeschlagen!",
+      "paymentFailedDesc": "Ihre Zahlung #{id} ist fehlgeschlagen",
+      "inviteFriend": "Freund einladen",
+      "inviteFriendDesc": "Registrierung über Affiliate-Link bestätigt"
+    },
+    "buttons": {
+      "trackOrder": "Bestellung verfolgen",
+      "backToHome": "Zurück zur Startseite",
+      "connectWallet": "Wallet verbinden & bezahlen"
+    },
+    "errors": {
+      "transactionDataNotAvailable": "Transaktionsdaten nicht verfügbar",
+      "walletConnectionFailed": "Wallet-Verbindung fehlgeschlagen",
+      "transactionFailed": "Transaktion fehlgeschlagen",
+      "error": "Fehler: {message}"
+    },
+    "success": {
+      "transactionSent": "Transaktion gesendet! Hash: {hash}...",
+      "transactionSuccessful": "Transaktion erfolgreich! Hash: {hash}..."
+    }
   }
 }
 

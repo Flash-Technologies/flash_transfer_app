@@ -1,0 +1,81 @@
+{
+  "screen": {
+    "title": "معاملاتي",
+    "subtitle": "عرض وإدارة تاريخ المعاملات الخاص بك",
+    "emptyState": "لا توجد معاملات بعد",
+    "emptyDescription": "سيظهر تاريخ معاملاتك هنا بمجرد أن تبدأ في إرسال الأموال",
+    "pullToRefresh": "اسحب للتحديث",
+    "loading": "جاري تحميل المعاملات...",
+    "back": "رجوع"
+  },
+  "transaction": {
+    "send": "إرسال",
+    "receive": "استلام",
+    "pending": "معلق",
+    "completed": "مكتمل",
+    "failed": "فشل",
+    "cancelled": "ملغي",
+    "processing": "جاري المعالجة",
+    "amount": "المبلغ",
+    "date": "التاريخ",
+    "recipient": "المستلم",
+    "sender": "المرسل",
+    "transactionId": "معرف المعاملة",
+    "fee": "الرسوم",
+    "total": "الإجمالي",
+    "reference": "المرجع"
+  },
+  "status": {
+    "success": "نجح",
+    "failed": "فشل",
+    "pending": "معلق",
+    "processing": "جاري المعالجة",
+    "cancelled": "ملغي"
+  },
+  "filters": {
+    "all": "الكل",
+    "sent": "مرسل",
+    "received": "مستلم",
+    "thisMonth": "هذا الشهر",
+    "lastMonth": "الشهر الماضي",
+    "last7Days": "آخر 7 أيام",
+    "last30Days": "آخر 30 يوماً",
+    "customRange": "نطاق مخصص"
+  },
+  "actions": {
+    "viewDetails": "عرض التفاصيل",
+    "download": "تحميل الإيصال",
+    "share": "مشاركة",
+    "repeatTransaction": "تكرار المعاملة",
+    "cancel": "إلغاء المعاملة",
+    "retry": "إعادة المحاولة",
+    "trackTransfer": "تتبع التحويل"
+  },
+  "currencies": {
+    "usd": "USD",
+    "eur": "EUR",
+    "gbp": "GBP",
+    "cad": "CAD",
+    "btc": "BTC",
+    "eth": "ETH",
+    "usdt": "USDT"
+  },
+  "time": {
+    "today": "اليوم",
+    "yesterday": "أمس",
+    "thisWeek": "هذا الأسبوع",
+    "lastWeek": "الأسبوع الماضي",
+    "older": "أقدم"
+  },
+  "errors": {
+    "loadFailed": "فشل في تحميل المعاملات",
+    "networkError": "حدث خطأ في الشبكة",
+    "retry": "إعادة المحاولة",
+    "noConnection": "لا يوجد اتصال بالإنترنت"
+  },
+  "search": {
+    "placeholder": "أدخل رقم التتبع (FTN)",
+    "searching": "جاري البحث...",
+    "clear": "مسح البحث"
+  }
+}

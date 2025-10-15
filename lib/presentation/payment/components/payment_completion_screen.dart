@@ -12,6 +12,7 @@ import 'package:flash_transfer_app/core/api/api_client.dart';
 import 'package:flash_transfer_app/core/api/endpoints.dart';
 import 'package:flash_transfer_app/presentation/payment/components/wallet_connect_widget.dart';
 import 'package:flash_transfer_app/presentation/payment/components/transaction_timeline_widget.dart';
+import 'package:flash_transfer_app/providers/language_provider.dart';
 
 class PaymentDoneScreen extends ConsumerStatefulWidget {
   final String status; // 'pending' or 'complete'
@@ -42,7 +43,7 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
   Map<String, dynamic>? _statusData;
   bool _isLoadingStatus = false;
 
-  // Sample transaction details
+  // Sample transaction details - will be replaced with dynamic translations
   final Map<String, String> _transactionDetails = {
     'You Sent': '100 EUR',
     'Transfer Rate': '1 USDT = 1 EUR',
@@ -52,29 +53,29 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
     'Total to pay': '102.50 EUR',
   };
 
-  // Sample notifications
-  final List<NotificationItem> _notifications = [
+  // Sample notifications - will use translations
+  List<NotificationItem> _getNotifications(Function tr) => [
     NotificationItem(
-      action: 'Payment sent!',
-      description: 'your payment #1234 has been sent',
+      action: tr('payment.completionScreen.notifications.paymentSent'),
+      description: tr('payment.completionScreen.notifications.paymentSentDesc').replaceAll('{id}', '1234'),
       icon: Icons.check_circle,
       iconColor: AppColors.success,
     ),
     NotificationItem(
-      action: 'Payment Failed!',
-      description: 'your payment #1234 has failed',
+      action: tr('payment.completionScreen.notifications.paymentFailed'),
+      description: tr('payment.completionScreen.notifications.paymentFailedDesc').replaceAll('{id}', '1234'),
       icon: Icons.cancel,
       iconColor: AppColors.error,
     ),
     NotificationItem(
-      action: 'Payment sent!',
-      description: 'your payment #1234 has been sent',
+      action: tr('payment.completionScreen.notifications.paymentSent'),
+      description: tr('payment.completionScreen.notifications.paymentSentDesc').replaceAll('{id}', '1234'),
       icon: Icons.check_circle,
       iconColor: AppColors.success,
     ),
     NotificationItem(
-      action: 'Invite friend',
-      description: 'Registration confirmed via affiliate link',
+      action: tr('payment.completionScreen.notifications.inviteFriend'),
+      description: tr('payment.completionScreen.notifications.inviteFriendDesc'),
       icon: Icons.group,
       iconColor: AppColors.primaryBlue,
     ),
@@ -197,6 +198,7 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
   Widget build(BuildContext context) {
     final paymentState = ref.watch(paymentProvider);
     final exchangeForm = ref.watch(exchangeFormProvider);
+    final tr = ref.watch(translationHelperProvider);
 
     // Get transaction data - could be from API response or mock data
     final transactionData = paymentState.transactionData;
@@ -227,38 +229,38 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
       } else {
         // Crypto-to-fiat specific details (fallback)
         transactionDetails = {
-          'You Sent': '${transactionData.amount} ${transactionData.currency ?? exchangeForm.fromCurrency?.code ?? 'ETH'}',
-          'Transfer Rate': '1 ${transactionData.currency ?? 'ETH'} = ${transactionData.exchangeRate?.toStringAsFixed(2) ?? estimateData?.exchangeRate.rate.toStringAsFixed(2) ?? '0'} ${exchangeForm.toCurrency?.code ?? 'XOF'}',
-          'Fee': '${transactionData.fee?.toString() ?? '2e-8'} ${transactionData.currency ?? 'ETH'}',
-          'Status': transactionData.status ?? 'PENDING',
-          'Created On': transactionData.createdAt?.toString() ?? DateTime.now().toString(),
-          'Base Fee': transactionData.feeDetails?['baseFee']?.toString() ?? '2e-8',
-          'NFT discount': transactionData.feeDetails?['nftDiscount']?.toString() ?? '0',
-          'Loyalty Discount': transactionData.feeDetails?['loyaltyDiscount']?.toString() ?? '0',
-          'Total to Pay': '${transactionData.totalAmount ?? 0.00000102} ${transactionData.currency ?? 'ETH'}',
-          'Tracking Number': transactionData.trackingNumber ?? trackingNumber,
+          tr('payment.completionScreen.transactionDetails.youSent'): '${transactionData.amount} ${transactionData.currency ?? exchangeForm.fromCurrency?.code ?? 'ETH'}',
+          tr('payment.completionScreen.transactionDetails.transferRate'): '1 ${transactionData.currency ?? 'ETH'} = ${transactionData.exchangeRate?.toStringAsFixed(2) ?? estimateData?.exchangeRate.rate.toStringAsFixed(2) ?? '0'} ${exchangeForm.toCurrency?.code ?? 'XOF'}',
+          tr('payment.completionScreen.transactionDetails.fee'): '${transactionData.fee?.toString() ?? '2e-8'} ${transactionData.currency ?? 'ETH'}',
+          tr('payment.completionScreen.transactionDetails.status'): transactionData.status ?? 'PENDING',
+          tr('payment.completionScreen.transactionDetails.createdOn'): transactionData.createdAt?.toString() ?? DateTime.now().toString(),
+          tr('payment.completionScreen.transactionDetails.baseFee'): transactionData.feeDetails?['baseFee']?.toString() ?? '2e-8',
+          tr('payment.completionScreen.transactionDetails.nftDiscount'): transactionData.feeDetails?['nftDiscount']?.toString() ?? '0',
+          tr('payment.completionScreen.transactionDetails.loyaltyDiscount'): transactionData.feeDetails?['loyaltyDiscount']?.toString() ?? '0',
+          tr('payment.completionScreen.transactionDetails.totalToPay'): '${transactionData.totalAmount ?? 0.00000102} ${transactionData.currency ?? 'ETH'}',
+          tr('payment.completionScreen.transactionDetails.trackingNumber'): transactionData.trackingNumber ?? trackingNumber,
         };
         debugPrint('📊 Using fallback transaction details');
       }
     } else {
       // Original transaction details for other types
       transactionDetails = {
-        'You Sent':
+        tr('payment.completionScreen.transactionDetails.youSent'):
             '${exchangeForm.sendAmount} ${exchangeForm.fromCurrency?.code ?? 'USD'}',
-        'Transfer Rate': estimateData != null
+        tr('payment.completionScreen.transactionDetails.transferRate'): estimateData != null
             ? '1 ${exchangeForm.fromCurrency?.code} = ${estimateData.exchangeRate.rate.toStringAsFixed(6)} ${exchangeForm.toCurrency?.code}'
             : '1 ${exchangeForm.fromCurrency?.code ?? 'USD'} = 1 ${exchangeForm.toCurrency?.code ?? 'ETH'}',
-        'Fee': estimateData != null
+        tr('payment.completionScreen.transactionDetails.fee'): estimateData != null
             ? '${estimateData.fees.totalFee.toStringAsFixed(2)} ${exchangeForm.fromCurrency?.code}'
             : '2.50 ${exchangeForm.fromCurrency?.code ?? 'USD'}',
-        'Transaction Type': transactionData?.type ?? 'CASH_TO_CRYPTO',
-        'Status':
-            isPending ? 'Pending' : (isComplete ? 'Completed' : 'Processing'),
-        'Created On':
+        tr('payment.completionScreen.transactionDetails.transactionType'): transactionData?.type ?? 'CASH_TO_CRYPTO',
+        tr('payment.completionScreen.transactionDetails.status'):
+            isPending ? tr('payment.completionScreen.status.pending') : (isComplete ? tr('payment.completionScreen.status.complete') : tr('payment.completionScreen.status.processing')),
+        tr('payment.completionScreen.transactionDetails.createdOn'):
             transactionData?.createdAt.toString() ?? DateTime.now().toString(),
-        'Recipient Gets':
+        tr('payment.completionScreen.transactionDetails.recipientGets'):
             '${exchangeForm.receiveAmount} ${exchangeForm.toCurrency?.code ?? 'ETH'}',
-        'Total to pay': estimateData != null
+        tr('payment.completionScreen.transactionDetails.totalToPay'): estimateData != null
             ? '${estimateData.results.totalAmountToPay.toStringAsFixed(2)} ${exchangeForm.fromCurrency?.code}'
             : '${(double.tryParse(exchangeForm.sendAmount) ?? 100.0) + 2.50} ${exchangeForm.fromCurrency?.code ?? 'USD'}',
       };
@@ -604,6 +606,8 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
   }
 
   Widget _buildTrackingSection(String trackingNumber) {
+    final tr = ref.watch(translationHelperProvider);
+    
     return AnimatedBuilder(
       animation: _shimmerAnimation,
       builder: (context, child) {
@@ -640,7 +644,7 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
                 child: Stack(
                   children: [
                     Text(
-                      'Tracking number (FTN): $trackingNumber',
+                      tr('payment.completionScreen.tracking.label').replaceAll('{trackingNumber}', trackingNumber),
                       style: AppTextStyles.bodyMedium.copyWith(
                         fontWeight: FontWeight.w600,
                         color: AppColors.primaryBlue,
@@ -697,6 +701,8 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
   }
 
   Widget _buildCryptoPaymentInstructions(dynamic transactionData) {
+    final tr = ref.watch(translationHelperProvider);
+    
     // Extract payment details from transaction data
     final recipientAddress = transactionData.destinationDetails?['transferData']?['address'] ?? 
                              transactionData.sourceDetails?['address'] ?? 
@@ -723,7 +729,7 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Payment Instructions',
+            tr('payment.completionScreen.paymentInstructions.title'),
             style: AppTextStyles.heading3.copyWith(
               fontWeight: FontWeight.bold,
             ),
@@ -738,7 +744,9 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
           SizedBox(height: AppSpacing.marginL),
           
           Text(
-            'Send exactly $amount $currency to the provided address to continue.',
+            tr('payment.completionScreen.paymentInstructions.subtitle')
+                .replaceAll('{amount}', amount.toString())
+                .replaceAll('{currency}', currency),
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.textSecondary,
             ),
@@ -750,22 +758,22 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
           SizedBox(height: AppSpacing.marginL),
           
           // Recipient Address
-          _buildInstructionRow('Recipient Address', recipientAddress, canCopy: true),
+          _buildInstructionRow(tr('payment.completionScreen.paymentInstructions.recipientAddress'), recipientAddress, canCopy: true),
           
           SizedBox(height: AppSpacing.marginM),
           
           // Amount
-          _buildInstructionRow('Amount', '$amount $currency'),
+          _buildInstructionRow(tr('payment.completionScreen.paymentInstructions.amount'), '$amount $currency'),
           
           SizedBox(height: AppSpacing.marginM),
           
           // Network
-          _buildInstructionRow('Network', _formatNetworkName(network)),
+          _buildInstructionRow(tr('payment.completionScreen.paymentInstructions.network'), _formatNetworkName(network)),
           
           SizedBox(height: AppSpacing.marginM),
           
           // Currency Type
-          _buildInstructionRow('Currency Type', currency),
+          _buildInstructionRow(tr('payment.completionScreen.paymentInstructions.currencyType'), currency),
         ],
       ),
     ).animate()
@@ -837,13 +845,15 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
   }
   
   void _copyToClipboard(String text) async {
+    final tr = ref.read(translationHelperProvider);
+    
     HapticFeedback.mediumImpact();
     await Clipboard.setData(ClipboardData(text: text));
     
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Copied to clipboard!'),
+          content: Text(tr('payment.completionScreen.paymentInstructions.copiedToClipboard')),
           backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
           duration: Duration(seconds: 2),
@@ -911,6 +921,8 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
 
   Widget _buildActionButtons(
       BuildContext context, bool isPending, String? paymentUrl, bool isCryptoToFiat, dynamic transactionData, String trackingNumber) {
+    final tr = ref.watch(translationHelperProvider);
+    
     return Container(
       margin: EdgeInsets.only(bottom: AppSpacing.marginL),
       child: Column(
@@ -930,7 +942,7 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
                 // Handle successful transaction
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text('Transaction successful! Hash: ${txHash.substring(0, 10)}...'),
+                    content: Text(tr('payment.completionScreen.success.transactionSuccessful').replaceAll('{hash}', txHash.substring(0, 10))),
                     backgroundColor: AppColors.success,
                   ),
                 );
@@ -971,7 +983,7 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
                 Icon(Icons.location_on_outlined, size: 20),
                 SizedBox(width: AppSpacing.marginS),
                 Text(
-                  'Track Order',
+                  tr('payment.completionScreen.buttons.trackOrder'),
                   style: AppTextStyles.buttonMedium.copyWith(
                     color: isCryptoToFiat && isPending 
                         ? AppColors.primaryBlue 
@@ -1015,7 +1027,7 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
                 Icon(Icons.home_outlined, size: 20),
                 SizedBox(width: AppSpacing.marginS),
                 Text(
-                  'Back to Home',
+                  tr('payment.completionScreen.buttons.backToHome'),
                   style: AppTextStyles.buttonMedium.copyWith(
                     color: AppColors.primaryBlue,
                   ),
@@ -1039,13 +1051,15 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
   }
 
   void _copyTrackingNumber() async {
+    final tr = ref.read(translationHelperProvider);
+    
     HapticFeedback.mediumImpact();
     await Clipboard.setData(ClipboardData(text: _trackingNumber));
 
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Tracking number copied to clipboard!'),
+          content: Text(tr('payment.completionScreen.tracking.copied')),
           backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
           duration: Duration(seconds: 2),
@@ -1058,12 +1072,13 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
   }
   
   Future<void> _handleWalletConnection() async {
+    final tr = ref.read(translationHelperProvider);
     final transactionData = ref.read(paymentProvider).transactionData;
     
     if (transactionData == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Transaction data not available'),
+          content: Text(tr('payment.completionScreen.errors.transactionDataNotAvailable')),
           backgroundColor: AppColors.error,
         ),
       );
@@ -1085,7 +1100,7 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
         
         // Check if connection was successful
         if (!ReownService.instance.isConnected) {
-          throw Exception('Wallet connection failed');
+          throw Exception(tr('payment.completionScreen.errors.walletConnectionFailed'));
         }
       }
       
@@ -1108,7 +1123,7 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Transaction sent! Hash: ${txHash.substring(0, 10)}...'),
+              content: Text(tr('payment.completionScreen.success.transactionSent').replaceAll('{hash}', txHash.substring(0, 10))),
               backgroundColor: AppColors.success,
               behavior: SnackBarBehavior.floating,
               duration: Duration(seconds: 5),
@@ -1119,7 +1134,7 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
           // context.push('/payment-done?status=complete&transactionId=$txHash');
         }
       } else {
-        throw Exception('Transaction failed');
+        throw Exception(tr('payment.completionScreen.errors.transactionFailed'));
       }
       
     } catch (e) {
@@ -1128,7 +1143,7 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Error: ${e.toString()}'),
+            content: Text(tr('payment.completionScreen.errors.error').replaceAll('{message}', e.toString())),
             backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
           ),
@@ -1144,22 +1159,24 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
   }
   
   String _getStatusText(bool isComplete, bool isPending) {
+    final tr = ref.read(translationHelperProvider);
+    
     if (_statusData != null && _statusService != null) {
       final statusInfo = _statusService!.getStatusDisplayInfo(_statusData!);
       final status = _statusData!['status'];
       
       // Map status to user-friendly text
       if (status == 'PROCESSING') {
-        return 'Payment Processing';
+        return tr('payment.completionScreen.status.processing');
       } else if (status == 'COMPLETED' || status == 'SUCCESS') {
-        return 'Payment Complete';
+        return tr('payment.completionScreen.status.complete');
       } else if (status == 'FAILED') {
-        return 'Payment Failed';
+        return tr('payment.completionScreen.status.failed');
       }
       
-      return statusInfo['statusText'] ?? (isComplete ? 'Payment Complete' : 'Payment Pending');
+      return statusInfo['statusText'] ?? (isComplete ? tr('payment.completionScreen.status.complete') : tr('payment.completionScreen.status.pending'));
     }
-    return isComplete ? 'Payment Complete' : 'Payment Pending';
+    return isComplete ? tr('payment.completionScreen.status.complete') : tr('payment.completionScreen.status.pending');
   }
   
   Color _getStatusColor(bool isComplete, bool isPending) {
@@ -1180,11 +1197,13 @@ class _PaymentDoneScreenState extends ConsumerState<PaymentDoneScreen>
   }
   
   String _getStatusDescription() {
+    final tr = ref.read(translationHelperProvider);
+    
     if (_statusData != null && _statusService != null) {
       final statusInfo = _statusService!.getStatusDisplayInfo(_statusData!);
-      return statusInfo['statusDescription'] ?? 'Your transaction is being processed';
+      return statusInfo['statusDescription'] ?? tr('payment.completionScreen.status.description');
     }
-    return 'Your transaction is being processed';
+    return tr('payment.completionScreen.status.description');
   }
 }
 

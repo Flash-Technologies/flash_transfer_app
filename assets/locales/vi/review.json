@@ -43,7 +43,185 @@
       "address": "Địa chỉ",
       "notProvided": "Không cung cấp"
     }
+  },
+  "progress": {
+    "receiverInfo": {
+      "label": "Thông tin người nhận",
+      "description": "Nhập thông tin"
+    },
+    "receiverMethod": {
+      "label": "Phương thức người nhận",
+      "description": "Nhập thông tin"
+    },
+    "reviewDetails": {
+      "label": "Xem lại chi tiết",
+      "description": "Nhập thông tin"
+    },
+    "paymentComplete": {
+      "label": "Thanh toán hoàn tất",
+      "description": "Nhập thông tin"
+    }
+  },
+  "header": {
+    "title": "Xem lại chi tiết",
+    "subheading": "Kiểm tra tóm tắt đơn hàng trước khi xác nhận."
+  },
+  "detailsScreen": {
+    "progressTitle": "Thông tin người nhận",
+    "progressSubtitle": "Nhập thông tin.",
+    "title": "Xem Lại Chi Tiết",
+    "subtitle": "Kiểm tra tất cả thông tin chi tiết.",
+    "buttons": {
+      "confirm": "Xác nhận",
+      "creating": "Đang Tạo Giao Dịch...",
+      "cancel": "Hủy"
+    },
+    "errors": {
+      "missingNetwork": "Vui lòng quay lại và chọn mạng blockchain trước",
+      "missingCryptoAddress": "Vui lòng quay lại và xác nhận địa chỉ crypto của bạn trước",
+      "missingExchangeData": "Thiếu dữ liệu biểu mẫu trao đổi. Vui lòng quay lại màn hình chính.",
+      "invalidAmount": "Số tiền không hợp lệ. Vui lòng kiểm tra biểu mẫu trao đổi của bạn.",
+      "transactionFailed": "Tạo giao dịch thất bại"
+    }
+  },
+  "buttons": {
+    "cancel": "Hủy",
+    "processing": "Đang xử lý...",
+    "confirm": "Xác nhận",
+    "calculating": "Đang tính...",
+    "edit": "Chỉnh sửa"
+  },
+  "sections": {
+    "amount": {
+      "title": "Số tiền",
+      "editAmount": "Chỉnh sửa số tiền"
+    },
+    "transferSummary": {
+      "title": "Tóm tắt chuyển khoản",
+      "updating": "Đang cập nhật...",
+      "amountToSend": "Số tiền gửi",
+      "transferFee": "Phí chuyển khoản",
+      "feeWaived": "Miễn phí",
+      "totalCost": "Tổng chi phí",
+      "totalToRecipient": "Tổng cho người nhận",
+      "exchangeRate": "Tỷ giá",
+      "networkCongestion": "Tắc nghẽn mạng",
+      "congestionLow": "Thấp",
+      "congestionMedium": "Trung bình",
+      "congestionHigh": "Cao",
+      "totalToPay": "Tổng phải trả",
+      "recipientGets": "Người nhận nhận",
+      "availability": "Tính khả dụng",
+      "transactionUnavailable": "Giao dịch hiện không khả dụng"
+    },
+    "senderDetails": {
+      "title": "Chi tiết người gửi",
+      "kyc": "KYC",
+      "mobileProvider": "Nhà cung cấp di động",
+      "phoneNumber": "Số điện thoại",
+      "sourceOfFunds": "Nguồn tiền",
+      "purposeOfTransaction": "Mục đích giao dịch"
+    },
+    "receiverDetails": {
+      "title": "Chi tiết người nhận",
+      "walletAddress": "Địa chỉ ví",
+      "blockchainNetwork": "Mạng blockchain",
+      "mobileNumber": "Số điện thoại di động",
+      "mobileProvider": "Nhà cung cấp di động",
+      "receiverCountry": "Quốc gia người nhận",
+      "youSent": "Bạn đã gửi",
+      "transferRate": "Tỷ lệ chuyển đổi",
+      "fee": "Phí"
+    }
+  },
+  "paymentMethods": {
+    "bankTransfer": "Chuyển khoản ngân hàng",
+    "creditCard": "Thẻ tín dụng",
+    "cash": "Tiền mặt",
+    "mobileMoney": "Mobile Money",
+    "wallet": "Ví",
+    "cashPickup": "Nhận tiền mặt",
+    "cryptoWallet": "Ví {{currency}}"
+  },
+  "errors": {
+    "somethingWentWrong": "Đã xảy ra lỗi",
+    "networkError": "Lỗi mạng: Không thể ước tính giao dịch",
+    "transactionFailed": "Giao dịch thất bại"
+  },
+  "cryptoDetails": {
+    "senderDetails": {
+      "title": "Chi tiết người gửi",
+      "sourceOfFunds": "Nguồn tiền",
+      "purposeOfTransaction": "Mục đích giao dịch",
+      "coverageArea": "Khu vực phủ sóng",
+      "savings": "TIẾT KIỆM",
+      "education": "GIÁO DỤC",
+      "westCentralAfrica": "Tây và Trung Phi"
+    },
+    "mobileProvider": {
+      "title": "Tiền Di Động ({provider})",
+      "mobileProvider": "Nhà cung cấp di động",
+      "phoneNumber": "Số điện thoại",
+      "providerDetails": "Chi tiết nhà cung cấp",
+      "show": "Hiển thị",
+      "serviceCode": "Mã dịch vụ",
+      "apiMethod": "Phương thức API",
+      "securePayment": {
+        "title": "Thanh toán di động an toàn",
+        "description": "Thanh toán tiền di động của bạn sẽ được xử lý an toàn thông qua mạng thanh toán đáng tin cậy của chúng tôi"
+      }
+    },
+    "receiverDetails": {
+      "title": "Chi tiết người nhận",
+      "walletAddress": "Địa chỉ ví",
+      "blockchainNetwork": "Mạng blockchain",
+      "receiverCountry": "Quốc gia người nhận",
+      "ethWallet": "Ví ETH",
+      "coteDeIvoire": "Bờ Biển Ngà",
+      "ethereum": "ETHEREUM"
+    },
+    "feeBreakdown": {
+      "title": "Chi tiết phí",
+      "youSent": "Bạn đã gửi",
+      "transferRate": "Tỷ lệ chuyển đổi",
+      "live": "TRỰC TIẾP",
+      "rateId": "ID tỷ lệ: {id}",
+      "platformCharges": "Phí nền tảng",
+      "networkFee": "Phí mạng",
+      "loyaltyDiscount": "Giảm giá khách hàng thân thiết",
+      "nftDiscount": "Giảm giá cho chủ sở hữu NFT",
+      "totalSavings": "Tổng tiết kiệm",
+      "totalToPay": "Tổng phải trả",
+      "recipientGets": "Người nhận nhận",
+      "showDetails": "Hiển thị chi tiết",
+      "rawValues": "Giá trị thô",
+      "networkStatus": "Trạng thái mạng",
+      "normal": "Bình thường",
+      "availability": "Tính khả dụng"
+    },
+    "amountSummary": {
+      "title": "Số tiền",
+      "transferSummary": "Tóm tắt chuyển khoản",
+      "raw": "Thô",
+      "amountToSend": "Số tiền gửi",
+      "transferFee": "Phí chuyển khoản",
+      "totalCost": "Tổng chi phí",
+      "totalToRecipient": "Tổng cho người nhận",
+      "exchangeRate": "Tỷ giá",
+      "networkCongestion": "Tắc nghẽn mạng",
+      "medium": "Trung bình"
+    },
+    "providers": {
+      "orangeMoney": "Orange Money",
+      "wave": "Wave",
+      "mtn": "MTN",
+      "moovMoney": "Moov Money",
+      "mobileMoneyProvider": "Nhà Cung Cấp Tiền Di Động"
+    },
+    "actions": {
+      "copiedToClipboard": "Đã sao chép vào bảng nhớ tạm",
+      "addressCopied": "Địa chỉ đã được sao chép vào bảng nhớ tạm",
+      "rateCopied": "Tỷ lệ đã được sao chép vào bảng nhớ tạm"
+    }
   }
 }
-
-

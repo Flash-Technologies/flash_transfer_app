@@ -1,7 +1,9 @@
 // lib/presentation/payment/components/bizao_config_modal.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flash_transfer_app/config/theme.dart';
+import 'package:flash_transfer_app/providers/language_provider.dart';
 
 class BizaoConfigData {
   final String firstName;
@@ -27,7 +29,7 @@ class BizaoConfigData {
   });
 }
 
-class BizaoConfigModal extends StatefulWidget {
+class BizaoConfigModal extends ConsumerStatefulWidget {
   final Function(BizaoConfigData) onSubmit;
   final VoidCallback onCancel;
   final String? selectedProvider;
@@ -40,10 +42,10 @@ class BizaoConfigModal extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<BizaoConfigModal> createState() => _BizaoConfigModalState();
+  ConsumerState<BizaoConfigModal> createState() => _BizaoConfigModalState();
 }
 
-class _BizaoConfigModalState extends State<BizaoConfigModal>
+class _BizaoConfigModalState extends ConsumerState<BizaoConfigModal>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
@@ -244,9 +246,9 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
-                                'Phone Information',
-                                style: TextStyle(
+                              Text(
+                                ref.watch(translationHelperProvider)('payment.mobileMoneyForm.title'),
+                                style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
                                   color: AppTheme.textDarkColor,
@@ -304,9 +306,9 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
                                 ],
 
                                 // Customer Information Section
-                                const Text(
-                                  'Customer Information',
-                                  style: TextStyle(
+                                Text(
+                                  ref.watch(translationHelperProvider)('payment.mobileMoneyForm.customerInformation'),
+                                  style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                     color: AppTheme.textDarkColor,
@@ -316,7 +318,7 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
 
                                 // First Name Field
                                 _buildTextField(
-                                  label: 'First Name *',
+                                  label: ref.watch(translationHelperProvider)('payment.mobileMoneyForm.fields.firstName'),
                                   controller: _firstNameController,
                                   hintText: 'Enter your first name',
                                   keyboardType: TextInputType.text,
@@ -326,7 +328,7 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
 
                                 // Last Name Field
                                 _buildTextField(
-                                  label: 'Last Name *',
+                                  label: ref.watch(translationHelperProvider)('payment.mobileMoneyForm.fields.lastName'),
                                   controller: _lastNameController,
                                   hintText: 'Enter your last name',
                                   keyboardType: TextInputType.text,
@@ -336,7 +338,7 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
 
                                 // Email Field
                                 _buildTextField(
-                                  label: 'Email Address *',
+                                  label: ref.watch(translationHelperProvider)('payment.mobileMoneyForm.fields.emailAddress'),
                                   controller: _emailController,
                                   hintText: 'Enter your email address',
                                   keyboardType: TextInputType.emailAddress,
@@ -413,7 +415,7 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                   ),
-                                  child: const Text('Cancel'),
+                                  child: Text(ref.watch(translationHelperProvider)('payment.mobileMoneyForm.buttons.cancel')),
                                 ),
                               ),
                               const SizedBox(width: 16),
@@ -429,7 +431,7 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                   ),
-                                  child: Text(_isSubmitting ? 'Submitting...' : 'Submit'),
+                                  child: Text(_isSubmitting ? ref.watch(translationHelperProvider)('payment.mobileMoneyForm.buttons.submitting') : ref.watch(translationHelperProvider)('payment.mobileMoneyForm.buttons.submit')),
                                 ),
                               ),
                             ],
@@ -496,9 +498,9 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Country',
-          style: TextStyle(
+        Text(
+          ref.watch(translationHelperProvider)('payment.mobileMoneyForm.fields.country'),
+          style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
             color: AppTheme.textDarkColor,
@@ -583,9 +585,9 @@ class _BizaoConfigModalState extends State<BizaoConfigModal>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Mobile Number *',
-          style: TextStyle(
+        Text(
+          ref.watch(translationHelperProvider)('payment.mobileMoneyForm.fields.mobileNumber'),
+          style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
             color: AppTheme.textDarkColor,

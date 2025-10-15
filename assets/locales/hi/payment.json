@@ -55,6 +55,88 @@
     "errorSelectProvider": "पहले मोबाइल मनी चुनें",
     "missingData": "लेन-देन डेटा गायब है। वापस जाएं और फॉर्म पूरा करें।",
     "estimateFailed": "अनुमान प्राप्त नहीं हो सका। कृपया पुनः प्रयास करें।"
+  },
+  "mobileMoneyForm": {
+    "title": "फ़ोन जानकारी",
+    "selectedProvider": "चुना गया प्रदाता: {provider}",
+    "customerInformation": "ग्राहक जानकारी",
+    "fields": {
+      "firstName": "पहला नाम *",
+      "firstNameHint": "अपना पहला नाम दर्ज करें",
+      "lastName": "अंतिम नाम *",
+      "lastNameHint": "अपना अंतिम नाम दर्ज करें",
+      "emailAddress": "ईमेल पता *",
+      "emailHint": "अपना ईमेल पता दर्ज करें",
+      "country": "देश",
+      "mobileNumber": "मोबाइल नंबर *",
+      "mobileNumberHint": "CI मोबाइल नंबर दर्ज करें (जैसे 07123456)"
+    },
+    "supportNote": "वर्तमान में केवल आइवरी कोस्ट का समर्थन करता है",
+    "buttons": {
+      "cancel": "रद्द करें",
+      "submit": "सबमिट करें",
+      "submitting": "सबमिट कर रहे हैं..."
+    }
+  },
+  "completionScreen": {
+    "status": {
+      "pending": "भुगतान लंबित",
+      "complete": "भुगतान पूर्ण",
+      "processing": "भुगतान प्रसंस्करण",
+      "failed": "भुगतान असफल",
+      "description": "आपका लेन-देन संसाधित हो रहा है"
+    },
+    "tracking": {
+      "label": "ट्रैकिंग संख्या (FTN): {trackingNumber}",
+      "copied": "ट्रैकिंग संख्या क्लिपबोर्ड पर कॉपी की गई!"
+    },
+    "transactionDetails": {
+      "youSent": "आपने भेजा",
+      "transferRate": "ट्रांसफर दर",
+      "fee": "शुल्क",
+      "transferTime": "ट्रांसफर समय",
+      "recipientGets": "प्राप्तकर्ता को मिलता है",
+      "totalToPay": "कुल भुगतान",
+      "status": "स्थिति",
+      "createdOn": "बनाया गया",
+      "baseFee": "आधार शुल्क",
+      "nftDiscount": "NFT छूट",
+      "loyaltyDiscount": "वफादारी छूट",
+      "trackingNumber": "ट्रैकिंग संख्या",
+      "transactionType": "लेन-देन प्रकार"
+    },
+    "paymentInstructions": {
+      "title": "भुगतान निर्देश",
+      "subtitle": "जारी रखने के लिए प्रदान किए गए पते पर बिल्कुल {amount} {currency} भेजें।",
+      "recipientAddress": "प्राप्तकर्ता का पता",
+      "amount": "राशि",
+      "network": "नेटवर्क",
+      "currencyType": "मुद्रा प्रकार",
+      "copiedToClipboard": "क्लिपबोर्ड पर कॉपी किया गया!"
+    },
+    "notifications": {
+      "paymentSent": "भुगतान भेजा गया!",
+      "paymentSentDesc": "आपका भुगतान #{id} भेजा गया है",
+      "paymentFailed": "भुगतान असफल!",
+      "paymentFailedDesc": "आपका भुगतान #{id} असफल हो गया है",
+      "inviteFriend": "दोस्त को आमंत्रित करें",
+      "inviteFriendDesc": "सहयोगी लिंक के माध्यम से पंजीकरण की पुष्टि"
+    },
+    "buttons": {
+      "trackOrder": "ऑर्डर ट्रैक करें",
+      "backToHome": "होम पर वापस",
+      "connectWallet": "वॉलेट कनेक्ट करें और भुगतान करें"
+    },
+    "errors": {
+      "transactionDataNotAvailable": "लेन-देन डेटा उपलब्ध नहीं",
+      "walletConnectionFailed": "वॉलेट कनेक्शन असफल",
+      "transactionFailed": "लेन-देन असफल",
+      "error": "त्रुटि: {message}"
+    },
+    "success": {
+      "transactionSent": "लेन-देन भेजा गया! हैश: {hash}...",
+      "transactionSuccessful": "लेन-देन सफल! हैश: {hash}..."
+    }
   }
 }
 

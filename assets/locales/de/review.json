@@ -43,10 +43,25 @@
       "address": "Adresse",
       "notProvided": "Nicht angegeben"
     }
-  }
-}
-
-{
+  },
+  "detailsScreen": {
+    "progressTitle": "Empfängerinformationen",
+    "progressSubtitle": "Informationen eingeben.",
+    "title": "Details überprüfen",
+    "subtitle": "Alle Detailinformationen überprüfen.",
+    "buttons": {
+      "confirm": "Bestätigen",
+      "creating": "Transaktion wird erstellt...",
+      "cancel": "Abbrechen"
+    },
+    "errors": {
+      "missingNetwork": "Bitte gehen Sie zurück und wählen Sie zuerst ein Blockchain-Netzwerk aus",
+      "missingCryptoAddress": "Bitte gehen Sie zurück und bestätigen Sie zuerst Ihre Krypto-Adresse",
+      "missingExchangeData": "Wechselformulardaten fehlen. Bitte kehren Sie zum Startbildschirm zurück.",
+      "invalidAmount": "Ungültiger Betrag. Bitte überprüfen Sie Ihr Wechselformular.",
+      "transactionFailed": "Fehler beim Erstellen der Transaktion"
+    }
+  },
   "progress": {
     "receiverInfo": {
       "label": "Informationen des Empfängers",
@@ -132,5 +147,81 @@
     "somethingWentWrong": "Etwas ist schief gelaufen",
     "networkError": "Netzwerkfehler: Transaktion konnte nicht geschätzt werden",
     "transactionFailed": "Transaktion fehlgeschlagen"
+  },
+  "cryptoDetails": {
+    "senderDetails": {
+      "title": "Absenderdetails",
+      "sourceOfFunds": "Herkunft der Mittel",
+      "purposeOfTransaction": "Zweck der Transaktion",
+      "coverageArea": "Abdeckungsbereich",
+      "savings": "ERSPARNISSE",
+      "education": "BILDUNG",
+      "westCentralAfrica": "West- und Zentralafrika"
+    },
+    "mobileProvider": {
+      "title": "Mobile Money ({provider})",
+      "mobileProvider": "Mobilfunkanbieter",
+      "phoneNumber": "Telefonnummer",
+      "providerDetails": "Anbieterdetails",
+      "show": "Anzeigen",
+      "serviceCode": "Servicecode",
+      "apiMethod": "API-Methode",
+      "securePayment": {
+        "title": "Sichere mobile Zahlung",
+        "description": "Ihre mobile Geldzahlung wird sicher über unser vertrauenswürdiges Zahlungsnetzwerk verarbeitet"
+      }
+    },
+    "receiverDetails": {
+      "title": "Empfängerdetails",
+      "walletAddress": "Wallet-Adresse",
+      "blockchainNetwork": "Blockchain-Netzwerk",
+      "receiverCountry": "Empfängerland",
+      "ethWallet": "ETH-Wallet",
+      "coteDeIvoire": "Elfenbeinküste",
+      "ethereum": "ETHEREUM"
+    },
+    "feeBreakdown": {
+      "title": "Gebührenaufschlüsselung",
+      "youSent": "Sie haben gesendet",
+      "transferRate": "Transferkurs",
+      "live": "LIVE",
+      "rateId": "Kurs-ID: {id}",
+      "platformCharges": "Plattformgebühren",
+      "networkFee": "Netzwerkgebühr",
+      "loyaltyDiscount": "Treurabatt",
+      "nftDiscount": "NFT-Inhaber-Rabatt",
+      "totalSavings": "Gesamtersparnis",
+      "totalToPay": "Zu zahlender Gesamtbetrag",
+      "recipientGets": "Empfänger erhält",
+      "showDetails": "Details anzeigen",
+      "rawValues": "Rohwerte",
+      "networkStatus": "Netzwerkstatus",
+      "normal": "Normal",
+      "availability": "Verfügbarkeit"
+    },
+    "amountSummary": {
+      "title": "Betrag",
+      "transferSummary": "Übertragungszusammenfassung",
+      "raw": "Roh",
+      "amountToSend": "Zu sendender Betrag",
+      "transferFee": "Überweisungsgebühr",
+      "totalCost": "Gesamtkosten",
+      "totalToRecipient": "Gesamt an Empfänger",
+      "exchangeRate": "Wechselkurs",
+      "networkCongestion": "Netzwerküberlastung",
+      "medium": "Mittel"
+    },
+    "providers": {
+      "orangeMoney": "Orange Money",
+      "wave": "Wave",
+      "mtn": "MTN",
+      "moovMoney": "Moov Money",
+      "mobileMoneyProvider": "Mobile Money Anbieter"
+    },
+    "actions": {
+      "copiedToClipboard": "In die Zwischenablage kopiert",
+      "addressCopied": "Adresse in die Zwischenablage kopiert",
+      "rateCopied": "Kurs in die Zwischenablage kopiert"
+    }
   }
 }

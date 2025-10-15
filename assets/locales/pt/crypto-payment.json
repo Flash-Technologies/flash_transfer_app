@@ -1,4 +1,15 @@
 {
+  "screen": {
+    "title": "Enviar Pagamento Cripto",
+    "subtitle": "Transferência Cripto para Dinheiro", 
+    "description": "Selecione sua rede blockchain preferida para continuar com a transferência cripto para dinheiro móvel.",
+    "networkSelection": {
+      "title": "Selecionar Rede Blockchain",
+      "availableNetworks": "Redes disponíveis para {currency}",
+      "noNetworksAvailable": "Nenhuma rede disponível para a criptomoeda selecionada",
+      "continue": "Continuar"
+    }
+  },
   "loading": {
     "transactionDetails": "Loading transaction details..."
   },

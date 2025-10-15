@@ -13,6 +13,7 @@ import 'package:flash_transfer_app/presentation/review/components/user_detail_ca
 import 'package:flash_transfer_app/presentation/review/components/transaction_summary.dart';
 import 'package:flash_transfer_app/presentation/review/components/payment_details/payment_details_factory.dart';
 import 'package:flash_transfer_app/core/models/transaction_details.dart';
+import 'package:flash_transfer_app/providers/language_provider.dart';
 
 class ReviewDetailsScreen extends ConsumerWidget {
   final PaymentType paymentType;
@@ -32,11 +33,16 @@ class ReviewDetailsScreen extends ConsumerWidget {
         child: Column(
           children: [
             // Progress Header (Step 3/4)
-            const ProgressHeader(
-              step: 3,
-              totalSteps: 4,
-              title: "Receiver's info",
-              subtitle: "Enter the information.",
+            Consumer(
+              builder: (context, ref, child) {
+                final tr = ref.watch(translationHelperProvider);
+                return ProgressHeader(
+                  step: 3,
+                  totalSteps: 4,
+                  title: tr('review.detailsScreen.progressTitle'),
+                  subtitle: tr('review.detailsScreen.progressSubtitle'),
+                );
+              },
             ).animate().fadeIn(duration: 300.ms),
 
             // Main content with scroll
@@ -49,7 +55,7 @@ class ReviewDetailsScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Title
-                      _buildTitleSection()
+                      _buildTitleSection(ref)
                           .animate()
                           .fadeIn(duration: 400.ms)
                           .slideY(begin: 0.1, end: 0),
@@ -80,22 +86,23 @@ class ReviewDetailsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildTitleSection() {
+  Widget _buildTitleSection(WidgetRef ref) {
+    final tr = ref.watch(translationHelperProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: const [
+      children: [
         Text(
-          "Review Details",
-          style: TextStyle(
+          tr('review.detailsScreen.title'),
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
             color: AppTheme.textDarkColor,
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Text(
-          "Check all details informations.",
-          style: TextStyle(fontSize: 16, color: AppTheme.textGrayColor),
+          tr('review.detailsScreen.subtitle'),
+          style: const TextStyle(fontSize: 16, color: AppTheme.textGrayColor),
         ),
       ],
     );
@@ -104,6 +111,7 @@ class ReviewDetailsScreen extends ConsumerWidget {
   Widget _buildActionButtons(
       BuildContext context, WidgetRef ref, PaymentState paymentState) {
     final isLoading = paymentState.isTransactionLoading;
+    final tr = ref.watch(translationHelperProvider);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -120,7 +128,7 @@ class ReviewDetailsScreen extends ConsumerWidget {
       child: Column(
         children: [
           AppButton(
-            text: isLoading ? "Creating Transaction..." : "Confirm",
+            text: isLoading ? tr('review.detailsScreen.buttons.creating') : tr('review.detailsScreen.buttons.confirm'),
             onPressed: () {
               if (!isLoading) {
                 _handleConfirm(context, ref);
@@ -139,7 +147,7 @@ class ReviewDetailsScreen extends ConsumerWidget {
               ),
           const SizedBox(height: 12),
           AppButton(
-            text: "Cancel",
+            text: tr('review.detailsScreen.buttons.cancel'),
             onPressed: () => context.pop(),
             backgroundColor: Colors.transparent,
             textColor: AppTheme.textGrayColor,
@@ -173,6 +181,7 @@ class ReviewDetailsScreen extends ConsumerWidget {
       BuildContext context, WidgetRef ref) async {
     final paymentState = ref.read(paymentProvider);
     final exchangeForm = ref.read(exchangeFormProvider);
+    final tr = ref.read(translationHelperProvider);
 
     // Get transaction flow type
     final fromCurrency = exchangeForm.fromCurrency;
@@ -183,8 +192,8 @@ class ReviewDetailsScreen extends ConsumerWidget {
     // For crypto-to-cash, we don't need a wallet address, just the selected network
     if (isCryptoToCash && paymentState.selectedNetwork == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please go back and select a blockchain network first'),
+        SnackBar(
+          content: Text(tr('review.detailsScreen.errors.missingNetwork')),
           backgroundColor: Colors.red,
         ),
       );
@@ -197,8 +206,8 @@ class ReviewDetailsScreen extends ConsumerWidget {
             paymentState.selectedWalletAddress == null)) {
       // Show error - user needs to go back and validate address
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please go back and confirm your crypto address first'),
+        SnackBar(
+          content: Text(tr('review.detailsScreen.errors.missingCryptoAddress')),
           backgroundColor: Colors.red,
         ),
       );
@@ -211,9 +220,8 @@ class ReviewDetailsScreen extends ConsumerWidget {
           exchangeForm.toCurrency == null ||
           exchangeForm.sendAmount.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-                'Missing exchange form data. Please go back to the home screen.'),
+          SnackBar(
+            content: Text(tr('review.detailsScreen.errors.missingExchangeData')),
             backgroundColor: Colors.red,
           ),
         );
@@ -223,8 +231,8 @@ class ReviewDetailsScreen extends ConsumerWidget {
       final double? amount = double.tryParse(exchangeForm.sendAmount);
       if (amount == null || amount <= 0) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Invalid amount. Please check your exchange form.'),
+          SnackBar(
+            content: Text(tr('review.detailsScreen.errors.invalidAmount')),
             backgroundColor: Colors.red,
           ),
         );
@@ -278,7 +286,7 @@ class ReviewDetailsScreen extends ConsumerWidget {
         final errorMessage = ref.read(paymentProvider).errorMessage;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(errorMessage ?? 'Failed to create transaction'),
+            content: Text(errorMessage ?? tr('review.detailsScreen.errors.transactionFailed')),
             backgroundColor: Colors.red,
           ),
         );
@@ -286,8 +294,8 @@ class ReviewDetailsScreen extends ConsumerWidget {
     } catch (e) {
       // Show generic error
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('An error occurred. Please try again.'),
+        SnackBar(
+          content: Text(tr('review.detailsScreen.errors.transactionFailed')),
           backgroundColor: Colors.red,
         ),
       );

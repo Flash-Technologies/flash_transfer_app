@@ -1,0 +1,81 @@
+{
+  "screen": {
+    "title": "Mes Transactions",
+    "subtitle": "Afficher et gérer votre historique des transactions",
+    "emptyState": "Aucune transaction pour le moment",
+    "emptyDescription": "Votre historique des transactions apparaîtra ici une fois que vous commencerez à envoyer de l'argent",
+    "pullToRefresh": "Tirer pour actualiser",
+    "loading": "Chargement des transactions...",
+    "back": "Retour"
+  },
+  "transaction": {
+    "send": "Envoyer",
+    "receive": "Recevoir",
+    "pending": "En attente",
+    "completed": "Terminé",
+    "failed": "Échoué",
+    "cancelled": "Annulé",
+    "processing": "En cours",
+    "amount": "Montant",
+    "date": "Date",
+    "recipient": "Destinataire",
+    "sender": "Expéditeur",
+    "transactionId": "ID de Transaction",
+    "fee": "Frais",
+    "total": "Total",
+    "reference": "Référence"
+  },
+  "status": {
+    "success": "Succès",
+    "failed": "Échoué",
+    "pending": "En attente",
+    "processing": "En cours",
+    "cancelled": "Annulé"
+  },
+  "filters": {
+    "all": "Toutes",
+    "sent": "Envoyées",
+    "received": "Reçues",
+    "thisMonth": "Ce Mois",
+    "lastMonth": "Mois Dernier",
+    "last7Days": "7 Derniers Jours",
+    "last30Days": "30 Derniers Jours",
+    "customRange": "Plage Personnalisée"
+  },
+  "actions": {
+    "viewDetails": "Voir les Détails",
+    "download": "Télécharger le Reçu",
+    "share": "Partager",
+    "repeatTransaction": "Répéter la Transaction",
+    "cancel": "Annuler la Transaction",
+    "retry": "Réessayer",
+    "trackTransfer": "Suivre le Transfert"
+  },
+  "currencies": {
+    "usd": "USD",
+    "eur": "EUR",
+    "gbp": "GBP",
+    "cad": "CAD",
+    "btc": "BTC",
+    "eth": "ETH",
+    "usdt": "USDT"
+  },
+  "time": {
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "thisWeek": "Cette Semaine",
+    "lastWeek": "Semaine Dernière",
+    "older": "Plus Ancien"
+  },
+  "errors": {
+    "loadFailed": "Échec du chargement des transactions",
+    "networkError": "Erreur réseau",
+    "retry": "Réessayer",
+    "noConnection": "Pas de connexion internet"
+  },
+  "search": {
+    "placeholder": "Entrez le numéro de suivi (FTN)",
+    "searching": "Recherche en cours...",
+    "clear": "Effacer la recherche"
+  }
+}

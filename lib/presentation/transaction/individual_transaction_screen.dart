@@ -7,6 +7,7 @@ import '../../core/models/transaction_model.dart';
 import '../../providers/transaction_provider.dart';
 import '../../presentation/payment/components/wallet_connect_widget.dart';
 import '../../config/ui_constants.dart';
+import '../../providers/language_provider.dart';
 
 class IndividualTransactionScreen extends ConsumerStatefulWidget {
   final String transactionId;
@@ -88,6 +89,8 @@ class _IndividualTransactionScreenState
   }
   
   Widget _buildPaymentActionCard(Transaction transaction) {
+    final tr = ref.read(translationHelperProvider);
+    
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -129,7 +132,7 @@ class _IndividualTransactionScreenState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Payment Required',
+                      tr('transaction.individualTransaction.paymentAction.title'),
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -138,7 +141,7 @@ class _IndividualTransactionScreenState
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Complete your crypto payment to proceed',
+                      tr('transaction.individualTransaction.paymentAction.subtitle'),
                       style: TextStyle(
                         fontSize: 14,
                         color: AppColors.textSecondary,
@@ -164,18 +167,18 @@ class _IndividualTransactionScreenState
             child: Column(
               children: [
                 _buildPaymentDetailRow(
-                  'Amount to Pay',
+                  tr('transaction.individualTransaction.paymentAction.amountToPay'),
                   '${transaction.totalAmount ?? transaction.amount} ${transaction.currency}',
                   isImportant: true,
                 ),
                 const SizedBox(height: 12),
                 _buildPaymentDetailRow(
-                  'Network',
-                  transaction.blockchainNetwork ?? 'Ethereum',
+                  tr('transaction.individualTransaction.paymentAction.network'),
+                  transaction.blockchainNetwork ?? tr('transaction.individualTransaction.paymentAction.ethereum'),
                 ),
                 const SizedBox(height: 12),
                 _buildPaymentDetailRow(
-                  'Tracking Number',
+                  tr('transaction.individualTransaction.paymentAction.trackingNumber'),
                   transaction.trackingNumber ?? transaction.referenceId ?? '',
                 ),
               ],
@@ -203,7 +206,7 @@ class _IndividualTransactionScreenState
               
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Payment completed! Transaction: ${txHash.substring(0, 10)}...'),
+                  content: Text(tr('transaction.individualTransaction.paymentAction.successMessage').replaceAll('{hash}', txHash.substring(0, 10))),
                   backgroundColor: AppColors.success,
                   behavior: SnackBarBehavior.floating,
                 ),
@@ -277,6 +280,8 @@ class _IndividualTransactionScreenState
   }
 
   Widget _buildHeader() {
+    final tr = ref.read(translationHelperProvider);
+    
     return Container(
       color: Colors.white,
       padding: EdgeInsets.only(
@@ -307,10 +312,10 @@ class _IndividualTransactionScreenState
             ),
           ),
           const SizedBox(width: 16),
-          const Expanded(
+          Expanded(
             child: Text(
-              'Transaction Details',
-              style: TextStyle(
+              tr('transaction.individualTransaction.header.title'),
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF181F30),
@@ -503,9 +508,9 @@ class _IndividualTransactionScreenState
                 const SizedBox(width: 8),
                 GestureDetector(
                   onTap: () => _copyToClipboard(transaction.trackingNumber),
-                  child: const Text(
-                    'Copy',
-                    style: TextStyle(
+                  child: Text(
+                    ref.read(translationHelperProvider)('transaction.individualTransaction.statusCard.copy'),
+                    style: const TextStyle(
                       fontSize: 12,
                       color: Color(0xFF2475FF),
                       fontWeight: FontWeight.w500,
@@ -524,12 +529,14 @@ class _IndividualTransactionScreenState
   }
 
   Widget _buildTransactionDetailsCard(Transaction transaction) {
+    final tr = ref.read(translationHelperProvider);
+    
     return _buildCard(
-      title: 'Transaction Details',
+      title: tr('transaction.individualTransaction.transactionDetails.title'),
       child: Column(
         children: [
           _buildInfoRow(
-            'You\'re Sending',
+            tr('transaction.individualTransaction.transactionDetails.youSending'),
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -562,12 +569,12 @@ class _IndividualTransactionScreenState
             ),
           ),
           _buildInfoRow(
-            'Including fee',
+            tr('transaction.individualTransaction.transactionDetails.includingFee'),
             '${transaction.fee.toStringAsFixed(6)} ${transaction.currency}',
           ),
           const Divider(color: Color(0xFFF8F9FA), height: 24),
           _buildInfoRow(
-            'Recipient Gets',
+            tr('transaction.individualTransaction.transactionDetails.recipientGets'),
             Text(
               transaction.destinationAmount?.toStringAsFixed(10) ?? '0.0000000000',
               style: const TextStyle(
@@ -577,50 +584,52 @@ class _IndividualTransactionScreenState
               ),
             ),
           ),
-          _buildInfoRow('Duration', _calculateDuration(transaction)),
-          _buildInfoRow('Started', _formatRelativeTime(transaction.createdAt)),
+          _buildInfoRow(tr('transaction.individualTransaction.transactionDetails.duration'), _calculateDuration(transaction)),
+          _buildInfoRow(tr('transaction.individualTransaction.transactionDetails.started'), _formatRelativeTime(transaction.createdAt)),
         ],
       ),
     );
   }
 
   Widget _buildTimelineCard(Transaction transaction) {
+    final tr = ref.read(translationHelperProvider);
+    
     return _buildCard(
-      title: 'Transaction Timeline',
-      subtitle: 'Duration: ${_calculateDuration(transaction)}',
+      title: tr('transaction.individualTransaction.timeline.title'),
+      subtitle: tr('transaction.individualTransaction.timeline.duration').replaceAll('{duration}', _calculateDuration(transaction)),
       child: Column(
         children: [
           _buildTimelineItem(
             icon: Icons.check_circle,
             iconColor: const Color(0xFF00C735),
-            title: 'Transaction Completed',
+            title: tr('transaction.individualTransaction.timeline.transactionCompleted'),
             time: _formatRelativeTime(transaction.updatedAt),
           ),
           _buildTimelineItem(
             icon: Icons.phone_callback,
             iconColor: const Color(0xFF00C735),
-            title: 'Payment Callback Received',
+            title: tr('transaction.individualTransaction.timeline.paymentCallbackReceived'),
             time: _formatRelativeTime(transaction.updatedAt),
           ),
           _buildTimelineItem(
             icon: Icons.access_time,
             iconColor: const Color(0xFFFFC000),
-            title: 'Blockchain Confirmation',
+            title: tr('transaction.individualTransaction.timeline.blockchainConfirmation'),
             time: _formatRelativeTime(transaction.updatedAt),
             description: transaction.blockchainTxHash != null 
-                ? 'Confirmed on ${transaction.blockchainNetwork ?? 'blockchain'}'
-                : 'Waiting for confirmations',
+                ? tr('transaction.individualTransaction.timeline.confirmedOn').replaceAll('{network}', transaction.blockchainNetwork ?? 'blockchain')
+                : tr('transaction.individualTransaction.timeline.waitingForConfirmations'),
           ),
           _buildTimelineItem(
             icon: Icons.sync,
             iconColor: const Color(0xFF00C735),
-            title: 'Payment Processing',
+            title: tr('transaction.individualTransaction.timeline.paymentProcessing'),
             time: _formatRelativeTime(transaction.createdAt),
           ),
           _buildTimelineItem(
             icon: Icons.schedule,
             iconColor: const Color(0xFF00C735),
-            title: 'Transaction Started',
+            title: tr('transaction.individualTransaction.timeline.transactionStarted'),
             time: _formatRelativeTime(transaction.createdAt),
             isLast: true,
           ),
@@ -630,33 +639,35 @@ class _IndividualTransactionScreenState
   }
 
   Widget _buildFeeBreakdownCard(Transaction transaction) {
+    final tr = ref.read(translationHelperProvider);
     final feeDetails = transaction.feeDetails;
+    
     return _buildCard(
-      title: 'Fee Breakdown',
+      title: tr('transaction.individualTransaction.feeBreakdown.title'),
       child: Column(
         children: [
-          _buildFeeRow('Base Amount', transaction.amount, transaction.currency),
+          _buildFeeRow(tr('transaction.individualTransaction.feeBreakdown.baseAmount'), transaction.amount, transaction.currency),
           if (feeDetails != null) ...[
             _buildFeeRow(
-                'Platform Fee', 
+                tr('transaction.individualTransaction.feeBreakdown.platformFee'), 
                 feeDetails['platformCharges'] ?? transaction.fee, 
                 transaction.currency),
             if (feeDetails['loyaltyDiscount'] != null)
               _buildFeeRow(
-                'Loyalty Discount',
+                tr('transaction.individualTransaction.feeBreakdown.loyaltyDiscount'),
                 -(feeDetails['loyaltyDiscount'] as num),
                 transaction.currency,
                 isDiscount: true,
               ),
             if (feeDetails['nftDiscount'] != null)
               _buildFeeRow(
-                'NFT Discount',
+                tr('transaction.individualTransaction.feeBreakdown.nftDiscount'),
                 -(feeDetails['nftDiscount'] as num),
                 transaction.currency,
                 isDiscount: true,
               ),
           ] else ...[
-            _buildFeeRow('Service Fee', transaction.fee, transaction.currency),
+            _buildFeeRow(tr('transaction.individualTransaction.feeBreakdown.serviceFee'), transaction.fee, transaction.currency),
           ],
           const Divider(
             color: Color(0xFFF8F9FA),
@@ -664,7 +675,7 @@ class _IndividualTransactionScreenState
             thickness: 2,
           ),
           _buildFeeRow(
-            'Total',
+            tr('transaction.individualTransaction.feeBreakdown.total'),
             transaction.totalAmount,
             transaction.currency,
             isTotal: true,
@@ -675,18 +686,20 @@ class _IndividualTransactionScreenState
   }
 
   Widget _buildTransactionInfoCard(Transaction transaction) {
+    final tr = ref.read(translationHelperProvider);
+    
     return _buildCard(
-      title: 'Transaction Info',
+      title: tr('transaction.individualTransaction.transactionInfo.title'),
       child: Column(
         children: [
-          _buildInfoRow('Reference ID', transaction.referenceId),
-          _buildInfoRow('Type', transaction.formattedType),
-          _buildInfoRow('Created', _formatRelativeTime(transaction.createdAt)),
+          _buildInfoRow(tr('transaction.individualTransaction.transactionInfo.referenceId'), transaction.referenceId),
+          _buildInfoRow(tr('transaction.individualTransaction.transactionInfo.type'), transaction.formattedType),
+          _buildInfoRow(tr('transaction.individualTransaction.transactionInfo.created'), _formatRelativeTime(transaction.createdAt)),
           if (transaction.completedAt != null)
-            _buildInfoRow('Completed', _formatRelativeTime(transaction.completedAt!)),
+            _buildInfoRow(tr('transaction.individualTransaction.transactionInfo.completed'), _formatRelativeTime(transaction.completedAt!)),
           if (transaction.blockchainTxHash != null)
             _buildInfoRow(
-              'Blockchain TX',
+              tr('transaction.individualTransaction.transactionInfo.blockchainTx'),
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -701,9 +714,9 @@ class _IndividualTransactionScreenState
                   const SizedBox(width: 8),
                   GestureDetector(
                     onTap: () => _copyToClipboard(transaction.blockchainTxHash!),
-                    child: const Text(
-                      'Copy',
-                      style: TextStyle(
+                    child: Text(
+                      tr('transaction.individualTransaction.transactionInfo.copy'),
+                      style: const TextStyle(
                         fontSize: 12,
                         color: Color(0xFF2475FF),
                         fontWeight: FontWeight.w500,
@@ -914,6 +927,8 @@ class _IndividualTransactionScreenState
   }
 
   Widget _buildActionButtons() {
+    final tr = ref.read(translationHelperProvider);
+    
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
@@ -939,9 +954,9 @@ class _IndividualTransactionScreenState
                 ),
                 elevation: 0,
               ),
-              child: const Text(
-                'Track Another Transaction',
-                style: TextStyle(
+              child: Text(
+                tr('transaction.individualTransaction.actionButtons.trackAnother'),
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
@@ -965,9 +980,9 @@ class _IndividualTransactionScreenState
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: const Text(
-                'Back to Home',
-                style: TextStyle(
+              child: Text(
+                tr('transaction.individualTransaction.actionButtons.backToHome'),
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
@@ -980,17 +995,19 @@ class _IndividualTransactionScreenState
   }
 
   Widget _buildLoadingState() {
-    return const Center(
+    final tr = ref.read(translationHelperProvider);
+    
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircularProgressIndicator(
+          const CircularProgressIndicator(
             valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFFC000)),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           Text(
-            'Loading transaction details...',
-            style: TextStyle(
+            tr('transaction.individualTransaction.loading.message'),
+            style: const TextStyle(
               color: Color(0xFF6E757D),
               fontSize: 14,
             ),
@@ -1019,21 +1036,24 @@ class _IndividualTransactionScreenState
   }
 
   String _formatRelativeTime(DateTime dateTime) {
+    final tr = ref.read(translationHelperProvider);
     final now = DateTime.now();
     final difference = now.difference(dateTime);
 
     if (difference.inDays > 0) {
-      return '${difference.inDays}d ago';
+      return tr('transaction.individualTransaction.timeFormat.daysAgo').replaceAll('{days}', difference.inDays.toString());
     } else if (difference.inHours > 0) {
-      return '${difference.inHours}h ago';
+      return tr('transaction.individualTransaction.timeFormat.hoursAgo').replaceAll('{hours}', difference.inHours.toString());
     } else if (difference.inMinutes > 0) {
-      return '${difference.inMinutes}m ago';
+      return tr('transaction.individualTransaction.timeFormat.minutesAgo').replaceAll('{minutes}', difference.inMinutes.toString());
     } else {
-      return 'Just now';
+      return tr('transaction.individualTransaction.timeFormat.justNow');
     }
   }
 
   String _calculateDuration(Transaction transaction) {
+    final tr = ref.read(translationHelperProvider);
+    
     if (transaction.completedAt != null) {
       final duration = transaction.completedAt!.difference(transaction.createdAt);
       if (duration.inHours > 0) {
@@ -1043,18 +1063,18 @@ class _IndividualTransactionScreenState
       } else if (duration.inMinutes > 0) {
         return '${duration.inMinutes}m';
       } else {
-        return '< 1m';
+        return tr('transaction.individualTransaction.timeFormat.lessThanMinute');
       }
     } else {
       final elapsed = DateTime.now().difference(transaction.createdAt);
       if (elapsed.inHours > 0) {
         final hours = elapsed.inHours;
         final minutes = elapsed.inMinutes % 60;
-        return '${hours}h ${minutes}m (ongoing)';
+        return '${hours}h ${minutes}m ${tr('transaction.individualTransaction.timeFormat.ongoing')}';
       } else if (elapsed.inMinutes > 0) {
-        return '${elapsed.inMinutes}m (ongoing)';
+        return '${elapsed.inMinutes}m ${tr('transaction.individualTransaction.timeFormat.ongoing')}';
       } else {
-        return '< 1m (ongoing)';
+        return '${tr('transaction.individualTransaction.timeFormat.lessThanMinute')} ${tr('transaction.individualTransaction.timeFormat.ongoing')}';
       }
     }
   }
@@ -1067,12 +1087,14 @@ class _IndividualTransactionScreenState
   }
 
   void _copyToClipboard(String text) {
+    final tr = ref.read(translationHelperProvider);
+    
     Clipboard.setData(ClipboardData(text: text));
     HapticFeedback.lightImpact();
     
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Copied to clipboard: ${_formatTxHash(text)}'),
+        content: Text(tr('transaction.individualTransaction.clipboard.copied').replaceAll('{text}', _formatTxHash(text))),
         duration: const Duration(seconds: 2),
         backgroundColor: const Color(0xFF181F30),
         behavior: SnackBarBehavior.floating,

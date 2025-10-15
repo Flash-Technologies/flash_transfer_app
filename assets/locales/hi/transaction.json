@@ -1,0 +1,81 @@
+{
+  "screen": {
+    "title": "मेरे लेनदेन",
+    "subtitle": "अपने लेनदेन इतिहास को देखें और प्रबंधित करें",
+    "emptyState": "अभी तक कोई लेनदेन नहीं",
+    "emptyDescription": "जैसे ही आप पैसे भेजना शुरू करेंगे, आपका लेनदेन इतिहास यहाँ दिखाई देगा",
+    "pullToRefresh": "रीफ्रेश करने के लिए खींचें",
+    "loading": "लेनदेन लोड हो रहे हैं...",
+    "back": "वापस"
+  },
+  "transaction": {
+    "send": "भेजें",
+    "receive": "प्राप्त करें",
+    "pending": "लंबित",
+    "completed": "पूर्ण",
+    "failed": "असफल",
+    "cancelled": "रद्द",
+    "processing": "प्रसंस्करण",
+    "amount": "राशि",
+    "date": "दिनांक",
+    "recipient": "प्राप्तकर्ता",
+    "sender": "भेजने वाला",
+    "transactionId": "लेनदेन आईडी",
+    "fee": "शुल्क",
+    "total": "कुल",
+    "reference": "संदर्भ"
+  },
+  "status": {
+    "success": "सफल",
+    "failed": "असफल",
+    "pending": "लंबित",
+    "processing": "प्रसंस्करण",
+    "cancelled": "रद्द"
+  },
+  "filters": {
+    "all": "सभी",
+    "sent": "भेजे गए",
+    "received": "प्राप्त",
+    "thisMonth": "इस महीने",
+    "lastMonth": "पिछले महीने",
+    "last7Days": "पिछले 7 दिन",
+    "last30Days": "पिछले 30 दिन",
+    "customRange": "कस्टम रेंज"
+  },
+  "actions": {
+    "viewDetails": "विवरण देखें",
+    "download": "रसीद डाउनलोड करें",
+    "share": "साझा करें",
+    "repeatTransaction": "लेनदेन दोहराएं",
+    "cancel": "लेनदेन रद्द करें",
+    "retry": "पुनः प्रयास करें",
+    "trackTransfer": "ट्रांसफर ट्रैक करें"
+  },
+  "currencies": {
+    "usd": "USD",
+    "eur": "EUR",
+    "gbp": "GBP",
+    "cad": "CAD",
+    "btc": "BTC",
+    "eth": "ETH",
+    "usdt": "USDT"
+  },
+  "time": {
+    "today": "आज",
+    "yesterday": "कल",
+    "thisWeek": "इस सप्ताह",
+    "lastWeek": "पिछले सप्ताह",
+    "older": "पुराना"
+  },
+  "errors": {
+    "loadFailed": "लेनदेन लोड करने में असफल",
+    "networkError": "नेटवर्क त्रुटि हुई",
+    "retry": "पुनः प्रयास करें",
+    "noConnection": "कोई इंटरनेट कनेक्शन नहीं"
+  },
+  "search": {
+    "placeholder": "ट्रैकिंग नंबर दर्ज करें (FTN)",
+    "searching": "खोज रहे हैं...",
+    "clear": "खोज साफ़ करें"
+  }
+}

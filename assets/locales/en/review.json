@@ -70,6 +70,24 @@
     "title": "Review Details",
     "subheading": "Check the summary of your order before validating."
   },
+  "detailsScreen": {
+    "progressTitle": "Receiver's info",
+    "progressSubtitle": "Enter the information.",
+    "title": "Review Details",
+    "subtitle": "Check all details informations.",
+    "buttons": {
+      "confirm": "Confirm",
+      "creating": "Creating Transaction...",
+      "cancel": "Cancel"
+    },
+    "errors": {
+      "missingNetwork": "Please go back and select a blockchain network first",
+      "missingCryptoAddress": "Please go back and confirm your crypto address first",
+      "missingExchangeData": "Missing exchange form data. Please go back to the home screen.",
+      "invalidAmount": "Invalid amount. Please check your exchange form.",
+      "transactionFailed": "Failed to create transaction"
+    }
+  },
   "buttons": {
     "cancel": "Cancel",
     "processing": "Processing...",
@@ -133,5 +151,81 @@
     "somethingWentWrong": "Something went wrong",
     "networkError": "Network error: Could not estimate transaction",
     "transactionFailed": "Transaction failed"
+  },
+  "cryptoDetails": {
+    "senderDetails": {
+      "title": "Sender Details",
+      "sourceOfFunds": "Source of funds",
+      "purposeOfTransaction": "Purpose of transaction",
+      "coverageArea": "Coverage Area",
+      "savings": "SAVINGS",
+      "education": "EDUCATION",
+      "westCentralAfrica": "West & Central Africa"
+    },
+    "mobileProvider": {
+      "title": "Mobile Money ({provider})",
+      "mobileProvider": "Mobile Provider",
+      "phoneNumber": "Phone Number",
+      "providerDetails": "Provider Details",
+      "show": "Show",
+      "serviceCode": "Service Code",
+      "apiMethod": "API Method",
+      "securePayment": {
+        "title": "Secure Mobile Payment",
+        "description": "Your mobile money payment will be processed securely through our trusted payment network"
+      }
+    },
+    "receiverDetails": {
+      "title": "Receiver details",
+      "walletAddress": "Wallet Address",
+      "blockchainNetwork": "Blockchain Network",
+      "receiverCountry": "Receiver Country",
+      "ethWallet": "ETH Wallet",
+      "coteDeIvoire": "Cote d'Ivoire",
+      "ethereum": "ETHEREUM"
+    },
+    "feeBreakdown": {
+      "title": "Fee Breakdown",
+      "youSent": "You sent",
+      "transferRate": "Transfer rate",
+      "live": "LIVE",
+      "rateId": "Rate ID: {id}",
+      "platformCharges": "Platform Charges",
+      "networkFee": "Network Fee",
+      "loyaltyDiscount": "Loyalty Discount",
+      "nftDiscount": "NFT Holder Discount",
+      "totalSavings": "Total Savings",
+      "totalToPay": "Total to pay",
+      "recipientGets": "Recipient Gets",
+      "showDetails": "Show Details",
+      "rawValues": "Raw Values",
+      "networkStatus": "Network Status",
+      "normal": "Normal",
+      "availability": "Availability"
+    },
+    "amountSummary": {
+      "title": "Amount",
+      "transferSummary": "Transfer Summary",
+      "raw": "Raw",
+      "amountToSend": "Amount to send",
+      "transferFee": "Transfer Fee",
+      "totalCost": "Total Cost",
+      "totalToRecipient": "Total to recipient",
+      "exchangeRate": "Exchange Rate",
+      "networkCongestion": "Network Congestion",
+      "medium": "Medium"
+    },
+    "providers": {
+      "orangeMoney": "Orange Money",
+      "wave": "Wave",
+      "mtn": "MTN",
+      "moovMoney": "Moov Money",
+      "mobileMoneyProvider": "Mobile Money Provider"
+    },
+    "actions": {
+      "copiedToClipboard": "Copied to clipboard",
+      "addressCopied": "Address copied to clipboard",
+      "rateCopied": "Rate copied to clipboard"
+    }
   }
 }

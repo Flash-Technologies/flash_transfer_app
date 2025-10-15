@@ -55,6 +55,88 @@
     "errorSelectProvider": "Select Mobile Money First",
     "missingData": "Missing transaction data. Please go back and complete the form.",
     "estimateFailed": "Failed to get transaction estimate. Please try again."
+  },
+  "mobileMoneyForm": {
+    "title": "Phone Information",
+    "selectedProvider": "Selected Provider: {provider}",
+    "customerInformation": "Customer Information",
+    "fields": {
+      "firstName": "First Name *",
+      "firstNameHint": "Enter your first name",
+      "lastName": "Last Name *", 
+      "lastNameHint": "Enter your last name",
+      "emailAddress": "Email Address *",
+      "emailHint": "Enter your email address",
+      "country": "Country",
+      "mobileNumber": "Mobile Number *",
+      "mobileNumberHint": "Enter CI mobile number ( e.g., 07123456)"
+    },
+    "supportNote": "currently supports only Ivory Coast",
+    "buttons": {
+      "cancel": "Cancel",
+      "submit": "Submit",
+      "submitting": "Submitting..."
+    }
+  },
+  "completionScreen": {
+    "status": {
+      "pending": "Payment Pending",
+      "complete": "Payment Complete",
+      "processing": "Payment Processing",
+      "failed": "Payment Failed",
+      "description": "Your transaction is being processed"
+    },
+    "tracking": {
+      "label": "Tracking number (FTN): {trackingNumber}",
+      "copied": "Tracking number copied to clipboard!"
+    },
+    "transactionDetails": {
+      "youSent": "You Sent",
+      "transferRate": "Transfer Rate",
+      "fee": "Fee",
+      "transferTime": "Transfer Time",
+      "recipientGets": "Recipient Gets",
+      "totalToPay": "Total to pay",
+      "status": "Status",
+      "createdOn": "Created On",
+      "baseFee": "Base Fee",
+      "nftDiscount": "NFT discount",
+      "loyaltyDiscount": "Loyalty Discount",
+      "trackingNumber": "Tracking Number",
+      "transactionType": "Transaction Type"
+    },
+    "paymentInstructions": {
+      "title": "Payment Instructions",
+      "subtitle": "Send exactly {amount} {currency} to the provided address to continue.",
+      "recipientAddress": "Recipient Address",
+      "amount": "Amount",
+      "network": "Network",
+      "currencyType": "Currency Type",
+      "copiedToClipboard": "Copied to clipboard!"
+    },
+    "notifications": {
+      "paymentSent": "Payment sent!",
+      "paymentSentDesc": "your payment #{id} has been sent",
+      "paymentFailed": "Payment Failed!",
+      "paymentFailedDesc": "your payment #{id} has failed",
+      "inviteFriend": "Invite friend",
+      "inviteFriendDesc": "Registration confirmed via affiliate link"
+    },
+    "buttons": {
+      "trackOrder": "Track Order",
+      "backToHome": "Back to Home",
+      "connectWallet": "Connect Wallet & Pay"
+    },
+    "errors": {
+      "transactionDataNotAvailable": "Transaction data not available",
+      "walletConnectionFailed": "Wallet connection failed",
+      "transactionFailed": "Transaction failed",
+      "error": "Error: {message}"
+    },
+    "success": {
+      "transactionSent": "Transaction sent! Hash: {hash}...",
+      "transactionSuccessful": "Transaction successful! Hash: {hash}..."
+    }
   }
 }
 
