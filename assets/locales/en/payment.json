@@ -1,0 +1,61 @@
+{
+  "common": {
+    "back": "Back",
+    "continue": "Continue",
+    "selectCountry": "Please select a country",
+    "required": "Required",
+    "phoneNumber": "Phone Number",
+    "phoneNumberRequired": "Please enter phone number"
+  },
+  "senderInfo": {
+    "headerTitle": "Send Crypto Payment",
+    "headerSubtitle": "Crypto to Cash Transfer",
+    "title": "Sender Information",
+    "subtitle": "Please provide your information for the cash transfer",
+    "sectionSenderInfo": "Sender Information",
+    "phoneLabel": "Phone Number*",
+    "phoneHint": "+1234567890",
+    "firstNameLabel": "First Name*",
+    "firstNameHint": "Enter first name",
+    "lastNameLabel": "Last Name*",
+    "lastNameHint": "Enter last name",
+    "idSectionTitle": "ID Information (Optional)",
+    "idType": "ID Type",
+    "idNumber": "ID Number",
+    "idNumberHint": "Enter ID number",
+    "issueDate": "ID Issue Date",
+    "expiryDate": "ID Expiry Date",
+    "datePlaceholder": "dd/mm/yyyy",
+    "countryTitle": "Country",
+    "countryLabel": "Select country",
+    "idTypes": {
+      "passport": "Passport",
+      "drivingLicense": "Driving License",
+      "nationalId": "National ID",
+      "other": "Other"
+    },
+    "progress": "2/4"
+  },
+  "recipientInfo": {
+    "headerTitle": "Send Crypto Payment",
+    "headerSubtitle": "Crypto to Cash Transfer",
+    "title": "Recipient Information",
+    "subtitle": "Please provide recipient information for cash pickup",
+    "beneficiaryDetails": "Beneficiary Details",
+    "phoneLabel": "Phone Number* (for SMS notification)",
+    "phoneHint": "Phone number",
+    "cashPickupCountry": "Cash Pickup Country*",
+    "progress": "3/4"
+  },
+  "selectPayment": {
+    "progressTitle": "Payment Method",
+    "progressSubtitle": "Enter the information.",
+    "title": "Select your mobile money",
+    "subtitle": "How would you like the money delivered?",
+    "errorSelectProvider": "Select Mobile Money First",
+    "missingData": "Missing transaction data. Please go back and complete the form.",
+    "estimateFailed": "Failed to get transaction estimate. Please try again."
+  }
+}
+
+

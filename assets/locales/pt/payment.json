@@ -1,0 +1,61 @@
+{
+  "common": {
+    "back": "Voltar",
+    "continue": "Continuar",
+    "selectCountry": "Por favor selecione um país",
+    "required": "Obrigatório",
+    "phoneNumber": "Número de telefone",
+    "phoneNumberRequired": "Por favor insira o número de telefone"
+  },
+  "senderInfo": {
+    "headerTitle": "Enviar pagamento cripto",
+    "headerSubtitle": "Transferência de cripto para dinheiro",
+    "title": "Informações do remetente",
+    "subtitle": "Forneça suas informações para a transferência em dinheiro",
+    "sectionSenderInfo": "Informações do remetente",
+    "phoneLabel": "Número de telefone*",
+    "phoneHint": "+1234567890",
+    "firstNameLabel": "Nome*",
+    "firstNameHint": "Insira o nome",
+    "lastNameLabel": "Sobrenome*",
+    "lastNameHint": "Insira o sobrenome",
+    "idSectionTitle": "Informações do documento (opcional)",
+    "idType": "Tipo de documento",
+    "idNumber": "Número do documento",
+    "idNumberHint": "Insira o número do documento",
+    "issueDate": "Data de emissão do documento",
+    "expiryDate": "Data de validade do documento",
+    "datePlaceholder": "dd/mm/aaaa",
+    "countryTitle": "País",
+    "countryLabel": "Selecionar país",
+    "idTypes": {
+      "passport": "Passaporte",
+      "drivingLicense": "Carteira de motorista",
+      "nationalId": "Documento de identidade",
+      "other": "Outro"
+    },
+    "progress": "2/4"
+  },
+  "recipientInfo": {
+    "headerTitle": "Enviar pagamento cripto",
+    "headerSubtitle": "Transferência de cripto para dinheiro",
+    "title": "Informações do destinatário",
+    "subtitle": "Forneça as informações do destinatário para retirada em dinheiro",
+    "beneficiaryDetails": "Detalhes do beneficiário",
+    "phoneLabel": "Número de telefone* (para notificação por SMS)",
+    "phoneHint": "Número de telefone",
+    "cashPickupCountry": "País de retirada em dinheiro*",
+    "progress": "3/4"
+  },
+  "selectPayment": {
+    "progressTitle": "Método de pagamento",
+    "progressSubtitle": "Insira as informações.",
+    "title": "Selecione seu mobile money",
+    "subtitle": "Como você gostaria que o dinheiro fosse entregue?",
+    "errorSelectProvider": "Selecione primeiro o Mobile Money",
+    "missingData": "Dados da transação ausentes. Volte e complete o formulário.",
+    "estimateFailed": "Não foi possível obter a estimativa. Tente novamente."
+  }
+}
+
+

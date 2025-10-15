@@ -1,4 +1,49 @@
 {
+  "cashPaymentDetails": {
+    "senderDetails": "Sender Details",
+    "receiverDetails": "Receiver details",
+    "sourceOfFunds": "Source of funds",
+    "purposeOfTransaction": "Purpose of transaction",
+    "coverageArea": "Coverage Area",
+    "cashPickup": "Cash Pickup",
+    "blockchainNetwork": "Blockchain Network",
+    "receiverCountry": "Receiver Country",
+    "transactionDetails": "Transaction Details",
+    "youSent": "You sent",
+    "transferRate": "Transfer rate",
+    "totalToPay": "Total to pay",
+    "recipientGets": "Recipient Gets",
+    "availability": "Availability",
+    "transactionUnavailable": "Transaction unavailable at this time",
+    "unavailable": "Unavailable",
+    "live": "LIVE",
+    "notProvided": "Not provided"
+  },
+  "transactionInfoCard": {
+    "labelColor": "#6A6A6A",
+    "valueColor": "#181F30"
+  },
+  "receiverInfo": {
+    "progressStep": "Step 1/4",
+    "headerTitle": "Receiver's Info",
+    "headerSubtitle": "Review receiver details",
+    "title": "Receiver's Information",
+    "subtitle": "Review all the details of your transaction. Make sure everything is correct before proceeding.",
+    "transactionDetails": "Transaction Details",
+    "youSend": "You Send",
+    "theyReceive": "They Receive",
+    "exchangeRate": "Exchange Rate",
+    "transferFee": "Transfer Fee",
+    "totalCost": "Total Cost",
+    "continue": "Continue",
+    "selectReceiverFirst": "Select a Receiver First",
+    "changeReceiver": "Change Receiver",
+    "cancel": "Cancel",
+    "calculating": "Calculating..."
+  }
+}
+
+{
     "progress": {
       "receiverInfo": {
         "label": "Receiver's info",

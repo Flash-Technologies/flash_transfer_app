@@ -1,0 +1,61 @@
+{
+  "common": {
+    "back": "Zurück",
+    "continue": "Weiter",
+    "selectCountry": "Bitte ein Land auswählen",
+    "required": "Erforderlich",
+    "phoneNumber": "Telefonnummer",
+    "phoneNumberRequired": "Bitte Telefonnummer eingeben"
+  },
+  "senderInfo": {
+    "headerTitle": "Krypto-Zahlung senden",
+    "headerSubtitle": "Überweisung von Krypto zu Bargeld",
+    "title": "Absenderinformationen",
+    "subtitle": "Bitte geben Sie Ihre Informationen für die Bargeldüberweisung an",
+    "sectionSenderInfo": "Absenderinformationen",
+    "phoneLabel": "Telefonnummer*",
+    "phoneHint": "+1234567890",
+    "firstNameLabel": "Vorname*",
+    "firstNameHint": "Vornamen eingeben",
+    "lastNameLabel": "Nachname*",
+    "lastNameHint": "Nachnamen eingeben",
+    "idSectionTitle": "Ausweisinformationen (optional)",
+    "idType": "Ausweistyp",
+    "idNumber": "Ausweisnummer",
+    "idNumberHint": "Ausweisnummer eingeben",
+    "issueDate": "Ausgabedatum des Ausweises",
+    "expiryDate": "Ablaufdatum des Ausweises",
+    "datePlaceholder": "tt/mm/jjjj",
+    "countryTitle": "Land",
+    "countryLabel": "Land auswählen",
+    "idTypes": {
+      "passport": "Reisepass",
+      "drivingLicense": "Führerschein",
+      "nationalId": "Personalausweis",
+      "other": "Andere"
+    },
+    "progress": "2/4"
+  },
+  "recipientInfo": {
+    "headerTitle": "Krypto-Zahlung senden",
+    "headerSubtitle": "Überweisung von Krypto zu Bargeld",
+    "title": "Empfängerinformationen",
+    "subtitle": "Bitte geben Sie die Empfängerinformationen für die Barauszahlung an",
+    "beneficiaryDetails": "Begünstigtendaten",
+    "phoneLabel": "Telefonnummer* (für SMS-Benachrichtigung)",
+    "phoneHint": "Telefonnummer",
+    "cashPickupCountry": "Land der Barauszahlung*",
+    "progress": "3/4"
+  },
+  "selectPayment": {
+    "progressTitle": "Zahlungsmethode",
+    "progressSubtitle": "Geben Sie die Informationen ein.",
+    "title": "Wählen Sie Ihr Mobile Money",
+    "subtitle": "Wie soll das Geld zugestellt werden?",
+    "errorSelectProvider": "Bitte zuerst Mobile Money auswählen",
+    "missingData": "Transaktionsdaten fehlen. Bitte zurückgehen und das Formular ausfüllen.",
+    "estimateFailed": "Schätzung konnte nicht abgerufen werden. Bitte erneut versuchen."
+  }
+}
+
+

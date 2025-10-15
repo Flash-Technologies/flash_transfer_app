@@ -67,6 +67,8 @@ class TranslationService {
         'recipients.json',
         'contacts.json',
         'editProfile.json',
+        'payment.json',
+        'review.json',
       ];
       
       for (String fileName in optionalFiles) {

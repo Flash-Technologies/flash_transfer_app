@@ -1,0 +1,42 @@
+{
+  "cashPaymentDetails": {
+    "senderDetails": "تفاصيل المرسل",
+    "receiverDetails": "تفاصيل المستلم",
+    "sourceOfFunds": "مصدر الأموال",
+    "purposeOfTransaction": "غرض العملية",
+    "coverageArea": "منطقة التغطية",
+    "cashPickup": "سحب نقدي",
+    "blockchainNetwork": "شبكة البلوكشين",
+    "receiverCountry": "بلد المستلم",
+    "transactionDetails": "تفاصيل العملية",
+    "youSent": "لقد أرسلت",
+    "transferRate": "سعر التحويل",
+    "totalToPay": "إجمالي المبلغ للدفع",
+    "recipientGets": "المستلم يحصل على",
+    "availability": "التوافر",
+    "transactionUnavailable": "العملية غير متاحة في الوقت الحالي",
+    "unavailable": "غير متاح",
+    "live": "مباشر",
+    "notProvided": "غير متوفر"
+  },
+  "receiverInfo": {
+    "progressStep": "الخطوة 1/4",
+    "headerTitle": "معلومات المستلم",
+    "headerSubtitle": "راجع تفاصيل المستلم",
+    "title": "معلومات المستلم",
+    "subtitle": "راجع جميع تفاصيل العملية الخاصة بك. تأكد من أن كل شيء صحيح قبل المتابعة.",
+    "transactionDetails": "تفاصيل العملية",
+    "youSend": "أنت ترسل",
+    "theyReceive": "هم يستلمون",
+    "exchangeRate": "سعر الصرف",
+    "transferFee": "رسوم التحويل",
+    "totalCost": "التكلفة الإجمالية",
+    "continue": "متابعة",
+    "selectReceiverFirst": "اختر مستلمًا أولاً",
+    "changeReceiver": "تغيير المستلم",
+    "cancel": "إلغاء",
+    "calculating": "جارٍ الحساب..."
+  }
+}
+
+

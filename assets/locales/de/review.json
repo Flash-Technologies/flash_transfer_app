@@ -1,4 +1,45 @@
 {
+  "cashPaymentDetails": {
+    "senderDetails": "Absenderdetails",
+    "receiverDetails": "Empfängerdetails",
+    "sourceOfFunds": "Herkunft der Mittel",
+    "purposeOfTransaction": "Zweck der Transaktion",
+    "coverageArea": "Abdeckungsbereich",
+    "cashPickup": "Bargeldabholung",
+    "blockchainNetwork": "Blockchain-Netzwerk",
+    "receiverCountry": "Empfängerland",
+    "transactionDetails": "Transaktionsdetails",
+    "youSent": "Sie haben gesendet",
+    "transferRate": "Transferkurs",
+    "totalToPay": "Zu zahlender Gesamtbetrag",
+    "recipientGets": "Empfänger erhält",
+    "availability": "Verfügbarkeit",
+    "transactionUnavailable": "Transaktion derzeit nicht verfügbar",
+    "unavailable": "Nicht verfügbar",
+    "live": "LIVE",
+    "notProvided": "Nicht angegeben"
+  },
+  "receiverInfo": {
+    "progressStep": "Schritt 1/4",
+    "headerTitle": "Empfängerinformationen",
+    "headerSubtitle": "Empfängerdetails überprüfen",
+    "title": "Empfängerinformationen",
+    "subtitle": "Überprüfen Sie alle Details Ihrer Transaktion. Stellen Sie sicher, dass alles korrekt ist, bevor Sie fortfahren.",
+    "transactionDetails": "Transaktionsdetails",
+    "youSend": "Sie senden",
+    "theyReceive": "Sie erhalten",
+    "exchangeRate": "Wechselkurs",
+    "transferFee": "Überweisungsgebühr",
+    "totalCost": "Gesamtkosten",
+    "continue": "Weiter",
+    "selectReceiverFirst": "Zuerst einen Empfänger auswählen",
+    "changeReceiver": "Empfänger ändern",
+    "cancel": "Abbrechen",
+    "calculating": "Wird berechnet..."
+  }
+}
+
+{
   "progress": {
     "receiverInfo": {
       "label": "Informationen des Empfängers",

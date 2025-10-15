@@ -1,0 +1,61 @@
+{
+  "common": {
+    "back": "Retour",
+    "continue": "Continuer",
+    "selectCountry": "Veuillez sélectionner un pays",
+    "required": "Obligatoire",
+    "phoneNumber": "Numéro de téléphone",
+    "phoneNumberRequired": "Veuillez saisir le numéro de téléphone"
+  },
+  "senderInfo": {
+    "headerTitle": "Envoyer un paiement crypto",
+    "headerSubtitle": "Transfert de crypto vers espèces",
+    "title": "Informations de l'expéditeur",
+    "subtitle": "Veuillez fournir vos informations pour le transfert en espèces",
+    "sectionSenderInfo": "Informations de l'expéditeur",
+    "phoneLabel": "Numéro de téléphone*",
+    "phoneHint": "+1234567890",
+    "firstNameLabel": "Prénom*",
+    "firstNameHint": "Entrez le prénom",
+    "lastNameLabel": "Nom*",
+    "lastNameHint": "Entrez le nom",
+    "idSectionTitle": "Informations d'identité (optionnel)",
+    "idType": "Type d'identité",
+    "idNumber": "Numéro d'identité",
+    "idNumberHint": "Entrez le numéro d'identité",
+    "issueDate": "Date d'émission de l'identité",
+    "expiryDate": "Date d'expiration de l'identité",
+    "datePlaceholder": "jj/mm/aaaa",
+    "countryTitle": "Pays",
+    "countryLabel": "Sélectionner un pays",
+    "idTypes": {
+      "passport": "Passeport",
+      "drivingLicense": "Permis de conduire",
+      "nationalId": "Carte d'identité",
+      "other": "Autre"
+    },
+    "progress": "2/4"
+  },
+  "recipientInfo": {
+    "headerTitle": "Envoyer un paiement crypto",
+    "headerSubtitle": "Transfert de crypto vers espèces",
+    "title": "Informations du destinataire",
+    "subtitle": "Veuillez fournir les informations du destinataire pour le retrait en espèces",
+    "beneficiaryDetails": "Détails du bénéficiaire",
+    "phoneLabel": "Numéro de téléphone* (pour notification SMS)",
+    "phoneHint": "Numéro de téléphone",
+    "cashPickupCountry": "Pays de retrait en espèces*",
+    "progress": "3/4"
+  },
+  "selectPayment": {
+    "progressTitle": "Méthode de paiement",
+    "progressSubtitle": "Saisissez les informations.",
+    "title": "Sélectionnez votre mobile money",
+    "subtitle": "Comment souhaitez-vous que l'argent soit livré ?",
+    "errorSelectProvider": "Sélectionnez d'abord Mobile Money",
+    "missingData": "Données de transaction manquantes. Revenez en arrière et complétez le formulaire.",
+    "estimateFailed": "Impossible d'obtenir l'estimation. Veuillez réessayer."
+  }
+}
+
+

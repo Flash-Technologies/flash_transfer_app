@@ -1,4 +1,45 @@
 {
+  "cashPaymentDetails": {
+    "senderDetails": "Detalhes do remetente",
+    "receiverDetails": "Detalhes do destinatário",
+    "sourceOfFunds": "Origem dos fundos",
+    "purposeOfTransaction": "Finalidade da transação",
+    "coverageArea": "Área de cobertura",
+    "cashPickup": "Retirada em dinheiro",
+    "blockchainNetwork": "Rede blockchain",
+    "receiverCountry": "País do destinatário",
+    "transactionDetails": "Detalhes da transação",
+    "youSent": "Você enviou",
+    "transferRate": "Taxa de transferência",
+    "totalToPay": "Total a pagar",
+    "recipientGets": "O destinatário recebe",
+    "availability": "Disponibilidade",
+    "transactionUnavailable": "Transação indisponível no momento",
+    "unavailable": "Indisponível",
+    "live": "AO VIVO",
+    "notProvided": "Não informado"
+  },
+  "receiverInfo": {
+    "progressStep": "Etapa 1/4",
+    "headerTitle": "Informações do destinatário",
+    "headerSubtitle": "Revise os detalhes do destinatário",
+    "title": "Informações do destinatário",
+    "subtitle": "Revise todos os detalhes da sua transação. Certifique-se de que está tudo correto antes de prosseguir.",
+    "transactionDetails": "Detalhes da transação",
+    "youSend": "Você envia",
+    "theyReceive": "Eles recebem",
+    "exchangeRate": "Taxa de câmbio",
+    "transferFee": "Taxa de transferência",
+    "totalCost": "Custo total",
+    "continue": "Continuar",
+    "selectReceiverFirst": "Selecione primeiro um destinatário",
+    "changeReceiver": "Alterar destinatário",
+    "cancel": "Cancelar",
+    "calculating": "Calculando..."
+  }
+}
+
+{
   "progress": {
     "receiverInfo": {
       "label": "Receiver's info",

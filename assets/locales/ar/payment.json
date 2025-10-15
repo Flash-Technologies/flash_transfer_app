@@ -1,0 +1,61 @@
+{
+  "common": {
+    "back": "رجوع",
+    "continue": "متابعة",
+    "selectCountry": "يرجى اختيار دولة",
+    "required": "مطلوب",
+    "phoneNumber": "رقم الهاتف",
+    "phoneNumberRequired": "يرجى إدخال رقم الهاتف"
+  },
+  "senderInfo": {
+    "headerTitle": "إرسال دفعة بالعملة الرقمية",
+    "headerSubtitle": "تحويل من عملة رقمية إلى نقد",
+    "title": "معلومات المرسل",
+    "subtitle": "يرجى تقديم معلوماتك للتحويل النقدي",
+    "sectionSenderInfo": "معلومات المرسل",
+    "phoneLabel": "رقم الهاتف*",
+    "phoneHint": "+1234567890",
+    "firstNameLabel": "الاسم الأول*",
+    "firstNameHint": "أدخل الاسم الأول",
+    "lastNameLabel": "اسم العائلة*",
+    "lastNameHint": "أدخل اسم العائلة",
+    "idSectionTitle": "معلومات الهوية (اختياري)",
+    "idType": "نوع الهوية",
+    "idNumber": "رقم الهوية",
+    "idNumberHint": "أدخل رقم الهوية",
+    "issueDate": "تاريخ إصدار الهوية",
+    "expiryDate": "تاريخ انتهاء الهوية",
+    "datePlaceholder": "dd/mm/yyyy",
+    "countryTitle": "الدولة",
+    "countryLabel": "اختر الدولة",
+    "idTypes": {
+      "passport": "جواز سفر",
+      "drivingLicense": "رخصة قيادة",
+      "nationalId": "بطاقة هوية وطنية",
+      "other": "أخرى"
+    },
+    "progress": "2/4"
+  },
+  "recipientInfo": {
+    "headerTitle": "إرسال دفعة بالعملة الرقمية",
+    "headerSubtitle": "تحويل من عملة رقمية إلى نقد",
+    "title": "معلومات المستلم",
+    "subtitle": "يرجى تقديم معلومات المستلم لسحب النقد",
+    "beneficiaryDetails": "بيانات المستفيد",
+    "phoneLabel": "رقم الهاتف* (لإشعار SMS)",
+    "phoneHint": "رقم الهاتف",
+    "cashPickupCountry": "دولة سحب النقد*",
+    "progress": "3/4"
+  },
+  "selectPayment": {
+    "progressTitle": "طريقة الدفع",
+    "progressSubtitle": "أدخل المعلومات.",
+    "title": "اختر خدمة الموبايل موني",
+    "subtitle": "كيف تريد تسليم الأموال؟",
+    "errorSelectProvider": "يرجى اختيار الموبايل موني أولاً",
+    "missingData": "بيانات المعاملة مفقودة. الرجاء الرجوع واستكمال النموذج.",
+    "estimateFailed": "فشل في الحصول على التقدير. حاول مرة أخرى."
+  }
+}
+
+

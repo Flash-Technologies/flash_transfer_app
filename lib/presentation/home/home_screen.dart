@@ -28,10 +28,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     super.initState();
     _amountController = TextEditingController();
     _amountFocusNode = FocusNode();
-    
-    // Auto focus after a short delay to ensure widget is mounted
+
+    // Keep the controller in sync with provider state without mutating during build
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _amountFocusNode.requestFocus();
+      if (!mounted) return;
+      ref.listen(exchangeFormProvider, (previous, next) {
+        final nextText = next.sendAmount == '0' ? '' : next.sendAmount;
+        if (_amountController.text != nextText) {
+          _amountController.value = TextEditingValue(
+            text: nextText,
+            selection: TextSelection.collapsed(offset: nextText.length),
+          );
+        }
+      });
     });
   }
 
@@ -46,12 +55,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final exchangeForm = ref.watch(exchangeFormProvider);
     final unreadCount = ref.watch(unreadNotificationCountProvider);
-    final tr = ref.watch(translationHelperProvider);
+    // Intentionally not reading translation helper here to avoid unused local; sub-widgets watch it directly
 
-    // Sync controller with state if different
-    if (_amountController.text != exchangeForm.sendAmount) {
-      _amountController.text = exchangeForm.sendAmount == '0' ? '' : exchangeForm.sendAmount;
-    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
@@ -299,6 +304,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     child: TextField(
                       controller: _amountController,
                       focusNode: _amountFocusNode,
+                      autofocus: true,
                       textAlign: TextAlign.center,
                       keyboardType: const TextInputType.numberWithOptions(
                         decimal: true,

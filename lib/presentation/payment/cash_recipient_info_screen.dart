@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flash_transfer_app/providers/payment_provider.dart';
+import '../../providers/language_provider.dart';
 
 class CashRecipientInfoScreen extends ConsumerStatefulWidget {
   const CashRecipientInfoScreen({Key? key}) : super(key: key);
@@ -61,6 +62,7 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
   
   @override
   Widget build(BuildContext context) {
+    final tr = ref.watch(translationHelperProvider);
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       body: SafeArea(
@@ -72,19 +74,19 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
                 padding: const EdgeInsets.all(16),
                 child: Form(
                   key: _formKey,
-                  child: Column(
+            child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildTitle(),
                       const SizedBox(height: 24),
-                      _buildBeneficiarySection(),
+                      _buildBeneficiarySection(tr),
                       const SizedBox(height: 32),
                     ],
                   ),
                 ),
               ),
             ),
-            _buildBottomButtons(),
+            _buildBottomButtons(tr),
           ],
         ),
       ),
@@ -186,7 +188,7 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
     );
   }
   
-  Widget _buildBeneficiarySection() {
+  Widget _buildBeneficiarySection(String Function(String) tr) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -220,8 +222,8 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
                 child: TextFormField(
                   controller: _firstNameController,
                   decoration: InputDecoration(
-                    labelText: 'First Name*',
-                    hintText: 'First name',
+                    labelText: tr('auth.setIdentity.firstName') + '*',
+                    hintText: tr('auth.setIdentity.firstNameHint'),
                     filled: true,
                     fillColor: const Color(0xFFF0F2F5),
                     border: OutlineInputBorder(
@@ -235,7 +237,7 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Required';
+                      return tr('auth.setIdentity.firstNameRequired');
                     }
                     return null;
                   },
@@ -246,8 +248,8 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
                 child: TextFormField(
                   controller: _lastNameController,
                   decoration: InputDecoration(
-                    labelText: 'Last Name*',
-                    hintText: 'Last name',
+                    labelText: tr('auth.setIdentity.lastName') + '*',
+                    hintText: tr('auth.setIdentity.lastNameHint'),
                     filled: true,
                     fillColor: const Color(0xFFF0F2F5),
                     border: OutlineInputBorder(
@@ -261,7 +263,7 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Required';
+                      return tr('auth.setIdentity.lastNameRequired');
                     }
                     return null;
                   },
@@ -338,7 +340,7 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
             },
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please select a country';
+                return tr('auth.signUp.selectCountry');
               }
               return null;
             },
@@ -348,7 +350,7 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
     );
   }
   
-  Widget _buildBottomButtons() {
+  Widget _buildBottomButtons(String Function(String) tr) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -373,9 +375,9 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
                 ),
                 side: const BorderSide(color: Color(0xFF6E757D)),
               ),
-              child: const Text(
-                'Back',
-                style: TextStyle(
+              child: Text(
+                tr('contacts.back'),
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF6E757D),
@@ -395,9 +397,9 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
                 ),
                 elevation: 0,
               ),
-              child: const Text(
-                'Continue',
-                style: TextStyle(
+              child: Text(
+                tr('contacts.continue'),
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF181F30),

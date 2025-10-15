@@ -7,6 +7,7 @@ import 'package:flash_transfer_app/presentation/payment/components/provider_item
 import 'package:flash_transfer_app/presentation/common/app_button.dart';
 import 'package:flash_transfer_app/providers/payment_provider.dart';
 import 'package:flash_transfer_app/providers/exchange_provider.dart';
+import '../../providers/language_provider.dart';
 
 // Import the new modal
 import 'package:flash_transfer_app/presentation/payment/components/bizao_config_modal.dart';
@@ -241,8 +242,8 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
                         const SizedBox(height: 16),
 
                         // Title
-                        const Text(
-                          'Select your mobile money',
+                        Text(
+                          ref.watch(translationHelperProvider)('payment.selectPayment.title'),
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -253,8 +254,8 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
                         const SizedBox(height: 8),
 
                         // Subtitle
-                        const Text(
-                          'How would you like the money delivered?',
+                        Text(
+                          ref.watch(translationHelperProvider)('payment.selectPayment.subtitle'),
                           style: TextStyle(
                             fontSize: 14,
                             color: AppTheme.textGrayColor,
@@ -348,19 +349,19 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
           // Text section
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
+            children: [
               Text(
-                "Payment Method",
-                style: TextStyle(
+                ref.watch(translationHelperProvider)('payment.selectPayment.progressTitle'),
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: AppTheme.textDarkColor,
                 ),
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Text(
-                "Enter the information.",
-                style: TextStyle(
+                ref.watch(translationHelperProvider)('payment.selectPayment.progressSubtitle'),
+                style: const TextStyle(
                   fontSize: 14,
                   color: AppTheme.textGrayColor,
                 ),
