@@ -233,5 +233,94 @@
       "securityAlert": "Sicherheitswarnung",
       "promotion": "Werbung"
     }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Anmelden",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "signInButton": "Anmelden",
+      "forgotPassword": "Passwort vergessen?",
+      "dontHaveAccount": "Haben Sie kein Konto?",
+      "signUp": "Registrieren",
+      "orContinueWith": "Oder fortfahren mit",
+      "fillAllFields": "Bitte füllen Sie alle Felder aus",
+      "loginSuccess": "Anmeldung erfolgreich! Weiterleitung...",
+      "incorrectPassword": "Falsches Passwort. Bitte versuchen Sie es erneut.",
+      "authError": "Authentifizierungsfehler. Bitte versuchen Sie es erneut.",
+      "googleSignInCancelled": "Google-Anmeldung wurde abgebrochen",
+      "googleAuthTokenError": "Google-Authentifizierungstoken konnte nicht abgerufen werden",
+      "signingInWithGoogle": "Anmeldung mit Google...",
+      "googleLoginSuccess": "Google-Anmeldung erfolgreich! Weiterleitung...",
+      "googleLoginFailed": "Google-Anmeldung fehlgeschlagen"
+    },
+    "signUp": {
+      "title": "Registrieren",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "confirmPassword": "Passwort bestätigen",
+      "selectCountry": "Bitte wählen Sie ein Land",
+      "googleAuthTokenError": "Google-Authentifizierungstoken konnte nicht abgerufen werden",
+      "signingUpWithGoogle": "Registrierung mit Google...",
+      "googleSignUpSuccess": "Google-Registrierung erfolgreich! Weiterleitung...",
+      "googleSignUpFailed": "Google-Registrierung fehlgeschlagen",
+      "fillAllFields": "Bitte füllen Sie alle Felder aus",
+      "validEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+      "passwordLength": "Passwort muss mindestens 6 Zeichen lang sein",
+      "passwordsMatch": "Passwörter stimmen nicht überein",
+      "alreadyHaveAccount": "Haben Sie bereits ein Konto?",
+      "signIn": "Anmelden"
+    },
+    "verification": {
+      "title": "Code verifizieren",
+      "checkEmail": "Überprüfen Sie Ihren E-Mail-Posteingang, wir haben Ihnen den Code an gesendet",
+      "didntGetCode": "Code nicht erhalten? Erneut senden",
+      "verifyAndContinue": "Verifizieren und fortfahren",
+      "verificationSuccess": "Verifizierung erfolgreich",
+      "accountVerified": "Ihr Konto wurde erfolgreich verifiziert.",
+      "continue": "Fortfahren",
+      "enterCompleteCode": "Bitte geben Sie den vollständigen Verifizierungscode ein",
+      "codeResent": "Verifizierungscode wurde erneut gesendet",
+      "resendFailed": "Erneutes Senden fehlgeschlagen"
+    },
+    "splash": {
+      "appName": "Flash Transfer",
+      "tagline": "Ihr bester Geldtransfer-Partner",
+      "securedBy": "Gesichert durch"
+    },
+    "success": {
+      "title": "Ihr Konto ist eingerichtet!",
+      "verificationSent": "Wir haben einen Verifizierungslink an Ihre E-Mail-Adresse gesendet. Bitte überprüfen Sie Ihren Posteingang und klicken Sie auf den Link, um Ihr Konto zu aktivieren.",
+      "openGmail": "Gmail öffnen",
+      "goToLogin": "Zur Anmeldung gehen",
+      "emailCopied": "E-Mail in Zwischenablage kopiert",
+      "copyEmail": "E-Mail kopieren"
+    },
+    "setIdentity": {
+      "title": "Identität festlegen",
+      "subtitle": "Geben Sie Ihre persönlichen Informationen ein und registrieren Sie Ihr Konto!",
+      "firstName": "Vorname",
+      "lastName": "Nachname",
+      "firstNameHint": "Geben Sie Ihren Vornamen ein",
+      "lastNameHint": "Geben Sie Ihren Nachnamen ein",
+      "firstNameRequired": "Bitte geben Sie Ihren Vornamen ein",
+      "lastNameRequired": "Bitte geben Sie Ihren Nachnamen ein",
+      "gender": "Geschlecht",
+      "male": "Männlich",
+      "female": "Weiblich",
+      "dateOfBirth": "Geburtsdatum",
+      "permanentAddress": "Dauerhafte Adresse",
+      "presentAddress": "Aktuelle Adresse",
+      "city": "Stadt",
+      "state": "Bundesland",
+      "postalCode": "Postleitzahl",
+      "sameAddress": "Gleich wie dauerhafte Adresse",
+      "agreeToTerms": "Ich stimme den Nutzungsbedingungen zu",
+      "agreeToTermsRequired": "Bitte stimmen Sie den Nutzungsbedingungen zu",
+      "selectDateOfBirth": "Bitte wählen Sie Ihr Geburtsdatum",
+      "registrationFailed": "Registrierung fehlgeschlagen",
+      "validationErrors": "Validierungsfehler:",
+      "submit": "Absenden"
+    }
   }
 }

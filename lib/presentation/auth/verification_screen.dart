@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/language_provider.dart';
 
 class VerificationScreen extends ConsumerStatefulWidget {
   final String email;
@@ -91,11 +92,13 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
         if (success) {
           _timerSeconds = 120;
           _startTimer();
+          final tr = ref.read(translationHelperProvider);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Verification code has been resent')),
+            SnackBar(content: Text(tr('auth.verification.codeResent'))),
           );
         } else {
-          final errorMessage = ref.read(authProvider).message ?? 'Failed to resend code';
+          final tr = ref.read(translationHelperProvider);
+          final errorMessage = ref.read(authProvider).message ?? tr('auth.verification.resendFailed');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(errorMessage)),
           );
@@ -108,8 +111,9 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
     final code = _controllers.map((c) => c.text).join();
     
     if (code.length != 4) {
+      final tr = ref.read(translationHelperProvider);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter complete verification code')),
+        SnackBar(content: Text(tr('auth.verification.enterCompleteCode'))),
       );
       return;
     }
@@ -118,18 +122,19 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
     // happens via email link click in this app
     // In a real app, you would call an API to verify the code
     
+    final tr = ref.read(translationHelperProvider);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Verification Success'),
-        content: const Text('Your account has been verified successfully.'),
+        title: Text(tr('auth.verification.verificationSuccess')),
+        content: Text(tr('auth.verification.accountVerified')),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               context.go('/success');
             },
-            child: const Text('Continue'),
+            child: Text(tr('auth.verification.continue')),
           ),
         ],
       ),
@@ -138,9 +143,10 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
   
   @override
   Widget build(BuildContext context) {
+    final tr = ref.watch(translationHelperProvider);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Verify your code'),
+        title: Text(tr('auth.verification.title')),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => context.go('/sign-up'),
@@ -154,7 +160,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
             children: [
               RichText(
                 text: TextSpan(
-                  text: 'Check your email inbox, we have sent you the code at ',
+                  text: tr('auth.verification.checkEmail') + ' ',
                   style: const TextStyle(color: Colors.black),
                   children: [
                     TextSpan(
@@ -229,7 +235,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                   TextButton(
                     onPressed: _timerSeconds > 0 || _isResending ? null : _resendCode,
                     child: Text(
-                      'Didn\'t get the code? Resend',
+                      tr('auth.verification.didntGetCode'),
                       style: TextStyle(
                         color: _timerSeconds > 0 || _isResending
                             ? Colors.grey
@@ -246,7 +252,7 @@ class _VerificationScreenState extends ConsumerState<VerificationScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: _verifyCode,
-                  child: const Text('Verify and Continue'),
+                  child: Text(tr('auth.verification.verifyAndContinue')),
                 ),
               ),
             ],

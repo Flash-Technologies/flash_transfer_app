@@ -4,6 +4,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
 import '../../config/router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/language_provider.dart';
 
 class RegistrationSuccessScreen extends ConsumerWidget {
   final String email;
@@ -46,6 +47,7 @@ class RegistrationSuccessScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tr = ref.watch(translationHelperProvider);
     return WillPopScope(
       // Prevent back navigation
       onWillPop: () async => false,
@@ -87,9 +89,9 @@ class RegistrationSuccessScreen extends ConsumerWidget {
                 const SizedBox(height: 32),
 
                 // Success title
-                const Text(
-                  'Your Account is Set!',
-                  style: TextStyle(
+                Text(
+                  tr('auth.success.title'),
+                  style: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF181F30),
@@ -100,10 +102,9 @@ class RegistrationSuccessScreen extends ConsumerWidget {
                 const SizedBox(height: 16),
 
                 // Success message
-                const Text(
-                  'We\'ve sent a verification link to your email address. '
-                  'Please check your inbox and click the link to activate your account.',
-                  style: TextStyle(
+                Text(
+                  tr('auth.success.verificationSent'),
+                  style: const TextStyle(
                     fontSize: 16,
                     color: Color(0xFF6E757D),
                     height: 1.5,
@@ -156,13 +157,13 @@ class RegistrationSuccessScreen extends ConsumerWidget {
                         onPressed: () {
                           Clipboard.setData(ClipboardData(text: email));
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Email copied to clipboard'),
+                            SnackBar(
+                              content: Text(tr('auth.success.emailCopied')),
                               behavior: SnackBarBehavior.floating,
                             ),
                           );
                         },
-                        tooltip: 'Copy email',
+                        tooltip: tr('auth.success.copyEmail'),
                         splashRadius: 24,
                       ),
                     ],
@@ -178,9 +179,9 @@ class RegistrationSuccessScreen extends ConsumerWidget {
                   child: ElevatedButton.icon(
                     onPressed: _openGmail,
                     icon: const Icon(Icons.mail_outline, size: 24),
-                    label: const Text(
-                      'Open Gmail',
-                      style: TextStyle(
+                    label: Text(
+                      tr('auth.success.openGmail'),
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -216,9 +217,9 @@ class RegistrationSuccessScreen extends ConsumerWidget {
                       ),
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                    child: const Text(
-                      'Go to Login',
-                      style: TextStyle(
+                    child: Text(
+                      tr('auth.success.goToLogin'),
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                         color: Color(0xFF2475FF),

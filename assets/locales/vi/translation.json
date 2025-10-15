@@ -233,5 +233,94 @@
       "securityAlert": "Cảnh báo bảo mật",
       "promotion": "Khuyến mãi"
     }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Đăng nhập",
+      "email": "Email",
+      "password": "Mật khẩu",
+      "signInButton": "Đăng nhập",
+      "forgotPassword": "Quên mật khẩu?",
+      "dontHaveAccount": "Chưa có tài khoản?",
+      "signUp": "Đăng ký",
+      "orContinueWith": "Hoặc tiếp tục với",
+      "fillAllFields": "Vui lòng điền tất cả các trường",
+      "loginSuccess": "Đăng nhập thành công! Đang chuyển hướng...",
+      "incorrectPassword": "Mật khẩu không đúng. Vui lòng thử lại.",
+      "authError": "Lỗi xác thực. Vui lòng thử lại.",
+      "googleSignInCancelled": "Đăng nhập Google đã bị hủy",
+      "googleAuthTokenError": "Không thể lấy token xác thực Google",
+      "signingInWithGoogle": "Đang đăng nhập với Google...",
+      "googleLoginSuccess": "Đăng nhập Google thành công! Đang chuyển hướng...",
+      "googleLoginFailed": "Đăng nhập Google thất bại"
+    },
+    "signUp": {
+      "title": "Đăng ký",
+      "email": "Email",
+      "password": "Mật khẩu",
+      "confirmPassword": "Xác nhận mật khẩu",
+      "selectCountry": "Vui lòng chọn quốc gia",
+      "googleAuthTokenError": "Không thể lấy token xác thực Google",
+      "signingUpWithGoogle": "Đang đăng ký với Google...",
+      "googleSignUpSuccess": "Đăng ký Google thành công! Đang chuyển hướng...",
+      "googleSignUpFailed": "Đăng ký Google thất bại",
+      "fillAllFields": "Vui lòng điền tất cả các trường",
+      "validEmail": "Vui lòng nhập địa chỉ email hợp lệ",
+      "passwordLength": "Mật khẩu phải có ít nhất 6 ký tự",
+      "passwordsMatch": "Mật khẩu không khớp",
+      "alreadyHaveAccount": "Đã có tài khoản?",
+      "signIn": "Đăng nhập"
+    },
+    "verification": {
+      "title": "Xác minh mã của bạn",
+      "checkEmail": "Kiểm tra hộp thư đến của bạn, chúng tôi đã gửi mã đến",
+      "didntGetCode": "Không nhận được mã? Gửi lại",
+      "verifyAndContinue": "Xác minh và Tiếp tục",
+      "verificationSuccess": "Xác minh Thành công",
+      "accountVerified": "Tài khoản của bạn đã được xác minh thành công.",
+      "continue": "Tiếp tục",
+      "enterCompleteCode": "Vui lòng nhập mã xác minh đầy đủ",
+      "codeResent": "Mã xác minh đã được gửi lại",
+      "resendFailed": "Gửi lại thất bại"
+    },
+    "splash": {
+      "appName": "Flash Transfer",
+      "tagline": "Đối tác Chuyển tiền Tốt nhất của Bạn",
+      "securedBy": "Được bảo mật bởi"
+    },
+    "success": {
+      "title": "Tài khoản của Bạn đã được Thiết lập!",
+      "verificationSent": "Chúng tôi đã gửi liên kết xác minh đến địa chỉ email của bạn. Vui lòng kiểm tra hộp thư đến và nhấp vào liên kết để kích hoạt tài khoản của bạn.",
+      "openGmail": "Mở Gmail",
+      "goToLogin": "Đi đến Đăng nhập",
+      "emailCopied": "Email đã được sao chép vào clipboard",
+      "copyEmail": "Sao chép email"
+    },
+    "setIdentity": {
+      "title": "Thiết lập Danh tính của Bạn",
+      "subtitle": "Nhập thông tin cá nhân của bạn và đăng ký tài khoản!",
+      "firstName": "Tên",
+      "lastName": "Họ",
+      "firstNameHint": "Nhập tên của bạn",
+      "lastNameHint": "Nhập họ của bạn",
+      "firstNameRequired": "Vui lòng nhập tên của bạn",
+      "lastNameRequired": "Vui lòng nhập họ của bạn",
+      "gender": "Giới tính",
+      "male": "Nam",
+      "female": "Nữ",
+      "dateOfBirth": "Ngày sinh",
+      "permanentAddress": "Địa chỉ thường trú",
+      "presentAddress": "Địa chỉ hiện tại",
+      "city": "Thành phố",
+      "state": "Tỉnh/Thành phố",
+      "postalCode": "Mã bưu điện",
+      "sameAddress": "Giống địa chỉ thường trú",
+      "agreeToTerms": "Tôi đồng ý với Điều khoản Sử dụng",
+      "agreeToTermsRequired": "Vui lòng đồng ý với Điều khoản Sử dụng",
+      "selectDateOfBirth": "Vui lòng chọn ngày sinh của bạn",
+      "registrationFailed": "Đăng ký thất bại",
+      "validationErrors": "Lỗi xác thực:",
+      "submit": "Gửi"
+    }
   }
 }

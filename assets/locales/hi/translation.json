@@ -233,5 +233,94 @@
       "securityAlert": "सुरक्षा चेतावनी",
       "promotion": "प्रमोशन"
     }
+  },
+  "auth": {
+    "signIn": {
+      "title": "साइन इन करें",
+      "email": "ईमेल",
+      "password": "पासवर्ड",
+      "signInButton": "साइन इन करें",
+      "forgotPassword": "पासवर्ड भूल गए?",
+      "dontHaveAccount": "खाता नहीं है?",
+      "signUp": "साइन अप करें",
+      "orContinueWith": "या इसके साथ जारी रखें",
+      "fillAllFields": "कृपया सभी फ़ील्ड भरें",
+      "loginSuccess": "लॉगिन सफल! रीडायरेक्ट हो रहे हैं...",
+      "incorrectPassword": "गलत पासवर्ड। कृपया पुनः प्रयास करें।",
+      "authError": "प्रमाणीकरण त्रुटि। कृपया पुनः प्रयास करें।",
+      "googleSignInCancelled": "Google साइन इन रद्द",
+      "googleAuthTokenError": "Google प्रमाणीकरण टोकन प्राप्त नहीं कर सके",
+      "signingInWithGoogle": "Google के साथ साइन इन हो रहे हैं...",
+      "googleLoginSuccess": "Google लॉगिन सफल! रीडायरेक्ट हो रहे हैं...",
+      "googleLoginFailed": "Google लॉगिन विफल"
+    },
+    "signUp": {
+      "title": "साइन अप करें",
+      "email": "ईमेल",
+      "password": "पासवर्ड",
+      "confirmPassword": "पासवर्ड की पुष्टि करें",
+      "selectCountry": "कृपया एक देश चुनें",
+      "googleAuthTokenError": "Google प्रमाणीकरण टोकन प्राप्त नहीं कर सके",
+      "signingUpWithGoogle": "Google के साथ साइन अप हो रहे हैं...",
+      "googleSignUpSuccess": "Google साइन अप सफल! रीडायरेक्ट हो रहे हैं...",
+      "googleSignUpFailed": "Google साइन अप विफल",
+      "fillAllFields": "कृपया सभी फ़ील्ड भरें",
+      "validEmail": "कृपया एक वैध ईमेल पता दर्ज करें",
+      "passwordLength": "पासवर्ड कम से कम 6 वर्ण का होना चाहिए",
+      "passwordsMatch": "पासवर्ड मेल नहीं खाते",
+      "alreadyHaveAccount": "पहले से खाता है?",
+      "signIn": "साइन इन करें"
+    },
+    "verification": {
+      "title": "अपना कोड सत्यापित करें",
+      "checkEmail": "अपना ईमेल इनबॉक्स जांचें, हमने आपको कोड भेजा है",
+      "didntGetCode": "कोड नहीं मिला? पुनः भेजें",
+      "verifyAndContinue": "सत्यापित करें और जारी रखें",
+      "verificationSuccess": "सत्यापन सफल",
+      "accountVerified": "आपका खाता सफलतापूर्वक सत्यापित हो गया।",
+      "continue": "जारी रखें",
+      "enterCompleteCode": "कृपया पूरा सत्यापन कोड दर्ज करें",
+      "codeResent": "सत्यापन कोड पुनः भेजा गया",
+      "resendFailed": "पुनः भेजना विफल"
+    },
+    "splash": {
+      "appName": "फ्लैश ट्रांसफर",
+      "tagline": "आपका सबसे अच्छा मनी ट्रांसफर पार्टनर",
+      "securedBy": "सुरक्षित द्वारा"
+    },
+    "success": {
+      "title": "आपका खाता सेट है!",
+      "verificationSent": "हमने आपके ईमेल पते पर एक सत्यापन लिंक भेजा है। कृपया अपना इनबॉक्स जांचें और अपना खाता सक्रिय करने के लिए लिंक पर क्लिक करें।",
+      "openGmail": "Gmail खोलें",
+      "goToLogin": "लॉगिन पर जाएं",
+      "emailCopied": "ईमेल क्लिपबोर्ड में कॉपी हो गया",
+      "copyEmail": "ईमेल कॉपी करें"
+    },
+    "setIdentity": {
+      "title": "अपनी पहचान सेट करें",
+      "subtitle": "अपनी व्यक्तिगत जानकारी दर्ज करें और अपना खाता पंजीकृत करें!",
+      "firstName": "पहला नाम",
+      "lastName": "अंतिम नाम",
+      "firstNameHint": "अपना पहला नाम दर्ज करें",
+      "lastNameHint": "अपना अंतिम नाम दर्ज करें",
+      "firstNameRequired": "कृपया अपना पहला नाम दर्ज करें",
+      "lastNameRequired": "कृपया अपना अंतिम नाम दर्ज करें",
+      "gender": "लिंग",
+      "male": "पुरुष",
+      "female": "महिला",
+      "dateOfBirth": "जन्म तिथि",
+      "permanentAddress": "स्थायी पता",
+      "presentAddress": "वर्तमान पता",
+      "city": "शहर",
+      "state": "राज्य",
+      "postalCode": "पिन कोड",
+      "sameAddress": "स्थायी पते के समान",
+      "agreeToTerms": "मैं उपयोग की शर्तों से सहमत हूं",
+      "agreeToTermsRequired": "कृपया उपयोग की शर्तों से सहमत हों",
+      "selectDateOfBirth": "कृपया अपनी जन्म तिथि चुनें",
+      "registrationFailed": "पंजीकरण विफल",
+      "validationErrors": "सत्यापन त्रुटियां:",
+      "submit": "जमा करें"
+    }
   }
 }

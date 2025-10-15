@@ -233,5 +233,94 @@
       "securityAlert": "تنبيه أمني",
       "promotion": "عرض ترويجي"
     }
+  },
+  "auth": {
+    "signIn": {
+      "title": "تسجيل الدخول",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "signInButton": "تسجيل الدخول",
+      "forgotPassword": "نسيت كلمة المرور؟",
+      "dontHaveAccount": "ليس لديك حساب؟",
+      "signUp": "إنشاء حساب",
+      "orContinueWith": "أو تابع مع",
+      "fillAllFields": "يرجى ملء جميع الحقول",
+      "loginSuccess": "تم تسجيل الدخول بنجاح! جاري التوجيه...",
+      "incorrectPassword": "كلمة مرور غير صحيحة. يرجى المحاولة مرة أخرى.",
+      "authError": "خطأ في المصادقة. يرجى المحاولة مرة أخرى.",
+      "googleSignInCancelled": "تم إلغاء تسجيل الدخول عبر Google",
+      "googleAuthTokenError": "لا يمكن الحصول على رمز مصادقة Google",
+      "signingInWithGoogle": "جاري تسجيل الدخول عبر Google...",
+      "googleLoginSuccess": "تم تسجيل الدخول عبر Google بنجاح! جاري التوجيه...",
+      "googleLoginFailed": "فشل تسجيل الدخول عبر Google"
+    },
+    "signUp": {
+      "title": "إنشاء حساب",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "selectCountry": "يرجى اختيار دولة",
+      "googleAuthTokenError": "لا يمكن الحصول على رمز مصادقة Google",
+      "signingUpWithGoogle": "جاري إنشاء الحساب عبر Google...",
+      "googleSignUpSuccess": "تم إنشاء الحساب عبر Google بنجاح! جاري التوجيه...",
+      "googleSignUpFailed": "فشل إنشاء الحساب عبر Google",
+      "fillAllFields": "يرجى ملء جميع الحقول",
+      "validEmail": "يرجى إدخال عنوان بريد إلكتروني صحيح",
+      "passwordLength": "يجب أن تكون كلمة المرور 6 أحرف على الأقل",
+      "passwordsMatch": "كلمات المرور غير متطابقة",
+      "alreadyHaveAccount": "لديك حساب بالفعل؟",
+      "signIn": "تسجيل الدخول"
+    },
+    "verification": {
+      "title": "تحقق من الرمز",
+      "checkEmail": "تحقق من صندوق البريد الإلكتروني، لقد أرسلنا لك الرمز على",
+      "didntGetCode": "لم تحصل على الرمز؟ إعادة إرسال",
+      "verifyAndContinue": "تحقق ومتابعة",
+      "verificationSuccess": "نجح التحقق",
+      "accountVerified": "تم التحقق من حسابك بنجاح.",
+      "continue": "متابعة",
+      "enterCompleteCode": "يرجى إدخال رمز التحقق الكامل",
+      "codeResent": "تم إعادة إرسال رمز التحقق",
+      "resendFailed": "فشل في إعادة إرسال الرمز"
+    },
+    "splash": {
+      "appName": "فلاش ترانسفير",
+      "tagline": "شريكك الأفضل لتحويل الأموال",
+      "securedBy": "محمي بواسطة"
+    },
+    "success": {
+      "title": "تم إعداد حسابك!",
+      "verificationSent": "لقد أرسلنا رابط التحقق إلى عنوان بريدك الإلكتروني. يرجى التحقق من صندوق البريد والضغط على الرابط لتفعيل حسابك.",
+      "openGmail": "فتح Gmail",
+      "goToLogin": "الذهاب لتسجيل الدخول",
+      "emailCopied": "تم نسخ البريد الإلكتروني إلى الحافظة",
+      "copyEmail": "نسخ البريد الإلكتروني"
+    },
+    "setIdentity": {
+      "title": "حدد هويتك",
+      "subtitle": "أدخل معلوماتك الشخصية وسجل حسابك!",
+      "firstName": "الاسم الأول",
+      "lastName": "الاسم الأخير",
+      "firstNameHint": "أدخل اسمك الأول",
+      "lastNameHint": "أدخل اسمك الأخير",
+      "firstNameRequired": "يرجى إدخال اسمك الأول",
+      "lastNameRequired": "يرجى إدخال اسمك الأخير",
+      "gender": "الجنس",
+      "male": "ذكر",
+      "female": "أنثى",
+      "dateOfBirth": "تاريخ الميلاد",
+      "permanentAddress": "العنوان الدائم",
+      "presentAddress": "العنوان الحالي",
+      "city": "المدينة",
+      "state": "الولاية",
+      "postalCode": "الرمز البريدي",
+      "sameAddress": "نفس العنوان الدائم",
+      "agreeToTerms": "أوافق على شروط الاستخدام",
+      "agreeToTermsRequired": "يرجى الموافقة على شروط الاستخدام",
+      "selectDateOfBirth": "يرجى اختيار تاريخ الميلاد",
+      "registrationFailed": "فشل التسجيل",
+      "validationErrors": "أخطاء التحقق:",
+      "submit": "إرسال"
+    }
   }
 }

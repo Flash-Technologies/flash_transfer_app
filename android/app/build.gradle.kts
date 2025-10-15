@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.flash_transfer_app"
-    compileSdk = 35  // Updated to fix dependency compatibility
+    compileSdk = 36  // Updated to fix plugin compatibility
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -21,8 +21,8 @@ android {
 
     defaultConfig {
         applicationId = "com.example.flash_transfer_app"
-        minSdk = 23  // Updated for Coinbase Wallet SDK compatibility
-        targetSdk = 35  // Updated to match compileSdk
+        minSdk = flutter.minSdkVersion  // Updated for Coinbase Wallet SDK compatibility
+        targetSdk = 36  // Updated to match compileSdk
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }

@@ -5,6 +5,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/language_provider.dart';
 import '../../config/router.dart';
 import '../common/social_login_buttons.dart';
 import '../../main.dart' show googleSignIn;
@@ -52,11 +53,11 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
 
   // Handlers for social login
-  Future<void> _handleGoogleSignUp() async {
+  Future<void> _handleGoogleSignUp(String Function(String) tr) async {
     final authNotifier = ref.read(authProvider.notifier);
 
     if (_selectedCountry == null) {
-      _showErrorDialog('Please select a country');
+      _showErrorDialog(tr('auth.signUp.selectCountry'));
       return;
     }
 
@@ -76,7 +77,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
       final token = googleAuth.idToken;
 
       if (token == null) {
-        _showAnimatedSnackBar('Could not get Google auth token', false);
+        _showAnimatedSnackBar(tr('auth.signUp.googleAuthTokenError'), false);
         return;
       }
 
@@ -117,7 +118,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         context.go('/home');
       } else {
         final errorMessage =
-            ref.read(authProvider).message ?? 'Google sign up failed';
+            ref.read(authProvider).message ?? tr('auth.signUp.googleSignUpFailed');
         _showAnimatedSnackBar(errorMessage, false);
       }
     } catch (e) {
@@ -133,9 +134,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     }
   }
 
-  Future<void> _handleFacebookSignUp() async {
+  Future<void> _handleFacebookSignUp(String Function(String) tr) async {
     if (_selectedCountry == null) {
-      _showErrorDialog('Please select a country');
+      _showErrorDialog(tr('auth.signUp.selectCountry'));
       return;
     }
 
@@ -192,9 +193,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     }
   }
 
-  Future<void> _handleAppleSignUp() async {
+  Future<void> _handleAppleSignUp(String Function(String) tr) async {
     if (_selectedCountry == null) {
-      _showErrorDialog('Please select a country');
+      _showErrorDialog(tr('auth.signUp.selectCountry'));
       return;
     }
 
@@ -275,31 +276,31 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
     return password.length >= 6;
   }
 
-  void _handleContinue() {
+  void _handleContinue(String Function(String) tr) {
     if (_emailController.text.isEmpty ||
         _passwordController.text.isEmpty ||
         _confirmPasswordController.text.isEmpty) {
-      _showErrorDialog('Please fill in all fields');
+      _showErrorDialog(tr('auth.signUp.fillAllFields'));
       return;
     }
 
     if (!_validateEmail(_emailController.text)) {
-      _showErrorDialog('Please enter a valid email address');
+      _showErrorDialog(tr('auth.signUp.validEmail'));
       return;
     }
 
     if (!_validatePassword(_passwordController.text)) {
-      _showErrorDialog('Password must be at least 6 characters');
+      _showErrorDialog(tr('auth.signUp.passwordLength'));
       return;
     }
 
     if (_passwordController.text != _confirmPasswordController.text) {
-      _showErrorDialog('Passwords do not match');
+      _showErrorDialog(tr('auth.signUp.passwordsMatch'));
       return;
     }
 
     if (_selectedCountry == null) {
-      _showErrorDialog('Please select a country');
+      _showErrorDialog(tr('auth.signUp.selectCountry'));
       return;
     }
 
@@ -353,6 +354,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final tr = ref.watch(translationHelperProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -372,9 +374,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         height: 96,
                       ),
                       const SizedBox(height: 16),
-                      const Text(
-                        'Flash Transfer',
-                        style: TextStyle(
+                      Text(
+                        tr('auth.splash.appName'),
+                        style: const TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.w700,
                           color: Color(0xFF181F30),
@@ -396,9 +398,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Send From (XOF Currency Countries)',
-                      style: TextStyle(
+                    Text(
+                      tr('auth.signUp.selectCountry'),
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
@@ -412,7 +414,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         });
                       },
                       label: null,
-                      hint: 'Select Country',
+                      hint: tr('auth.signUp.selectCountry'),
                     ),
                   ],
                 ),
@@ -420,27 +422,27 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
-                    labelText: 'Enter Your Mail',
-                    hintText: 'Enter your email',
+                  decoration: InputDecoration(
+                    labelText: tr('auth.signUp.email'),
+                    hintText: tr('auth.signUp.email'),
                   ),
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _passwordController,
                   obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Set Password',
-                    hintText: 'Set your Password',
+                  decoration: InputDecoration(
+                    labelText: tr('auth.signUp.password'),
+                    hintText: tr('auth.signUp.password'),
                   ),
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _confirmPasswordController,
                   obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Confirm Password',
-                    hintText: 'Re-enter Password',
+                  decoration: InputDecoration(
+                    labelText: tr('auth.signUp.confirmPassword'),
+                    hintText: tr('auth.signUp.confirmPassword'),
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -448,7 +450,7 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                   width: double.infinity,
                   height: 56,
                   child: ElevatedButton(
-                    onPressed: _isLoading ? null : _handleContinue,
+                    onPressed: _isLoading ? null : () => _handleContinue(tr),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFFFC000),
                       foregroundColor: const Color(0xFF181F30),
@@ -461,9 +463,9 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                         ? const CircularProgressIndicator(
                             color: Color(0xFF181F30),
                           )
-                        : const Text(
-                            'Continue',
-                            style: TextStyle(
+                        : Text(
+                            tr('auth.signUp.submit'),
+                            style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
                             ),
@@ -472,23 +474,23 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
                 ),
                 const SizedBox(height: 24),
                 SocialLoginButtons(
-                  onGoogleLogin: _handleGoogleSignUp,
-                  onFacebookLogin: _handleFacebookSignUp,
-                  onAppleLogin: _handleAppleSignUp,
+                  onGoogleLogin: () => _handleGoogleSignUp(tr),
+                  onFacebookLogin: () => _handleFacebookSignUp(tr),
+                  onAppleLogin: () => _handleAppleSignUp(tr),
                 ),
                 const SizedBox(height: 48),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      "Already have an account?",
-                      style: TextStyle(fontSize: 14, color: Color(0xFF6E757D)),
+                    Text(
+                      tr('auth.signUp.alreadyHaveAccount'),
+                      style: const TextStyle(fontSize: 14, color: Color(0xFF6E757D)),
                     ),
                     TextButton(
                       onPressed: () => context.go('/sign-in'),
-                      child: const Text(
-                        'Login',
-                        style: TextStyle(
+                      child: Text(
+                        tr('auth.signUp.signIn'),
+                        style: const TextStyle(
                           color: Color(0xFF2475FF),
                           fontSize: 14,
                         ),

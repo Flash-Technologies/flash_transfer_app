@@ -233,5 +233,94 @@
       "securityAlert": "Alerte de sécurité",
       "promotion": "Promotion"
     }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Se connecter",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "signInButton": "Se connecter",
+      "forgotPassword": "Mot de passe oublié ?",
+      "dontHaveAccount": "Vous n'avez pas de compte ?",
+      "signUp": "S'inscrire",
+      "orContinueWith": "Ou continuer avec",
+      "fillAllFields": "Veuillez remplir tous les champs",
+      "loginSuccess": "Connexion réussie ! Redirection...",
+      "incorrectPassword": "Mot de passe incorrect. Veuillez réessayer.",
+      "authError": "Erreur d'authentification. Veuillez réessayer.",
+      "googleSignInCancelled": "Connexion Google annulée",
+      "googleAuthTokenError": "Impossible d'obtenir le token d'authentification Google",
+      "signingInWithGoogle": "Connexion avec Google...",
+      "googleLoginSuccess": "Connexion Google réussie ! Redirection...",
+      "googleLoginFailed": "Échec de la connexion Google"
+    },
+    "signUp": {
+      "title": "S'inscrire",
+      "email": "E-mail",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "selectCountry": "Veuillez sélectionner un pays",
+      "googleAuthTokenError": "Impossible d'obtenir le token d'authentification Google",
+      "signingUpWithGoogle": "Inscription avec Google...",
+      "googleSignUpSuccess": "Inscription Google réussie ! Redirection...",
+      "googleSignUpFailed": "Échec de l'inscription Google",
+      "fillAllFields": "Veuillez remplir tous les champs",
+      "validEmail": "Veuillez entrer une adresse e-mail valide",
+      "passwordLength": "Le mot de passe doit contenir au moins 6 caractères",
+      "passwordsMatch": "Les mots de passe ne correspondent pas",
+      "alreadyHaveAccount": "Vous avez déjà un compte ?",
+      "signIn": "Se connecter"
+    },
+    "verification": {
+      "title": "Vérifiez votre code",
+      "checkEmail": "Vérifiez votre boîte de réception, nous vous avons envoyé le code à",
+      "didntGetCode": "Vous n'avez pas reçu le code ? Renvoyer",
+      "verifyAndContinue": "Vérifier et Continuer",
+      "verificationSuccess": "Vérification Réussie",
+      "accountVerified": "Votre compte a été vérifié avec succès.",
+      "continue": "Continuer",
+      "enterCompleteCode": "Veuillez entrer le code de vérification complet",
+      "codeResent": "Code de vérification renvoyé",
+      "resendFailed": "Échec du renvoi du code"
+    },
+    "splash": {
+      "appName": "Flash Transfer",
+      "tagline": "Votre Meilleur Partenaire de Transfert d'Argent",
+      "securedBy": "Sécurisé par"
+    },
+    "success": {
+      "title": "Votre Compte est Configuré !",
+      "verificationSent": "Nous avons envoyé un lien de vérification à votre adresse e-mail. Veuillez vérifier votre boîte de réception et cliquer sur le lien pour activer votre compte.",
+      "openGmail": "Ouvrir Gmail",
+      "goToLogin": "Aller à la Connexion",
+      "emailCopied": "E-mail copié dans le presse-papiers",
+      "copyEmail": "Copier l'e-mail"
+    },
+    "setIdentity": {
+      "title": "Définissez votre Identité",
+      "subtitle": "Entrez vos informations personnelles et enregistrez votre compte !",
+      "firstName": "Prénom",
+      "lastName": "Nom de famille",
+      "firstNameHint": "Entrez votre prénom",
+      "lastNameHint": "Entrez votre nom de famille",
+      "firstNameRequired": "Veuillez entrer votre prénom",
+      "lastNameRequired": "Veuillez entrer votre nom de famille",
+      "gender": "Genre",
+      "male": "Masculin",
+      "female": "Féminin",
+      "dateOfBirth": "Date de naissance",
+      "permanentAddress": "Adresse permanente",
+      "presentAddress": "Adresse actuelle",
+      "city": "Ville",
+      "state": "État",
+      "postalCode": "Code postal",
+      "sameAddress": "Identique à l'adresse permanente",
+      "agreeToTerms": "J'accepte les Conditions d'Utilisation",
+      "agreeToTermsRequired": "Veuillez accepter les Conditions d'Utilisation",
+      "selectDateOfBirth": "Veuillez sélectionner votre date de naissance",
+      "registrationFailed": "Échec de l'inscription",
+      "validationErrors": "Erreurs de validation :",
+      "submit": "Soumettre"
+    }
   }
 }

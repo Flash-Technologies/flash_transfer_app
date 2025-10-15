@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/language_provider.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   final VoidCallback? onInitialized;
@@ -70,6 +71,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final tr = ref.watch(translationHelperProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -90,18 +92,18 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                         height: 130,
                       ),
                       const SizedBox(height: 16),
-                      const Text(
-                        'Flash Transfer',
-                        style: TextStyle(
+                      Text(
+                        tr('auth.splash.appName'),
+                        style: const TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.w600,
                           color: Color(0xFF181F30),
                         ),
                       ),
                       const SizedBox(height: 8),
-                      const Text(
-                        'Your Best Money Transfer Partner',
-                        style: TextStyle(
+                      Text(
+                        tr('auth.splash.tagline'),
+                        style: const TextStyle(
                           fontSize: 16,
                           color: Color(0xFF6E757D),
                         ),
@@ -111,21 +113,21 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 ),
                 const Spacer(flex: 3),
                 // Footer text
-                const Padding(
+                Padding(
                   padding: EdgeInsets.only(bottom: 24.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Secured by ',
-                        style: TextStyle(
+                        tr('auth.splash.securedBy') + ' ',
+                        style: const TextStyle(
                           fontSize: 16,
                           color: Color(0xFF878787),
                         ),
                       ),
                       Text(
                         'flash-transfer',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           color: Color(0xFF2475FF),
                         ),

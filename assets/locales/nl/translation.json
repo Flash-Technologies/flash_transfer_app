@@ -233,5 +233,94 @@
       "securityAlert": "Beveiligingswaarschuwing",
       "promotion": "Promotie"
     }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Inloggen",
+      "email": "E-mail",
+      "password": "Wachtwoord",
+      "signInButton": "Inloggen",
+      "forgotPassword": "Wachtwoord vergeten?",
+      "dontHaveAccount": "Heb je geen account?",
+      "signUp": "Registreren",
+      "orContinueWith": "Of doorgaan met",
+      "fillAllFields": "Vul alle velden in",
+      "loginSuccess": "Inloggen succesvol! Doorverwijzen...",
+      "incorrectPassword": "Onjuist wachtwoord. Probeer opnieuw.",
+      "authError": "Authenticatiefout. Probeer opnieuw.",
+      "googleSignInCancelled": "Google-inloggen geannuleerd",
+      "googleAuthTokenError": "Kon Google-authenticatietoken niet verkrijgen",
+      "signingInWithGoogle": "Inloggen met Google...",
+      "googleLoginSuccess": "Google-inloggen succesvol! Doorverwijzen...",
+      "googleLoginFailed": "Google-inloggen mislukt"
+    },
+    "signUp": {
+      "title": "Registreren",
+      "email": "E-mail",
+      "password": "Wachtwoord",
+      "confirmPassword": "Wachtwoord bevestigen",
+      "selectCountry": "Selecteer een land",
+      "googleAuthTokenError": "Kon Google-authenticatietoken niet verkrijgen",
+      "signingUpWithGoogle": "Registreren met Google...",
+      "googleSignUpSuccess": "Google-registratie succesvol! Doorverwijzen...",
+      "googleSignUpFailed": "Google-registratie mislukt",
+      "fillAllFields": "Vul alle velden in",
+      "validEmail": "Voer een geldig e-mailadres in",
+      "passwordLength": "Wachtwoord moet minimaal 6 tekens bevatten",
+      "passwordsMatch": "Wachtwoorden komen niet overeen",
+      "alreadyHaveAccount": "Heb je al een account?",
+      "signIn": "Inloggen"
+    },
+    "verification": {
+      "title": "Verifieer je code",
+      "checkEmail": "Controleer je inbox, we hebben de code verzonden naar",
+      "didntGetCode": "Code niet ontvangen? Opnieuw verzenden",
+      "verifyAndContinue": "Verifiëren en Doorgaan",
+      "verificationSuccess": "Verificatie Succesvol",
+      "accountVerified": "Je account is succesvol geverifieerd.",
+      "continue": "Doorgaan",
+      "enterCompleteCode": "Voer de volledige verificatiecode in",
+      "codeResent": "Verificatiecode opnieuw verzonden",
+      "resendFailed": "Opnieuw verzenden mislukt"
+    },
+    "splash": {
+      "appName": "Flash Transfer",
+      "tagline": "Je Beste Geldtransfer Partner",
+      "securedBy": "Beveiligd door"
+    },
+    "success": {
+      "title": "Je Account is Ingesteld!",
+      "verificationSent": "We hebben een verificatielink naar je e-mailadres verzonden. Controleer je inbox en klik op de link om je account te activeren.",
+      "openGmail": "Gmail openen",
+      "goToLogin": "Ga naar Inloggen",
+      "emailCopied": "E-mail gekopieerd naar klembord",
+      "copyEmail": "E-mail kopiëren"
+    },
+    "setIdentity": {
+      "title": "Stel je Identiteit in",
+      "subtitle": "Voer je persoonlijke informatie in en registreer je account!",
+      "firstName": "Voornaam",
+      "lastName": "Achternaam",
+      "firstNameHint": "Voer je voornaam in",
+      "lastNameHint": "Voer je achternaam in",
+      "firstNameRequired": "Voer je voornaam in",
+      "lastNameRequired": "Voer je achternaam in",
+      "gender": "Geslacht",
+      "male": "Man",
+      "female": "Vrouw",
+      "dateOfBirth": "Geboortedatum",
+      "permanentAddress": "Permanent Adres",
+      "presentAddress": "Huidig Adres",
+      "city": "Stad",
+      "state": "Staat",
+      "postalCode": "Postcode",
+      "sameAddress": "Zelfde als permanent adres",
+      "agreeToTerms": "Ik ga akkoord met de Gebruiksvoorwaarden",
+      "agreeToTermsRequired": "Ga akkoord met de Gebruiksvoorwaarden",
+      "selectDateOfBirth": "Selecteer je geboortedatum",
+      "registrationFailed": "Registratie mislukt",
+      "validationErrors": "Validatiefouten:",
+      "submit": "Verzenden"
+    }
   }
 }

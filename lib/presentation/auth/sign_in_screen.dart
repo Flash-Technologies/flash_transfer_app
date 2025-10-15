@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../core/models/auth_models.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/language_provider.dart';
 import '../../core/services/auth_service.dart';
 import '../../config/router.dart';
 import '../common/social_login_buttons.dart';
@@ -94,10 +95,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     }
   }
 
-  Future<void> _handleLogin() async {
+  Future<void> _handleLogin(String Function(String) tr) async {
     // Validate inputs first
     if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
-      _showAnimatedSnackBar('Please fill in all fields', false);
+      _showAnimatedSnackBar(tr('auth.signIn.fillAllFields'), false);
       return;
     }
 
@@ -123,7 +124,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       });
 
       if (success) {
-        _showAnimatedSnackBar('Login successful! Redirecting...', true);
+        _showAnimatedSnackBar(tr('auth.signIn.loginSuccess'), true);
 
         // Short delay to let the snackbar be visible
         await Future.delayed(const Duration(milliseconds: 1000));
@@ -134,7 +135,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         context.go('/home');
       } else {
         // Get error message from auth state
-        final errorMessage = ref.read(authProvider).message ?? 'Incorrect password. Please try again.';
+        final errorMessage = ref.read(authProvider).message ?? tr('auth.signIn.incorrectPassword');
         debugPrint('Login failed with error: $errorMessage');
 
         // Show error message - user stays on current page
@@ -149,11 +150,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         _isLoading = false;
       });
 
-      _showAnimatedSnackBar('Authentication error. Please try again.', false);
+      _showAnimatedSnackBar(tr('auth.signIn.authError'), false);
     }
   }
 
-  Future<void> _handleGoogleLogin() async {
+  Future<void> _handleGoogleLogin(String Function(String) tr) async {
     try {
       print("🚀 [SIGN_IN_SCREEN] Starting Google Sign In flow");
 
@@ -165,7 +166,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
       if (result == null) {
         print("❌ [SIGN_IN_SCREEN] Google sign in was cancelled");
-        _showAnimatedSnackBar('Google sign in was cancelled', false);
+        _showAnimatedSnackBar(tr('auth.signIn.googleSignInCancelled'), false);
         return;
       }
 
@@ -187,7 +188,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
 
       if (token == null) {
         print("❌ [SIGN_IN_SCREEN] Could not get Google auth token");
-        _showAnimatedSnackBar('Could not get Google auth token', false);
+        _showAnimatedSnackBar(tr('auth.signIn.googleAuthTokenError'), false);
         return;
       }
 
@@ -257,7 +258,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       print("🧪 [SIGN_IN_SCREEN] =======================================");
 
       // Show loading message
-      _showAnimatedSnackBar('Signing in with Google...', true);
+      _showAnimatedSnackBar(tr('auth.signIn.signingInWithGoogle'), true);
 
       final success = await ref
           .read(authProvider.notifier)
@@ -273,7 +274,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       if (success) {
         print("✅ [SIGN_IN_SCREEN] Google login successful");
 
-        _showAnimatedSnackBar('Google login successful! Redirecting...', true);
+        _showAnimatedSnackBar(tr('auth.signIn.googleLoginSuccess'), true);
 
         // Give the snackbar time to display
         await Future.delayed(const Duration(milliseconds: 1000));
@@ -285,7 +286,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         context.go('/home');
       } else {
         final errorMessage =
-            ref.read(authProvider).message ?? 'Google login failed';
+            ref.read(authProvider).message ?? tr('auth.signIn.googleLoginFailed');
         print("❌ [SIGN_IN_SCREEN] Google login failed: $errorMessage");
         _showAnimatedSnackBar(errorMessage, false);
       }
@@ -509,6 +510,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
     final isLoading = authState.isLoading || _isLoading;
+    final tr = ref.watch(translationHelperProvider);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -529,9 +531,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                         height: 110,
                       ),
                       const SizedBox(height: 16),
-                      const Text(
-                        'Flash Transfer',
-                        style: TextStyle(
+                      Text(
+                        tr('auth.splash.appName'),
+                        style: const TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.w600,
                           color: Color(0xFF181F30),
@@ -553,9 +555,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Email or Phone',
-                      style: TextStyle(
+                    Text(
+                      tr('auth.signIn.email'),
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
@@ -565,7 +567,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
-                        hintText: 'Enter your email or phone',
+                        hintText: tr('auth.signIn.email'),
                         hintStyle: const TextStyle(
                           color: Color(0xFF6E757D),
                           fontSize: 14,
@@ -592,9 +594,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Password',
-                      style: TextStyle(
+                    Text(
+                      tr('auth.signIn.password'),
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
@@ -604,7 +606,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                       controller: _passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
-                        hintText: 'Enter your password',
+                        hintText: tr('auth.signIn.password'),
                         hintStyle: const TextStyle(
                           color: Color(0xFF6E757D),
                           fontSize: 14,
@@ -631,9 +633,9 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: _handleForgotPassword,
-                    child: const Text(
-                      'Forgot Password?',
-                      style: TextStyle(
+                    child: Text(
+                      tr('auth.signIn.forgotPassword'),
+                      style: const TextStyle(
                         color: Color(0xFF2475FF),
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
@@ -646,7 +648,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   width: double.infinity,
                   height: 56,
                   child: ElevatedButton(
-                    onPressed: isLoading ? null : _handleLogin,
+                    onPressed: isLoading ? null : () => _handleLogin(tr),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFFFC000),
                       foregroundColor: const Color(0xFF181F30),
@@ -668,18 +670,18 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                                 ),
                               ),
                               const SizedBox(width: 8),
-                              const Text(
-                                'Logging in...',
-                                style: TextStyle(
+                              Text(
+                                tr('auth.signIn.signInButton'),
+                                style: const TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
                             ],
                           )
-                        : const Text(
-                            'Log in',
-                            style: TextStyle(
+                        : Text(
+                            tr('auth.signIn.signInButton'),
+                            style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
                             ),
@@ -709,7 +711,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 ),
                 const SizedBox(height: 24),
                 SocialLoginButtons(
-                  onGoogleLogin: _handleGoogleLogin,
+                  onGoogleLogin: () => _handleGoogleLogin(tr),
                   onFacebookLogin: () => _handleFacebookLogin(context, ref),
                   onAppleLogin: () => _handleAppleLogin(context, ref),
                 ),
@@ -717,15 +719,15 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      "Don't have an account?",
-                      style: TextStyle(fontSize: 14, color: Color(0xFF6E757D)),
+                    Text(
+                      tr('auth.signIn.dontHaveAccount'),
+                      style: const TextStyle(fontSize: 14, color: Color(0xFF6E757D)),
                     ),
                     TextButton(
                       onPressed: () => context.go('/sign-up'),
-                      child: const Text(
-                        'Register now',
-                        style: TextStyle(
+                      child: Text(
+                        tr('auth.signIn.signUp'),
+                        style: const TextStyle(
                           color: Color(0xFF2475FF),
                           fontSize: 14,
                         ),

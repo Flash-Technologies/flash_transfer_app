@@ -12,15 +12,46 @@ import '../../core/utils/currency_icon_mapper.dart';
 import 'widgets/recent_transactions_widget.dart';
 import '../common/notification_modal.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  late TextEditingController _amountController;
+  late FocusNode _amountFocusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    _amountController = TextEditingController();
+    _amountFocusNode = FocusNode();
+    
+    // Auto focus after a short delay to ensure widget is mounted
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _amountFocusNode.requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    _amountController.dispose();
+    _amountFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final exchangeForm = ref.watch(exchangeFormProvider);
-    final currenciesAsync = ref.watch(currenciesProvider);
     final unreadCount = ref.watch(unreadNotificationCountProvider);
     final tr = ref.watch(translationHelperProvider);
+
+    // Sync controller with state if different
+    if (_amountController.text != exchangeForm.sendAmount) {
+      _amountController.text = exchangeForm.sendAmount == '0' ? '' : exchangeForm.sendAmount;
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
@@ -266,6 +297,8 @@ class HomeScreen extends ConsumerWidget {
                     width: MediaQuery.of(context).size.width - 80,
                     height: 80,
                     child: TextField(
+                      controller: _amountController,
+                      focusNode: _amountFocusNode,
                       textAlign: TextAlign.center,
                       keyboardType: const TextInputType.numberWithOptions(
                         decimal: true,

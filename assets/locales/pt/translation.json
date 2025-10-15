@@ -233,5 +233,94 @@
       "securityAlert": "Alerta de segurança",
       "promotion": "Promoção"
     }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Entrar",
+      "email": "E-mail",
+      "password": "Senha",
+      "signInButton": "Entrar",
+      "forgotPassword": "Esqueceu a senha?",
+      "dontHaveAccount": "Não tem uma conta?",
+      "signUp": "Cadastrar",
+      "orContinueWith": "Ou continuar com",
+      "fillAllFields": "Por favor, preencha todos os campos",
+      "loginSuccess": "Login bem-sucedido! Redirecionando...",
+      "incorrectPassword": "Senha incorreta. Tente novamente.",
+      "authError": "Erro de autenticação. Tente novamente.",
+      "googleSignInCancelled": "Login com Google cancelado",
+      "googleAuthTokenError": "Não foi possível obter o token de autenticação do Google",
+      "signingInWithGoogle": "Entrando com Google...",
+      "googleLoginSuccess": "Login com Google bem-sucedido! Redirecionando...",
+      "googleLoginFailed": "Falha no login com Google"
+    },
+    "signUp": {
+      "title": "Cadastrar",
+      "email": "E-mail",
+      "password": "Senha",
+      "confirmPassword": "Confirmar Senha",
+      "selectCountry": "Por favor, selecione um país",
+      "googleAuthTokenError": "Não foi possível obter o token de autenticação do Google",
+      "signingUpWithGoogle": "Cadastrando com Google...",
+      "googleSignUpSuccess": "Cadastro com Google bem-sucedido! Redirecionando...",
+      "googleSignUpFailed": "Falha no cadastro com Google",
+      "fillAllFields": "Por favor, preencha todos os campos",
+      "validEmail": "Por favor, insira um endereço de e-mail válido",
+      "passwordLength": "A senha deve ter pelo menos 6 caracteres",
+      "passwordsMatch": "As senhas não coincidem",
+      "alreadyHaveAccount": "Já tem uma conta?",
+      "signIn": "Entrar"
+    },
+    "verification": {
+      "title": "Verifique seu código",
+      "checkEmail": "Verifique sua caixa de entrada, enviamos o código para",
+      "didntGetCode": "Não recebeu o código? Reenviar",
+      "verifyAndContinue": "Verificar e Continuar",
+      "verificationSuccess": "Verificação Bem-sucedida",
+      "accountVerified": "Sua conta foi verificada com sucesso.",
+      "continue": "Continuar",
+      "enterCompleteCode": "Por favor, insira o código de verificação completo",
+      "codeResent": "Código de verificação reenviado",
+      "resendFailed": "Falha no reenvio do código"
+    },
+    "splash": {
+      "appName": "Flash Transfer",
+      "tagline": "Seu Melhor Parceiro de Transferência de Dinheiro",
+      "securedBy": "Protegido por"
+    },
+    "success": {
+      "title": "Sua Conta está Configurada!",
+      "verificationSent": "Enviamos um link de verificação para seu endereço de e-mail. Por favor, verifique sua caixa de entrada e clique no link para ativar sua conta.",
+      "openGmail": "Abrir Gmail",
+      "goToLogin": "Ir para Login",
+      "emailCopied": "E-mail copiado para a área de transferência",
+      "copyEmail": "Copiar e-mail"
+    },
+    "setIdentity": {
+      "title": "Defina sua Identidade",
+      "subtitle": "Insira suas informações pessoais e registre sua conta!",
+      "firstName": "Nome",
+      "lastName": "Sobrenome",
+      "firstNameHint": "Insira seu nome",
+      "lastNameHint": "Insira seu sobrenome",
+      "firstNameRequired": "Por favor, insira seu nome",
+      "lastNameRequired": "Por favor, insira seu sobrenome",
+      "gender": "Gênero",
+      "male": "Masculino",
+      "female": "Feminino",
+      "dateOfBirth": "Data de Nascimento",
+      "permanentAddress": "Endereço Permanente",
+      "presentAddress": "Endereço Atual",
+      "city": "Cidade",
+      "state": "Estado",
+      "postalCode": "Código Postal",
+      "sameAddress": "Igual ao endereço permanente",
+      "agreeToTerms": "Concordo com os Termos de Uso",
+      "agreeToTermsRequired": "Por favor, concorde com os Termos de Uso",
+      "selectDateOfBirth": "Por favor, selecione sua data de nascimento",
+      "registrationFailed": "Falha no registro",
+      "validationErrors": "Erros de validação:",
+      "submit": "Enviar"
+    }
   }
 }

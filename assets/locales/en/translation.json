@@ -234,5 +234,94 @@
       "securityAlert": "Security Alert",
       "promotion": "Promotion"
     }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Sign In",
+      "email": "Email",
+      "password": "Password",
+      "signInButton": "Sign In",
+      "forgotPassword": "Forgot Password?",
+      "dontHaveAccount": "Don't have an account?",
+      "signUp": "Sign Up",
+      "orContinueWith": "Or continue with",
+      "fillAllFields": "Please fill in all fields",
+      "loginSuccess": "Login successful! Redirecting...",
+      "incorrectPassword": "Incorrect password. Please try again.",
+      "authError": "Authentication error. Please try again.",
+      "googleSignInCancelled": "Google sign in was cancelled",
+      "googleAuthTokenError": "Could not get Google auth token",
+      "signingInWithGoogle": "Signing in with Google...",
+      "googleLoginSuccess": "Google login successful! Redirecting...",
+      "googleLoginFailed": "Google login failed"
+    },
+    "signUp": {
+      "title": "Sign Up",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "selectCountry": "Please select a country",
+      "googleAuthTokenError": "Could not get Google auth token",
+      "signingUpWithGoogle": "Signing up with Google...",
+      "googleSignUpSuccess": "Google sign up successful! Redirecting...",
+      "googleSignUpFailed": "Google sign up failed",
+      "fillAllFields": "Please fill in all fields",
+      "validEmail": "Please enter a valid email address",
+      "passwordLength": "Password must be at least 6 characters",
+      "passwordsMatch": "Passwords do not match",
+      "alreadyHaveAccount": "Already have an account?",
+      "signIn": "Sign In"
+    },
+    "verification": {
+      "title": "Verify your code",
+      "checkEmail": "Check your email inbox, we have sent you the code at",
+      "didntGetCode": "Didn't get the code? Resend",
+      "verifyAndContinue": "Verify and Continue",
+      "verificationSuccess": "Verification Success",
+      "accountVerified": "Your account has been verified successfully.",
+      "continue": "Continue",
+      "enterCompleteCode": "Please enter complete verification code",
+      "codeResent": "Verification code has been resent",
+      "resendFailed": "Failed to resend code"
+    },
+    "splash": {
+      "appName": "Flash Transfer",
+      "tagline": "Your Best Money Transfer Partner",
+      "securedBy": "Secured by"
+    },
+    "success": {
+      "title": "Your Account is Set!",
+      "verificationSent": "We've sent a verification link to your email address. Please check your inbox and click the link to activate your account.",
+      "openGmail": "Open Gmail",
+      "goToLogin": "Go to Login",
+      "emailCopied": "Email copied to clipboard",
+      "copyEmail": "Copy email"
+    },
+    "setIdentity": {
+      "title": "Set your Identity",
+      "subtitle": "Input your personal information and register your account!",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "firstNameHint": "Enter your first name",
+      "lastNameHint": "Enter your last name",
+      "firstNameRequired": "Please enter your first name",
+      "lastNameRequired": "Please enter your last name",
+      "gender": "Gender",
+      "male": "Male",
+      "female": "Female",
+      "dateOfBirth": "Date of Birth",
+      "permanentAddress": "Permanent Address",
+      "presentAddress": "Present Address",
+      "city": "City",
+      "state": "State",
+      "postalCode": "Postal Code",
+      "sameAddress": "Same as permanent address",
+      "agreeToTerms": "I agree to the Terms of Use",
+      "agreeToTermsRequired": "Please agree to the Terms of Use",
+      "selectDateOfBirth": "Please select your date of birth",
+      "registrationFailed": "Registration failed",
+      "validationErrors": "Validation errors:",
+      "submit": "Submit"
+    }
   }
 }

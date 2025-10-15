@@ -233,5 +233,94 @@
       "securityAlert": "Alerta de seguridad",
       "promotion": "Promoción"
     }
+  },
+  "auth": {
+    "signIn": {
+      "title": "Iniciar Sesión",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "signInButton": "Iniciar Sesión",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "dontHaveAccount": "¿No tienes cuenta?",
+      "signUp": "Registrarse",
+      "orContinueWith": "O continuar con",
+      "fillAllFields": "Por favor completa todos los campos",
+      "loginSuccess": "¡Inicio de sesión exitoso! Redirigiendo...",
+      "incorrectPassword": "Contraseña incorrecta. Por favor intenta de nuevo.",
+      "authError": "Error de autenticación. Por favor intenta de nuevo.",
+      "googleSignInCancelled": "Inicio de sesión con Google cancelado",
+      "googleAuthTokenError": "No se pudo obtener el token de autenticación de Google",
+      "signingInWithGoogle": "Iniciando sesión con Google...",
+      "googleLoginSuccess": "¡Inicio de sesión con Google exitoso! Redirigiendo...",
+      "googleLoginFailed": "Falló el inicio de sesión con Google"
+    },
+    "signUp": {
+      "title": "Registrarse",
+      "email": "Correo electrónico",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar Contraseña",
+      "selectCountry": "Por favor selecciona un país",
+      "googleAuthTokenError": "No se pudo obtener el token de autenticación de Google",
+      "signingUpWithGoogle": "Registrándose con Google...",
+      "googleSignUpSuccess": "¡Registro con Google exitoso! Redirigiendo...",
+      "googleSignUpFailed": "Falló el registro con Google",
+      "fillAllFields": "Por favor completa todos los campos",
+      "validEmail": "Por favor ingresa una dirección de correo electrónico válida",
+      "passwordLength": "La contraseña debe tener al menos 6 caracteres",
+      "passwordsMatch": "Las contraseñas no coinciden",
+      "alreadyHaveAccount": "¿Ya tienes cuenta?",
+      "signIn": "Iniciar Sesión"
+    },
+    "verification": {
+      "title": "Verifica tu código",
+      "checkEmail": "Revisa tu bandeja de entrada, te hemos enviado el código a",
+      "didntGetCode": "¿No recibiste el código? Reenviar",
+      "verifyAndContinue": "Verificar y Continuar",
+      "verificationSuccess": "Verificación Exitosa",
+      "accountVerified": "Tu cuenta ha sido verificada exitosamente.",
+      "continue": "Continuar",
+      "enterCompleteCode": "Por favor ingresa el código de verificación completo",
+      "codeResent": "Código de verificación reenviado",
+      "resendFailed": "Falló el reenvío del código"
+    },
+    "splash": {
+      "appName": "Flash Transfer",
+      "tagline": "Tu Mejor Socio de Transferencia de Dinero",
+      "securedBy": "Protegido por"
+    },
+    "success": {
+      "title": "¡Tu Cuenta está Configurada!",
+      "verificationSent": "Hemos enviado un enlace de verificación a tu dirección de correo electrónico. Por favor revisa tu bandeja de entrada y haz clic en el enlace para activar tu cuenta.",
+      "openGmail": "Abrir Gmail",
+      "goToLogin": "Ir a Iniciar Sesión",
+      "emailCopied": "Correo electrónico copiado al portapapeles",
+      "copyEmail": "Copiar correo electrónico"
+    },
+    "setIdentity": {
+      "title": "Establece tu Identidad",
+      "subtitle": "¡Ingresa tu información personal y registra tu cuenta!",
+      "firstName": "Nombre",
+      "lastName": "Apellido",
+      "firstNameHint": "Ingresa tu nombre",
+      "lastNameHint": "Ingresa tu apellido",
+      "firstNameRequired": "Por favor ingresa tu nombre",
+      "lastNameRequired": "Por favor ingresa tu apellido",
+      "gender": "Género",
+      "male": "Masculino",
+      "female": "Femenino",
+      "dateOfBirth": "Fecha de Nacimiento",
+      "permanentAddress": "Dirección Permanente",
+      "presentAddress": "Dirección Actual",
+      "city": "Ciudad",
+      "state": "Estado",
+      "postalCode": "Código Postal",
+      "sameAddress": "Igual que la dirección permanente",
+      "agreeToTerms": "Acepto los Términos de Uso",
+      "agreeToTermsRequired": "Por favor acepta los Términos de Uso",
+      "selectDateOfBirth": "Por favor selecciona tu fecha de nacimiento",
+      "registrationFailed": "Falló el registro",
+      "validationErrors": "Errores de validación:",
+      "submit": "Enviar"
+    }
   }
 }

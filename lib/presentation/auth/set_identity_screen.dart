@@ -2,6 +2,7 @@ import 'package:flash_transfer_app/presentation/auth/sign_in_screen.dart';
 import 'package:flash_transfer_app/presentation/auth/success_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/language_provider.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/models/auth_models.dart';
 import '../../providers/auth_provider.dart';
@@ -52,18 +53,18 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
     super.dispose();
   }
 
-  void _handleRegister() async {
+  void _handleRegister(String Function(String) tr) async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
     if (!_isAgreed) {
-      _showSnackBar('Please agree to the Terms of Use');
+      _showSnackBar(tr('auth.setIdentity.agreeToTermsRequired'));
       return;
     }
 
     if (_dob == null) {
-      _showSnackBar('Please select your date of birth');
+      _showSnackBar(tr('auth.setIdentity.selectDateOfBirth'));
       return;
     }
 
@@ -106,7 +107,7 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
         context.go('/registration-success', extra: {'email': widget.email});
       } else {
         final authState = ref.read(authProvider);
-        String errorMessage = authState.message ?? 'Registration failed';
+        String errorMessage = authState.message ?? tr('auth.setIdentity.registrationFailed');
 
         if (authState.fieldErrors != null &&
             authState.fieldErrors!.isNotEmpty) {
@@ -114,7 +115,7 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
               .map((e) => "${e.key}: ${e.value}")
               .join("\n• ");
 
-          errorMessage = "Validation errors:\n• $fieldErrorsList";
+          errorMessage = "${tr('auth.setIdentity.validationErrors')}\n• $fieldErrorsList";
         }
 
         _showSnackBar(errorMessage);
@@ -149,13 +150,14 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final tr = ref.watch(translationHelperProvider);
     final isLoading = _isSubmitting;
 
     return WillPopScope(
       onWillPop: () async => !isLoading,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Set your Identity'),
+          title: Text(tr('auth.setIdentity.title')),
           leading:
               isLoading
                   ? null
@@ -171,7 +173,7 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
               padding: const EdgeInsets.all(24.0),
               children: [
                 Text(
-                  'Input your personal information and register your account!',
+                  tr('auth.setIdentity.subtitle'),
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: const Color(0xFF6E757D),
                   ),
@@ -181,13 +183,13 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
                 // First Name
                 TextFormField(
                   controller: _firstNameController,
-                  decoration: const InputDecoration(
-                    labelText: 'First Name',
-                    hintText: 'Enter your first name',
+                  decoration: InputDecoration(
+                    labelText: tr('auth.setIdentity.firstName'),
+                    hintText: tr('auth.setIdentity.firstNameHint'),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your first name';
+                      return tr('auth.setIdentity.firstNameRequired');
                     }
                     return null;
                   },
@@ -197,13 +199,13 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
                 // Last Name
                 TextFormField(
                   controller: _lastNameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Last Name',
-                    hintText: 'Enter your last name',
+                  decoration: InputDecoration(
+                    labelText: tr('auth.setIdentity.lastName'),
+                    hintText: tr('auth.setIdentity.lastNameHint'),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your last name';
+                      return tr('auth.setIdentity.lastNameRequired');
                     }
                     return null;
                   },
@@ -212,7 +214,7 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
 
                 // Gender
                 Text(
-                  'Gender',
+                  tr('auth.setIdentity.gender'),
                   style: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -222,7 +224,7 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
                   children: [
                     Expanded(
                       child: RadioListTile<String>(
-                        title: const Text('Male'),
+                        title: Text(tr('auth.setIdentity.male')),
                         value: 'Male',
                         groupValue: _gender,
                         onChanged: (value) {
@@ -236,7 +238,7 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
                     ),
                     Expanded(
                       child: RadioListTile<String>(
-                        title: const Text('Female'),
+                        title: Text(tr('auth.setIdentity.female')),
                         value: 'Female',
                         groupValue: _gender,
                         onChanged: (value) {
@@ -265,13 +267,13 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
                 // Permanent Address
                 TextFormField(
                   controller: _permanentAddressController,
-                  decoration: const InputDecoration(
-                    labelText: 'Permanent Address',
-                    hintText: 'Enter your permanent address',
+                  decoration: InputDecoration(
+                    labelText: tr('auth.setIdentity.permanentAddress'),
+                    hintText: tr('auth.setIdentity.permanentAddress'),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your permanent address';
+                      return tr('auth.setIdentity.permanentAddress');
                     }
                     return null;
                   },
@@ -280,7 +282,7 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
 
                 // Present Address Same Checkbox
                 CheckboxListTile(
-                  title: const Text('Present address same as permanent'),
+                  title: Text(tr('auth.setIdentity.sameAddress')),
                   value: _sameAddress,
                   onChanged: (value) {
                     setState(() {
@@ -297,13 +299,13 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
                 if (!_sameAddress) ...[
                   TextFormField(
                     controller: _presentAddressController,
-                    decoration: const InputDecoration(
-                      labelText: 'Present Address',
-                      hintText: 'Enter your present address',
+                    decoration: InputDecoration(
+                      labelText: tr('auth.setIdentity.presentAddress'),
+                      hintText: tr('auth.setIdentity.presentAddress'),
                     ),
                     validator: (value) {
                       if (!_sameAddress && (value == null || value.isEmpty)) {
-                        return 'Please enter your present address';
+                        return tr('auth.setIdentity.presentAddress');
                       }
                       return null;
                     },
@@ -314,13 +316,13 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
                 // City
                 TextFormField(
                   controller: _cityController,
-                  decoration: const InputDecoration(
-                    labelText: 'City',
-                    hintText: 'Enter your city',
+                  decoration: InputDecoration(
+                    labelText: tr('auth.setIdentity.city'),
+                    hintText: tr('auth.setIdentity.city'),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your city';
+                      return tr('auth.setIdentity.city');
                     }
                     return null;
                   },
@@ -330,13 +332,13 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
                 // State
                 TextFormField(
                   controller: _stateController,
-                  decoration: const InputDecoration(
-                    labelText: 'State',
-                    hintText: 'Enter your state',
+                  decoration: InputDecoration(
+                    labelText: tr('auth.setIdentity.state'),
+                    hintText: tr('auth.setIdentity.state'),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your state';
+                      return tr('auth.setIdentity.state');
                     }
                     return null;
                   },
@@ -346,17 +348,17 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
                 // Postal Code
                 TextFormField(
                   controller: _postalCodeController,
-                  decoration: const InputDecoration(
-                    labelText: 'Postal Code',
-                    hintText: 'Enter your postal code',
+                  decoration: InputDecoration(
+                    labelText: tr('auth.setIdentity.postalCode'),
+                    hintText: tr('auth.setIdentity.postalCode'),
                   ),
                   keyboardType: TextInputType.number,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter your postal code';
+                      return tr('auth.setIdentity.postalCode');
                     }
                     if (value.length < 5) {
-                      return 'Postal code should be at least 5 digits';
+                      return tr('auth.setIdentity.postalCode');
                     }
                     return null;
                   },
@@ -367,11 +369,14 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
                 CheckboxListTile(
                   title: RichText(
                     text: TextSpan(
-                      text: 'I agree with ',
+                      text: tr('auth.setIdentity.agreeToTerms').split(' ').first + ' ',
                       style: const TextStyle(color: Colors.black),
                       children: [
                         TextSpan(
-                          text: 'Terms of use',
+                          text: tr('auth.setIdentity.agreeToTerms').replaceFirst(
+                            tr('auth.setIdentity.agreeToTerms').split(' ').first + ' ',
+                            '',
+                          ),
                           style: TextStyle(
                             color: Theme.of(context).primaryColor,
                           ),
@@ -393,7 +398,7 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
 
                 // Register Button
                 ElevatedButton(
-                  onPressed: isLoading ? null : _handleRegister,
+                  onPressed: isLoading ? null : () => _handleRegister(tr),
                   child:
                       isLoading
                           ? const Row(
@@ -411,7 +416,7 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
                               Text('Processing...'),
                             ],
                           )
-                          : const Text('Get Registered'),
+                          : Text(tr('auth.setIdentity.submit')),
                 ),
                 const SizedBox(height: 16),
 
@@ -419,7 +424,7 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Already have an account?'),
+                    Text(tr('auth.signUp.alreadyHaveAccount')),
                     TextButton(
                       onPressed: () {
                         Navigator.pushAndRemoveUntil(
@@ -430,7 +435,7 @@ class _SetIdentityScreenState extends ConsumerState<SetIdentityScreen> {
                           (route) => false, // Clear navigation stack
                         );
                       },
-                      child: const Text('Login'),
+                      child: Text(tr('auth.signUp.signIn')),
                     ),
                   ],
                 ),
