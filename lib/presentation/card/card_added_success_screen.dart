@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:confetti/confetti.dart';
 import '../common/celebration_widget.dart';
+import '../../providers/language_provider.dart';
 
 class CardAddedSuccessScreen extends ConsumerStatefulWidget {
   const CardAddedSuccessScreen({Key? key}) : super(key: key);
@@ -201,24 +202,34 @@ class _CardAddedSuccessScreenState extends ConsumerState<CardAddedSuccessScreen>
   Widget _buildSuccessContent(ThemeData theme) {
     return Column(
       children: [
-        Text(
-          'Card Added Successfully!',
-          style: theme.textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: theme.colorScheme.onSurface,
-          ),
-          textAlign: TextAlign.center,
+        Consumer(
+          builder: (context, ref, child) {
+            final tr = ref.watch(translationHelperProvider);
+            return Text(
+              tr('card.success.title'),
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.onSurface,
+              ),
+              textAlign: TextAlign.center,
+            );
+          },
         ),
 
         const SizedBox(height: 16),
 
-        Text(
-          'Your credit card has been securely added to your wallet. You can now use it for payments and transfers.',
-          style: theme.textTheme.bodyLarge?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-            height: 1.5,
-          ),
-          textAlign: TextAlign.center,
+        Consumer(
+          builder: (context, ref, child) {
+            final tr = ref.watch(translationHelperProvider);
+            return Text(
+              tr('card.success.description'),
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
+            );
+          },
         ),
 
         const SizedBox(height: 32),
@@ -230,21 +241,22 @@ class _CardAddedSuccessScreenState extends ConsumerState<CardAddedSuccessScreen>
   }
 
   Widget _buildBenefitsSection(ThemeData theme) {
+    final tr = ref.watch(translationHelperProvider);
     final benefits = [
       {
         'icon': Icons.security,
-        'title': 'Secure Storage',
-        'description': 'Your card details are encrypted and stored safely',
+        'title': tr('card.success.benefits.secureStorage.title'),
+        'description': tr('card.success.benefits.secureStorage.description'),
       },
       {
         'icon': Icons.flash_on,
-        'title': 'Quick Payments',
-        'description': 'Make instant payments with one tap',
+        'title': tr('card.success.benefits.quickPayments.title'),
+        'description': tr('card.success.benefits.quickPayments.description'),
       },
       {
         'icon': Icons.savings,
-        'title': 'Save Money',
-        'description': 'Get the best exchange rates on transfers',
+        'title': tr('card.success.benefits.saveMoney.title'),
+        'description': tr('card.success.benefits.saveMoney.description'),
       },
     ];
 
@@ -256,11 +268,16 @@ class _CardAddedSuccessScreenState extends ConsumerState<CardAddedSuccessScreen>
       ),
       child: Column(
         children: [
-          Text(
-            'What you can do now:',
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+          Consumer(
+            builder: (context, ref, child) {
+              final tr = ref.watch(translationHelperProvider);
+              return Text(
+                tr('card.success.whatYouCanDo'),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              );
+            },
           ),
 
           const SizedBox(height: 16),
@@ -326,9 +343,14 @@ class _CardAddedSuccessScreenState extends ConsumerState<CardAddedSuccessScreen>
               context.go('/home');
             },
             icon: const Icon(Icons.send),
-            label: const Text(
-              'Make a Transfer',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            label: Consumer(
+              builder: (context, ref, child) {
+                final tr = ref.watch(translationHelperProvider);
+                return Text(
+                  tr('card.success.actions.makeTransfer'),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                );
+              },
             ),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFFFC000),
@@ -352,9 +374,14 @@ class _CardAddedSuccessScreenState extends ConsumerState<CardAddedSuccessScreen>
               context.go('/cards');
             },
             icon: const Icon(Icons.credit_card),
-            label: const Text(
-              'View My Cards',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+            label: Consumer(
+              builder: (context, ref, child) {
+                final tr = ref.watch(translationHelperProvider);
+                return Text(
+                  tr('card.success.actions.viewCards'),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                );
+              },
             ),
             style: OutlinedButton.styleFrom(
               foregroundColor: const Color(0xFF2475FF),
@@ -373,12 +400,17 @@ class _CardAddedSuccessScreenState extends ConsumerState<CardAddedSuccessScreen>
           onPressed: () {
             context.go('/home');
           },
-          child: Text(
-            'Skip for now',
-            style: TextStyle(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-              fontWeight: FontWeight.w500,
-            ),
+          child: Consumer(
+            builder: (context, ref, child) {
+              final tr = ref.watch(translationHelperProvider);
+              return Text(
+                tr('card.success.actions.skipForNow'),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w500,
+                ),
+              );
+            },
           ),
         ),
       ],

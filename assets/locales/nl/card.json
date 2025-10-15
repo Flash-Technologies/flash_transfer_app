@@ -1,0 +1,89 @@
+{
+  "success": {
+    "title": "Kaart succesvol toegevoegd!",
+    "description": "Uw creditcard is veilig toegevoegd aan uw portemonnee. U kunt deze nu gebruiken voor betalingen en overmakingen.",
+    "whatYouCanDo": "Wat u nu kunt doen:",
+    "benefits": {
+      "secureStorage": {
+        "title": "Veilige opslag",
+        "description": "Uw kaartgegevens zijn versleuteld en veilig opgeslagen"
+      },
+      "quickPayments": {
+        "title": "Snelle betalingen", 
+        "description": "Maak directe betalingen met één tik"
+      },
+      "saveMoney": {
+        "title": "Geld besparen",
+        "description": "Krijg de beste wisselkoersen op overmakingen"
+      }
+    },
+    "actions": {
+      "makeTransfer": "Overmaking maken",
+      "viewCards": "Mijn kaarten bekijken",
+      "skipForNow": "Nu overslaan"
+    }
+  },
+  "confirm": {
+    "title": "Kaart bevestigen",
+    "headerTitle": "Bevestig uw kaart",
+    "subtitle": "Controleer uw kaartgegevens voordat u opslaat. U kunt deze kaart instellen als uw standaard betaalmethode.",
+    "cardDetails": "Kaartgegevens",
+    "cardNumber": "Kaartnummer",
+    "cardholderName": "Naam kaarthouder",
+    "expiryDate": "Vervaldatum",
+    "cardType": "Kaarttype",
+    "setAsDefault": "Instellen als standaard betaalmethode",
+    "setAsDefaultDescription": "Deze kaart standaard gebruiken voor toekomstige transacties",
+    "agreeToTerms": "Ik ga akkoord met de Algemene Voorwaarden",
+    "agreeToTermsDescription": "Door deze kaart op te slaan, gaat u akkoord met onze servicevoorwaarden",
+    "saveCard": "Kaart opslaan",
+    "cancel": "Annuleren",
+    "termsDialog": {
+      "title": "Algemene Voorwaarden",
+      "message": "Ga akkoord met de algemene voorwaarden om door te gaan met het toevoegen van uw kaart.",
+      "ok": "OK"
+    },
+    "errorDialog": {
+      "title": "Fout",
+      "ok": "OK"
+    }
+  },
+  "enter": {
+    "addCard": "Nieuwe kaart toevoegen",
+    "editCard": "Kaart bewerken",
+    "title": "Voer uw kaartinformatie in",
+    "subtitle": "Voer uw kaartgegevens veilig in. Alle informatie wordt versleuteld en veilig opgeslagen.",
+    "cardPreview": "Kaartvoorbeeld",
+    "scanCard": "Kaart scannen met camera",
+    "scanning": "Scannen...",
+    "continue": "Doorgaan",
+    "cancel": "Annuleren",
+    "scanSuccess": {
+      "title": "Kaart succesvol gescand!",
+      "message": "Kaartgegevens zijn automatisch ingevuld. Controleer en vul eventuele ontbrekende informatie aan.",
+      "ok": "OK"
+    },
+    "dismiss": "Sluiten"
+  },
+  "scan": {
+    "instruction": "Plaats uw kaart binnen het kader",
+    "initializingCamera": "Camera wordt geïnitialiseerd...",
+    "cameraError": "Camerafout",
+    "scanSuccess": {
+      "title": "Kaart gescand!",
+      "message": "Kaartgegevens zijn succesvol vastgelegd. U kunt nu controleren en de informatie aanvullen.",
+      "continue": "Doorgaan"
+    },
+    "tryAgain": "Opnieuw proberen"
+  },
+  "cardTypes": {
+    "visa": "Visa",
+    "mastercard": "Mastercard",
+    "americanExpress": "American Express",
+    "discover": "Discover",
+    "dinersClub": "Diners Club",
+    "jcb": "JCB",
+    "unionPay": "UnionPay",
+    "creditCard": "Creditcard"
+  }
+}

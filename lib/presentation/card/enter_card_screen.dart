@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/models/credit_card_model.dart';
 import '../../providers/card_provider.dart';
+import '../../providers/language_provider.dart';
 import 'components/card_input_form.dart';
 import 'components/card_preview_widget.dart';
 
@@ -124,18 +125,19 @@ class _EnterCardScreenState extends ConsumerState<EnterCardScreen>
   }
 
   void _showScanSuccessDialog() {
+    final tr = ref.read(translationHelperProvider);
     showDialog(
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('Card Scanned Successfully!'),
-            content: const Text(
-              'Card details have been automatically filled. Please review and complete any missing information.',
+            title: Text(tr('card.enter.scanSuccess.title')),
+            content: Text(
+              tr('card.enter.scanSuccess.message'),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('OK'),
+                child: Text(tr('card.enter.scanSuccess.ok')),
               ),
             ],
           ),
@@ -148,7 +150,7 @@ class _EnterCardScreenState extends ConsumerState<EnterCardScreen>
         content: Text(message),
         backgroundColor: Theme.of(context).colorScheme.error,
         action: SnackBarAction(
-          label: 'Dismiss',
+          label: ref.read(translationHelperProvider)('card.enter.dismiss'),
           textColor: Colors.white,
           onPressed: () => ScaffoldMessenger.of(context).hideCurrentSnackBar(),
         ),
@@ -277,12 +279,17 @@ class _EnterCardScreenState extends ConsumerState<EnterCardScreen>
             ),
           ),
           const SizedBox(width: 16),
-          Text(
-            widget.existingCard != null ? 'Edit Card' : 'Add New Card',
-            style: theme.textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: theme.colorScheme.onSurface,
-            ),
+          Consumer(
+            builder: (context, ref, child) {
+              final tr = ref.watch(translationHelperProvider);
+              return Text(
+                widget.existingCard != null ? tr('card.enter.editCard') : tr('card.enter.addCard'),
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: theme.colorScheme.onSurface,
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -295,19 +302,29 @@ class _EnterCardScreenState extends ConsumerState<EnterCardScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Enter your card information',
-          style: theme.textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: theme.colorScheme.onSurface,
-          ),
+        Consumer(
+          builder: (context, ref, child) {
+            final tr = ref.watch(translationHelperProvider);
+            return Text(
+              tr('card.enter.title'),
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.onSurface,
+              ),
+            );
+          },
         ),
         const SizedBox(height: 8),
-        Text(
-          'Please enter your card details securely. All information is encrypted and stored safely.',
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-          ),
+        Consumer(
+          builder: (context, ref, child) {
+            final tr = ref.watch(translationHelperProvider);
+            return Text(
+              tr('card.enter.subtitle'),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            );
+          },
         ),
       ],
     );
@@ -322,11 +339,16 @@ class _EnterCardScreenState extends ConsumerState<EnterCardScreen>
         children: [
           Icon(Icons.credit_card, size: 20, color: theme.colorScheme.primary),
           const SizedBox(width: 8),
-          Text(
-            'Card Preview',
-            style: theme.textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+          Consumer(
+            builder: (context, ref, child) {
+              final tr = ref.watch(translationHelperProvider);
+              return Text(
+                tr('card.enter.cardPreview'),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              );
+            },
           ),
           const Spacer(),
           Switch(
@@ -361,9 +383,14 @@ class _EnterCardScreenState extends ConsumerState<EnterCardScreen>
                   ),
                 )
                 : const Icon(Icons.camera_alt_outlined),
-        label: Text(
-          cardState.isScanning ? 'Scanning...' : 'Scan Card with Camera',
-          style: const TextStyle(fontWeight: FontWeight.w600),
+        label: Consumer(
+          builder: (context, ref, child) {
+            final tr = ref.watch(translationHelperProvider);
+            return Text(
+              cardState.isScanning ? tr('card.enter.scanning') : tr('card.enter.scanCard'),
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            );
+          },
         ),
         style: OutlinedButton.styleFrom(
           foregroundColor: theme.colorScheme.primary,
@@ -425,12 +452,17 @@ class _EnterCardScreenState extends ConsumerState<EnterCardScreen>
                           ),
                         ),
                       )
-                      : const Text(
-                        'Continue',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      : Consumer(
+                        builder: (context, ref, child) {
+                          final tr = ref.watch(translationHelperProvider);
+                          return Text(
+                            tr('card.enter.continue'),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          );
+                        },
                       ),
             ),
           ),
@@ -450,9 +482,14 @@ class _EnterCardScreenState extends ConsumerState<EnterCardScreen>
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: const Text(
-                'Cancel',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final tr = ref.watch(translationHelperProvider);
+                  return Text(
+                    tr('card.enter.cancel'),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  );
+                },
               ),
             ),
           ),

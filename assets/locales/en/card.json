@@ -1,0 +1,89 @@
+{
+  "success": {
+    "title": "Card Added Successfully!",
+    "description": "Your credit card has been securely added to your wallet. You can now use it for payments and transfers.",
+    "whatYouCanDo": "What you can do now:",
+    "benefits": {
+      "secureStorage": {
+        "title": "Secure Storage",
+        "description": "Your card details are encrypted and stored safely"
+      },
+      "quickPayments": {
+        "title": "Quick Payments", 
+        "description": "Make instant payments with one tap"
+      },
+      "saveMoney": {
+        "title": "Save Money",
+        "description": "Get the best exchange rates on transfers"
+      }
+    },
+    "actions": {
+      "makeTransfer": "Make a Transfer",
+      "viewCards": "View My Cards",
+      "skipForNow": "Skip for now"
+    }
+  },
+  "confirm": {
+    "title": "Confirm Card",
+    "headerTitle": "Confirm Your Card",
+    "subtitle": "Please review your card details before saving. You can set this card as your default payment method.",
+    "cardDetails": "Card Details",
+    "cardNumber": "Card Number",
+    "cardholderName": "Cardholder Name",
+    "expiryDate": "Expiry Date",
+    "cardType": "Card Type",
+    "setAsDefault": "Set as default payment method",
+    "setAsDefaultDescription": "Use this card for future transactions by default",
+    "agreeToTerms": "I agree to the Terms & Conditions",
+    "agreeToTermsDescription": "By saving this card, you agree to our terms of service",
+    "saveCard": "Save Card",
+    "cancel": "Cancel",
+    "termsDialog": {
+      "title": "Terms & Conditions",
+      "message": "Please agree to the terms and conditions to continue adding your card.",
+      "ok": "OK"
+    },
+    "errorDialog": {
+      "title": "Error",
+      "ok": "OK"
+    }
+  },
+  "enter": {
+    "addCard": "Add New Card",
+    "editCard": "Edit Card",
+    "title": "Enter your card information",
+    "subtitle": "Please enter your card details securely. All information is encrypted and stored safely.",
+    "cardPreview": "Card Preview",
+    "scanCard": "Scan Card with Camera",
+    "scanning": "Scanning...",
+    "continue": "Continue",
+    "cancel": "Cancel",
+    "scanSuccess": {
+      "title": "Card Scanned Successfully!",
+      "message": "Card details have been automatically filled. Please review and complete any missing information.",
+      "ok": "OK"
+    },
+    "dismiss": "Dismiss"
+  },
+  "scan": {
+    "instruction": "Position your card within the frame",
+    "initializingCamera": "Initializing camera...",
+    "cameraError": "Camera Error",
+    "scanSuccess": {
+      "title": "Card Scanned!",
+      "message": "Card details have been successfully captured. You can now review and complete the information.",
+      "continue": "Continue"
+    },
+    "tryAgain": "Try Again"
+  },
+  "cardTypes": {
+    "visa": "Visa",
+    "mastercard": "Mastercard",
+    "americanExpress": "American Express",
+    "discover": "Discover",
+    "dinersClub": "Diners Club",
+    "jcb": "JCB",
+    "unionPay": "UnionPay",
+    "creditCard": "Credit Card"
+  }
+}

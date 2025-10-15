@@ -1,0 +1,89 @@
+{
+  "success": {
+    "title": "Carte ajoutée avec succès !",
+    "description": "Votre carte de crédit a été ajoutée en toute sécurité à votre portefeuille. Vous pouvez maintenant l'utiliser pour les paiements et les transferts.",
+    "whatYouCanDo": "Ce que vous pouvez faire maintenant :",
+    "benefits": {
+      "secureStorage": {
+        "title": "Stockage sécurisé",
+        "description": "Les détails de votre carte sont cryptés et stockés en toute sécurité"
+      },
+      "quickPayments": {
+        "title": "Paiements rapides", 
+        "description": "Effectuez des paiements instantanés d'un seul clic"
+      },
+      "saveMoney": {
+        "title": "Économisez de l'argent",
+        "description": "Obtenez les meilleurs taux de change pour les transferts"
+      }
+    },
+    "actions": {
+      "makeTransfer": "Effectuer un transfert",
+      "viewCards": "Voir mes cartes",
+      "skipForNow": "Ignorer pour le moment"
+    }
+  },
+  "confirm": {
+    "title": "Confirmer la carte",
+    "headerTitle": "Confirmez votre carte",
+    "subtitle": "Veuillez vérifier les détails de votre carte avant de l'enregistrer. Vous pouvez définir cette carte comme méthode de paiement par défaut.",
+    "cardDetails": "Détails de la carte",
+    "cardNumber": "Numéro de carte",
+    "cardholderName": "Nom du titulaire",
+    "expiryDate": "Date d'expiration",
+    "cardType": "Type de carte",
+    "setAsDefault": "Définir comme méthode de paiement par défaut",
+    "setAsDefaultDescription": "Utiliser cette carte pour les transactions futures par défaut",
+    "agreeToTerms": "J'accepte les Termes et Conditions",
+    "agreeToTermsDescription": "En enregistrant cette carte, vous acceptez nos conditions de service",
+    "saveCard": "Enregistrer la carte",
+    "cancel": "Annuler",
+    "termsDialog": {
+      "title": "Termes et Conditions",
+      "message": "Veuillez accepter les termes et conditions pour continuer à ajouter votre carte.",
+      "ok": "OK"
+    },
+    "errorDialog": {
+      "title": "Erreur",
+      "ok": "OK"
+    }
+  },
+  "enter": {
+    "addCard": "Ajouter une nouvelle carte",
+    "editCard": "Modifier la carte",
+    "title": "Entrez les informations de votre carte",
+    "subtitle": "Veuillez saisir les détails de votre carte en toute sécurité. Toutes les informations sont cryptées et stockées en toute sécurité.",
+    "cardPreview": "Aperçu de la carte",
+    "scanCard": "Scanner la carte avec l'appareil photo",
+    "scanning": "Scan en cours...",
+    "continue": "Continuer",
+    "cancel": "Annuler",
+    "scanSuccess": {
+      "title": "Carte scannée avec succès !",
+      "message": "Les détails de la carte ont été remplis automatiquement. Veuillez vérifier et compléter toute information manquante.",
+      "ok": "OK"
+    },
+    "dismiss": "Ignorer"
+  },
+  "scan": {
+    "instruction": "Positionnez votre carte dans le cadre",
+    "initializingCamera": "Initialisation de l'appareil photo...",
+    "cameraError": "Erreur de l'appareil photo",
+    "scanSuccess": {
+      "title": "Carte scannée !",
+      "message": "Les détails de la carte ont été capturés avec succès. Vous pouvez maintenant vérifier et compléter les informations.",
+      "continue": "Continuer"
+    },
+    "tryAgain": "Réessayer"
+  },
+  "cardTypes": {
+    "visa": "Visa",
+    "mastercard": "Mastercard",
+    "americanExpress": "American Express",
+    "discover": "Discover",
+    "dinersClub": "Diners Club",
+    "jcb": "JCB",
+    "unionPay": "UnionPay",
+    "creditCard": "Carte de crédit"
+  }
+}

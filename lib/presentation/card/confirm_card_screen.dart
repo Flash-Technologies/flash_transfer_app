@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../core/models/credit_card_model.dart';
 import '../../providers/card_provider.dart';
+import '../../providers/language_provider.dart';
 import 'components/card_preview_widget.dart';
 
 class ConfirmCardScreen extends ConsumerStatefulWidget {
@@ -106,18 +107,19 @@ class _ConfirmCardScreenState extends ConsumerState<ConfirmCardScreen>
   }
 
   void _showTermsDialog() {
+    final tr = ref.read(translationHelperProvider);
     showDialog(
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('Terms & Conditions'),
-            content: const Text(
-              'Please agree to the terms and conditions to continue adding your card.',
+            title: Text(tr('card.confirm.termsDialog.title')),
+            content: Text(
+              tr('card.confirm.termsDialog.message'),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('OK'),
+                child: Text(tr('card.confirm.termsDialog.ok')),
               ),
             ],
           ),
@@ -125,16 +127,17 @@ class _ConfirmCardScreenState extends ConsumerState<ConfirmCardScreen>
   }
 
   void _showErrorDialog(String message) {
+    final tr = ref.read(translationHelperProvider);
     showDialog(
       context: context,
       builder:
           (context) => AlertDialog(
-            title: const Text('Error'),
+            title: Text(tr('card.confirm.errorDialog.title')),
             content: Text(message),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('OK'),
+                child: Text(tr('card.confirm.errorDialog.ok')),
               ),
             ],
           ),
@@ -250,12 +253,17 @@ class _ConfirmCardScreenState extends ConsumerState<ConfirmCardScreen>
             ),
           ),
           const SizedBox(width: 16),
-          Text(
-            'Confirm Card',
-            style: theme.textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: theme.colorScheme.onSurface,
-            ),
+          Consumer(
+            builder: (context, ref, child) {
+              final tr = ref.watch(translationHelperProvider);
+              return Text(
+                tr('card.confirm.title'),
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: theme.colorScheme.onSurface,
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -268,20 +276,30 @@ class _ConfirmCardScreenState extends ConsumerState<ConfirmCardScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Confirm Your Card',
-          style: theme.textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            color: theme.colorScheme.onSurface,
-          ),
+        Consumer(
+          builder: (context, ref, child) {
+            final tr = ref.watch(translationHelperProvider);
+            return Text(
+              tr('card.confirm.headerTitle'),
+              style: theme.textTheme.headlineMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.onSurface,
+              ),
+            );
+          },
         ),
         const SizedBox(height: 8),
-        Text(
-          'Please review your card details before saving. You can set this card as your default payment method.',
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurfaceVariant,
-            height: 1.4,
-          ),
+        Consumer(
+          builder: (context, ref, child) {
+            final tr = ref.watch(translationHelperProvider);
+            return Text(
+              tr('card.confirm.subtitle'),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                height: 1.4,
+              ),
+            );
+          },
         ),
       ],
     );
@@ -323,11 +341,16 @@ class _ConfirmCardScreenState extends ConsumerState<ConfirmCardScreen>
                   size: 24,
                 ),
                 const SizedBox(width: 12),
-                Text(
-                  'Card Details',
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final tr = ref.watch(translationHelperProvider);
+                    return Text(
+                      tr('card.confirm.cardDetails'),
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -338,28 +361,48 @@ class _ConfirmCardScreenState extends ConsumerState<ConfirmCardScreen>
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
-                _buildDetailRow(
-                  'Card Number',
-                  widget.card.maskedCardNumber,
-                  Icons.credit_card,
+                Consumer(
+                  builder: (context, ref, child) {
+                    final tr = ref.watch(translationHelperProvider);
+                    return _buildDetailRow(
+                      tr('card.confirm.cardNumber'),
+                      widget.card.maskedCardNumber,
+                      Icons.credit_card,
+                    );
+                  },
                 ),
                 const SizedBox(height: 16),
-                _buildDetailRow(
-                  'Cardholder Name',
-                  widget.card.cardHolderName.toUpperCase(),
-                  Icons.person,
+                Consumer(
+                  builder: (context, ref, child) {
+                    final tr = ref.watch(translationHelperProvider);
+                    return _buildDetailRow(
+                      tr('card.confirm.cardholderName'),
+                      widget.card.cardHolderName.toUpperCase(),
+                      Icons.person,
+                    );
+                  },
                 ),
                 const SizedBox(height: 16),
-                _buildDetailRow(
-                  'Expiry Date',
-                  widget.card.formattedExpiryDate,
-                  Icons.calendar_today,
+                Consumer(
+                  builder: (context, ref, child) {
+                    final tr = ref.watch(translationHelperProvider);
+                    return _buildDetailRow(
+                      tr('card.confirm.expiryDate'),
+                      widget.card.formattedExpiryDate,
+                      Icons.calendar_today,
+                    );
+                  },
                 ),
                 const SizedBox(height: 16),
-                _buildDetailRow(
-                  'Card Type',
-                  _getCardTypeName(widget.card.cardType),
-                  Icons.account_balance_wallet,
+                Consumer(
+                  builder: (context, ref, child) {
+                    final tr = ref.watch(translationHelperProvider);
+                    return _buildDetailRow(
+                      tr('card.confirm.cardType'),
+                      _getCardTypeName(widget.card.cardType),
+                      Icons.account_balance_wallet,
+                    );
+                  },
                 ),
               ],
             ),
@@ -438,17 +481,27 @@ class _ConfirmCardScreenState extends ConsumerState<ConfirmCardScreen>
                 _setAsDefault = value ?? false;
               });
             },
-            title: Text(
-              'Set as default payment method',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
+            title: Consumer(
+              builder: (context, ref, child) {
+                final tr = ref.watch(translationHelperProvider);
+                return Text(
+                  tr('card.confirm.setAsDefault'),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                );
+              },
             ),
-            subtitle: Text(
-              'Use this card for future transactions by default',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+            subtitle: Consumer(
+              builder: (context, ref, child) {
+                final tr = ref.watch(translationHelperProvider);
+                return Text(
+                  tr('card.confirm.setAsDefaultDescription'),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                );
+              },
             ),
             activeColor: const Color(0xFFFFC000),
             checkColor: Colors.black,
@@ -465,28 +518,29 @@ class _ConfirmCardScreenState extends ConsumerState<ConfirmCardScreen>
                 _agreedToTerms = value ?? false;
               });
             },
-            title: RichText(
-              text: TextSpan(
-                text: 'I agree to the ',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
-                children: [
-                  TextSpan(
-                    text: 'Terms & Conditions',
-                    style: TextStyle(
-                      color: theme.colorScheme.primary,
-                      decoration: TextDecoration.underline,
-                    ),
+            title: Consumer(
+              builder: (context, ref, child) {
+                final tr = ref.watch(translationHelperProvider);
+                return Text(
+                  tr('card.confirm.agreeToTerms'),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: theme.colorScheme.primary,
+                    decoration: TextDecoration.underline,
                   ),
-                ],
-              ),
+                );
+              },
             ),
-            subtitle: Text(
-              'By saving this card, you agree to our terms of service',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
+            subtitle: Consumer(
+              builder: (context, ref, child) {
+                final tr = ref.watch(translationHelperProvider);
+                return Text(
+                  tr('card.confirm.agreeToTermsDescription'),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                );
+              },
             ),
             activeColor: const Color(0xFFFFC000),
             checkColor: Colors.black,
@@ -543,12 +597,17 @@ class _ConfirmCardScreenState extends ConsumerState<ConfirmCardScreen>
                           ),
                         ),
                       )
-                      : const Text(
-                        'Save Card',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      : Consumer(
+                        builder: (context, ref, child) {
+                          final tr = ref.watch(translationHelperProvider);
+                          return Text(
+                            tr('card.confirm.saveCard'),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          );
+                        },
                       ),
             ),
           ),
@@ -568,9 +627,14 @@ class _ConfirmCardScreenState extends ConsumerState<ConfirmCardScreen>
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: const Text(
-                'Cancel',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final tr = ref.watch(translationHelperProvider);
+                  return Text(
+                    tr('card.confirm.cancel'),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                  );
+                },
               ),
             ),
           ),
@@ -580,23 +644,24 @@ class _ConfirmCardScreenState extends ConsumerState<ConfirmCardScreen>
   }
 
   String _getCardTypeName(CardType cardType) {
+    final tr = ref.read(translationHelperProvider);
     switch (cardType) {
       case CardType.visa:
-        return 'Visa';
+        return tr('card.cardTypes.visa');
       case CardType.mastercard:
-        return 'Mastercard';
+        return tr('card.cardTypes.mastercard');
       case CardType.americanExpress:
-        return 'American Express';
+        return tr('card.cardTypes.americanExpress');
       case CardType.discover:
-        return 'Discover';
+        return tr('card.cardTypes.discover');
       case CardType.dinersClub:
-        return 'Diners Club';
+        return tr('card.cardTypes.dinersClub');
       case CardType.jcb:
-        return 'JCB';
+        return tr('card.cardTypes.jcb');
       case CardType.unionPay:
-        return 'UnionPay';
+        return tr('card.cardTypes.unionPay');
       default:
-        return 'Credit Card';
+        return tr('card.cardTypes.creditCard');
     }
   }
 }

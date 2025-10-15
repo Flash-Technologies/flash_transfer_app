@@ -1,0 +1,89 @@
+{
+  "success": {
+    "title": "Karte erfolgreich hinzugefügt!",
+    "description": "Ihre Kreditkarte wurde sicher zu Ihrer Brieftasche hinzugefügt. Sie können sie jetzt für Zahlungen und Überweisungen verwenden.",
+    "whatYouCanDo": "Was Sie jetzt tun können:",
+    "benefits": {
+      "secureStorage": {
+        "title": "Sichere Speicherung",
+        "description": "Ihre Kartendaten sind verschlüsselt und sicher gespeichert"
+      },
+      "quickPayments": {
+        "title": "Schnelle Zahlungen", 
+        "description": "Sofortige Zahlungen mit einem Fingertipp"
+      },
+      "saveMoney": {
+        "title": "Geld sparen",
+        "description": "Erhalten Sie die besten Wechselkurse für Überweisungen"
+      }
+    },
+    "actions": {
+      "makeTransfer": "Überweisung tätigen",
+      "viewCards": "Meine Karten anzeigen",
+      "skipForNow": "Jetzt überspringen"
+    }
+  },
+  "confirm": {
+    "title": "Karte bestätigen",
+    "headerTitle": "Ihre Karte bestätigen",
+    "subtitle": "Bitte überprüfen Sie Ihre Kartendaten vor dem Speichern. Sie können diese Karte als Standard-Zahlungsmethode festlegen.",
+    "cardDetails": "Kartendaten",
+    "cardNumber": "Kartennummer",
+    "cardholderName": "Name des Karteninhabers",
+    "expiryDate": "Ablaufdatum",
+    "cardType": "Kartentyp",
+    "setAsDefault": "Als Standard-Zahlungsmethode festlegen",
+    "setAsDefaultDescription": "Diese Karte standardmäßig für zukünftige Transaktionen verwenden",
+    "agreeToTerms": "Ich stimme den Allgemeinen Geschäftsbedingungen zu",
+    "agreeToTermsDescription": "Durch das Speichern dieser Karte stimmen Sie unseren Nutzungsbedingungen zu",
+    "saveCard": "Karte speichern",
+    "cancel": "Abbrechen",
+    "termsDialog": {
+      "title": "Allgemeine Geschäftsbedingungen",
+      "message": "Bitte stimmen Sie den Allgemeinen Geschäftsbedingungen zu, um mit dem Hinzufügen Ihrer Karte fortzufahren.",
+      "ok": "OK"
+    },
+    "errorDialog": {
+      "title": "Fehler",
+      "ok": "OK"
+    }
+  },
+  "enter": {
+    "addCard": "Neue Karte hinzufügen",
+    "editCard": "Karte bearbeiten",
+    "title": "Geben Sie Ihre Karteninformationen ein",
+    "subtitle": "Bitte geben Sie Ihre Kartendaten sicher ein. Alle Informationen werden verschlüsselt und sicher gespeichert.",
+    "cardPreview": "Kartenvorschau",
+    "scanCard": "Karte mit Kamera scannen",
+    "scanning": "Scannen...",
+    "continue": "Fortfahren",
+    "cancel": "Abbrechen",
+    "scanSuccess": {
+      "title": "Karte erfolgreich gescannt!",
+      "message": "Kartendaten wurden automatisch ausgefüllt. Bitte überprüfen und vervollständigen Sie fehlende Informationen.",
+      "ok": "OK"
+    },
+    "dismiss": "Verwerfen"
+  },
+  "scan": {
+    "instruction": "Positionieren Sie Ihre Karte innerhalb des Rahmens",
+    "initializingCamera": "Kamera wird initialisiert...",
+    "cameraError": "Kamerafehler",
+    "scanSuccess": {
+      "title": "Karte gescannt!",
+      "message": "Kartendaten wurden erfolgreich erfasst. Sie können sie jetzt überprüfen und die Informationen vervollständigen.",
+      "continue": "Fortfahren"
+    },
+    "tryAgain": "Erneut versuchen"
+  },
+  "cardTypes": {
+    "visa": "Visa",
+    "mastercard": "Mastercard",
+    "americanExpress": "American Express",
+    "discover": "Discover",
+    "dinersClub": "Diners Club",
+    "jcb": "JCB",
+    "unionPay": "UnionPay",
+    "creditCard": "Kreditkarte"
+  }
+}

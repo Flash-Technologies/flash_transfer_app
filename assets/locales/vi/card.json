@@ -1,0 +1,89 @@
+{
+  "success": {
+    "title": "Thêm thẻ thành công!",
+    "description": "Thẻ tín dụng của bạn đã được thêm an toàn vào ví. Bây giờ bạn có thể sử dụng nó để thanh toán và chuyển tiền.",
+    "whatYouCanDo": "Những gì bạn có thể làm bây giờ:",
+    "benefits": {
+      "secureStorage": {
+        "title": "Lưu trữ an toàn",
+        "description": "Chi tiết thẻ của bạn được mã hóa và lưu trữ an toàn"
+      },
+      "quickPayments": {
+        "title": "Thanh toán nhanh", 
+        "description": "Thực hiện thanh toán tức thì chỉ với một chạm"
+      },
+      "saveMoney": {
+        "title": "Tiết kiệm tiền",
+        "description": "Nhận tỷ giá hối đoái tốt nhất cho chuyển tiền"
+      }
+    },
+    "actions": {
+      "makeTransfer": "Thực hiện chuyển tiền",
+      "viewCards": "Xem thẻ của tôi",
+      "skipForNow": "Bỏ qua bây giờ"
+    }
+  },
+  "confirm": {
+    "title": "Xác nhận thẻ",
+    "headerTitle": "Xác nhận thẻ của bạn",
+    "subtitle": "Vui lòng xem xét chi tiết thẻ của bạn trước khi lưu. Bạn có thể đặt thẻ này làm phương thức thanh toán mặc định.",
+    "cardDetails": "Chi tiết thẻ",
+    "cardNumber": "Số thẻ",
+    "cardholderName": "Tên chủ thẻ",
+    "expiryDate": "Ngày hết hạn",
+    "cardType": "Loại thẻ",
+    "setAsDefault": "Đặt làm phương thức thanh toán mặc định",
+    "setAsDefaultDescription": "Sử dụng thẻ này cho các giao dịch tương lai theo mặc định",
+    "agreeToTerms": "Tôi đồng ý với Điều khoản và Điều kiện",
+    "agreeToTermsDescription": "Bằng cách lưu thẻ này, bạn đồng ý với điều khoản dịch vụ của chúng tôi",
+    "saveCard": "Lưu thẻ",
+    "cancel": "Hủy bỏ",
+    "termsDialog": {
+      "title": "Điều khoản và Điều kiện",
+      "message": "Vui lòng đồng ý với điều khoản và điều kiện để tiếp tục thêm thẻ của bạn.",
+      "ok": "OK"
+    },
+    "errorDialog": {
+      "title": "Lỗi",
+      "ok": "OK"
+    }
+  },
+  "enter": {
+    "addCard": "Thêm thẻ mới",
+    "editCard": "Chỉnh sửa thẻ",
+    "title": "Nhập thông tin thẻ của bạn",
+    "subtitle": "Vui lòng nhập chi tiết thẻ của bạn một cách an toàn. Tất cả thông tin được mã hóa và lưu trữ an toàn.",
+    "cardPreview": "Xem trước thẻ",
+    "scanCard": "Quét thẻ bằng camera",
+    "scanning": "Đang quét...",
+    "continue": "Tiếp tục",
+    "cancel": "Hủy bỏ",
+    "scanSuccess": {
+      "title": "Quét thẻ thành công!",
+      "message": "Chi tiết thẻ đã được điền tự động. Vui lòng xem xét và hoàn thành bất kỳ thông tin nào còn thiếu.",
+      "ok": "OK"
+    },
+    "dismiss": "Bỏ qua"
+  },
+  "scan": {
+    "instruction": "Đặt thẻ của bạn trong khung",
+    "initializingCamera": "Đang khởi tạo camera...",
+    "cameraError": "Lỗi camera",
+    "scanSuccess": {
+      "title": "Đã quét thẻ!",
+      "message": "Chi tiết thẻ đã được chụp thành công. Bây giờ bạn có thể xem xét và hoàn thành thông tin.",
+      "continue": "Tiếp tục"
+    },
+    "tryAgain": "Thử lại"
+  },
+  "cardTypes": {
+    "visa": "Visa",
+    "mastercard": "Mastercard",
+    "americanExpress": "American Express",
+    "discover": "Discover",
+    "dinersClub": "Diners Club",
+    "jcb": "JCB",
+    "unionPay": "UnionPay",
+    "creditCard": "Thẻ tín dụng"
+  }
+}
