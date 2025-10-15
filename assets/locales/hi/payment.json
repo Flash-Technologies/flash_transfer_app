@@ -1,0 +1,61 @@
+{
+  "common": {
+    "back": "वापस",
+    "continue": "जारी रखें",
+    "selectCountry": "कृपया एक देश चुनें",
+    "required": "आवश्यक",
+    "phoneNumber": "फ़ोन नंबर",
+    "phoneNumberRequired": "कृपया फ़ोन नंबर दर्ज करें"
+  },
+  "senderInfo": {
+    "headerTitle": "क्रिप्टो भुगतान भेजें",
+    "headerSubtitle": "क्रिप्टो से नकद ट्रांसफर",
+    "title": "प्रेषक की जानकारी",
+    "subtitle": "कृपया नकद ट्रांसफर के लिए अपनी जानकारी दें",
+    "sectionSenderInfo": "प्रेषक की जानकारी",
+    "phoneLabel": "फ़ोन नंबर*",
+    "phoneHint": "+1234567890",
+    "firstNameLabel": "पहला नाम*",
+    "firstNameHint": "पहला नाम दर्ज करें",
+    "lastNameLabel": "अंतिम नाम*",
+    "lastNameHint": "अंतिम नाम दर्ज करें",
+    "idSectionTitle": "पहचान की जानकारी (वैकल्पिक)",
+    "idType": "पहचान प्रकार",
+    "idNumber": "पहचान संख्या",
+    "idNumberHint": "पहचान संख्या दर्ज करें",
+    "issueDate": "पहचान जारी करने की तिथि",
+    "expiryDate": "पहचान समाप्ति तिथि",
+    "datePlaceholder": "dd/mm/yyyy",
+    "countryTitle": "देश",
+    "countryLabel": "देश चुनें",
+    "idTypes": {
+      "passport": "पासपोर्ट",
+      "drivingLicense": "ड्राइविंग लाइसेंस",
+      "nationalId": "राष्ट्रीय पहचान पत्र",
+      "other": "अन्य"
+    },
+    "progress": "2/4"
+  },
+  "recipientInfo": {
+    "headerTitle": "क्रिप्टो भुगतान भेजें",
+    "headerSubtitle": "क्रिप्टो से नकद ट्रांसफर",
+    "title": "प्राप्तकर्ता की जानकारी",
+    "subtitle": "कृपया नकद प्राप्ति के लिए प्राप्तकर्ता की जानकारी प्रदान करें",
+    "beneficiaryDetails": "लाभार्थी विवरण",
+    "phoneLabel": "फ़ोन नंबर* (SMS सूचना के लिए)",
+    "phoneHint": "फ़ोन नंबर",
+    "cashPickupCountry": "नकद प्राप्ति देश*",
+    "progress": "3/4"
+  },
+  "selectPayment": {
+    "progressTitle": "भुगतान विधि",
+    "progressSubtitle": "जानकारी दर्ज करें।",
+    "title": "अपना मोबाइल मनी चुनें",
+    "subtitle": "आप पैसे की डिलीवरी कैसे चाहते हैं?",
+    "errorSelectProvider": "पहले मोबाइल मनी चुनें",
+    "missingData": "लेन-देन डेटा गायब है। वापस जाएं और फॉर्म पूरा करें।",
+    "estimateFailed": "अनुमान प्राप्त नहीं हो सका। कृपया पुनः प्रयास करें।"
+  }
+}
+
+

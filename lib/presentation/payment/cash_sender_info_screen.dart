@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flash_transfer_app/providers/payment_provider.dart';
 import 'package:intl/intl.dart';
+import '../../providers/language_provider.dart';
 
 class CashSenderInfoScreen extends ConsumerStatefulWidget {
   const CashSenderInfoScreen({Key? key}) : super(key: key);
@@ -103,12 +104,13 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
   
   @override
   Widget build(BuildContext context) {
+    final tr = ref.watch(translationHelperProvider);
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       body: SafeArea(
         child: Column(
           children: [
-            _buildHeader(),
+            _buildHeader(tr),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16),
@@ -117,27 +119,27 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      _buildTitle(),
+                      _buildTitle(tr),
                       const SizedBox(height: 24),
-                      _buildSenderSection(),
+                      _buildSenderSection(tr),
                       const SizedBox(height: 24),
-                      _buildIdSection(),
+                      _buildIdSection(tr),
                       const SizedBox(height: 24),
-                      _buildCountrySection(),
+                      _buildCountrySection(tr),
                       const SizedBox(height: 32),
                     ],
                   ),
                 ),
               ),
             ),
-            _buildBottomButtons(),
+            _buildBottomButtons(tr),
           ],
         ),
       ),
     );
   }
   
-  Widget _buildHeader() {
+  Widget _buildHeader(String Function(String) tr) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -160,9 +162,9 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
-                  'Send Crypto Payment',
+                  tr('payment.senderInfo.headerTitle'),
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -170,8 +172,8 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
                   ),
                 ),
                 Text(
-                  'Crypto to Cash Transfer',
-                  style: TextStyle(
+                  tr('payment.senderInfo.headerSubtitle'),
+                  style: const TextStyle(
                     fontSize: 14,
                     color: Color(0xFF6E757D),
                   ),
@@ -193,9 +195,9 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
                   valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF2475FF)),
                 ),
               ),
-              const Text(
-                '2/4',
-                style: TextStyle(
+              Text(
+                tr('payment.senderInfo.progress'),
+                style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF2475FF),
@@ -208,13 +210,13 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
     );
   }
   
-  Widget _buildTitle() {
+  Widget _buildTitle(String Function(String) tr) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const Text(
-          'Sender Information',
-          style: TextStyle(
+        Text(
+          tr('payment.senderInfo.title'),
+          style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
             color: Color(0xFF181F30),
@@ -222,7 +224,7 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
         ),
         const SizedBox(height: 8),
         Text(
-          'Please provide your information for the cash transfer',
+          tr('payment.senderInfo.subtitle'),
           style: TextStyle(
             fontSize: 14,
             color: Colors.grey[600],
@@ -233,7 +235,7 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
     );
   }
   
-  Widget _buildSenderSection() {
+  Widget _buildSenderSection(String Function(String) tr) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -250,9 +252,9 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Sender Information',
-            style: TextStyle(
+          Text(
+            tr('payment.senderInfo.sectionSenderInfo'),
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
               color: Color(0xFF181F30),
@@ -265,8 +267,8 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
             controller: _phoneController,
             keyboardType: TextInputType.phone,
             decoration: InputDecoration(
-              labelText: 'Phone Number*',
-              hintText: '+1234567890',
+              labelText: tr('payment.senderInfo.phoneLabel'),
+              hintText: tr('payment.senderInfo.phoneHint'),
               prefixIcon: const Icon(Icons.phone, color: Color(0xFF6E757D)),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -278,7 +280,7 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter phone number';
+                return tr('payment.common.phoneNumberRequired');
               }
               return null;
             },
@@ -293,8 +295,8 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
                 child: TextFormField(
                   controller: _firstNameController,
                   decoration: InputDecoration(
-                    labelText: 'First Name*',
-                    hintText: 'Enter first name',
+                    labelText: tr('payment.senderInfo.firstNameLabel'),
+                    hintText: tr('payment.senderInfo.firstNameHint'),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -305,7 +307,7 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Required';
+                      return tr('payment.common.required');
                     }
                     return null;
                   },
@@ -316,8 +318,8 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
                 child: TextFormField(
                   controller: _lastNameController,
                   decoration: InputDecoration(
-                    labelText: 'Last Name*',
-                    hintText: 'Enter last name',
+                    labelText: tr('payment.senderInfo.lastNameLabel'),
+                    hintText: tr('payment.senderInfo.lastNameHint'),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -328,7 +330,7 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Required';
+                      return tr('payment.common.required');
                     }
                     return null;
                   },
@@ -341,7 +343,7 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
     );
   }
   
-  Widget _buildIdSection() {
+  Widget _buildIdSection(String Function(String) tr) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -358,9 +360,9 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'ID Information (Optional)',
-            style: TextStyle(
+          Text(
+            tr('payment.senderInfo.idSectionTitle'),
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
               color: Color(0xFF181F30),
@@ -373,7 +375,7 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
             children: [
               // ID Type dropdown
               _buildCustomDropdown(
-                label: 'ID Type',
+                label: tr('payment.senderInfo.idType'),
                 value: _selectedIdType,
                 items: _idTypes,
                 onChanged: (value) {
@@ -387,8 +389,8 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
               TextFormField(
                 controller: _idNumberController,
                 decoration: InputDecoration(
-                  labelText: 'ID Number',
-                  hintText: 'Enter ID number',
+                  labelText: tr('payment.senderInfo.idNumber'),
+                  hintText: tr('payment.senderInfo.idNumberHint'),
                   filled: true,
                   fillColor: const Color(0xFFF8F9FA),
                   border: OutlineInputBorder(
@@ -418,7 +420,7 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
                   onTap: () => _selectDate(context, true),
                   child: InputDecorator(
                     decoration: InputDecoration(
-                      labelText: 'ID Issue Date',
+                      labelText: tr('payment.senderInfo.issueDate'),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -427,7 +429,7 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
                     child: Text(
                       _issueDate != null
                           ? DateFormat('dd/MM/yyyy').format(_issueDate!)
-                          : 'dd/mm/yyyy',
+                          : tr('payment.senderInfo.datePlaceholder'),
                       style: TextStyle(
                         color: _issueDate != null ? Colors.black : Colors.grey,
                       ),
@@ -441,7 +443,7 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
                   onTap: () => _selectDate(context, false),
                   child: InputDecorator(
                     decoration: InputDecoration(
-                      labelText: 'ID Expiry Date',
+                      labelText: tr('payment.senderInfo.expiryDate'),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -450,7 +452,7 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
                     child: Text(
                       _expiryDate != null
                           ? DateFormat('dd/MM/yyyy').format(_expiryDate!)
-                          : 'dd/mm/yyyy',
+                          : tr('payment.senderInfo.datePlaceholder'),
                       style: TextStyle(
                         color: _expiryDate != null ? Colors.black : Colors.grey,
                       ),
@@ -465,7 +467,7 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
     );
   }
   
-  Widget _buildCountrySection() {
+  Widget _buildCountrySection(String Function(String) tr) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -482,9 +484,9 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Country',
-            style: TextStyle(
+          Text(
+            tr('payment.senderInfo.countryTitle'),
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
               color: Color(0xFF181F30),
@@ -493,7 +495,7 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
           const SizedBox(height: 16),
           
           _buildCustomCountryDropdown(
-            label: 'Select country',
+            label: tr('payment.senderInfo.countryLabel'),
             value: _selectedCountry,
             countries: _countries,
             onChanged: (value) {
@@ -503,7 +505,7 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
             },
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please select a country';
+                return tr('payment.common.selectCountry');
               }
               return null;
             },
@@ -513,7 +515,7 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
     );
   }
   
-  Widget _buildBottomButtons() {
+  Widget _buildBottomButtons(String Function(String) tr) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -538,9 +540,9 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
                 ),
                 side: const BorderSide(color: Color(0xFF6E757D)),
               ),
-              child: const Text(
-                'Back',
-                style: TextStyle(
+              child: Text(
+                tr('payment.common.back'),
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF6E757D),
@@ -560,9 +562,9 @@ class _CashSenderInfoScreenState extends ConsumerState<CashSenderInfoScreen> {
                 ),
                 elevation: 0,
               ),
-              child: const Text(
-                'Continue',
-                style: TextStyle(
+              child: Text(
+                tr('payment.common.continue'),
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   color: Color(0xFF181F30),

@@ -116,18 +116,18 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
-                  'Send Crypto Payment',
-                  style: TextStyle(
+                  ref.watch(translationHelperProvider)('payment.recipientInfo.headerTitle'),
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF181F30),
                   ),
                 ),
                 Text(
-                  'Crypto to Cash Transfer',
-                  style: TextStyle(
+                  ref.watch(translationHelperProvider)('payment.recipientInfo.headerSubtitle'),
+                  style: const TextStyle(
                     fontSize: 14,
                     color: Color(0xFF6E757D),
                   ),
@@ -149,9 +149,9 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
                   valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF2475FF)),
                 ),
               ),
-              const Text(
-                '3/4',
-                style: TextStyle(
+              Text(
+                ref.watch(translationHelperProvider)('payment.recipientInfo.progress'),
+                style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF2475FF),
@@ -168,9 +168,9 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Recipient Information',
-          style: TextStyle(
+        Text(
+          ref.watch(translationHelperProvider)('payment.recipientInfo.title'),
+          style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
             color: Color(0xFF181F30),
@@ -178,7 +178,7 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
         ),
         const SizedBox(height: 8),
         Text(
-          'Please provide recipient information for cash pickup',
+          ref.watch(translationHelperProvider)('payment.recipientInfo.subtitle'),
           style: TextStyle(
             fontSize: 14,
             color: Colors.grey[600],
@@ -205,9 +205,9 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Beneficiary Details',
-            style: TextStyle(
+          Text(
+            tr('payment.recipientInfo.beneficiaryDetails'),
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
               color: Color(0xFF181F30),
@@ -279,8 +279,8 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
             controller: _phoneController,
             keyboardType: TextInputType.phone,
             decoration: InputDecoration(
-              labelText: 'Phone Number* (for SMS notification)',
-              hintText: 'Phone number',
+              labelText: tr('payment.recipientInfo.phoneLabel'),
+              hintText: tr('payment.recipientInfo.phoneHint'),
               filled: true,
               fillColor: const Color(0xFFF0F2F5),
               border: OutlineInputBorder(
@@ -294,7 +294,7 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
             ),
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return 'Please enter phone number';
+                return tr('payment.common.phoneNumberRequired');
               }
               return null;
             },
@@ -306,7 +306,7 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
           DropdownButtonFormField<String>(
             value: _selectedCountry,
             decoration: InputDecoration(
-              labelText: 'Cash Pickup Country*',
+              labelText: tr('payment.recipientInfo.cashPickupCountry'),
               filled: true,
               fillColor: const Color(0xFFF0F2F5),
               border: OutlineInputBorder(
@@ -340,7 +340,7 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
             },
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return tr('auth.signUp.selectCountry');
+                return tr('payment.common.selectCountry');
               }
               return null;
             },
@@ -376,7 +376,7 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
                 side: const BorderSide(color: Color(0xFF6E757D)),
               ),
               child: Text(
-                tr('contacts.back'),
+                tr('payment.common.back'),
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -398,7 +398,7 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
                 elevation: 0,
               ),
               child: Text(
-                tr('contacts.continue'),
+                tr('payment.common.continue'),
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,

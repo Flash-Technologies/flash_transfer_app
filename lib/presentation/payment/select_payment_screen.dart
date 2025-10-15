@@ -135,9 +135,8 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
 
     if (amount <= 0 || paymentState.selectedNetwork == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-              'Missing transaction data. Please go back and complete the form.'),
+        SnackBar(
+          content: Text(ref.read(translationHelperProvider)('payment.selectPayment.missingData')),
           backgroundColor: Colors.red,
         ),
       );
@@ -189,9 +188,8 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
           _isProcessing = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content:
-                Text('Failed to get transaction estimate. Please try again.'),
+          SnackBar(
+            content: Text(ref.read(translationHelperProvider)('payment.selectPayment.estimateFailed')),
             backgroundColor: Colors.red,
           ),
         );
@@ -399,9 +397,9 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
             ),
           ),
           const SizedBox(width: 8),
-          const Text(
-            "Select Mobile Money First",
-            style: TextStyle(
+          Text(
+            ref.watch(translationHelperProvider)('payment.selectPayment.errorSelectProvider'),
+            style: const TextStyle(
               color: AppTheme.errorColor,
               fontSize: 14,
             ),
@@ -417,7 +415,7 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
       child: Column(
         children: [
           AppButton(
-            text: "Continue",
+            text: ref.watch(translationHelperProvider)('payment.common.continue'),
             onPressed: _handleSubmit,
             backgroundColor: AppTheme.accentColor,
             textColor: Colors.black87,
@@ -426,7 +424,7 @@ class _SelectPaymentScreenState extends ConsumerState<SelectPaymentScreen> {
           ),
           const SizedBox(height: 12),
           AppButton(
-            text: "Back",
+            text: ref.watch(translationHelperProvider)('payment.common.back'),
             onPressed: () => context.pop(),
             backgroundColor: Colors.transparent,
             textColor: AppTheme.textGrayColor,

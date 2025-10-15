@@ -5,6 +5,7 @@ import 'package:flash_transfer_app/config/theme.dart';
 import 'package:flash_transfer_app/core/models/payment_details.dart';
 import 'package:flash_transfer_app/providers/payment_provider.dart';
 import 'package:flash_transfer_app/providers/exchange_provider.dart';
+import '../../../../providers/language_provider.dart';
 
 class CashPaymentDetails extends ConsumerWidget {
   final PaymentDetails details;
@@ -16,6 +17,7 @@ class CashPaymentDetails extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final tr = ref.watch(translationHelperProvider);
     final paymentState = ref.watch(paymentProvider);
     final exchangeForm = ref.watch(exchangeFormProvider);
     
@@ -26,20 +28,20 @@ class CashPaymentDetails extends ConsumerWidget {
     return Column(
       children: [
         // Sender Details Section
-        _buildSenderSection(senderInfo, exchangeForm),
+        _buildSenderSection(senderInfo, exchangeForm, tr),
         const SizedBox(height: 16),
         
         // Receiver Details Section  
-        _buildReceiverSection(recipientInfo, exchangeForm),
+        _buildReceiverSection(recipientInfo, exchangeForm, tr),
         const SizedBox(height: 16),
         
         // Transaction Details Section
-        _buildTransactionSection(),
+        _buildTransactionSection(tr),
       ],
     );
   }
 
-  Widget _buildSenderSection(Map<String, dynamic>? senderInfo, exchangeForm) {
+  Widget _buildSenderSection(Map<String, dynamic>? senderInfo, exchangeForm, String Function(String) tr) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -57,8 +59,8 @@ class CashPaymentDetails extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Sender Details",
+          Text(
+            tr('review.cashPaymentDetails.senderDetails'),
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -123,17 +125,17 @@ class CashPaymentDetails extends ConsumerWidget {
           const SizedBox(height: 16),
           
           // Source of funds and Purpose
-          _buildDetailRow("Source of funds", "SAVINGS"),
+          _buildDetailRow(tr('review.cashPaymentDetails.sourceOfFunds'), "SAVINGS", tr),
           const SizedBox(height: 8),
-          _buildDetailRow("Purpose of transaction", "EDUCATION"),
+          _buildDetailRow(tr('review.cashPaymentDetails.purposeOfTransaction'), "EDUCATION", tr),
           const SizedBox(height: 8),
-          _buildDetailRow("Coverage Area", "West & Central Africa"),
+          _buildDetailRow(tr('review.cashPaymentDetails.coverageArea'), "West & Central Africa", tr),
         ],
       ),
     );
   }
 
-  Widget _buildReceiverSection(Map<String, dynamic>? recipientInfo, exchangeForm) {
+  Widget _buildReceiverSection(Map<String, dynamic>? recipientInfo, exchangeForm, String Function(String) tr) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -151,8 +153,8 @@ class CashPaymentDetails extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Receiver details",
+          Text(
+            tr('review.cashPaymentDetails.receiverDetails'),
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -228,7 +230,7 @@ class CashPaymentDetails extends ConsumerWidget {
                     ),
                     const SizedBox(width: 4),
                     Text(
-                      'Cash Pickup',
+                      tr('review.cashPaymentDetails.cashPickup'),
                       style: TextStyle(
                         color: Colors.green.shade600,
                         fontSize: 12,
@@ -243,17 +245,17 @@ class CashPaymentDetails extends ConsumerWidget {
           
           const SizedBox(height: 12),
           
-          _buildDetailRow("Blockchain Network", "ETHEREUM"),
+          _buildDetailRow(tr('review.cashPaymentDetails.blockchainNetwork'), "ETHEREUM", tr),
           const SizedBox(height: 8),
-          _buildDetailRow("Receiver Country", recipientInfo?['cashPickupCountry'] != null 
+          _buildDetailRow(tr('review.cashPaymentDetails.receiverCountry'), recipientInfo?['cashPickupCountry'] != null 
               ? _getCountryName(recipientInfo!['cashPickupCountry'])
-              : 'Cote d\'Ivoire'),
+              : 'Cote d\'Ivoire', tr),
         ],
       ),
     );
   }
 
-  Widget _buildTransactionSection() {
+  Widget _buildTransactionSection(String Function(String) tr) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(16),
@@ -271,8 +273,8 @@ class CashPaymentDetails extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "Transaction Details",
+          Text(
+            tr('review.cashPaymentDetails.transactionDetails'),
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -281,17 +283,17 @@ class CashPaymentDetails extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           
-          _buildDetailRow("You sent", "0.000001 ETH"),
+          _buildDetailRow(tr('review.cashPaymentDetails.youSent'), "0.000001 ETH", tr),
           const SizedBox(height: 8),
-          _buildDetailRow("Transfer rate", "1 ETH = 100 XOF", isRate: true),
+          _buildDetailRow(tr('review.cashPaymentDetails.transferRate'), "1 ETH = 100 XOF", tr, isRate: true),
           const SizedBox(height: 16),
           
           const Divider(),
           const SizedBox(height: 16),
           
-          _buildDetailRow("Total to pay", "0.000001 ETH", isBold: true),
+          _buildDetailRow(tr('review.cashPaymentDetails.totalToPay'), "0.000001 ETH", tr, isBold: true),
           const SizedBox(height: 8),
-          _buildDetailRow("Recipient Gets", "0.000001 XOF", isBold: true),
+          _buildDetailRow(tr('review.cashPaymentDetails.recipientGets'), "0.000001 XOF", tr, isBold: true),
           
           const SizedBox(height: 16),
           
@@ -315,16 +317,16 @@ class CashPaymentDetails extends ConsumerWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Availability',
+                    Text(
+                      tr('review.cashPaymentDetails.availability'),
                         style: TextStyle(
                           color: Colors.red.shade700,
                           fontSize: 12,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      Text(
-                        'Transaction unavailable at this time',
+                    Text(
+                      tr('review.cashPaymentDetails.transactionUnavailable'),
                         style: TextStyle(
                           color: Colors.red.shade600,
                           fontSize: 11,
@@ -340,7 +342,7 @@ class CashPaymentDetails extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    'Unavailable',
+                    tr('review.cashPaymentDetails.unavailable'),
                     style: TextStyle(
                       color: Colors.red.shade700,
                       fontSize: 10,
@@ -356,7 +358,7 @@ class CashPaymentDetails extends ConsumerWidget {
     );
   }
 
-  Widget _buildDetailRow(String label, String value, {bool isBold = false, bool isRate = false}) {
+  Widget _buildDetailRow(String label, String value, String Function(String) tr, {bool isBold = false, bool isRate = false}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -386,7 +388,7 @@ class CashPaymentDetails extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
-                  'LIVE',
+                  tr('review.cashPaymentDetails.live'),
                   style: TextStyle(
                     color: Colors.green.shade600,
                     fontSize: 10,

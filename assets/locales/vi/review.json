@@ -1,0 +1,42 @@
+{
+  "cashPaymentDetails": {
+    "senderDetails": "Chi tiết người gửi",
+    "receiverDetails": "Chi tiết người nhận",
+    "sourceOfFunds": "Nguồn tiền",
+    "purposeOfTransaction": "Mục đích giao dịch",
+    "coverageArea": "Khu vực phủ sóng",
+    "cashPickup": "Nhận tiền mặt",
+    "blockchainNetwork": "Mạng blockchain",
+    "receiverCountry": "Quốc gia người nhận",
+    "transactionDetails": "Chi tiết giao dịch",
+    "youSent": "Bạn đã gửi",
+    "transferRate": "Tỷ lệ chuyển đổi",
+    "totalToPay": "Tổng phải trả",
+    "recipientGets": "Người nhận nhận",
+    "availability": "Tính khả dụng",
+    "transactionUnavailable": "Giao dịch hiện không khả dụng",
+    "unavailable": "Không khả dụng",
+    "live": "TRỰC TIẾP",
+    "notProvided": "Không cung cấp"
+  },
+  "receiverInfo": {
+    "progressStep": "Bước 1/4",
+    "headerTitle": "Thông tin người nhận",
+    "headerSubtitle": "Xem lại chi tiết người nhận",
+    "title": "Thông tin người nhận",
+    "subtitle": "Xem lại mọi chi tiết giao dịch của bạn. Đảm bảo mọi thứ chính xác trước khi tiếp tục.",
+    "transactionDetails": "Chi tiết giao dịch",
+    "youSend": "Bạn gửi",
+    "theyReceive": "Họ nhận",
+    "exchangeRate": "Tỷ giá",
+    "transferFee": "Phí chuyển",
+    "totalCost": "Tổng chi phí",
+    "continue": "Tiếp tục",
+    "selectReceiverFirst": "Chọn người nhận trước",
+    "changeReceiver": "Thay đổi người nhận",
+    "cancel": "Hủy",
+    "calculating": "Đang tính..."
+  }
+}
+
+

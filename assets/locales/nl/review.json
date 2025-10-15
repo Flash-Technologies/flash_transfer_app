@@ -1,88 +1,126 @@
 {
+  "cashPaymentDetails": {
+    "senderDetails": "Details afzender",
+    "receiverDetails": "Details ontvanger",
+    "sourceOfFunds": "Herkomst van de middelen",
+    "purposeOfTransaction": "Doel van de transactie",
+    "coverageArea": "Dekkingsgebied",
+    "cashPickup": "Contante afhaling",
+    "blockchainNetwork": "Blockchain-netwerk",
+    "receiverCountry": "Land van ontvanger",
+    "transactionDetails": "Transactiedetails",
+    "youSent": "U heeft verzonden",
+    "transferRate": "Overdrachtskoers",
+    "totalToPay": "Totaal te betalen",
+    "recipientGets": "Ontvanger ontvangt",
+    "availability": "Beschikbaarheid",
+    "transactionUnavailable": "Transactie momenteel niet beschikbaar",
+    "unavailable": "Niet beschikbaar",
+    "live": "LIVE",
+    "notProvided": "Niet opgegeven"
+  },
+  "receiverInfo": {
+    "progressStep": "Stap 1/4",
+    "headerTitle": "Info ontvanger",
+    "headerSubtitle": "Controleer details ontvanger",
+    "title": "Informatie ontvanger",
+    "subtitle": "Controleer alle details van uw transactie. Zorg dat alles klopt voordat u doorgaat.",
+    "transactionDetails": "Transactiedetails",
+    "youSend": "U verzendt",
+    "theyReceive": "Zij ontvangen",
+    "exchangeRate": "Wisselkoers",
+    "transferFee": "Overdrachtskosten",
+    "totalCost": "Totale kosten",
+    "continue": "Doorgaan",
+    "selectReceiverFirst": "Selecteer eerst een ontvanger",
+    "changeReceiver": "Ontvanger wijzigen",
+    "cancel": "Annuleren",
+    "calculating": "Bezig met berekenen..."
+  },
   "progress": {
     "receiverInfo": {
-      "label": "Receiver's info",
-      "description": "Enter the informations"
+      "label": "Informatie ontvanger",
+      "description": "Voer de informatie in"
     },
     "receiverMethod": {
-      "label": "Receiver's Method",
-      "description": "Enter the informations"
+      "label": "Methode ontvanger",
+      "description": "Voer de informatie in"
     },
     "reviewDetails": {
-      "label": "Review Details",
-      "description": "Enter the informations"
+      "label": "Gegevens controleren",
+      "description": "Voer de informatie in"
     },
     "paymentComplete": {
-      "label": "Payment Complete",
-      "description": "Enter the informations"
+      "label": "Betaling voltooid",
+      "description": "Voer de informatie in"
     }
   },
   "header": {
-    "title": "Review Details",
-    "subheading": "Check the summary of your order before validating."
+    "title": "Gegevens controleren",
+    "subheading": "Controleer de samenvatting van uw bestelling voordat u bevestigt."
   },
   "buttons": {
-    "cancel": "Cancel",
-    "processing": "Processing...",
-    "confirm": "Confirm",
-    "calculating": "Calculating...",
-    "edit": "Edit"
+    "cancel": "Annuleren",
+    "processing": "Bezig...",
+    "confirm": "Bevestigen",
+    "calculating": "Bezig met berekenen...",
+    "edit": "Bewerken"
   },
   "sections": {
     "amount": {
-      "title": "Amount",
-      "editAmount": "Edit Amount"
+      "title": "Bedrag",
+      "editAmount": "Bedrag bewerken"
     },
     "transferSummary": {
-      "title": "Transfer Summary",
-      "updating": "Updating...",
-      "amountToSend": "Amount to send",
-      "transferFee": "Transfer Fee",
-      "feeWaived": "Fee Waived",
-      "totalCost": "Total Cost",
-      "totalToRecipient": "Total to recipient",
-      "exchangeRate": "Exchange Rate",
-      "networkCongestion": "Network Congestion",
-      "congestionLow": "Low",
-      "congestionMedium": "Medium",
-      "congestionHigh": "High",
-      "totalToPay": "Total to pay",
-      "recipientGets": "Recipient Gets",
-      "availability": "Availability",
-      "transactionUnavailable": "Transaction unavailable at this time"
+      "title": "Overzicht overdracht",
+      "updating": "Bijwerken...",
+      "amountToSend": "Te verzenden bedrag",
+      "transferFee": "Overdrachtskosten",
+      "feeWaived": "Kosten kwijtgescholden",
+      "totalCost": "Totale kosten",
+      "totalToRecipient": "Totaal naar ontvanger",
+      "exchangeRate": "Wisselkoers",
+      "networkCongestion": "Netwerkcongestie",
+      "congestionLow": "Laag",
+      "congestionMedium": "Gemiddeld",
+      "congestionHigh": "Hoog",
+      "totalToPay": "Totaal te betalen",
+      "recipientGets": "Ontvanger ontvangt",
+      "availability": "Beschikbaarheid",
+      "transactionUnavailable": "Transactie momenteel niet beschikbaar"
     },
     "senderDetails": {
-      "title": "Sender Details",
+      "title": "Details afzender",
       "kyc": "KYC",
-      "mobileProvider": "Mobile Provider",
-      "phoneNumber": "Phone Number",
-      "sourceOfFunds": "Source of funds",
-      "purposeOfTransaction": "Purpose of transaction"
+      "mobileProvider": "Mobiele aanbieder",
+      "phoneNumber": "Telefoonnummer",
+      "sourceOfFunds": "Herkomst van de middelen",
+      "purposeOfTransaction": "Doel van de transactie"
     },
     "receiverDetails": {
-      "title": "Receiver details",
-      "walletAddress": "Wallet Address",
-      "blockchainNetwork": "Blockchain Network",
-      "mobileNumber": "Mobile Number",
-      "mobileProvider": "Mobile Provider",
-      "receiverCountry": "Receiver Country",
-      "youSent": "You sent",
-      "transferRate": "Transfer rate",
-      "fee": "Fee"
+      "title": "Details ontvanger",
+      "walletAddress": "Wallet-adres",
+      "blockchainNetwork": "Blockchain-netwerk",
+      "mobileNumber": "Mobiel nummer",
+      "mobileProvider": "Mobiele aanbieder",
+      "receiverCountry": "Land van ontvanger",
+      "youSent": "U heeft verzonden",
+      "transferRate": "Overdrachtskoers",
+      "fee": "Kosten"
     }
   },
   "paymentMethods": {
-    "bankTransfer": "Bank Transfer",
-    "creditCard": "Credit Card",
-    "cash": "Cash",
-    "mobileMoney": "Mobile Money",
+    "bankTransfer": "Bankoverschrijving",
+    "creditCard": "Creditcard",
+    "cash": "Contant",
+    "mobileMoney": "Mobiel betalen",
     "wallet": "Wallet",
-    "cashPickup": "Cash Pickup",
-    "cryptoWallet": "{{currency}} Wallet"
+    "cashPickup": "Contante afhaling",
+    "cryptoWallet": "{{currency}}-wallet"
   },
   "errors": {
-    "somethingWentWrong": "Something went wrong",
-    "networkError": "Network error: Could not estimate transaction",
-    "transactionFailed": "Transaction failed"
+    "somethingWentWrong": "Er is iets misgegaan",
+    "networkError": "Netwerkfout: Kon transactie niet schatten",
+    "transactionFailed": "Transactie mislukt"
   }
 }

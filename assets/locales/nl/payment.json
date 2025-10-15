@@ -1,0 +1,61 @@
+{
+  "common": {
+    "back": "Terug",
+    "continue": "Doorgaan",
+    "selectCountry": "Selecteer een land",
+    "required": "Vereist",
+    "phoneNumber": "Telefoonnummer",
+    "phoneNumberRequired": "Voer het telefoonnummer in"
+  },
+  "senderInfo": {
+    "headerTitle": "Crypto-betaling verzenden",
+    "headerSubtitle": "Overdracht van crypto naar contant",
+    "title": "Informatie afzender",
+    "subtitle": "Geef uw gegevens op voor de contante overdracht",
+    "sectionSenderInfo": "Informatie afzender",
+    "phoneLabel": "Telefoonnummer*",
+    "phoneHint": "+1234567890",
+    "firstNameLabel": "Voornaam*",
+    "firstNameHint": "Voer voornaam in",
+    "lastNameLabel": "Achternaam*",
+    "lastNameHint": "Voer achternaam in",
+    "idSectionTitle": "ID-informatie (optioneel)",
+    "idType": "ID-type",
+    "idNumber": "ID-nummer",
+    "idNumberHint": "Voer ID-nummer in",
+    "issueDate": "Uitgiftedatum ID",
+    "expiryDate": "Vervaldatum ID",
+    "datePlaceholder": "dd/mm/jjjj",
+    "countryTitle": "Land",
+    "countryLabel": "Land selecteren",
+    "idTypes": {
+      "passport": "Paspoort",
+      "drivingLicense": "Rijbewijs",
+      "nationalId": "Identiteitskaart",
+      "other": "Overig"
+    },
+    "progress": "2/4"
+  },
+  "recipientInfo": {
+    "headerTitle": "Crypto-betaling verzenden",
+    "headerSubtitle": "Overdracht van crypto naar contant",
+    "title": "Informatie ontvanger",
+    "subtitle": "Geef de gegevens van de ontvanger op voor contante afhaling",
+    "beneficiaryDetails": "Gegevens begunstigde",
+    "phoneLabel": "Telefoonnummer* (voor sms-melding)",
+    "phoneHint": "Telefoonnummer",
+    "cashPickupCountry": "Land contante afhaling*",
+    "progress": "3/4"
+  },
+  "selectPayment": {
+    "progressTitle": "Betaalmethode",
+    "progressSubtitle": "Voer de informatie in.",
+    "title": "Selecteer uw mobiel betalen",
+    "subtitle": "Hoe wilt u dat het geld wordt bezorgd?",
+    "errorSelectProvider": "Selecteer eerst Mobile Money",
+    "missingData": "Transactiegegevens ontbreken. Ga terug en vul het formulier in.",
+    "estimateFailed": "Kon de schatting niet ophalen. Probeer het opnieuw."
+  }
+}
+
+

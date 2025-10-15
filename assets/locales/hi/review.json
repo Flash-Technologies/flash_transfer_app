@@ -1,0 +1,42 @@
+{
+  "cashPaymentDetails": {
+    "senderDetails": "प्रेषक विवरण",
+    "receiverDetails": "प्राप्तकर्ता विवरण",
+    "sourceOfFunds": "धन का स्रोत",
+    "purposeOfTransaction": "लेन-देन का उद्देश्य",
+    "coverageArea": "कवरेज क्षेत्र",
+    "cashPickup": "नकद प्राप्ति",
+    "blockchainNetwork": "ब्लॉकचेन नेटवर्क",
+    "receiverCountry": "प्राप्तकर्ता देश",
+    "transactionDetails": "लेन-देन विवरण",
+    "youSent": "आपने भेजा",
+    "transferRate": "ट्रांसफर दर",
+    "totalToPay": "कुल भुगतान",
+    "recipientGets": "प्राप्तकर्ता को मिलेगा",
+    "availability": "उपलब्धता",
+    "transactionUnavailable": "यह लेन-देन इस समय उपलब्ध नहीं है",
+    "unavailable": "उपलब्ध नहीं",
+    "live": "लाइव",
+    "notProvided": "उपलब्ध नहीं"
+  },
+  "receiverInfo": {
+    "progressStep": "चरण 1/4",
+    "headerTitle": "प्राप्तकर्ता जानकारी",
+    "headerSubtitle": "प्राप्तकर्ता विवरण की समीक्षा करें",
+    "title": "प्राप्तकर्ता जानकारी",
+    "subtitle": "अपनी लेन-देन की सभी जानकारी की समीक्षा करें। आगे बढ़ने से पहले सुनिश्चित करें कि सब कुछ सही है।",
+    "transactionDetails": "लेन-देन विवरण",
+    "youSend": "आप भेजते हैं",
+    "theyReceive": "वे प्राप्त करते हैं",
+    "exchangeRate": "विनिमय दर",
+    "transferFee": "ट्रांसफर शुल्क",
+    "totalCost": "कुल लागत",
+    "continue": "जारी रखें",
+    "selectReceiverFirst": "पहले एक प्राप्तकर्ता चुनें",
+    "changeReceiver": "प्राप्तकर्ता बदलें",
+    "cancel": "रद्द करें",
+    "calculating": "गणना चल रही है..."
+  }
+}
+
+

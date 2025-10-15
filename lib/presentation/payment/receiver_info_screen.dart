@@ -11,6 +11,7 @@ import 'package:flash_transfer_app/providers/exchange_provider.dart';
 import 'package:flash_transfer_app/presentation/common/app_button.dart';
 import 'package:flash_transfer_app/presentation/common/empty_receiver_state.dart';
 import 'package:flash_transfer_app/core/utils/currency_icon_mapper.dart';
+import '../../providers/language_provider.dart';
 
 class ReceiverInfoScreen extends ConsumerStatefulWidget {
   final Beneficiary? selectedBeneficiary;
@@ -118,6 +119,7 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
   }
 
   Widget _buildProgressHeader() {
+    final tr = ref.watch(translationHelperProvider);
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       decoration: BoxDecoration(
@@ -191,7 +193,7 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Receiver's Info",
+                  tr('review.receiverInfo.headerTitle'),
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
@@ -200,7 +202,7 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Review receiver details',
+                  tr('review.receiverInfo.headerSubtitle'),
                   style: TextStyle(
                     fontSize: 13,
                     color: Colors.grey[600],
@@ -219,9 +221,9 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
               ),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: const Text(
-              'Step 1/4',
-              style: TextStyle(
+            child: Text(
+              tr('review.receiverInfo.progressStep'),
+              style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: Color(0xFF1976D2),
@@ -237,6 +239,7 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
   }
 
   Widget _buildTitleSection() {
+    final tr = ref.watch(translationHelperProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -245,7 +248,7 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
             colors: [Color(0xFF181F30), Color(0xFF2475FF)],
           ).createShader(bounds),
           child: Text(
-            "Receiver's Information",
+            tr('review.receiverInfo.title'),
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.w800,
@@ -256,7 +259,7 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
         ),
         const SizedBox(height: 8),
         Text(
-          'Review all the details of your transaction. Make sure everything is correct before proceeding.',
+          tr('review.receiverInfo.subtitle'),
           style: TextStyle(
             fontSize: 15,
             color: Colors.grey[600],
@@ -547,6 +550,7 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
   }
 
   Widget _buildTransactionDetails(ExchangeFormState exchangeForm) {
+    final tr = ref.watch(translationHelperProvider);
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(20),
@@ -582,7 +586,7 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
               ),
               const SizedBox(width: 12),
               Text(
-                'Transaction Details',
+                tr('review.receiverInfo.transactionDetails'),
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
@@ -599,7 +603,7 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
             children: [
               Expanded(
                 child: _buildCurrencyCard(
-                  label: 'You Send',
+                  label: tr('review.receiverInfo.youSend'),
                   currency: exchangeForm.fromCurrency?.code ?? 'USD',
                   currencyLogo: exchangeForm.fromCurrency?.logo,
                   amount: exchangeForm.sendAmount.isNotEmpty
@@ -635,7 +639,7 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
 
               Expanded(
                 child: _buildCurrencyCard(
-                  label: 'They Receive',
+                  label: tr('review.receiverInfo.theyReceive'),
                   currency: exchangeForm.toCurrency?.code ?? 'EUR',
                   currencyLogo: exchangeForm.toCurrency?.logo,
                   amount: exchangeForm.receiveAmount.isNotEmpty
@@ -676,10 +680,10 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
               children: [
                 _buildInfoRow(
                   icon: Icons.currency_exchange_rounded,
-                  label: 'Exchange Rate',
+                  label: tr('review.receiverInfo.exchangeRate'),
                   value: exchangeForm.exchangeRate != null
                       ? '1 ${exchangeForm.fromCurrency?.code} = ${exchangeForm.exchangeRate?.rate.toStringAsFixed(4)} ${exchangeForm.toCurrency?.code}'
-                      : 'Calculating...',
+                      : tr('review.receiverInfo.calculating'),
                   valueColor: const Color(0xFF2475FF),
                 ),
                 const SizedBox(height: 12),
@@ -687,10 +691,10 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
                 const SizedBox(height: 12),
                 _buildInfoRow(
                   icon: Icons.attach_money_rounded,
-                  label: 'Transfer Fee',
+                  label: tr('review.receiverInfo.transferFee'),
                   value: exchangeForm.calculation?.fee != null
                       ? '${exchangeForm.calculation?.fee} ${exchangeForm.calculation?.feeCurrency}'
-                      : 'Calculating...',
+                      : tr('review.receiverInfo.calculating'),
                   valueColor: const Color(0xFFF57C00),
                 ),
                 const SizedBox(height: 12),
@@ -698,10 +702,10 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
                 const SizedBox(height: 12),
                 _buildInfoRow(
                   icon: Icons.calculate_rounded,
-                  label: 'Total Cost',
+                  label: tr('review.receiverInfo.totalCost'),
                   value: exchangeForm.calculation?.totalAmount != null
                       ? '${exchangeForm.calculation?.totalAmount} ${exchangeForm.fromCurrency?.code}'
-                      : 'Calculating...',
+                      : tr('review.receiverInfo.calculating'),
                   valueColor: const Color(0xFF181F30),
                   isBold: true,
                 ),
@@ -852,6 +856,7 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
   }
 
   Widget _buildActionButtons() {
+    final tr = ref.watch(translationHelperProvider);
     final selectedBeneficiary =
         widget.selectedBeneficiary ?? ref.watch(selectedBeneficiaryProvider);
     final isEnabled = selectedBeneficiary != null;
@@ -902,7 +907,7 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
               ),
               const SizedBox(width: 8),
               Text(
-                isEnabled ? 'Continue' : 'Select a Receiver First',
+                isEnabled ? tr('review.receiverInfo.continue') : tr('review.receiverInfo.selectReceiverFirst'),
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
@@ -927,9 +932,9 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
             Icons.swap_horiz_rounded,
             size: 20,
           ),
-          label: const Text(
-            'Change Receiver',
-            style: TextStyle(
+          label: Text(
+            tr('review.receiverInfo.changeReceiver'),
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),
@@ -961,9 +966,9 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
             padding: const EdgeInsets.symmetric(vertical: 16),
             minimumSize: const Size(double.infinity, 56),
           ),
-          child: const Text(
-            'Cancel',
-            style: TextStyle(
+          child: Text(
+            tr('review.receiverInfo.cancel'),
+            style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
             ),

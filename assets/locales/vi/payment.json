@@ -1,0 +1,61 @@
+{
+  "common": {
+    "back": "Quay lại",
+    "continue": "Tiếp tục",
+    "selectCountry": "Vui lòng chọn quốc gia",
+    "required": "Bắt buộc",
+    "phoneNumber": "Số điện thoại",
+    "phoneNumberRequired": "Vui lòng nhập số điện thoại"
+  },
+  "senderInfo": {
+    "headerTitle": "Gửi thanh toán tiền mã hóa",
+    "headerSubtitle": "Chuyển đổi từ tiền mã hóa sang tiền mặt",
+    "title": "Thông tin người gửi",
+    "subtitle": "Vui lòng cung cấp thông tin của bạn để chuyển tiền mặt",
+    "sectionSenderInfo": "Thông tin người gửi",
+    "phoneLabel": "Số điện thoại*",
+    "phoneHint": "+1234567890",
+    "firstNameLabel": "Tên*",
+    "firstNameHint": "Nhập tên",
+    "lastNameLabel": "Họ*",
+    "lastNameHint": "Nhập họ",
+    "idSectionTitle": "Thông tin giấy tờ (tùy chọn)",
+    "idType": "Loại giấy tờ",
+    "idNumber": "Số giấy tờ",
+    "idNumberHint": "Nhập số giấy tờ",
+    "issueDate": "Ngày cấp giấy tờ",
+    "expiryDate": "Ngày hết hạn giấy tờ",
+    "datePlaceholder": "dd/mm/yyyy",
+    "countryTitle": "Quốc gia",
+    "countryLabel": "Chọn quốc gia",
+    "idTypes": {
+      "passport": "Hộ chiếu",
+      "drivingLicense": "Bằng lái xe",
+      "nationalId": "CMND/CCCD",
+      "other": "Khác"
+    },
+    "progress": "2/4"
+  },
+  "recipientInfo": {
+    "headerTitle": "Gửi thanh toán tiền mã hóa",
+    "headerSubtitle": "Chuyển đổi từ tiền mã hóa sang tiền mặt",
+    "title": "Thông tin người nhận",
+    "subtitle": "Vui lòng cung cấp thông tin người nhận để nhận tiền mặt",
+    "beneficiaryDetails": "Chi tiết người thụ hưởng",
+    "phoneLabel": "Số điện thoại* (để nhận SMS)",
+    "phoneHint": "Số điện thoại",
+    "cashPickupCountry": "Quốc gia nhận tiền mặt*",
+    "progress": "3/4"
+  },
+  "selectPayment": {
+    "progressTitle": "Phương thức thanh toán",
+    "progressSubtitle": "Nhập thông tin.",
+    "title": "Chọn ví di động của bạn",
+    "subtitle": "Bạn muốn nhận tiền như thế nào?",
+    "errorSelectProvider": "Vui lòng chọn Mobile Money trước",
+    "missingData": "Thiếu dữ liệu giao dịch. Quay lại và hoàn tất biểu mẫu.",
+    "estimateFailed": "Không thể lấy ước tính. Vui lòng thử lại."
+  }
+}
+
+
