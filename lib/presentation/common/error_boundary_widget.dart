@@ -1,5 +1,7 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/language_provider.dart';
 
 class ErrorBoundaryWidget extends StatefulWidget {
   final Widget child;
@@ -68,7 +70,7 @@ class ErrorBoundary extends StatelessWidget {
   }
 }
 
-class _DefaultErrorWidget extends StatelessWidget {
+class _DefaultErrorWidget extends ConsumerWidget {
   final Object error;
   final VoidCallback onRetry;
 
@@ -78,7 +80,8 @@ class _DefaultErrorWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tr = ref.watch(translationHelperProvider);
     return Container(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -91,7 +94,7 @@ class _DefaultErrorWidget extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(
-            'Something went wrong',
+            tr('common.error.title'),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w600,
             ),
@@ -99,7 +102,7 @@ class _DefaultErrorWidget extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'We encountered an unexpected error. Please try again.',
+            tr('common.error.subtitle'),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               color: Colors.grey[600],
             ),
@@ -112,7 +115,7 @@ class _DefaultErrorWidget extends StatelessWidget {
               backgroundColor: const Color(0xFFFFC000),
               foregroundColor: const Color(0xFF181F30),
             ),
-            child: const Text('Try Again'),
+            child: Text(tr('common.error.tryAgain')),
           ),
         ],
       ),

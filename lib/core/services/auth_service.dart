@@ -39,16 +39,23 @@ class AuthService {
   // Login with email and password
   Future<ApiResponse<User>> login(LoginRequest request) async {
     try {
+      print('🔥 [AUTH_SERVICE] Making login request to: ${Endpoints.login}');
+      print('🔥 [AUTH_SERVICE] Request data: ${request.toJson()}');
       final response = await _apiClient.post(
         Endpoints.login,
         data: request.toJson(),
       );
+      print('🔥 [AUTH_SERVICE] Login response received: ${response.statusCode}');
 
       return ApiResponse<User>.fromJson(
         response.data,
         (json) => User.fromJson(json),
       );
     } on DioException catch (e) {
+      print('❌ [AUTH_SERVICE] DioException caught: ${e.type}');
+      print('❌ [AUTH_SERVICE] DioException message: ${e.message}');
+      print('❌ [AUTH_SERVICE] DioException response: ${e.response?.data}');
+      
       // Handle structured API error responses (like wrong password)
       if (e.response?.data is Map<String, dynamic>) {
         final responseData = e.response!.data as Map<String, dynamic>;
@@ -63,6 +70,7 @@ class AuthService {
       // For other DioExceptions, return generic error
       return ApiResponse<User>(success: false, message: e.toString());
     } catch (e) {
+      print('❌ [AUTH_SERVICE] General exception caught: $e');
       return ApiResponse<User>(success: false, message: e.toString());
     }
   }

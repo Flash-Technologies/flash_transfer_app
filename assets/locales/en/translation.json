@@ -260,6 +260,7 @@
       "email": "Email",
       "password": "Password",
       "confirmPassword": "Confirm Password",
+      "submit": "Sign Up",
       "selectCountry": "Please select a country",
       "googleAuthTokenError": "Could not get Google auth token",
       "signingUpWithGoogle": "Signing up with Google...",

@@ -1,0 +1,63 @@
+{
+  "social": {
+    "google": "Google",
+    "facebook": "Facebook", 
+    "apple": "Apple",
+    "wallet": "Ví",
+    "signingIn": "Đang đăng nhập bằng Google...",
+    "loginSuccess": "Đăng nhập thành công! Đang chuyển hướng...",
+    "signInCancelled": "Đăng nhập Google đã bị hủy",
+    "authTokenError": "Không thể lấy token Firebase",
+    "signInWithFacebook": "Đang đăng nhập bằng Facebook...",
+    "facebookSuccess": "✅ Đăng nhập Facebook thành công! Đang chuyển hướng...",
+    "facebookFailed": "❌ Đăng nhập Facebook thất bại",
+    "signInWithApple": "Đang đăng nhập bằng Apple...",
+    "appleTokenError": "Không thể lấy token Apple ID",
+    "appleSuccess": "Đăng nhập Apple thành công! Đang chuyển hướng...",
+    "appleFailed": "Đăng nhập Apple thất bại",
+    "appleCancelled": "Đăng nhập Apple đã bị hủy",
+    "appleUnknownError": "Đăng nhập Apple thất bại: Lỗi không xác định",
+    "appleAuthFailed": "Đăng nhập Apple thất bại: Xác thực thất bại",
+    "walletSuccess": "Đăng nhập ví thành công! Đang chuyển hướng...",
+    "walletFailed": "Đăng nhập ví thất bại",
+    "walletConnectionFailed": "Kết nối ví thất bại",
+    "walletAddressError": "Không thể lấy địa chỉ ví",
+    "walletConnected": "Đã kết nối với địa chỉ"
+  },
+  "notifications": {
+    "title": "Thông báo",
+    "markAllRead": "Đánh dấu tất cả đã đọc",
+    "seeAll": "Xem tất cả thông báo",
+    "empty": {
+      "title": "Chưa có thông báo nào",
+      "subtitle": "Bạn sẽ thấy các cập nhật quan trọng và cảnh báo ở đây"
+    },
+    "time": {
+      "justNow": "Vừa xong",
+      "minutesAgo": "{minutes} phút trước",
+      "hoursAgo": "{hours} giờ trước", 
+      "daysAgo": "{days} ngày trước"
+    }
+  },
+  "empty": {
+    "receiver": {
+      "title": "Chưa chọn người nhận",
+      "subtitle": "Chọn người nhận từ danh bạ của bạn\nhoặc thêm người mới để tiếp tục",
+      "selectButton": "Chọn người nhận"
+    }
+  },
+  "error": {
+    "title": "Có lỗi xảy ra",
+    "subtitle": "Chúng tôi gặp phải lỗi không mong đợi. Vui lòng thử lại.",
+    "tryAgain": "Thử lại"
+  },
+  "buttons": {
+    "continue": "Tiếp tục",
+    "cancel": "Hủy bỏ",
+    "close": "Đóng",
+    "ok": "OK",
+    "retry": "Thử lại",
+    "tryAgain": "Thử lại",
+    "dismiss": "Bỏ qua"
+  }
+}

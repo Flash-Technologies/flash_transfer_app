@@ -287,19 +287,30 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(isLoading: true, message: null);
 
     try {
+      print('🚀 [AUTH_PROVIDER] Starting login for email: ${request.email}');
+      print('🚀 [AUTH_PROVIDER] Calling auth service login...');
       final response = await _authService.login(request);
+      print('🚀 [AUTH_PROVIDER] Auth service response received: ${response.success}');
+      print('🚀 [AUTH_PROVIDER] Response data: ${response.data}');
+      print('🚀 [AUTH_PROVIDER] Response message: ${response.message}');
 
       if (response.success && response.data != null) {
+        print('🚀 [AUTH_PROVIDER] Login successful, saving user data...');
         await _authService.saveUserData(response.data!);
+        print('🚀 [AUTH_PROVIDER] User data saved, updating state...');
+        
         state = state.copyWith(
           status: AuthStatus.authenticated,
           user: response.data,
           message: response.message,
           isLoading: false,
         );
+        
+        print('🚀 [AUTH_PROVIDER] State updated - Status: ${state.status}, User: ${state.user?.email}');
 
         // Update user provider
         _ref.read(userProvider.notifier).updateUser(response.data!);
+        print('🚀 [AUTH_PROVIDER] User provider updated');
 
         return true;
       } else {
@@ -335,6 +346,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
       }
     } catch (e) {
       // Handle exceptions
+      print('❌ [AUTH_PROVIDER] Login error caught: $e');
+      print('❌ [AUTH_PROVIDER] Stack trace: ${StackTrace.current}');
       state = state.copyWith(
         status: AuthStatus.unauthenticated,
         message: "Authentication error: ${e.toString()}",

@@ -35,7 +35,14 @@
     "selectReceiverFirst": "पहले एक प्राप्तकर्ता चुनें",
     "changeReceiver": "प्राप्तकर्ता बदलें",
     "cancel": "रद्द करें",
-    "calculating": "गणना चल रही है..."
+    "calculating": "गणना चल रही है...",
+    "fields": {
+      "fullName": "पूरा नाम",
+      "mobileNumber": "मोबाइल नंबर",
+      "emailAddress": "ईमेल पता",
+      "address": "पता",
+      "notProvided": "उपलब्ध नहीं"
+    }
   }
 }
 

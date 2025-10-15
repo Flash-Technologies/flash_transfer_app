@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flash_transfer_app/config/ui_constants.dart';
+import '../../providers/language_provider.dart';
 
-class EmptyReceiverState extends StatelessWidget {
+class EmptyReceiverState extends ConsumerWidget {
   final VoidCallback? onSelectReceiver;
   
   const EmptyReceiverState({
@@ -11,7 +13,8 @@ class EmptyReceiverState extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final tr = ref.watch(translationHelperProvider);
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(AppSpacing.paddingXL),
@@ -57,7 +60,7 @@ class EmptyReceiverState extends StatelessWidget {
           SizedBox(height: AppSpacing.marginL),
           
           Text(
-            'No Receiver Selected',
+            tr('common.empty.receiver.title'),
             style: AppTextStyles.heading3.copyWith(
               fontWeight: FontWeight.bold,
               color: AppColors.textPrimary,
@@ -69,7 +72,7 @@ class EmptyReceiverState extends StatelessWidget {
           SizedBox(height: AppSpacing.marginS),
           
           Text(
-            'Select a receiver from your contacts\nor add a new one to continue',
+            tr('common.empty.receiver.subtitle'),
             style: AppTextStyles.bodyMedium.copyWith(
               color: AppColors.textSecondary,
               height: 1.4,
@@ -90,7 +93,7 @@ class EmptyReceiverState extends StatelessWidget {
                 color: Colors.white,
               ),
               label: Text(
-                'Select Receiver',
+                tr('common.empty.receiver.selectButton'),
                 style: AppTextStyles.buttonMedium.copyWith(
                   color: Colors.white,
                 ),

@@ -1,0 +1,63 @@
+{
+  "social": {
+    "google": "Google",
+    "facebook": "Facebook", 
+    "apple": "Apple",
+    "wallet": "Portefeuille",
+    "signingIn": "Connexion avec Google...",
+    "loginSuccess": "Connexion réussie ! Redirection...",
+    "signInCancelled": "La connexion Google a été annulée",
+    "authTokenError": "Échec de l'obtention du token Firebase",
+    "signInWithFacebook": "Connexion avec Facebook...",
+    "facebookSuccess": "✅ Connexion Facebook réussie ! Redirection...",
+    "facebookFailed": "❌ Échec de la connexion Facebook",
+    "signInWithApple": "Connexion avec Apple...",
+    "appleTokenError": "Échec de l'obtention du token Apple ID",
+    "appleSuccess": "Connexion Apple réussie ! Redirection...",
+    "appleFailed": "Échec de la connexion Apple",
+    "appleCancelled": "La connexion Apple a été annulée",
+    "appleUnknownError": "Échec de la connexion Apple : Erreur inconnue",
+    "appleAuthFailed": "Échec de la connexion Apple : Authentification échouée",
+    "walletSuccess": "Connexion portefeuille réussie ! Redirection...",
+    "walletFailed": "Échec de la connexion portefeuille",
+    "walletConnectionFailed": "Échec de la connexion au portefeuille",
+    "walletAddressError": "Échec de l'obtention de l'adresse du portefeuille",
+    "walletConnected": "Connecté avec l'adresse"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Tout marquer comme lu",
+    "seeAll": "Voir toutes les notifications",
+    "empty": {
+      "title": "Aucune notification pour le moment",
+      "subtitle": "Vous verrez les mises à jour importantes et les alertes ici"
+    },
+    "time": {
+      "justNow": "À l'instant",
+      "minutesAgo": "il y a {minutes}m",
+      "hoursAgo": "il y a {hours}h", 
+      "daysAgo": "il y a {days}j"
+    }
+  },
+  "empty": {
+    "receiver": {
+      "title": "Aucun destinataire sélectionné",
+      "subtitle": "Sélectionnez un destinataire dans vos contacts\nou ajoutez-en un nouveau pour continuer",
+      "selectButton": "Sélectionner le destinataire"
+    }
+  },
+  "error": {
+    "title": "Quelque chose s'est mal passé",
+    "subtitle": "Nous avons rencontré une erreur inattendue. Veuillez réessayer.",
+    "tryAgain": "Réessayer"
+  },
+  "buttons": {
+    "continue": "Continuer",
+    "cancel": "Annuler",
+    "close": "Fermer",
+    "ok": "OK",
+    "retry": "Réessayer",
+    "tryAgain": "Réessayer",
+    "dismiss": "Ignorer"
+  }
+}

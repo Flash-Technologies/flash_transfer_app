@@ -8,6 +8,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/direct_wallet_provider.dart';
+import '../../providers/language_provider.dart';
 import '../../config/router.dart';
 import '../../main.dart' show googleSignIn;
 import '../../core/services/facebook_service.dart';
@@ -51,7 +52,7 @@ class SocialLoginButtons extends ConsumerWidget {
                   color: Color(0xFF4285F4),
                 ),
               ),
-              label: 'Google',
+              label: ref.watch(translationHelperProvider)('common.social.google'),
               onPressed:
                   onGoogleLogin ?? () => _handleGoogleLogin(context, ref),
             ),
@@ -66,7 +67,7 @@ class SocialLoginButtons extends ConsumerWidget {
                   color: Color(0xFF1877F2),
                 ),
               ),
-              label: 'Facebook',
+              label: ref.watch(translationHelperProvider)('common.social.facebook'),
               onPressed:
                   onFacebookLogin ?? () => _handleFacebookLogin(context, ref),
             ),
@@ -78,7 +79,7 @@ class SocialLoginButtons extends ConsumerWidget {
                 errorBuilder: (_, __, ___) =>
                     const Icon(Icons.apple, size: 24, color: Colors.black),
               ),
-              label: 'Apple',
+              label: ref.watch(translationHelperProvider)('common.social.apple'),
               onPressed: onAppleLogin ?? () => _handleAppleLogin(context, ref),
             ),
             // Use Reown wallet auth button instead of native approach
@@ -139,7 +140,7 @@ class SocialLoginButtons extends ConsumerWidget {
       final account = await googleSignIn.signIn();
       print("✅ Google sign in result: $account");
       if (account == null) {
-        scaffoldMessenger.showSnackBar(const SnackBar(content: Text('Google sign in was cancelled')));
+        scaffoldMessenger.showSnackBar(SnackBar(content: Text(ref.read(translationHelperProvider)('common.social.signInCancelled'))));
         return;
       }
 
@@ -157,7 +158,7 @@ class SocialLoginButtons extends ConsumerWidget {
 
       final firebaseIdToken = await userCred.user?.getIdToken();
       if (firebaseIdToken == null) {
-        scaffoldMessenger.showSnackBar(const SnackBar(content: Text('Failed to get Firebase token')));
+        scaffoldMessenger.showSnackBar(SnackBar(content: Text(ref.read(translationHelperProvider)('common.social.authTokenError'))));
         return;
       }
 
@@ -191,14 +192,14 @@ class SocialLoginButtons extends ConsumerWidget {
       print("🔥 token (firebaseIdToken): ${token.substring(0, 50)}...");
       print("🔥 countryName: $countryName");
 
-      scaffoldMessenger.showSnackBar(const SnackBar(content: Text('Signing in with Google...')));
+      scaffoldMessenger.showSnackBar(SnackBar(content: Text(ref.read(translationHelperProvider)('common.social.signingIn'))));
 
       final success = await ref
           .read(authProvider.notifier)
           .loginWithGoogle('firebase', token, countryName);
 
       if (success) {
-        scaffoldMessenger.showSnackBar(const SnackBar(content: Text('Login successful! Redirecting...')));
+        scaffoldMessenger.showSnackBar(SnackBar(content: Text(ref.read(translationHelperProvider)('common.social.loginSuccess'))));
         await Future.delayed(const Duration(milliseconds: 1000));
         if (!context.mounted) return;
         context.go('/home');
@@ -224,10 +225,10 @@ class SocialLoginButtons extends ConsumerWidget {
 
       // Show loading indicator immediately
       scaffoldMessenger.showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Row(
             children: [
-              SizedBox(
+              const SizedBox(
                 width: 20,
                 height: 20,
                 child: CircularProgressIndicator(
@@ -235,11 +236,11 @@ class SocialLoginButtons extends ConsumerWidget {
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               ),
-              SizedBox(width: 16),
-              Text('Signing in with Facebook...'),
+              const SizedBox(width: 16),
+              Text(ref.read(translationHelperProvider)('common.social.signInWithFacebook')),
             ],
           ),
-          duration: Duration(seconds: 30),
+          duration: const Duration(seconds: 30),
         ),
       );
 
@@ -253,10 +254,10 @@ class SocialLoginButtons extends ConsumerWidget {
       if (success) {
 
         scaffoldMessenger.showSnackBar(
-          const SnackBar(
-            content: Text('✅ Facebook login successful! Redirecting...'),
+          SnackBar(
+            content: Text(ref.read(translationHelperProvider)('common.social.facebookSuccess')),
             backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
           ),
         );
 
@@ -317,14 +318,14 @@ class SocialLoginButtons extends ConsumerWidget {
 
       if (idToken == null) {
         scaffoldMessenger.showSnackBar(
-          const SnackBar(content: Text('Failed to get Apple ID token')),
+          SnackBar(content: Text(ref.read(translationHelperProvider)('common.social.appleTokenError'))),
         );
         return;
       }
 
       // Show loading indicator
       scaffoldMessenger.showSnackBar(
-        const SnackBar(content: Text('Signing in with Apple...')),
+        SnackBar(content: Text(ref.read(translationHelperProvider)('common.social.signInWithApple'))),
       );
 
       // Get user country
@@ -347,8 +348,8 @@ class SocialLoginButtons extends ConsumerWidget {
       if (success) {
 
         scaffoldMessenger.showSnackBar(
-          const SnackBar(
-            content: Text('Apple login successful! Redirecting...'),
+          SnackBar(
+            content: Text(ref.read(translationHelperProvider)('common.social.appleSuccess')),
             backgroundColor: Colors.green,
           ),
         );
@@ -370,11 +371,11 @@ class SocialLoginButtons extends ConsumerWidget {
       String errorMessage = 'Failed to sign in with Apple';
 
       if (e.toString().contains('canceled')) {
-        errorMessage = 'Apple sign in was cancelled';
+        errorMessage = ref.read(translationHelperProvider)('common.social.appleCancelled');
       } else if (e.toString().contains('AuthorizationErrorCode.unknown')) {
-        errorMessage = 'Apple sign in failed: Unknown error';
+        errorMessage = ref.read(translationHelperProvider)('common.social.appleUnknownError');
       } else if (e.toString().contains('AuthorizationErrorCode.failed')) {
-        errorMessage = 'Apple sign in failed: Authentication failed';
+        errorMessage = ref.read(translationHelperProvider)('common.social.appleAuthFailed');
       }
 
       scaffoldMessenger.showSnackBar(SnackBar(content: Text(errorMessage)));
@@ -410,14 +411,14 @@ class SocialLoginButtons extends ConsumerWidget {
 
       if (walletAddress == null || walletAddress.isEmpty) {
         scaffoldMessenger.showSnackBar(
-          const SnackBar(content: Text('Failed to get wallet address')),
+          SnackBar(content: Text(ref.read(translationHelperProvider)('common.social.walletAddressError'))),
         );
         return;
       }
 
       // Show address in snackbar for testing
       scaffoldMessenger.showSnackBar(
-        SnackBar(content: Text('Connected with address: $walletAddress')),
+        SnackBar(content: Text('${ref.read(translationHelperProvider)('common.social.walletConnected')}: $walletAddress')),
       );
 
       // Get user country
@@ -440,8 +441,8 @@ class SocialLoginButtons extends ConsumerWidget {
       if (success) {
 
         scaffoldMessenger.showSnackBar(
-          const SnackBar(
-            content: Text('Wallet login successful! Redirecting...'),
+          SnackBar(
+            content: Text(ref.read(translationHelperProvider)('common.social.walletSuccess')),
             backgroundColor: Colors.green,
           ),
         );

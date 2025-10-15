@@ -1,0 +1,63 @@
+{
+  "social": {
+    "google": "Google",
+    "facebook": "Facebook", 
+    "apple": "Apple",
+    "wallet": "Carteira",
+    "signingIn": "Fazendo login com Google...",
+    "loginSuccess": "Login bem-sucedido! Redirecionando...",
+    "signInCancelled": "Login do Google foi cancelado",
+    "authTokenError": "Falha ao obter token do Firebase",
+    "signInWithFacebook": "Fazendo login com Facebook...",
+    "facebookSuccess": "✅ Login do Facebook bem-sucedido! Redirecionando...",
+    "facebookFailed": "❌ Falha no login do Facebook",
+    "signInWithApple": "Fazendo login com Apple...",
+    "appleTokenError": "Falha ao obter token do Apple ID",
+    "appleSuccess": "Login da Apple bem-sucedido! Redirecionando...",
+    "appleFailed": "Falha no login da Apple",
+    "appleCancelled": "Login da Apple foi cancelado",
+    "appleUnknownError": "Falha no login da Apple: Erro desconhecido",
+    "appleAuthFailed": "Falha no login da Apple: Autenticação falhou",
+    "walletSuccess": "Login da carteira bem-sucedido! Redirecionando...",
+    "walletFailed": "Falha no login da carteira",
+    "walletConnectionFailed": "Falha na conexão da carteira",
+    "walletAddressError": "Falha ao obter endereço da carteira",
+    "walletConnected": "Conectado com endereço"
+  },
+  "notifications": {
+    "title": "Notificações",
+    "markAllRead": "Marcar todas como lidas",
+    "seeAll": "Ver todas as notificações",
+    "empty": {
+      "title": "Nenhuma notificação ainda",
+      "subtitle": "Você verá atualizações importantes e alertas aqui"
+    },
+    "time": {
+      "justNow": "Agora mesmo",
+      "minutesAgo": "{minutes}m atrás",
+      "hoursAgo": "{hours}h atrás", 
+      "daysAgo": "{days}d atrás"
+    }
+  },
+  "empty": {
+    "receiver": {
+      "title": "Nenhum destinatário selecionado",
+      "subtitle": "Selecione um destinatário dos seus contatos\nou adicione um novo para continuar",
+      "selectButton": "Selecionar destinatário"
+    }
+  },
+  "error": {
+    "title": "Algo deu errado",
+    "subtitle": "Encontramos um erro inesperado. Por favor, tente novamente.",
+    "tryAgain": "Tentar novamente"
+  },
+  "buttons": {
+    "continue": "Continuar",
+    "cancel": "Cancelar",
+    "close": "Fechar",
+    "ok": "OK",
+    "retry": "Tentar novamente",
+    "tryAgain": "Tentar novamente",
+    "dismiss": "Dispensar"
+  }
+}

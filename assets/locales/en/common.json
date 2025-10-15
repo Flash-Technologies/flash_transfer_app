@@ -1,0 +1,63 @@
+{
+  "social": {
+    "google": "Google",
+    "facebook": "Facebook", 
+    "apple": "Apple",
+    "wallet": "Wallet",
+    "signingIn": "Signing in with Google...",
+    "loginSuccess": "Login successful! Redirecting...",
+    "signInCancelled": "Google sign in was cancelled",
+    "authTokenError": "Failed to get Firebase token",
+    "signInWithFacebook": "Signing in with Facebook...",
+    "facebookSuccess": "✅ Facebook login successful! Redirecting...",
+    "facebookFailed": "❌ Facebook login failed",
+    "signInWithApple": "Signing in with Apple...",
+    "appleTokenError": "Failed to get Apple ID token",
+    "appleSuccess": "Apple login successful! Redirecting...",
+    "appleFailed": "Apple login failed",
+    "appleCancelled": "Apple sign in was cancelled",
+    "appleUnknownError": "Apple sign in failed: Unknown error",
+    "appleAuthFailed": "Apple sign in failed: Authentication failed",
+    "walletSuccess": "Wallet login successful! Redirecting...",
+    "walletFailed": "Wallet login failed",
+    "walletConnectionFailed": "Wallet connection failed",
+    "walletAddressError": "Failed to get wallet address",
+    "walletConnected": "Connected with address"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "seeAll": "See All Notifications",
+    "empty": {
+      "title": "No notifications yet",
+      "subtitle": "You'll see important updates and alerts here"
+    },
+    "time": {
+      "justNow": "Just now",
+      "minutesAgo": "{minutes}m ago",
+      "hoursAgo": "{hours}h ago", 
+      "daysAgo": "{days}d ago"
+    }
+  },
+  "empty": {
+    "receiver": {
+      "title": "No Receiver Selected",
+      "subtitle": "Select a receiver from your contacts\nor add a new one to continue",
+      "selectButton": "Select Receiver"
+    }
+  },
+  "error": {
+    "title": "Something went wrong",
+    "subtitle": "We encountered an unexpected error. Please try again.",
+    "tryAgain": "Try Again"
+  },
+  "buttons": {
+    "continue": "Continue",
+    "cancel": "Cancel",
+    "close": "Close",
+    "ok": "OK",
+    "retry": "Retry",
+    "tryAgain": "Try Again",
+    "dismiss": "Dismiss"
+  }
+}

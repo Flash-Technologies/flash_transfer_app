@@ -1,0 +1,63 @@
+{
+  "social": {
+    "google": "Google",
+    "facebook": "Facebook", 
+    "apple": "Apple",
+    "wallet": "Wallet",
+    "signingIn": "Anmeldung mit Google...",
+    "loginSuccess": "Anmeldung erfolgreich! Weiterleitung...",
+    "signInCancelled": "Google-Anmeldung wurde abgebrochen",
+    "authTokenError": "Firebase-Token konnte nicht abgerufen werden",
+    "signInWithFacebook": "Anmeldung mit Facebook...",
+    "facebookSuccess": "✅ Facebook-Anmeldung erfolgreich! Weiterleitung...",
+    "facebookFailed": "❌ Facebook-Anmeldung fehlgeschlagen",
+    "signInWithApple": "Anmeldung mit Apple...",
+    "appleTokenError": "Apple ID-Token konnte nicht abgerufen werden",
+    "appleSuccess": "Apple-Anmeldung erfolgreich! Weiterleitung...",
+    "appleFailed": "Apple-Anmeldung fehlgeschlagen",
+    "appleCancelled": "Apple-Anmeldung wurde abgebrochen",
+    "appleUnknownError": "Apple-Anmeldung fehlgeschlagen: Unbekannter Fehler",
+    "appleAuthFailed": "Apple-Anmeldung fehlgeschlagen: Authentifizierung fehlgeschlagen",
+    "walletSuccess": "Wallet-Anmeldung erfolgreich! Weiterleitung...",
+    "walletFailed": "Wallet-Anmeldung fehlgeschlagen",
+    "walletConnectionFailed": "Wallet-Verbindung fehlgeschlagen",
+    "walletAddressError": "Wallet-Adresse konnte nicht abgerufen werden",
+    "walletConnected": "Verbunden mit Adresse"
+  },
+  "notifications": {
+    "title": "Benachrichtigungen",
+    "markAllRead": "Alle als gelesen markieren",
+    "seeAll": "Alle Benachrichtigungen anzeigen",
+    "empty": {
+      "title": "Noch keine Benachrichtigungen",
+      "subtitle": "Wichtige Updates und Benachrichtigungen erscheinen hier"
+    },
+    "time": {
+      "justNow": "Gerade eben",
+      "minutesAgo": "vor {minutes}m",
+      "hoursAgo": "vor {hours}h", 
+      "daysAgo": "vor {days}d"
+    }
+  },
+  "empty": {
+    "receiver": {
+      "title": "Kein Empfänger ausgewählt",
+      "subtitle": "Wählen Sie einen Empfänger aus Ihren Kontakten\noder fügen Sie einen neuen hinzu",
+      "selectButton": "Empfänger auswählen"
+    }
+  },
+  "error": {
+    "title": "Etwas ist schiefgelaufen",
+    "subtitle": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    "tryAgain": "Erneut versuchen"
+  },
+  "buttons": {
+    "continue": "Fortfahren",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "ok": "OK",
+    "retry": "Wiederholen",
+    "tryAgain": "Erneut versuchen",
+    "dismiss": "Verwerfen"
+  }
+}

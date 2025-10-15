@@ -259,6 +259,7 @@
       "email": "ईमेल",
       "password": "पासवर्ड",
       "confirmPassword": "पासवर्ड की पुष्टि करें",
+      "submit": "साइन अप",
       "selectCountry": "कृपया एक देश चुनें",
       "googleAuthTokenError": "Google प्रमाणीकरण टोकन प्राप्त नहीं कर सके",
       "signingUpWithGoogle": "Google के साथ साइन अप हो रहे हैं...",

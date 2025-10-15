@@ -1,0 +1,33 @@
+{
+  "selection": {
+    "payTitle": "Hoe wilt u betalen?",
+    "paySubtitle": {
+      "crypto": "💡 Crypto-betalingen vereisen een crypto-portemonnee",
+      "fiat": "💡 Kies mobiel geld voor fiat-betalingen"
+    },
+    "receiveTitle": "Hoe moeten zij het ontvangen?",
+    "receiveSubtitle": {
+      "cryptoWallet": "💡 Crypto moet worden ontvangen in een crypto-portemonnee",
+      "cryptoToFiat": "💡 Kies mobiel geld of contant geld voor fiat-betalingen",
+      "fiat": "💡 Kies mobiel geld voor fiat-betalingen"
+    },
+    "cryptoWallet": "Crypto Portemonnee",
+    "mobileMoney": "Mobiel Geld",
+    "cashMoney": "Contant Geld"
+  },
+  "contacts": {
+    "addNewContact": "Nieuw Contact Toevoegen",
+    "selectFromContacts": "Selecteren Uit Contacten",
+    "frequentReceipts": "Frequente Ontvangers",
+    "recentReceipts": "Recente Ontvangers",
+    "seeAll": "Alles bekijken",
+    "searchRecipients": "Ontvangers zoeken...",
+    "searchContacts": "Contacten zoeken..."
+  },
+  "modal": {
+    "selectContact": "Contact Selecteren",
+    "chooseFromSaved": "Kies uit uw opgeslagen begunstigden",
+    "cancel": "Annuleren",
+    "continue": "Doorgaan"
+  }
+}

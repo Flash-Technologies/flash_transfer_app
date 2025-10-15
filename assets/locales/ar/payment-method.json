@@ -1,0 +1,33 @@
+{
+  "selection": {
+    "payTitle": "كيف تريد أن تدفع؟",
+    "paySubtitle": {
+      "crypto": "💡 مدفوعات العملات الرقمية تتطلب محفظة رقمية",
+      "fiat": "💡 اختر المال المحمول للمدفوعات النقدية"
+    },
+    "receiveTitle": "كيف يجب أن يستلموها؟",
+    "receiveSubtitle": {
+      "cryptoWallet": "💡 يجب استلام العملة الرقمية في محفظة رقمية",
+      "cryptoToFiat": "💡 اختر المال المحمول أو النقد للمدفوعات النقدية",
+      "fiat": "💡 اختر المال المحمول للمدفوعات النقدية"
+    },
+    "cryptoWallet": "محفظة رقمية",
+    "mobileMoney": "المال المحمول",
+    "cashMoney": "نقود نقدية"
+  },
+  "contacts": {
+    "addNewContact": "إضافة جهة اتصال جديدة",
+    "selectFromContacts": "اختيار من جهات الاتصال",
+    "frequentReceipts": "الإيصالات المتكررة",
+    "recentReceipts": "الإيصالات الحديثة",
+    "seeAll": "عرض الكل",
+    "searchRecipients": "البحث عن المستلمين...",
+    "searchContacts": "البحث في جهات الاتصال..."
+  },
+  "modal": {
+    "selectContact": "اختيار جهة اتصال",
+    "chooseFromSaved": "اختر من المستفيدين المحفوظين",
+    "cancel": "إلغاء",
+    "continue": "متابعة"
+  }
+}

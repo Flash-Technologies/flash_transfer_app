@@ -1,0 +1,63 @@
+{
+  "social": {
+    "google": "Google",
+    "facebook": "Facebook", 
+    "apple": "Apple",
+    "wallet": "वॉलेट",
+    "signingIn": "Google के साथ साइन इन हो रहा है...",
+    "loginSuccess": "लॉगिन सफल! रीडायरेक्ट हो रहा है...",
+    "signInCancelled": "Google साइन इन रद्द कर दिया गया",
+    "authTokenError": "Firebase टोकन प्राप्त करने में विफल",
+    "signInWithFacebook": "Facebook के साथ साइन इन हो रहा है...",
+    "facebookSuccess": "✅ Facebook लॉगिन सफल! रीडायरेक्ट हो रहा है...",
+    "facebookFailed": "❌ Facebook लॉगिन विफल",
+    "signInWithApple": "Apple के साथ साइन इन हो रहा है...",
+    "appleTokenError": "Apple ID टोकन प्राप्त करने में विफल",
+    "appleSuccess": "Apple लॉगिन सफल! रीडायरेक्ट हो रहा है...",
+    "appleFailed": "Apple लॉगिन विफल",
+    "appleCancelled": "Apple साइन इन रद्द कर दिया गया",
+    "appleUnknownError": "Apple साइन इन विफल: अज्ञात त्रुटि",
+    "appleAuthFailed": "Apple साइन इन विफल: प्रमाणीकरण विफल",
+    "walletSuccess": "वॉलेट लॉगिन सफल! रीडायरेक्ट हो रहा है...",
+    "walletFailed": "वॉलेट लॉगिन विफल",
+    "walletConnectionFailed": "वॉलेट कनेक्शन विफल",
+    "walletAddressError": "वॉलेट पता प्राप्त करने में विफल",
+    "walletConnected": "पते के साथ जुड़ा हुआ"
+  },
+  "notifications": {
+    "title": "सूचनाएं",
+    "markAllRead": "सभी को पढ़ा हुआ चिह्नित करें",
+    "seeAll": "सभी सूचनाएं देखें",
+    "empty": {
+      "title": "अभी तक कोई सूचना नहीं",
+      "subtitle": "आपको यहाँ महत्वपूर्ण अपडेट और अलर्ट दिखाई देंगे"
+    },
+    "time": {
+      "justNow": "अभी",
+      "minutesAgo": "{minutes} मिनट पहले",
+      "hoursAgo": "{hours} घंटे पहले", 
+      "daysAgo": "{days} दिन पहले"
+    }
+  },
+  "empty": {
+    "receiver": {
+      "title": "कोई प्राप्तकर्ता चयनित नहीं",
+      "subtitle": "अपने संपर्कों से एक प्राप्तकर्ता चुनें\nया जारी रखने के लिए एक नया जोड़ें",
+      "selectButton": "प्राप्तकर्ता चुनें"
+    }
+  },
+  "error": {
+    "title": "कुछ गलत हुआ",
+    "subtitle": "हमें एक अप्रत्याशित त्रुटि का सामना करना पड़ा। कृपया फिर से कोशिश करें।",
+    "tryAgain": "फिर कोशिश करें"
+  },
+  "buttons": {
+    "continue": "जारी रखें",
+    "cancel": "रद्द करें",
+    "close": "बंद करें",
+    "ok": "ठीक है",
+    "retry": "पुनः प्रयास करें",
+    "tryAgain": "फिर कोशिश करें",
+    "dismiss": "खारिज करें"
+  }
+}

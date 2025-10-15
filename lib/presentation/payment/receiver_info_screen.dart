@@ -274,6 +274,7 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
   }
 
   Widget _buildBeneficiaryCard(Beneficiary? beneficiary) {
+    final tr = ref.watch(translationHelperProvider);
     if (beneficiary == null) {
       return EmptyReceiverState(
         onSelectReceiver: () => context.pop(),
@@ -425,30 +426,30 @@ class _ReceiverInfoScreenState extends ConsumerState<ReceiverInfoScreen>
                     children: [
                       _buildDetailItem(
                         icon: Icons.person_rounded,
-                        label: 'Full Name',
+                        label: tr('review.receiverInfo.fields.fullName'),
                         value: beneficiary.displayName,
                         iconColor: const Color(0xFF2475FF),
                       ),
                       const SizedBox(height: 16),
                       _buildDetailItem(
                         icon: Icons.phone_rounded,
-                        label: 'Mobile Number',
+                        label: tr('review.receiverInfo.fields.mobileNumber'),
                         value: beneficiary.mobileNumber.isNotEmpty
                             ? beneficiary.mobileNumber
-                            : 'Not provided',
+                            : tr('review.receiverInfo.fields.notProvided'),
                         iconColor: const Color(0xFF00C735),
                       ),
                       const SizedBox(height: 16),
                       _buildDetailItem(
                         icon: Icons.email_rounded,
-                        label: 'Email Address',
+                        label: tr('review.receiverInfo.fields.emailAddress'),
                         value: beneficiary.email,
                         iconColor: const Color(0xFFF57C00),
                       ),
                       const SizedBox(height: 16),
                       _buildDetailItem(
                         icon: Icons.location_on_rounded,
-                        label: 'Address',
+                        label: tr('review.receiverInfo.fields.address'),
                         value: beneficiary.fullAddress,
                         iconColor: const Color(0xFF7B1FA2),
                         isAddress: true,

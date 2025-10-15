@@ -13,6 +13,12 @@ class TranslationService {
 
   String get currentLocale => _currentLocale;
 
+  // Force reload translations (useful during development)
+  Future<void> forceReloadTranslations() async {
+    print('🔄 [TRANSLATION] Force reloading translations for $_currentLocale');
+    await loadTranslations(_currentLocale);
+  }
+
   Future<void> loadTranslations(String locale) async {
     print('🌍 [TRANSLATION] Starting to load translations for locale: $locale');
     
@@ -60,15 +66,34 @@ class TranslationService {
       
       // Load other translation files (optional)
       final List<String> optionalFiles = [
-        'invite.json',
-        'privacy.json',
-        'language.json',
-        'profileDropdown.json',
-        'recipients.json',
+        'card.json',
+        'common.json',
         'contacts.json',
+        'crypto-payment.json',
+        'crypto.json',
         'editProfile.json',
+        'findLocation.json',
+        'footer.json',
+        'history.json',
+        'invite.json',
+        'language.json',
+        'mobile.json',
+        'navigation.json',
+        'payment-method.json',
         'payment.json',
+        'pending.json',
+        'privacy.json',
+        'profileDropdown.json',
+        'receiver.json',
+        'recipients.json',
         'review.json',
+        'send-crypto.json',
+        'send.json',
+        'storeLocation.json',
+        'testimonials.json',
+        'track.json',
+        'transaction.json',
+        'transactionDetails.json',
       ];
       
       for (String fileName in optionalFiles) {

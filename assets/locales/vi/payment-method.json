@@ -1,0 +1,33 @@
+{
+  "selection": {
+    "payTitle": "Bạn muốn thanh toán như thế nào?",
+    "paySubtitle": {
+      "crypto": "💡 Thanh toán crypto yêu cầu ví crypto",
+      "fiat": "💡 Chọn tiền di động cho thanh toán fiat"
+    },
+    "receiveTitle": "Họ nên nhận như thế nào?",
+    "receiveSubtitle": {
+      "cryptoWallet": "💡 Crypto phải được nhận trong ví crypto",
+      "cryptoToFiat": "💡 Chọn tiền di động hoặc tiền mặt cho thanh toán fiat",
+      "fiat": "💡 Chọn tiền di động cho thanh toán fiat"
+    },
+    "cryptoWallet": "Ví Crypto",
+    "mobileMoney": "Tiền Di Động",
+    "cashMoney": "Tiền Mặt"
+  },
+  "contacts": {
+    "addNewContact": "Thêm Liên Hệ Mới",
+    "selectFromContacts": "Chọn Từ Danh Bạ",
+    "frequentReceipts": "Người Nhận Thường Xuyên",
+    "recentReceipts": "Người Nhận Gần Đây",
+    "seeAll": "Xem tất cả",
+    "searchRecipients": "Tìm kiếm người nhận...",
+    "searchContacts": "Tìm kiếm liên hệ..."
+  },
+  "modal": {
+    "selectContact": "Chọn Liên Hệ",
+    "chooseFromSaved": "Chọn từ những người thụ hưởng đã lưu",
+    "cancel": "Hủy bỏ",
+    "continue": "Tiếp tục"
+  }
+}

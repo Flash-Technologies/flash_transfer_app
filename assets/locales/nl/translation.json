@@ -259,6 +259,7 @@
       "email": "E-mail",
       "password": "Wachtwoord",
       "confirmPassword": "Wachtwoord bevestigen",
+      "submit": "Aanmelden",
       "selectCountry": "Selecteer een land",
       "googleAuthTokenError": "Kon Google-authenticatietoken niet verkrijgen",
       "signingUpWithGoogle": "Registreren met Google...",

@@ -1,0 +1,63 @@
+{
+  "social": {
+    "google": "Google",
+    "facebook": "Facebook", 
+    "apple": "Apple",
+    "wallet": "Billetera",
+    "signingIn": "Iniciando sesión con Google...",
+    "loginSuccess": "¡Inicio de sesión exitoso! Redirigiendo...",
+    "signInCancelled": "Se canceló el inicio de sesión con Google",
+    "authTokenError": "Error al obtener el token de Firebase",
+    "signInWithFacebook": "Iniciando sesión con Facebook...",
+    "facebookSuccess": "✅ ¡Inicio de sesión con Facebook exitoso! Redirigiendo...",
+    "facebookFailed": "❌ Error en el inicio de sesión con Facebook",
+    "signInWithApple": "Iniciando sesión con Apple...",
+    "appleTokenError": "Error al obtener el token de Apple ID",
+    "appleSuccess": "¡Inicio de sesión con Apple exitoso! Redirigiendo...",
+    "appleFailed": "Error en el inicio de sesión con Apple",
+    "appleCancelled": "Se canceló el inicio de sesión con Apple",
+    "appleUnknownError": "Error en el inicio de sesión con Apple: Error desconocido",
+    "appleAuthFailed": "Error en el inicio de sesión con Apple: Falló la autenticación",
+    "walletSuccess": "¡Inicio de sesión con billetera exitoso! Redirigiendo...",
+    "walletFailed": "Error en el inicio de sesión con billetera",
+    "walletConnectionFailed": "Error en la conexión de la billetera",
+    "walletAddressError": "Error al obtener la dirección de la billetera",
+    "walletConnected": "Conectado con dirección"
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "markAllRead": "Marcar todas como leídas",
+    "seeAll": "Ver todas las notificaciones",
+    "empty": {
+      "title": "Aún no hay notificaciones",
+      "subtitle": "Verás actualizaciones importantes y alertas aquí"
+    },
+    "time": {
+      "justNow": "Ahora mismo",
+      "minutesAgo": "hace {minutes}m",
+      "hoursAgo": "hace {hours}h", 
+      "daysAgo": "hace {days}d"
+    }
+  },
+  "empty": {
+    "receiver": {
+      "title": "No se ha seleccionado destinatario",
+      "subtitle": "Selecciona un destinatario de tus contactos\no agrega uno nuevo para continuar",
+      "selectButton": "Seleccionar destinatario"
+    }
+  },
+  "error": {
+    "title": "Algo salió mal",
+    "subtitle": "Encontramos un error inesperado. Por favor, inténtalo de nuevo.",
+    "tryAgain": "Intentar de nuevo"
+  },
+  "buttons": {
+    "continue": "Continuar",
+    "cancel": "Cancelar",
+    "close": "Cerrar",
+    "ok": "OK",
+    "retry": "Reintentar",
+    "tryAgain": "Intentar de nuevo",
+    "dismiss": "Descartar"
+  }
+}

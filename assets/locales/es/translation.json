@@ -259,6 +259,7 @@
       "email": "Correo electrónico",
       "password": "Contraseña",
       "confirmPassword": "Confirmar Contraseña",
+      "submit": "Registrarse",
       "selectCountry": "Por favor selecciona un país",
       "googleAuthTokenError": "No se pudo obtener el token de autenticación de Google",
       "signingUpWithGoogle": "Registrándose con Google...",

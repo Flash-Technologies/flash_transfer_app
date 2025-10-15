@@ -35,7 +35,14 @@
     "selectReceiverFirst": "Chọn người nhận trước",
     "changeReceiver": "Thay đổi người nhận",
     "cancel": "Hủy",
-    "calculating": "Đang tính..."
+    "calculating": "Đang tính...",
+    "fields": {
+      "fullName": "Họ và tên",
+      "mobileNumber": "Số điện thoại di động",
+      "emailAddress": "Địa chỉ email",
+      "address": "Địa chỉ",
+      "notProvided": "Không cung cấp"
+    }
   }
 }
 

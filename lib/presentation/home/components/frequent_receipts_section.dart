@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flash_transfer_app/config/ui_constants.dart';
 import '../../../providers/beneficiary_provider.dart';
 import '../../../core/models/beneficiary.dart';
+import '../../../providers/language_provider.dart';
 
 class FrequentReceiptsSection extends ConsumerStatefulWidget {
   const FrequentReceiptsSection({Key? key}) : super(key: key);
@@ -68,13 +69,18 @@ class _FrequentReceiptsSectionState extends ConsumerState<FrequentReceiptsSectio
               ),
             ),
             const SizedBox(width: 12),
-            Text(
-              'Frequent Receipts',
-              style: AppTextStyles.heading3.copyWith(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: const Color(0xFF181F30),
-              ),
+            Consumer(
+              builder: (context, ref, child) {
+                final tr = ref.watch(translationHelperProvider);
+                return Text(
+                  tr('payment-method.contacts.frequentReceipts'),
+                  style: AppTextStyles.heading3.copyWith(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: const Color(0xFF181F30),
+                  ),
+                );
+              },
             ),
           ],
         ),
@@ -83,13 +89,18 @@ class _FrequentReceiptsSectionState extends ConsumerState<FrequentReceiptsSectio
             HapticFeedback.lightImpact();
             // Navigate to all contacts
           },
-          child: Text(
-            'See all',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFF2475FF),
-            ),
+          child: Consumer(
+            builder: (context, ref, child) {
+              final tr = ref.watch(translationHelperProvider);
+              return Text(
+                tr('payment-method.contacts.seeAll'),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF2475FF),
+                ),
+              );
+            },
           ),
         ),
       ],

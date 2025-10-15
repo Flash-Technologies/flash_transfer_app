@@ -267,3 +267,12 @@ final translationHelperProvider = Provider<String Function(String, [Map<String, 
   ref.watch(currentLanguageProvider);
   return TranslationService.instance.translate;
 });
+
+// Force reload translations provider (for development/debugging)
+final translationReloadProvider = Provider<Future<void> Function()>((ref) {
+  return () async {
+    await TranslationService.instance.forceReloadTranslations();
+    // Invalidate the translation provider to trigger rebuilds
+    ref.invalidate(translationHelperProvider);
+  };
+});

@@ -1,0 +1,33 @@
+{
+  "selection": {
+    "payTitle": "Wie möchten Sie bezahlen?",
+    "paySubtitle": {
+      "crypto": "💡 Krypto-Zahlungen erfordern eine Krypto-Wallet",
+      "fiat": "💡 Wählen Sie Mobile Money für Fiat-Zahlungen"
+    },
+    "receiveTitle": "Wie sollen sie es erhalten?",
+    "receiveSubtitle": {
+      "cryptoWallet": "💡 Krypto muss in einer Krypto-Wallet empfangen werden",
+      "cryptoToFiat": "💡 Wählen Sie Mobile Money oder Bargeld für Fiat-Zahlungen",
+      "fiat": "💡 Wählen Sie Mobile Money für Fiat-Zahlungen"
+    },
+    "cryptoWallet": "Krypto-Wallet",
+    "mobileMoney": "Mobile Money",
+    "cashMoney": "Bargeld"
+  },
+  "contacts": {
+    "addNewContact": "Neuen Kontakt hinzufügen",
+    "selectFromContacts": "Aus Kontakten auswählen",
+    "frequentReceipts": "Häufige Empfänger",
+    "recentReceipts": "Letzte Empfänger",
+    "seeAll": "Alle anzeigen",
+    "searchRecipients": "Empfänger suchen...",
+    "searchContacts": "Kontakte suchen..."
+  },
+  "modal": {
+    "selectContact": "Kontakt auswählen",
+    "chooseFromSaved": "Wählen Sie aus Ihren gespeicherten Begünstigten",
+    "cancel": "Abbrechen",
+    "continue": "Fortfahren"
+  }
+}

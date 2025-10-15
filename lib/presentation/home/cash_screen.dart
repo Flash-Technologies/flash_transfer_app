@@ -13,6 +13,7 @@ import 'package:flash_transfer_app/presentation/home/components/frequent_receipt
 import 'package:flash_transfer_app/presentation/home/components/recent_receipts_section.dart';
 import 'package:flash_transfer_app/providers/exchange_provider.dart';
 import 'package:flash_transfer_app/providers/payment_provider.dart';
+import 'package:flash_transfer_app/providers/language_provider.dart';
 
 class CashScreen extends ConsumerStatefulWidget {
   const CashScreen({Key? key}) : super(key: key);
@@ -265,12 +266,17 @@ class _CashScreenState extends ConsumerState<CashScreen> {
       children: [
         Row(
           children: [
-            Text(
-              'How would you like to pay?',
-              style: AppTextStyles.heading3.copyWith(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-              ),
+            Consumer(
+              builder: (context, ref, child) {
+                final tr = ref.watch(translationHelperProvider);
+                return Text(
+                  tr('payment-method.selection.payTitle'),
+                  style: AppTextStyles.heading3.copyWith(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                  ),
+                );
+              },
             ),
             if (sendingCurrency != null) ...[
               const SizedBox(width: 8),
@@ -301,15 +307,20 @@ class _CashScreenState extends ConsumerState<CashScreen> {
 
         if (sendingCurrency != null) ...[
           const SizedBox(height: 6),
-          Text(
-            isSendingCrypto
-                ? '💡 Crypto payments require a crypto wallet'
-                : '💡 Choose mobile money for fiat payments',
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 12,
-              fontStyle: FontStyle.italic,
-            ),
+          Consumer(
+            builder: (context, ref, child) {
+              final tr = ref.watch(translationHelperProvider);
+              return Text(
+                isSendingCrypto
+                    ? tr('payment-method.selection.paySubtitle.crypto')
+                    : tr('payment-method.selection.paySubtitle.fiat'),
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 12,
+                  fontStyle: FontStyle.italic,
+                ),
+              );
+            },
           ),
         ],
 
@@ -323,7 +334,7 @@ class _CashScreenState extends ConsumerState<CashScreen> {
               // Crypto Wallet
               Expanded(
                 child: _buildPaymentOption(
-                  title: 'Crypto Wallet',
+                  title: ref.watch(translationHelperProvider)('payment-method.selection.cryptoWallet'),
                   value: 'wallet',
                   isEnabled: isSendingCrypto,
                   isCenter: true,
@@ -333,7 +344,7 @@ class _CashScreenState extends ConsumerState<CashScreen> {
               // Mobile Money
               Expanded(
                 child: _buildPaymentOption(
-                  title: 'Mobile Money',
+                  title: ref.watch(translationHelperProvider)('payment-method.selection.mobileMoney'),
                   value: 'mobile',
                   isEnabled: !isSendingCrypto,
                   isCenter: true,
@@ -591,12 +602,17 @@ class _CashScreenState extends ConsumerState<CashScreen> {
       children: [
         Row(
           children: [
-            Text(
-              'How should they receive it?',
-              style: AppTextStyles.heading3.copyWith(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-              ),
+            Consumer(
+              builder: (context, ref, child) {
+                final tr = ref.watch(translationHelperProvider);
+                return Text(
+                  tr('payment-method.selection.receiveTitle'),
+                  style: AppTextStyles.heading3.copyWith(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                  ),
+                );
+              },
             ),
             if (receivingCurrency != null) ...[
               const SizedBox(width: 8),
@@ -626,17 +642,22 @@ class _CashScreenState extends ConsumerState<CashScreen> {
         ),
         if (receivingCurrency != null) ...[
           const SizedBox(height: 6),
-          Text(
-            isReceivingCrypto
-                ? '💡 Crypto must be received in a crypto wallet'
-                : isSendingCrypto 
-                    ? '💡 Choose mobile money or cash for fiat payments'
-                    : '💡 Choose mobile money for fiat payments',
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 12,
-              fontStyle: FontStyle.italic,
-            ),
+          Consumer(
+            builder: (context, ref, child) {
+              final tr = ref.watch(translationHelperProvider);
+              return Text(
+                isReceivingCrypto
+                    ? tr('payment-method.selection.receiveSubtitle.cryptoWallet')
+                    : isSendingCrypto 
+                        ? tr('payment-method.selection.receiveSubtitle.cryptoToFiat')
+                        : tr('payment-method.selection.receiveSubtitle.fiat'),
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 12,
+                  fontStyle: FontStyle.italic,
+                ),
+              );
+            },
           ),
         ],
         const SizedBox(height: 20),
@@ -649,7 +670,7 @@ class _CashScreenState extends ConsumerState<CashScreen> {
               // Crypto Wallet
               Expanded(
                 child: _buildCompactReceiverOption(
-                  title: 'Crypto\nWallet',
+                  title: ref.watch(translationHelperProvider)('payment-method.selection.cryptoWallet').replaceAll(' ', '\n'),
                   value: 'wallet',
                   isEnabled: cryptoEnabled,
                 ),
@@ -667,7 +688,7 @@ class _CashScreenState extends ConsumerState<CashScreen> {
               // Cash Money
               Expanded(
                 child: _buildCompactReceiverOption(
-                  title: 'Cash\nMoney',
+                  title: ref.watch(translationHelperProvider)('payment-method.selection.cashMoney').replaceAll(' ', '\n'),
                   value: 'cash',
                   isEnabled: cashEnabled,
                 ),
@@ -834,11 +855,16 @@ class _CashScreenState extends ConsumerState<CashScreen> {
             children: [
               const Icon(Icons.person_add_rounded, size: 20),
               const SizedBox(width: 8),
-              Text(
-                'Add New Contact',
-                style: AppTextStyles.buttonMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                ),
+              Consumer(
+                builder: (context, ref, child) {
+                  final tr = ref.watch(translationHelperProvider);
+                  return Text(
+                    tr('payment-method.contacts.addNewContact'),
+                    style: AppTextStyles.buttonMedium.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  );
+                },
               ),
             ],
           ),
@@ -882,12 +908,17 @@ class _CashScreenState extends ConsumerState<CashScreen> {
               ] else ...[
                 const Icon(Icons.contacts_rounded, size: 20),
                 const SizedBox(width: 8),
-                Text(
-                  'Select From Contacts',
-                  style: AppTextStyles.buttonMedium.copyWith(
-                    color: const Color(0xFF2475FF),
-                    fontWeight: FontWeight.w600,
-                  ),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final tr = ref.watch(translationHelperProvider);
+                    return Text(
+                      tr('payment-method.contacts.selectFromContacts'),
+                      style: AppTextStyles.buttonMedium.copyWith(
+                        color: const Color(0xFF2475FF),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    );
+                  },
                 ),
               ],
             ],

@@ -35,7 +35,14 @@
     "selectReceiverFirst": "اختر مستلمًا أولاً",
     "changeReceiver": "تغيير المستلم",
     "cancel": "إلغاء",
-    "calculating": "جارٍ الحساب..."
+    "calculating": "جارٍ الحساب...",
+    "fields": {
+      "fullName": "الاسم الكامل",
+      "mobileNumber": "رقم الهاتف المحمول",
+      "emailAddress": "عنوان البريد الإلكتروني",
+      "address": "العنوان",
+      "notProvided": "غير متوفر"
+    }
   }
 }
 

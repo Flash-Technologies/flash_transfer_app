@@ -259,6 +259,7 @@
       "email": "Email",
       "password": "Mật khẩu",
       "confirmPassword": "Xác nhận mật khẩu",
+      "submit": "Đăng ký",
       "selectCountry": "Vui lòng chọn quốc gia",
       "googleAuthTokenError": "Không thể lấy token xác thực Google",
       "signingUpWithGoogle": "Đang đăng ký với Google...",

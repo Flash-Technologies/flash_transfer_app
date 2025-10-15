@@ -259,6 +259,7 @@
       "email": "E-Mail",
       "password": "Passwort",
       "confirmPassword": "Passwort bestätigen",
+      "submit": "Anmelden",
       "selectCountry": "Bitte wählen Sie ein Land",
       "googleAuthTokenError": "Google-Authentifizierungstoken konnte nicht abgerufen werden",
       "signingUpWithGoogle": "Registrierung mit Google...",

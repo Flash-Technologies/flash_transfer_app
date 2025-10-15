@@ -1,0 +1,33 @@
+{
+  "selection": {
+    "payTitle": "Comment souhaitez-vous payer ?",
+    "paySubtitle": {
+      "crypto": "💡 Les paiements crypto nécessitent un portefeuille crypto",
+      "fiat": "💡 Choisissez l'argent mobile pour les paiements fiat"
+    },
+    "receiveTitle": "Comment devraient-ils le recevoir ?",
+    "receiveSubtitle": {
+      "cryptoWallet": "💡 Les crypto doivent être reçues dans un portefeuille crypto",
+      "cryptoToFiat": "💡 Choisissez l'argent mobile ou l'espèces pour les paiements fiat",
+      "fiat": "💡 Choisissez l'argent mobile pour les paiements fiat"
+    },
+    "cryptoWallet": "Portefeuille Crypto",
+    "mobileMoney": "Argent Mobile",
+    "cashMoney": "Argent Liquide"
+  },
+  "contacts": {
+    "addNewContact": "Ajouter Nouveau Contact",
+    "selectFromContacts": "Sélectionner Depuis Contacts",
+    "frequentReceipts": "Destinataires Fréquents",
+    "recentReceipts": "Destinataires Récents",
+    "seeAll": "Tout voir",
+    "searchRecipients": "Rechercher destinataires...",
+    "searchContacts": "Rechercher contacts..."
+  },
+  "modal": {
+    "selectContact": "Sélectionner Contact",
+    "chooseFromSaved": "Choisissez parmi vos bénéficiaires enregistrés",
+    "cancel": "Annuler",
+    "continue": "Continuer"
+  }
+}

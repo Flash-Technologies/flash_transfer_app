@@ -35,7 +35,14 @@
     "selectReceiverFirst": "Selecteer eerst een ontvanger",
     "changeReceiver": "Ontvanger wijzigen",
     "cancel": "Annuleren",
-    "calculating": "Bezig met berekenen..."
+    "calculating": "Bezig met berekenen...",
+    "fields": {
+      "fullName": "Volledige naam",
+      "mobileNumber": "Mobiel nummer",
+      "emailAddress": "E-mailadres",
+      "address": "Adres",
+      "notProvided": "Niet opgegeven"
+    }
   },
   "progress": {
     "receiverInfo": {

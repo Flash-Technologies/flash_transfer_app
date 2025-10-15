@@ -259,6 +259,7 @@
       "email": "البريد الإلكتروني",
       "password": "كلمة المرور",
       "confirmPassword": "تأكيد كلمة المرور",
+      "submit": "تسجيل",
       "selectCountry": "يرجى اختيار دولة",
       "googleAuthTokenError": "لا يمكن الحصول على رمز مصادقة Google",
       "signingUpWithGoogle": "جاري إنشاء الحساب عبر Google...",

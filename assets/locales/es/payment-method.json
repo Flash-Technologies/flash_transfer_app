@@ -1,0 +1,33 @@
+{
+  "selection": {
+    "payTitle": "¿Cómo te gustaría pagar?",
+    "paySubtitle": {
+      "crypto": "💡 Los pagos con criptomonedas requieren una billetera cripto",
+      "fiat": "💡 Elige dinero móvil para pagos fiat"
+    },
+    "receiveTitle": "¿Cómo deberían recibirlo?",
+    "receiveSubtitle": {
+      "cryptoWallet": "💡 Las criptomonedas deben recibirse en una billetera cripto",
+      "cryptoToFiat": "💡 Elige dinero móvil o efectivo para pagos fiat",
+      "fiat": "💡 Elige dinero móvil para pagos fiat"
+    },
+    "cryptoWallet": "Billetera Cripto",
+    "mobileMoney": "Dinero Móvil",
+    "cashMoney": "Dinero en Efectivo"
+  },
+  "contacts": {
+    "addNewContact": "Agregar Nuevo Contacto",
+    "selectFromContacts": "Seleccionar de Contactos",
+    "frequentReceipts": "Destinatarios Frecuentes",
+    "recentReceipts": "Destinatarios Recientes",
+    "seeAll": "Ver todo",
+    "searchRecipients": "Buscar destinatarios...",
+    "searchContacts": "Buscar contactos..."
+  },
+  "modal": {
+    "selectContact": "Seleccionar Contacto",
+    "chooseFromSaved": "Elige de tus beneficiarios guardados",
+    "cancel": "Cancelar",
+    "continue": "Continuar"
+  }
+}

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flash_transfer_app/config/ui_constants.dart';
 import 'package:flash_transfer_app/providers/beneficiary_provider.dart';
 import 'package:flash_transfer_app/core/models/beneficiary.dart';
+import 'package:flash_transfer_app/providers/language_provider.dart';
 
 class SelectContactModal extends ConsumerStatefulWidget {
   final Function(Beneficiary?) onContactSelected;
@@ -193,18 +194,28 @@ class _SelectContactModalState extends ConsumerState<SelectContactModal>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Select Contact',
-                  style: AppTextStyles.heading2.copyWith(
-                    color: AppColors.textPrimary,
-                  ),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final tr = ref.watch(translationHelperProvider);
+                    return Text(
+                      tr('payment-method.modal.selectContact'),
+                      style: AppTextStyles.heading2.copyWith(
+                        color: AppColors.textPrimary,
+                      ),
+                    );
+                  },
                 ),
                 SizedBox(height: AppSpacing.marginXS),
-                Text(
-                  'Choose from your saved beneficiaries',
-                  style: AppTextStyles.bodyMedium.copyWith(
-                    color: AppColors.textSecondary,
-                  ),
+                Consumer(
+                  builder: (context, ref, child) {
+                    final tr = ref.watch(translationHelperProvider);
+                    return Text(
+                      tr('payment-method.modal.chooseFromSaved'),
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
@@ -230,56 +241,61 @@ class _SelectContactModalState extends ConsumerState<SelectContactModal>
   }
 
   Widget _buildSearchSection() {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.paddingL),
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.background,
-          borderRadius: BorderRadius.circular(AppRadius.radiusM),
-          border: Border.all(color: AppColors.border.withOpacity(0.5)),
-        ),
-        child: TextField(
-          controller: _searchController,
-          focusNode: _searchFocusNode,
-          onChanged: _onSearchChanged,
-          decoration: InputDecoration(
-            hintText: 'Search contacts...',
-            hintStyle: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
+    return Consumer(
+      builder: (context, ref, child) {
+        final tr = ref.watch(translationHelperProvider);
+        return Padding(
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.paddingL),
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.circular(AppRadius.radiusM),
+              border: Border.all(color: AppColors.border.withOpacity(0.5)),
             ),
-            prefixIcon: Icon(
-              Icons.search,
-              color: AppColors.textSecondary,
-              size: 20,
-            ),
-            suffixIcon: _searchController.text.isNotEmpty
-                ? IconButton(
-                    onPressed: () {
-                      _searchController.clear();
-                      _onSearchChanged('');
-                    },
-                    icon: Icon(
-                      Icons.clear,
-                      color: AppColors.textSecondary,
-                      size: 20,
-                    ),
-                  )
-                : null,
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: AppSpacing.paddingM,
-              vertical: AppSpacing.paddingM,
+            child: TextField(
+              controller: _searchController,
+              focusNode: _searchFocusNode,
+              onChanged: _onSearchChanged,
+              decoration: InputDecoration(
+                hintText: tr('payment-method.contacts.searchContacts'),
+                hintStyle: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: AppColors.textSecondary,
+                  size: 20,
+                ),
+                suffixIcon: _searchController.text.isNotEmpty
+                    ? IconButton(
+                        onPressed: () {
+                          _searchController.clear();
+                          _onSearchChanged('');
+                        },
+                        icon: Icon(
+                          Icons.clear,
+                          color: AppColors.textSecondary,
+                          size: 20,
+                        ),
+                      )
+                    : null,
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: AppSpacing.paddingM,
+                  vertical: AppSpacing.paddingM,
+                ),
+              ),
+              style: AppTextStyles.bodyMedium,
             ),
           ),
-          style: AppTextStyles.bodyMedium,
-        ),
-      ),
-    ).animate().fadeIn(delay: 300.ms, duration: 300.ms).slideY(
-          begin: -0.1,
-          end: 0,
-          delay: 300.ms,
-          duration: 300.ms,
-        );
+        ).animate().fadeIn(delay: 300.ms, duration: 300.ms).slideY(
+              begin: -0.1,
+              end: 0,
+              delay: 300.ms,
+              duration: 300.ms,
+            );
+      },
+    );
   }
 
   Widget _buildContactsList() {
@@ -499,11 +515,16 @@ class _SelectContactModalState extends ConsumerState<SelectContactModal>
             strokeWidth: 2,
           ),
           SizedBox(height: AppSpacing.marginM),
-          Text(
-            'Loading contacts...',
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
-            ),
+          Consumer(
+            builder: (context, ref, child) {
+              final tr = ref.watch(translationHelperProvider);
+              return Text(
+                'Loading contacts...',
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              );
+            },
           ),
         ],
       ),
@@ -523,11 +544,16 @@ class _SelectContactModalState extends ConsumerState<SelectContactModal>
               color: AppColors.error,
             ),
             SizedBox(height: AppSpacing.marginM),
-            Text(
-              'Failed to load contacts',
-              style: AppTextStyles.heading3.copyWith(
-                color: AppColors.textPrimary,
-              ),
+            Consumer(
+              builder: (context, ref, child) {
+                final tr = ref.watch(translationHelperProvider);
+                return Text(
+                  'Failed to load contacts',
+                  style: AppTextStyles.heading3.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
+                );
+              },
             ),
             SizedBox(height: AppSpacing.marginS),
             Text(
@@ -544,7 +570,12 @@ class _SelectContactModalState extends ConsumerState<SelectContactModal>
                 backgroundColor: AppColors.primaryBlue,
                 foregroundColor: Colors.white,
               ),
-              child: Text('Retry'),
+              child: Consumer(
+                builder: (context, ref, child) {
+                  final tr = ref.watch(translationHelperProvider);
+                  return Text('Retry');
+                },
+              ),
             ),
           ],
         ),
@@ -565,21 +596,31 @@ class _SelectContactModalState extends ConsumerState<SelectContactModal>
               color: AppColors.textSecondary.withOpacity(0.5),
             ),
             SizedBox(height: AppSpacing.marginL),
-            Text(
-              'No contacts found',
-              style: AppTextStyles.heading3.copyWith(
-                color: AppColors.textPrimary,
-              ),
+            Consumer(
+              builder: (context, ref, child) {
+                final tr = ref.watch(translationHelperProvider);
+                return Text(
+                  'No contacts found',
+                  style: AppTextStyles.heading3.copyWith(
+                    color: AppColors.textPrimary,
+                  ),
+                );
+              },
             ),
             SizedBox(height: AppSpacing.marginS),
-            Text(
-              _searchController.text.isNotEmpty
-                  ? 'Try adjusting your search terms'
-                  : 'Add some beneficiaries to get started',
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
-              ),
-              textAlign: TextAlign.center,
+            Consumer(
+              builder: (context, ref, child) {
+                final tr = ref.watch(translationHelperProvider);
+                return Text(
+                  _searchController.text.isNotEmpty
+                      ? 'Try adjusting your search terms'
+                      : 'Add some beneficiaries to get started',
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                  textAlign: TextAlign.center,
+                );
+              },
             ),
           ],
         ),
@@ -621,11 +662,16 @@ class _SelectContactModalState extends ConsumerState<SelectContactModal>
                       borderRadius: BorderRadius.circular(AppRadius.buttonRadius),
                     ),
                   ),
-                  child: Text(
-                    'Cancel',
-                    style: AppTextStyles.buttonMedium.copyWith(
-                      color: AppColors.textSecondary,
-                    ),
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      final tr = ref.watch(translationHelperProvider);
+                      return Text(
+                        tr('payment-method.modal.cancel'),
+                        style: AppTextStyles.buttonMedium.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),
@@ -643,11 +689,16 @@ class _SelectContactModalState extends ConsumerState<SelectContactModal>
                       borderRadius: BorderRadius.circular(AppRadius.buttonRadius),
                     ),
                   ),
-                  child: Text(
-                    'Continue',
-                    style: AppTextStyles.buttonMedium.copyWith(
-                      color: isEnabled ? AppColors.textPrimary : AppColors.textSecondary,
-                    ),
+                  child: Consumer(
+                    builder: (context, ref, child) {
+                      final tr = ref.watch(translationHelperProvider);
+                      return Text(
+                        tr('payment-method.modal.continue'),
+                        style: AppTextStyles.buttonMedium.copyWith(
+                          color: isEnabled ? AppColors.textPrimary : AppColors.textSecondary,
+                        ),
+                      );
+                    },
                   ),
                 ),
               ),
@@ -674,11 +725,16 @@ class _SelectContactModalState extends ConsumerState<SelectContactModal>
               ),
             ),
             SizedBox(width: AppSpacing.marginS),
-            Text(
-              'Loading more contacts...',
-              style: AppTextStyles.bodySmall.copyWith(
-                color: AppColors.textSecondary,
-              ),
+            Consumer(
+              builder: (context, ref, child) {
+                final tr = ref.watch(translationHelperProvider);
+                return Text(
+                  'Loading more contacts...',
+                  style: AppTextStyles.bodySmall.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                );
+              },
             ),
           ],
         ),

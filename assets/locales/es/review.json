@@ -35,7 +35,14 @@
     "selectReceiverFirst": "Seleccione primero un receptor",
     "changeReceiver": "Cambiar receptor",
     "cancel": "Cancelar",
-    "calculating": "Calculando..."
+    "calculating": "Calculando...",
+    "fields": {
+      "fullName": "Nombre completo",
+      "mobileNumber": "Número móvil",
+      "emailAddress": "Dirección de correo electrónico",
+      "address": "Dirección",
+      "notProvided": "No proporcionado"
+    }
   }
 }
 

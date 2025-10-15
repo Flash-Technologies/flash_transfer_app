@@ -10,8 +10,8 @@ import 'auth_provider.dart';
 final authenticatedDioProvider = Provider<Dio>((ref) {
   final dio = Dio();
   dio.options.baseUrl = 'https://flash-transfer.com';
-  dio.options.connectTimeout = const Duration(seconds: 15);
-  dio.options.receiveTimeout = const Duration(seconds: 15);
+  dio.options.connectTimeout = const Duration(seconds: 30);
+  dio.options.receiveTimeout = const Duration(seconds: 30);
   dio.options.responseType = ResponseType.json;
   
   // Get current user token for authentication

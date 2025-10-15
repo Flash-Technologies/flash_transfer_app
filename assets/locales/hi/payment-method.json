@@ -1,0 +1,33 @@
+{
+  "selection": {
+    "payTitle": "आप कैसे भुगतान करना चाहेंगे?",
+    "paySubtitle": {
+      "crypto": "💡 क्रिप्टो भुगतान के लिए क्रिप्टो वॉलेट की आवश्यकता होती है",
+      "fiat": "💡 फिएट भुगतान के लिए मोबाइल मनी चुनें"
+    },
+    "receiveTitle": "उन्हें यह कैसे प्राप्त करना चाहिए?",
+    "receiveSubtitle": {
+      "cryptoWallet": "💡 क्रिप्टो को क्रिप्टो वॉलेट में प्राप्त करना होगा",
+      "cryptoToFiat": "💡 फिएट भुगतान के लिए मोबाइल मनी या नकद चुनें",
+      "fiat": "💡 फिएट भुगतान के लिए मोबाइल मनी चुनें"
+    },
+    "cryptoWallet": "क्रिप्टो वॉलेट",
+    "mobileMoney": "मोबाइल मनी",
+    "cashMoney": "नकद पैसा"
+  },
+  "contacts": {
+    "addNewContact": "नया संपर्क जोड़ें",
+    "selectFromContacts": "संपर्कों से चुनें",
+    "frequentReceipts": "बार-बार आने वाली रसीदें",
+    "recentReceipts": "हाल की रसीदें",
+    "seeAll": "सभी देखें",
+    "searchRecipients": "प्राप्तकर्ता खोजें...",
+    "searchContacts": "संपर्क खोजें..."
+  },
+  "modal": {
+    "selectContact": "संपर्क चुनें",
+    "chooseFromSaved": "अपने सहेजे गए लाभार्थियों में से चुनें",
+    "cancel": "रद्द करें",
+    "continue": "जारी रखें"
+  }
+}

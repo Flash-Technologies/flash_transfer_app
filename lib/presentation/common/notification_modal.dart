@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flash_transfer_app/config/ui_constants.dart';
 import '../../core/models/notification_model.dart';
 import '../../providers/notification_provider.dart';
+import '../../providers/language_provider.dart';
 
 class NotificationItem {
   final String action;
@@ -168,9 +169,14 @@ class _NotificationModalState extends ConsumerState<NotificationModal>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Notifications',
-                style: AppTextStyles.heading3,
+              Consumer(
+                builder: (context, ref, child) {
+                  final tr = ref.watch(translationHelperProvider);
+                  return Text(
+                    tr('common.notifications.title'),
+                    style: AppTextStyles.heading3,
+                  );
+                },
               ),
               
               Row(
@@ -185,11 +191,16 @@ class _NotificationModalState extends ConsumerState<NotificationModal>
                           vertical: AppSpacing.paddingXS,
                         ),
                       ),
-                      child: Text(
-                        'Mark all as read',
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: const Color(0xFFFFC000),
-                        ),
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          final tr = ref.watch(translationHelperProvider);
+                          return Text(
+                            tr('common.notifications.markAllRead'),
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: const Color(0xFFFFC000),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   
@@ -370,19 +381,29 @@ class _NotificationModalState extends ConsumerState<NotificationModal>
             color: AppColors.textSecondary.withValues(alpha: 0.5),
           ),
           SizedBox(height: AppSpacing.marginL),
-          Text(
-            'No notifications yet',
-            style: AppTextStyles.heading3.copyWith(
-              color: AppColors.textSecondary,
-            ),
+          Consumer(
+            builder: (context, ref, child) {
+              final tr = ref.watch(translationHelperProvider);
+              return Text(
+                tr('common.notifications.empty.title'),
+                style: AppTextStyles.heading3.copyWith(
+                  color: AppColors.textSecondary,
+                ),
+              );
+            },
           ),
           SizedBox(height: AppSpacing.marginS),
-          Text(
-            'You\'ll see important updates and alerts here',
-            style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.textSecondary.withValues(alpha: 0.7),
-            ),
-            textAlign: TextAlign.center,
+          Consumer(
+            builder: (context, ref, child) {
+              final tr = ref.watch(translationHelperProvider);
+              return Text(
+                tr('common.notifications.empty.subtitle'),
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColors.textSecondary.withValues(alpha: 0.7),
+                ),
+                textAlign: TextAlign.center,
+              );
+            },
           ),
         ],
       ),
@@ -418,11 +439,16 @@ class _NotificationModalState extends ConsumerState<NotificationModal>
               borderRadius: BorderRadius.circular(AppRadius.radiusM),
             ),
           ),
-          child: Text(
-            'See All Notifications',
-            style: AppTextStyles.bodyMedium.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+          child: Consumer(
+            builder: (context, ref, child) {
+              final tr = ref.watch(translationHelperProvider);
+              return Text(
+                tr('common.notifications.seeAll'),
+                style: AppTextStyles.bodyMedium.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              );
+            },
           ),
         ),
       ),
@@ -503,17 +529,18 @@ class _NotificationModalState extends ConsumerState<NotificationModal>
   }
 
   String _formatTimestamp(DateTime timestamp) {
+    final tr = ref.read(translationHelperProvider);
     final now = DateTime.now();
     final difference = now.difference(timestamp);
 
     if (difference.inMinutes < 1) {
-      return 'Just now';
+      return tr('common.notifications.time.justNow');
     } else if (difference.inHours < 1) {
-      return '${difference.inMinutes}m ago';
+      return tr('common.notifications.time.minutesAgo').replaceAll('{minutes}', '${difference.inMinutes}');
     } else if (difference.inDays < 1) {
-      return '${difference.inHours}h ago';
+      return tr('common.notifications.time.hoursAgo').replaceAll('{hours}', '${difference.inHours}');
     } else if (difference.inDays < 7) {
-      return '${difference.inDays}d ago';
+      return tr('common.notifications.time.daysAgo').replaceAll('{days}', '${difference.inDays}');
     } else {
       return '${timestamp.day}/${timestamp.month}/${timestamp.year}';
     }

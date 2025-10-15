@@ -35,7 +35,14 @@
     "selectReceiverFirst": "Selecione primeiro um destinatário",
     "changeReceiver": "Alterar destinatário",
     "cancel": "Cancelar",
-    "calculating": "Calculando..."
+    "calculating": "Calculando...",
+    "fields": {
+      "fullName": "Nome completo",
+      "mobileNumber": "Número móvel",
+      "emailAddress": "Endereço de e-mail",
+      "address": "Endereço",
+      "notProvided": "Não informado"
+    }
   }
 }
 

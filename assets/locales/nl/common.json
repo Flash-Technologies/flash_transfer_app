@@ -1,0 +1,63 @@
+{
+  "social": {
+    "google": "Google",
+    "facebook": "Facebook", 
+    "apple": "Apple",
+    "wallet": "Portemonnee",
+    "signingIn": "Inloggen met Google...",
+    "loginSuccess": "Inloggen gelukt! Doorverwijzen...",
+    "signInCancelled": "Google inloggen geannuleerd",
+    "authTokenError": "Firebase token ophalen mislukt",
+    "signInWithFacebook": "Inloggen met Facebook...",
+    "facebookSuccess": "✅ Facebook inloggen gelukt! Doorverwijzen...",
+    "facebookFailed": "❌ Facebook inloggen mislukt",
+    "signInWithApple": "Inloggen met Apple...",
+    "appleTokenError": "Apple ID token ophalen mislukt",
+    "appleSuccess": "Apple inloggen gelukt! Doorverwijzen...",
+    "appleFailed": "Apple inloggen mislukt",
+    "appleCancelled": "Apple inloggen geannuleerd",
+    "appleUnknownError": "Apple inloggen mislukt: Onbekende fout",
+    "appleAuthFailed": "Apple inloggen mislukt: Authenticatie mislukt",
+    "walletSuccess": "Portemonnee inloggen gelukt! Doorverwijzen...",
+    "walletFailed": "Portemonnee inloggen mislukt",
+    "walletConnectionFailed": "Portemonnee verbinding mislukt",
+    "walletAddressError": "Portemonnee adres ophalen mislukt",
+    "walletConnected": "Verbonden met adres"
+  },
+  "notifications": {
+    "title": "Meldingen",
+    "markAllRead": "Alles markeren als gelezen",
+    "seeAll": "Alle meldingen bekijken",
+    "empty": {
+      "title": "Nog geen meldingen",
+      "subtitle": "Belangrijke updates en waarschuwingen verschijnen hier"
+    },
+    "time": {
+      "justNow": "Zojuist",
+      "minutesAgo": "{minutes}m geleden",
+      "hoursAgo": "{hours}u geleden", 
+      "daysAgo": "{days}d geleden"
+    }
+  },
+  "empty": {
+    "receiver": {
+      "title": "Geen ontvanger geselecteerd",
+      "subtitle": "Selecteer een ontvanger uit uw contacten\nof voeg een nieuwe toe om door te gaan",
+      "selectButton": "Ontvanger selecteren"
+    }
+  },
+  "error": {
+    "title": "Er is iets misgegaan",
+    "subtitle": "We hebben een onverwachte fout tegengekomen. Probeer het opnieuw.",
+    "tryAgain": "Opnieuw proberen"
+  },
+  "buttons": {
+    "continue": "Doorgaan",
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "ok": "OK",
+    "retry": "Opnieuw proberen",
+    "tryAgain": "Opnieuw proberen",
+    "dismiss": "Sluiten"
+  }
+}
