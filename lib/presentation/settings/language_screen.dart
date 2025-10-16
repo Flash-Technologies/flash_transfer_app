@@ -64,6 +64,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
 
   Future<void> _onLanguageSelected(LanguageModel language) async {
     final currentLanguage = ref.read(currentLanguageProvider);
+    final tr = ref.read(translationHelperProvider);
     
     if (language.code == currentLanguage.code) {
       return;
@@ -92,7 +93,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Text('Language changed successfully to ${language.name}!'),
+                  child: Text(tr('confirmation.success').replaceAll('{languageName}', language.name)),
                 ),
               ],
             ),
@@ -111,8 +112,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
           if (mounted) {
             Navigator.of(context).pop();
           }
-        });
-        }
+        });}
       } else {
         // Show error snackbar
         if (mounted) {
@@ -126,7 +126,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Text('Failed to change language. Please try again.'),
+                  child: Text(tr('confirmation.error')),
                 ),
               ],
             ),

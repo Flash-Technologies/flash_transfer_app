@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import '../../core/services/translation_service.dart';
+import '../../providers/language_provider.dart';
 import '../../core/models/transaction_model.dart';
 import '../../core/models/sample_data.dart';
 import 'widgets/invite_header_widget.dart';
 import 'widgets/invite_card_widget.dart';
-import 'widgets/referral_stats_widget.dart';
 import 'widgets/share_options_widget.dart';
 
 class InviteScreen extends ConsumerStatefulWidget {
@@ -113,7 +112,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
 
   @override
   Widget build(BuildContext context) {
-    final translationService = TranslationService.instance;
+    final tr = ref.watch(translationHelperProvider);
     
     return Scaffold(
       backgroundColor: Colors.white,
@@ -169,7 +168,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
   }
 
   Widget _buildTabNavigation() {
-    final translationService = TranslationService.instance;
+    final tr = ref.watch(translationHelperProvider);
     
     return Container(
       margin: const EdgeInsets.all(20),
@@ -190,7 +189,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
           Expanded(
             child: _buildTabButton(
               'friends',
-              'Invite Friends',
+              '${tr('invite.actions.invite')} Friends',
               Icons.people,
             ),
           ),
@@ -416,7 +415,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
                 const SizedBox(height: 16),
                 
                 Text(
-                  TranslationService.instance.translate('invite.screen.title'),
+                  ref.watch(translationHelperProvider)('invite.screen.title'),
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -428,7 +427,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
                 const SizedBox(height: 8),
                 
                 Text(
-                  TranslationService.instance.translate('invite.screen.subtitle'),
+                  ref.watch(translationHelperProvider)('invite.screen.subtitle'),
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.white.withOpacity(0.9),
@@ -444,7 +443,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
   }
 
   Widget _buildInviteNewSection() {
-    final translationService = TranslationService.instance;
+    final tr = ref.watch(translationHelperProvider);
     
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -464,7 +463,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Invite New Friend',
+            '${tr('invite.actions.invite')} New Friend',
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -478,7 +477,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
           TextField(
             controller: _emailController,
             decoration: InputDecoration(
-              labelText: 'Email Address',
+              labelText: tr('invite.friends.enterEmail'),
               hintText: 'friend@example.com',
               prefixIcon: const Icon(Icons.email_outlined),
               border: OutlineInputBorder(
@@ -501,7 +500,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
           TextField(
             controller: _phoneController,
             decoration: InputDecoration(
-              labelText: 'Phone Number (Optional)',
+              labelText: '${tr('invite.friends.enterPhone')} (Optional)',
               hintText: '+1 234 567 8900',
               prefixIcon: const Icon(Icons.phone_outlined),
               border: OutlineInputBorder(
@@ -534,8 +533,8 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
                 ),
                 elevation: 0,
               ),
-              child: const Text(
-                'Send Invite',
+              child: Text(
+                tr('invite.actions.sendInvite'),
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 16,
@@ -549,7 +548,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
   }
 
   Widget _buildFriendsList() {
-    final translationService = TranslationService.instance;
+    final tr = ref.watch(translationHelperProvider);
     
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -570,8 +569,8 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
         children: [
           Row(
             children: [
-              const Text(
-                'Invited Friends',
+              Text(
+                '${tr('invite.actions.invited')} Friends',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -621,6 +620,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
   }
 
   Widget _buildEmptyFriendsList() {
+    final tr = ref.watch(translationHelperProvider);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -635,7 +635,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
             const SizedBox(height: 16),
             
             Text(
-              'No invites sent yet',
+              tr('invite.empty.noInvites'),
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -646,7 +646,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
             const SizedBox(height: 8),
             
             Text(
-              'Start inviting friends to earn rewards!',
+              tr('invite.empty.description'),
               style: TextStyle(
                 fontSize: 14,
                 color: Colors.grey[500],
@@ -662,6 +662,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
   }
 
   Widget _buildHowItWorksSection() {
+    final tr = ref.watch(translationHelperProvider);
     final steps = [
       {'title': 'Share your code', 'desc': 'Send your referral code to friends'},
       {'title': 'Friend signs up', 'desc': 'They create an account using your code'},
@@ -685,8 +686,8 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'How It Works',
+          Text(
+            tr('invite.rewards.howItWorks'),
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -895,6 +896,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
   }
 
   Widget _buildLoadingState() {
+    final tr = ref.watch(translationHelperProvider);
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -903,8 +905,8 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
             valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF2475FF)),
           ),
           const SizedBox(height: 16),
-          const Text(
-            'Loading invite data...',
+          Text(
+            '${tr('invite.errors.loadFailed')}...',
             style: TextStyle(
               color: Color(0xFF6E757D),
               fontSize: 14,
@@ -918,15 +920,16 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
   }
 
   String _getStatusText(InviteStatus status) {
+    final tr = ref.watch(translationHelperProvider);
     switch (status) {
       case InviteStatus.pending:
-        return 'Invite sent';
+        return tr('invite.status.pending');
       case InviteStatus.accepted:
-        return 'Joined Flash Transfer';
+        return tr('invite.status.accepted');
       case InviteStatus.completed:
-        return 'First transaction completed';
+        return tr('invite.status.completed');
       case InviteStatus.expired:
-        return 'Invite expired';
+        return tr('invite.status.expired');
     }
   }
 
@@ -944,10 +947,11 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
   }
 
   void _sendInvite() {
+    final tr = ref.watch(translationHelperProvider);
     if (_emailController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please enter an email address'),
+        SnackBar(
+          content: Text(tr('invite.errors.invalidEmail')),
           backgroundColor: Color(0xFFFF3E24),
         ),
       );
@@ -968,11 +972,11 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
     // Show success message
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: const Row(
+        content: Row(
           children: [
-            Icon(Icons.check_circle, color: Colors.white),
-            SizedBox(width: 12),
-            Text('Invite sent successfully!'),
+            const Icon(Icons.check_circle, color: Colors.white),
+            const SizedBox(width: 12),
+            Text(tr('invite.notifications.inviteSent')),
           ],
         ),
         backgroundColor: const Color(0xFF00C735),
@@ -985,6 +989,7 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
   }
 
   void _onShare(String type, String content) {
+    final tr = ref.watch(translationHelperProvider);
     HapticFeedback.lightImpact();
     
     // Handle different share types
@@ -992,8 +997,8 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
       case 'copy_code':
         Clipboard.setData(ClipboardData(text: content));
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Referral code copied to clipboard'),
+          SnackBar(
+            content: Text(tr('invite.notifications.codeCopied')),
             duration: Duration(seconds: 2),
           ),
         );
@@ -1001,8 +1006,8 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
       case 'copy_link':
         Clipboard.setData(ClipboardData(text: content));
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Referral link copied to clipboard'),
+          SnackBar(
+            content: Text(tr('invite.notifications.linkCopied')),
             duration: Duration(seconds: 2),
           ),
         );
@@ -1014,11 +1019,12 @@ class _InviteScreenState extends ConsumerState<InviteScreen>
   }
 
   void _resendInvite(InviteModel invite) {
+    final tr = ref.watch(translationHelperProvider);
     HapticFeedback.lightImpact();
     
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Invite resent to ${invite.name}'),
+        content: Text(tr('invite.notifications.inviteResent').replaceAll('{name}', invite.name)),
         backgroundColor: const Color(0xFF2475FF),
       ),
     );

@@ -261,11 +261,14 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
             shape: BoxShape.circle,
             border: Border.all(color: const Color(0xFFFFC000), width: 2),
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Image.asset(
-              'assets/images/profile.png',
-              fit: BoxFit.cover,
+          child: Center(
+            child: Text(
+              name.isNotEmpty ? name[0].toUpperCase() : '?',
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF181F30),
+              ),
             ),
           ),
         ),

@@ -1,0 +1,21 @@
+{
+  "screen": {
+    "title": "Rastrear una Transferencia",
+    "subtitle": "El hogar está atrás, el mundo adelante y hay muchos senderos que recorrer a través de las sombras hasta el borde.",
+    "back": "Atrás"
+  },
+  "form": {
+    "label": "Ingrese el Número de Seguimiento",
+    "placeholder": "Número de Seguimiento Flash (FTN)",
+    "button": "Continuar"
+  },
+  "success": {
+    "transferFound": "¡Transferencia encontrada! Cargando detalles..."
+  },
+  "errors": {
+    "enterTrackingNumber": "Por favor ingrese un número de seguimiento",
+    "minLength": "El número de seguimiento debe tener al menos 10 caracteres",
+    "invalidFormat": "Formato de número de seguimiento inválido",
+    "notFound": "Lo sentimos, no se encontró ninguna transacción para este ID de seguimiento. Por favor verifique el número de seguimiento e intente nuevamente."
+  }
+}

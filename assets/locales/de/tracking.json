@@ -1,0 +1,21 @@
+{
+  "screen": {
+    "title": "Überweisung verfolgen",
+    "subtitle": "Das Zuhause liegt hinter uns, die Welt vor uns und es gibt viele Pfade durch die Schatten zum Rand.",
+    "back": "Zurück"
+  },
+  "form": {
+    "label": "Tracking-Nummer eingeben",
+    "placeholder": "Flash Tracking-Nummer (FTN)",
+    "button": "Weiter"
+  },
+  "success": {
+    "transferFound": "Überweisung gefunden! Details werden geladen..."
+  },
+  "errors": {
+    "enterTrackingNumber": "Bitte geben Sie eine Tracking-Nummer ein",
+    "minLength": "Die Tracking-Nummer muss mindestens 10 Zeichen lang sein",
+    "invalidFormat": "Ungültiges Tracking-Nummer-Format",
+    "notFound": "Entschuldigung, keine Transaktion für diese Tracking-ID gefunden. Bitte überprüfen Sie die Tracking-Nummer und versuchen Sie es erneut."
+  }
+}

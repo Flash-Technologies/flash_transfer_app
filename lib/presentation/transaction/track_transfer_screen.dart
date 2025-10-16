@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter/services.dart';
 import '../../providers/tracking_provider.dart';
+import '../../providers/language_provider.dart';
 import 'individual_transaction_screen.dart';
 
 class TrackTransferScreen extends ConsumerStatefulWidget {
@@ -99,6 +100,7 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
 
 
   void _validateAndSubmit() async {
+    final tr = ref.read(translationHelperProvider);
     final trackingNumber = _trackingController.text.trim();
 
     setState(() {
@@ -106,12 +108,12 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
     });
 
     if (trackingNumber.isEmpty) {
-      _showValidationError('Please enter a tracking number');
+      _showValidationError(tr('tracking.errors.enterTrackingNumber'));
       return;
     }
 
     if (trackingNumber.length < 10) {
-      _showValidationError('Tracking number must be at least 10 characters');
+      _showValidationError(tr('tracking.errors.minLength'));
       return;
     }
 
@@ -119,7 +121,7 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
     final isValidFormat =
         RegExp(r'^[A-Z0-9-]{10,25}$').hasMatch(trackingNumber.toUpperCase());
     if (!isValidFormat) {
-      _showValidationError('Invalid tracking number format');
+      _showValidationError(tr('tracking.errors.invalidFormat'));
       return;
     }
 
@@ -154,7 +156,7 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                   const Icon(Icons.check_circle, color: Colors.white),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: Text('Transfer found! Loading details...'),
+                    child: Text(tr('tracking.success.transferFound')),
                   ),
                 ],
               ),
@@ -168,7 +170,7 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
         }
       }
     } catch (e) {
-      _showValidationError('Sorry, no transaction found for this tracking ID. Please check the tracking number and try again.');
+      _showValidationError(tr('tracking.errors.notFound'));
     }
   }
 
@@ -188,6 +190,7 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
   Widget build(BuildContext context) {
     final trackingState = ref.watch(trackingProvider);
     final theme = Theme.of(context);
+    final tr = ref.watch(translationHelperProvider);
 
     return Scaffold(
       backgroundColor: const Color(0xFFEFF0F1),
@@ -232,7 +235,7 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            'Back',
+                            tr('tracking.screen.back'),
                             style: TextStyle(
                               color: Colors.grey[700],
                               fontSize: 14,
@@ -263,7 +266,7 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Track a Transfer',
+                        tr('tracking.screen.title'),
                         style: theme.textTheme.headlineMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: const Color(0xFF181F30),
@@ -274,7 +277,7 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                           ),
                       const SizedBox(height: 12),
                       Text(
-                        'Home is behind, the world ahead and there are many paths to tread through shadows to the edge.',
+                        tr('tracking.screen.subtitle'),
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: const Color(0xFF6E757D),
                           height: 1.6,
@@ -316,7 +319,7 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                                 children: [
                                   // Input Label
                                   Text(
-                                    'Enter Tracking Number',
+                                    tr('tracking.form.label'),
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
@@ -348,7 +351,7 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                                         color: const Color(0xFF181F30),
                                       ),
                                       decoration: InputDecoration(
-                                        hintText: 'Flash Tracking Number (FTN)',
+                                        hintText: tr('tracking.form.placeholder'),
                                         hintStyle: TextStyle(
                                           color: const Color(0xFF6E757D),
                                           fontSize: 14,
@@ -467,7 +470,7 @@ class _TrackTransferScreenState extends ConsumerState<TrackTransferScreen>
                                               ),
                                             )
                                           : Text(
-                                              'Continue',
+                                              tr('tracking.form.button'),
                                               style: TextStyle(
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w600,

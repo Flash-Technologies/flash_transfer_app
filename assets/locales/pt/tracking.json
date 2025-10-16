@@ -1,0 +1,21 @@
+{
+  "screen": {
+    "title": "Rastrear uma Transferência",
+    "subtitle": "O lar fica para trás, o mundo à frente e há muitos caminhos para percorrer através das sombras até a borda.",
+    "back": "Voltar"
+  },
+  "form": {
+    "label": "Digite o Número de Rastreamento",
+    "placeholder": "Número de Rastreamento Flash (FTN)",
+    "button": "Continuar"
+  },
+  "success": {
+    "transferFound": "Transferência encontrada! Carregando detalhes..."
+  },
+  "errors": {
+    "enterTrackingNumber": "Por favor digite um número de rastreamento",
+    "minLength": "O número de rastreamento deve ter pelo menos 10 caracteres",
+    "invalidFormat": "Formato de número de rastreamento inválido",
+    "notFound": "Desculpe, nenhuma transação encontrada para este ID de rastreamento. Por favor verifique o número de rastreamento e tente novamente."
+  }
+}

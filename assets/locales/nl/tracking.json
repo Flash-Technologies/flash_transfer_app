@@ -1,0 +1,21 @@
+{
+  "screen": {
+    "title": "Een Overdracht Volgen",
+    "subtitle": "Thuis is achter ons, de wereld voor ons en er zijn veel paden om door schaduwen naar de rand te bewandelen.",
+    "back": "Terug"
+  },
+  "form": {
+    "label": "Voer Trackingnummer In",
+    "placeholder": "Flash Trackingnummer (FTN)",
+    "button": "Doorgaan"
+  },
+  "success": {
+    "transferFound": "Overdracht gevonden! Details worden geladen..."
+  },
+  "errors": {
+    "enterTrackingNumber": "Voer een trackingnummer in",
+    "minLength": "Trackingnummer moet minimaal 10 tekens bevatten",
+    "invalidFormat": "Ongeldig trackingnummer formaat",
+    "notFound": "Sorry, geen transactie gevonden voor dit tracking-ID. Controleer het trackingnummer en probeer opnieuw."
+  }
+}

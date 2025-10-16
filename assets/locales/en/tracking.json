@@ -1,0 +1,21 @@
+{
+  "screen": {
+    "title": "Track a Transfer",
+    "subtitle": "Home is behind, the world ahead and there are many paths to tread through shadows to the edge.",
+    "back": "Back"
+  },
+  "form": {
+    "label": "Enter Tracking Number",
+    "placeholder": "Flash Tracking Number (FTN)",
+    "button": "Continue"
+  },
+  "success": {
+    "transferFound": "Transfer found! Loading details..."
+  },
+  "errors": {
+    "enterTrackingNumber": "Please enter a tracking number",
+    "minLength": "Tracking number must be at least 10 characters",
+    "invalidFormat": "Invalid tracking number format",
+    "notFound": "Sorry, no transaction found for this tracking ID. Please check the tracking number and try again."
+  }
+}

@@ -166,18 +166,32 @@ class CashPaymentDetails extends ConsumerWidget {
           // Receiver info
           Row(
             children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: Colors.blue.shade100,
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: Icon(
-                  Icons.person,
-                  color: Colors.blue.shade600,
-                  size: 24,
-                ),
+              Builder(
+                builder: (context) {
+                  final recipientName = recipientInfo != null 
+                      ? '${recipientInfo['firstName'] ?? ''} ${recipientInfo['lastName'] ?? ''}'
+                      : 'Abu Alaeddine';
+                  final firstLetter = recipientName.isNotEmpty ? recipientName[0].toUpperCase() : '?';
+                  
+                  return Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade100,
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: Center(
+                      child: Text(
+                        firstLetter,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue.shade600,
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
               const SizedBox(width: 12),
               Expanded(

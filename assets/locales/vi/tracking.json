@@ -1,0 +1,21 @@
+{
+  "screen": {
+    "title": "Theo Dõi Chuyển Khoản",
+    "subtitle": "Nhà ở phía sau, thế giới ở phía trước và có nhiều con đường để đi qua bóng tối đến rìa.",
+    "back": "Quay lại"
+  },
+  "form": {
+    "label": "Nhập Số Theo Dõi",
+    "placeholder": "Số Theo Dõi Flash (FTN)",
+    "button": "Tiếp tục"
+  },
+  "success": {
+    "transferFound": "Đã tìm thấy chuyển khoản! Đang tải chi tiết..."
+  },
+  "errors": {
+    "enterTrackingNumber": "Vui lòng nhập số theo dõi",
+    "minLength": "Số theo dõi phải có ít nhất 10 ký tự",
+    "invalidFormat": "Định dạng số theo dõi không hợp lệ",
+    "notFound": "Xin lỗi, không tìm thấy giao dịch nào cho ID theo dõi này. Vui lòng kiểm tra số theo dõi và thử lại."
+  }
+}

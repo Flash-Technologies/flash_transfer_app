@@ -92,6 +92,7 @@ class TranslationService {
         'storeLocation.json',
         'testimonials.json',
         'track.json',
+        'tracking.json',
         'transaction.json',
         'transactionDetails.json',
       ];

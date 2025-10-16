@@ -87,11 +87,14 @@ class UserDetailCard extends StatelessWidget {
                       width: 2,
                     ),
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(26),
-                    child: Image.asset(
-                      user.profileImage ?? 'assets/images/default_avatar.png',
-                      fit: BoxFit.cover,
+                  child: Center(
+                    child: Text(
+                      _getFirstLetter(user),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF181F30),
+                      ),
                     ),
                   ),
                 ),
@@ -156,5 +159,13 @@ class UserDetailCard extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _getFirstLetter(User user) {
+    final fullName = '${user.firstName ?? ''} ${user.lastName ?? ''}'.trim();
+    if (fullName.isNotEmpty) {
+      return fullName[0].toUpperCase();
+    }
+    return '?';
   }
 }

@@ -1,0 +1,21 @@
+{
+  "screen": {
+    "title": "Suivre un Transfert",
+    "subtitle": "La maison est derrière, le monde devant et il y a de nombreux chemins à parcourir à travers les ombres jusqu'au bord.",
+    "back": "Retour"
+  },
+  "form": {
+    "label": "Entrez le Numéro de Suivi",
+    "placeholder": "Numéro de Suivi Flash (FTN)",
+    "button": "Continuer"
+  },
+  "success": {
+    "transferFound": "Transfert trouvé ! Chargement des détails..."
+  },
+  "errors": {
+    "enterTrackingNumber": "Veuillez entrer un numéro de suivi",
+    "minLength": "Le numéro de suivi doit contenir au moins 10 caractères",
+    "invalidFormat": "Format de numéro de suivi invalide",
+    "notFound": "Désolé, aucune transaction trouvée pour cet ID de suivi. Veuillez vérifier le numéro de suivi et réessayer."
+  }
+}
