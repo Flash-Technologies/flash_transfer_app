@@ -15,13 +15,10 @@ class TranslationService {
 
   // Force reload translations (useful during development)
   Future<void> forceReloadTranslations() async {
-    print('🔄 [TRANSLATION] Force reloading translations for $_currentLocale');
     await loadTranslations(_currentLocale);
   }
 
   Future<void> loadTranslations(String locale) async {
-    print('🌍 [TRANSLATION] Starting to load translations for locale: $locale');
-    
     try {
       // Start with empty translations instead of defaults
       Map<String, dynamic> allTranslations = {};
@@ -31,36 +28,11 @@ class TranslationService {
         final String jsonString = await rootBundle.loadString(
           'assets/locales/$locale/translation.json',
         );
-        print('✅ [TRANSLATION] Successfully loaded translation.json for $locale');
-        print('📄 [TRANSLATION] Content length: ${jsonString.length} characters');
         
         final Map<String, dynamic> mainTranslations = json.decode(jsonString);
         allTranslations = _mergeTranslations(allTranslations, mainTranslations);
         
-        print('🔍 [TRANSLATION] Main translation keys loaded: ${mainTranslations.keys.toList()}');
-        
-        // Check if landing section exists
-        if (mainTranslations.containsKey('landing')) {
-          final landingSection = mainTranslations['landing'] as Map<String, dynamic>;
-          print('🏠 [TRANSLATION] Landing section keys: ${landingSection.keys.toList()}');
-        } else {
-          print('❌ [TRANSLATION] No landing section found in translation.json!');
-        }
-        
-        // Check if notifications section exists
-        if (mainTranslations.containsKey('notifications')) {
-          final notificationsSection = mainTranslations['notifications'] as Map<String, dynamic>;
-          print('🔔 [TRANSLATION] Notifications section keys: ${notificationsSection.keys.toList()}');
-          if (notificationsSection.containsKey('screen')) {
-            final screenSection = notificationsSection['screen'] as Map<String, dynamic>;
-            print('📱 [TRANSLATION] Notifications screen keys: ${screenSection.keys.toList()}');
-          }
-        } else {
-          print('❌ [TRANSLATION] No notifications section found in translation.json!');
-        }
-        
       } catch (e) {
-        print('❌ [TRANSLATION] Failed to load main translation.json for $locale: $e');
         throw Exception('Main translation file not found for $locale');
       }
       
@@ -105,19 +77,15 @@ class TranslationService {
           final Map<String, dynamic> fileTranslations = json.decode(jsonString);
           final String baseKey = fileName.replaceAll('.json', '');
           allTranslations[baseKey] = fileTranslations;
-          print('✅ [TRANSLATION] Loaded optional file: $fileName');
         } catch (e) {
-          print('⚠️ [TRANSLATION] Optional file $fileName not found for $locale (this is OK)');
+          // Optional file not found, skip it
         }
       }
       
       _translations = allTranslations;
       _currentLocale = locale;
       
-      print('🎉 [TRANSLATION] Successfully loaded translations for $locale');
-      print('📊 [TRANSLATION] Total translation sections: ${allTranslations.keys.toList()}');
     } catch (e) {
-      print('Error loading translation files for $locale: $e');
       // Fallback to English if the locale file doesn't exist
       if (locale != 'en') {
         await loadTranslations('en');
@@ -132,7 +100,7 @@ class TranslationService {
     
     override.forEach((key, value) {
       if (result.containsKey(key) && result[key] is Map<String, dynamic> && value is Map<String, dynamic>) {
-        result[key] = _mergeTranslations(result[key] as Map<String, dynamic>, value as Map<String, dynamic>);
+        result[key] = _mergeTranslations(result[key] as Map<String, dynamic>, value);
       } else {
         result[key] = value;
       }
@@ -143,12 +111,8 @@ class TranslationService {
 
   String translate(String key, [Map<String, String>? params]) {
     if (_translations == null) {
-      print('❌ [TRANSLATE] Translations not loaded for key: $key');
       return key;
     }
-
-    print('🔍 [TRANSLATE] Looking for key: $key in locale: $_currentLocale');
-    print('📊 [TRANSLATE] Available top-level keys: ${_translations!.keys.toList()}');
 
     final keys = key.split('.');
     dynamic value = _translations;
@@ -157,19 +121,12 @@ class TranslationService {
       final k = keys[i];
       if (value is Map<String, dynamic> && value.containsKey(k)) {
         value = value[k];
-        print('✅ [TRANSLATE] Found key part: $k (${i + 1}/${keys.length})');
       } else {
-        print('❌ [TRANSLATE] Key part not found: $k');
-        if (value is Map<String, dynamic>) {
-          print('🔍 [TRANSLATE] Available keys at this level: ${value.keys.toList()}');
-        }
-        print('❌ [TRANSLATE] Full key not found: $key');
         return key;
       }
     }
 
     String result = value.toString();
-    print('✅ [TRANSLATE] Found translation for $key: $result');
 
     // Replace parameters
     if (params != null) {

@@ -98,6 +98,7 @@ class _CashScreenState extends ConsumerState<CashScreen> {
         Scaffold(
           backgroundColor: const Color(0xFFF8F9FA),
           body: SafeArea(
+            top: false,
             child: SingleChildScrollView(
               physics: const ClampingScrollPhysics(),
               padding: EdgeInsets.symmetric(
@@ -131,10 +132,10 @@ class _CashScreenState extends ConsumerState<CashScreen> {
                   const FrequentReceiptsSection()
                       .animate()
                       .fadeIn(duration: 600.ms, delay: 500.ms),
-                  const SizedBox(height: 24),
-                  const RecentReceiptsSection()
-                      .animate()
-                      .fadeIn(duration: 600.ms, delay: 600.ms),
+                  // const SizedBox(height: 24),
+                  // const RecentReceiptsSection()
+                  //     .animate()
+                  //     .fadeIn(duration: 600.ms, delay: 600.ms),
                 ],
               ),
             ),

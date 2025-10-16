@@ -460,334 +460,337 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen>
     return Scaffold(
       backgroundColor: const Color(0xFFEFF0F1),
       body: Column(
-        children: [
-          // Header
-          SlideTransition(
-            position: _headerSlideAnimation,
-            child: Container(
-              padding: EdgeInsets.fromLTRB(16, MediaQuery.of(context).padding.top + 16, 16, 24),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  // Back button
-                  GestureDetector(
-                    onTap: () {
-                      HapticFeedback.lightImpact();
-                      Navigator.of(context).pop();
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.arrow_back_ios,
-                            size: 20,
-                            color: Colors.grey[700],
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            tr('editProfile.screen.back'),
-                            style: TextStyle(
-                              color: Colors.grey[700],
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
+          children: [
+            // Header
+            SlideTransition(
+              position: _headerSlideAnimation,
+              child: Container(
+                padding: EdgeInsets.fromLTRB(16, MediaQuery.of(context).padding.top + 16, 16, 24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.05),
+                      blurRadius: 10,
+                      offset: const Offset(0, 2),
                     ),
-                  ).animate().fadeIn(
-                        delay: const Duration(milliseconds: 400),
-                        duration: const Duration(milliseconds: 400),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    // Back button
+                    GestureDetector(
+                      onTap: () {
+                        HapticFeedback.lightImpact();
+                        Navigator.of(context).pop();
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.arrow_back_ios,
+                              size: 20,
+                              color: Colors.grey[700],
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              tr('editProfile.screen.back'),
+                              style: TextStyle(
+                                color: Colors.grey[700],
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-
-                  const SizedBox(width: 16),
-
-                  // Title
-                  Expanded(
-                    child: Text(
-                      tr('editProfile.screen.title'),
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF181F30),
-                      ),
-                      textAlign: TextAlign.center,
                     ).animate().fadeIn(
-                          delay: const Duration(milliseconds: 500),
+                          delay: const Duration(milliseconds: 400),
                           duration: const Duration(milliseconds: 400),
                         ),
-                  ),
-
-                  const SizedBox(width: 40), // Balance the back button
-                ],
-              ),
-            ),
-          ),
-
-          // Content
-          Expanded(
-            child: FadeTransition(
-              opacity: _contentFadeAnimation,
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(20),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      // Profile Avatar
-                      ScaleTransition(
-                        scale: _avatarScaleAnimation,
-                        child: _buildProfileAvatar(),
-                      ),
-
-                      const SizedBox(height: 32),
-
-                      // Form Fields Container
-                      Container(
-                        padding: const EdgeInsets.all(24),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 10,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
+      
+                    const SizedBox(width: 16),
+      
+                    // Title
+                    Expanded(
+                      child: Text(
+                        tr('editProfile.screen.title'),
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFF181F30),
                         ),
-                        child: Column(
-                          children: [
-                            // Name Fields
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: _buildFormField(
-                                    label: tr('editProfile.form.firstName'),
-                                    controller: _firstNameController,
-                                    focusNode: _firstNameFocus,
-                                    hintText: tr('editProfile.hints.firstName'),
-                                    validator: (value) => value?.isEmpty == true
-                                        ? tr('editProfile.messages.required')
-                                        : null,
-                                    onFieldSubmitted: (_) =>
-                                        _lastNameFocus.requestFocus(),
-                                    animationDelay: 600,
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: _buildFormField(
-                                    label: tr('editProfile.form.lastName'),
-                                    controller: _lastNameController,
-                                    focusNode: _lastNameFocus,
-                                    hintText: tr('editProfile.hints.lastName'),
-                                    validator: (value) => value?.isEmpty == true
-                                        ? tr('editProfile.messages.required')
-                                        : null,
-                                    onFieldSubmitted: (_) =>
-                                        _passwordFocus.requestFocus(),
-                                    animationDelay: 700,
-                                  ),
-                                ),
-                              ],
-                            ),
-
-                            const SizedBox(height: 20),
-
-                            // Password Field
-                            // _buildFormField(
-                            //   label: 'Password',
-                            //   controller: _passwordController,
-                            //   focusNode: _passwordFocus,
-                            //   hintText: 'Leave empty to keep current password',
-                            //   isPassword: true,
-                            //   onFieldSubmitted: (_) =>
-                            //       _emailFocus.requestFocus(),
-                            //   animationDelay: 800,
-                            // ),
-
-                            // const SizedBox(height: 20),
-
-                            // Email Field (Read-only)
-                            _buildFormField(
-                              label: tr('editProfile.form.emailCannotChange'),
-                              controller: _emailController,
-                              focusNode: _emailFocus,
-                              hintText: tr('editProfile.hints.email'),
-                              keyboardType: TextInputType.emailAddress,
-                              validator:
-                                  null, // No validation needed for read-only field
-                              onFieldSubmitted: (_) =>
-                                  _permanentAddressFocus.requestFocus(),
-                              animationDelay: 900,
-                              isReadOnly: true,
-                            ),
-
-                            const SizedBox(height: 20),
-
-                            // Date of Birth
-                            _buildDateField(animationDelay: 1000),
-
-                            const SizedBox(height: 20),
-
-                            // Address Fields
-                            _buildFormField(
-                              label: tr('editProfile.form.permanentAddress'),
-                              controller: _permanentAddressController,
-                              focusNode: _permanentAddressFocus,
-                              hintText: tr('editProfile.hints.permanentAddress'),
-                              onFieldSubmitted: (_) =>
-                                  _presentAddressFocus.requestFocus(),
-                              animationDelay: 1100,
-                            ),
-
-                            const SizedBox(height: 20),
-
-                            _buildFormField(
-                              label: tr('editProfile.form.presentAddress'),
-                              controller: _presentAddressController,
-                              focusNode: _presentAddressFocus,
-                              hintText: tr('editProfile.hints.presentAddress'),
-                              onFieldSubmitted: (_) =>
-                                  _cityFocus.requestFocus(),
-                              animationDelay: 1200,
-                            ),
-
-                            const SizedBox(height: 20),
-
-                            // Country Field
-                            _buildCountryField(animationDelay: 1300),
-
-                            const SizedBox(height: 20),
-
-                            _buildFormField(
-                              label: tr('editProfile.form.city') + '*',
-                              controller: _cityController,
-                              focusNode: _cityFocus,
-                              hintText: tr('editProfile.hints.city'),
-                              validator: (value) =>
-                                  value?.isEmpty == true ? tr('editProfile.messages.required') : null,
-                              onFieldSubmitted: (_) =>
-                                  _stateFocus.requestFocus(),
-                              animationDelay: 1400,
-                            ),
-
-                            const SizedBox(height: 20),
-
-                            // State and ZIP
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: _buildFormField(
-                                    label: tr('editProfile.form.state') + '*',
-                                    controller: _stateController,
-                                    focusNode: _stateFocus,
-                                    hintText: tr('editProfile.hints.state'),
-                                    validator: (value) => value?.isEmpty == true
-                                        ? tr('editProfile.messages.required')
-                                        : null,
-                                    onFieldSubmitted: (_) =>
-                                        _zipFocus.requestFocus(),
-                                    animationDelay: 1500,
-                                  ),
-                                ),
-                                const SizedBox(width: 16),
-                                Expanded(
-                                  child: _buildFormField(
-                                    label: tr('editProfile.form.zip') + '*',
-                                    controller: _zipController,
-                                    focusNode: _zipFocus,
-                                    hintText: tr('editProfile.hints.zip'),
-                                    keyboardType: TextInputType.number,
-                                    validator: (value) => value?.isEmpty == true
-                                        ? tr('editProfile.messages.required')
-                                        : null,
-                                    onFieldSubmitted: (_) => _saveProfile(),
-                                    animationDelay: 1600,
-                                  ),
-                                ),
-                              ],
-                            ),
-
-                            const SizedBox(height: 32),
-
-                            // Save Button
-                            ScaleTransition(
-                              scale: _saveButtonAnimation,
-                              child: SizedBox(
-                                width: double.infinity,
-                                height: 56,
-                                child: ElevatedButton(
-                                  onPressed: profileState.isLoading
-                                      ? null
-                                      : _saveProfile,
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFFFFC000),
-                                    foregroundColor: const Color(0xFF181F30),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    elevation: 3,
-                                    disabledBackgroundColor:
-                                        Colors.grey.shade300,
-                                  ),
-                                  child: profileState.isLoading
-                                      ? SizedBox(
-                                          width: 24,
-                                          height: 24,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(
-                                              const Color(0xFF181F30),
-                                            ),
-                                          ),
-                                        )
-                                      : Text(
-                                          tr('editProfile.form.save'),
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                ),
-                              ),
-                            ).animate().slideY(
-                                  begin: 1,
-                                  delay: const Duration(milliseconds: 1700),
-                                  duration: const Duration(milliseconds: 600),
-                                  curve: Curves.easeOutBack,
-                                ),
-                          ],
-                        ),
-                      ).animate().scale(
-                            delay: const Duration(milliseconds: 400),
-                            duration: const Duration(milliseconds: 800),
-                            curve: Curves.easeOutBack,
+                        textAlign: TextAlign.center,
+                      ).animate().fadeIn(
+                            delay: const Duration(milliseconds: 500),
+                            duration: const Duration(milliseconds: 400),
                           ),
-                    ],
-                  ),
+                    ),
+      
+                    const SizedBox(width: 40), // Balance the back button
+                  ],
                 ),
               ),
             ),
-          ),
-        ],
-      ),
+      
+            // Content
+            Expanded(
+              child: SafeArea(
+                top: false,
+                child: FadeTransition(
+                  opacity: _contentFadeAnimation,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(20),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        // Profile Avatar
+                        ScaleTransition(
+                          scale: _avatarScaleAnimation,
+                          child: _buildProfileAvatar(),
+                        ),
+      
+                        const SizedBox(height: 32),
+      
+                        // Form Fields Container
+                        Container(
+                          padding: const EdgeInsets.all(24),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.05),
+                                blurRadius: 10,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              // Name Fields
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: _buildFormField(
+                                      label: tr('editProfile.form.firstName'),
+                                      controller: _firstNameController,
+                                      focusNode: _firstNameFocus,
+                                      hintText: tr('editProfile.hints.firstName'),
+                                      validator: (value) => value?.isEmpty == true
+                                          ? tr('editProfile.messages.required')
+                                          : null,
+                                      onFieldSubmitted: (_) =>
+                                          _lastNameFocus.requestFocus(),
+                                      animationDelay: 600,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: _buildFormField(
+                                      label: tr('editProfile.form.lastName'),
+                                      controller: _lastNameController,
+                                      focusNode: _lastNameFocus,
+                                      hintText: tr('editProfile.hints.lastName'),
+                                      validator: (value) => value?.isEmpty == true
+                                          ? tr('editProfile.messages.required')
+                                          : null,
+                                      onFieldSubmitted: (_) =>
+                                          _passwordFocus.requestFocus(),
+                                      animationDelay: 700,
+                                    ),
+                                  ),
+                                ],
+                              ),
+      
+                              const SizedBox(height: 20),
+      
+                              // Password Field
+                              // _buildFormField(
+                              //   label: 'Password',
+                              //   controller: _passwordController,
+                              //   focusNode: _passwordFocus,
+                              //   hintText: 'Leave empty to keep current password',
+                              //   isPassword: true,
+                              //   onFieldSubmitted: (_) =>
+                              //       _emailFocus.requestFocus(),
+                              //   animationDelay: 800,
+                              // ),
+      
+                              // const SizedBox(height: 20),
+      
+                              // Email Field (Read-only)
+                              _buildFormField(
+                                label: tr('editProfile.form.emailCannotChange'),
+                                controller: _emailController,
+                                focusNode: _emailFocus,
+                                hintText: tr('editProfile.hints.email'),
+                                keyboardType: TextInputType.emailAddress,
+                                validator:
+                                    null, // No validation needed for read-only field
+                                onFieldSubmitted: (_) =>
+                                    _permanentAddressFocus.requestFocus(),
+                                animationDelay: 900,
+                                isReadOnly: true,
+                              ),
+      
+                              const SizedBox(height: 20),
+      
+                              // Date of Birth
+                              _buildDateField(animationDelay: 1000),
+      
+                              const SizedBox(height: 20),
+      
+                              // Address Fields
+                              _buildFormField(
+                                label: tr('editProfile.form.permanentAddress'),
+                                controller: _permanentAddressController,
+                                focusNode: _permanentAddressFocus,
+                                hintText: tr('editProfile.hints.permanentAddress'),
+                                onFieldSubmitted: (_) =>
+                                    _presentAddressFocus.requestFocus(),
+                                animationDelay: 1100,
+                              ),
+      
+                              const SizedBox(height: 20),
+      
+                              _buildFormField(
+                                label: tr('editProfile.form.presentAddress'),
+                                controller: _presentAddressController,
+                                focusNode: _presentAddressFocus,
+                                hintText: tr('editProfile.hints.presentAddress'),
+                                onFieldSubmitted: (_) =>
+                                    _cityFocus.requestFocus(),
+                                animationDelay: 1200,
+                              ),
+      
+                              const SizedBox(height: 20),
+      
+                              // Country Field
+                              _buildCountryField(animationDelay: 1300),
+      
+                              const SizedBox(height: 20),
+      
+                              _buildFormField(
+                                label: tr('editProfile.form.city') + '*',
+                                controller: _cityController,
+                                focusNode: _cityFocus,
+                                hintText: tr('editProfile.hints.city'),
+                                validator: (value) =>
+                                    value?.isEmpty == true ? tr('editProfile.messages.required') : null,
+                                onFieldSubmitted: (_) =>
+                                    _stateFocus.requestFocus(),
+                                animationDelay: 1400,
+                              ),
+      
+                              const SizedBox(height: 20),
+      
+                              // State and ZIP
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: _buildFormField(
+                                      label: tr('editProfile.form.state') + '*',
+                                      controller: _stateController,
+                                      focusNode: _stateFocus,
+                                      hintText: tr('editProfile.hints.state'),
+                                      validator: (value) => value?.isEmpty == true
+                                          ? tr('editProfile.messages.required')
+                                          : null,
+                                      onFieldSubmitted: (_) =>
+                                          _zipFocus.requestFocus(),
+                                      animationDelay: 1500,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Expanded(
+                                    child: _buildFormField(
+                                      label: tr('editProfile.form.zip') + '*',
+                                      controller: _zipController,
+                                      focusNode: _zipFocus,
+                                      hintText: tr('editProfile.hints.zip'),
+                                      keyboardType: TextInputType.number,
+                                      validator: (value) => value?.isEmpty == true
+                                          ? tr('editProfile.messages.required')
+                                          : null,
+                                      onFieldSubmitted: (_) => _saveProfile(),
+                                      animationDelay: 1600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+      
+                              const SizedBox(height: 32),
+      
+                              // Save Button
+                              ScaleTransition(
+                                scale: _saveButtonAnimation,
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  height: 56,
+                                  child: ElevatedButton(
+                                    onPressed: profileState.isLoading
+                                        ? null
+                                        : _saveProfile,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFFFFC000),
+                                      foregroundColor: const Color(0xFF181F30),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      elevation: 3,
+                                      disabledBackgroundColor:
+                                          Colors.grey.shade300,
+                                    ),
+                                    child: profileState.isLoading
+                                        ? SizedBox(
+                                            width: 24,
+                                            height: 24,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                const Color(0xFF181F30),
+                                              ),
+                                            ),
+                                          )
+                                        : Text(
+                                            tr('editProfile.form.save'),
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                  ),
+                                ),
+                              ).animate().slideY(
+                                    begin: 1,
+                                    delay: const Duration(milliseconds: 1700),
+                                    duration: const Duration(milliseconds: 600),
+                                    curve: Curves.easeOutBack,
+                                  ),
+                            ],
+                          ),
+                        ).animate().scale(
+                              delay: const Duration(milliseconds: 400),
+                              duration: const Duration(milliseconds: 800),
+                              curve: Curves.easeOutBack,
+                            ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),)
+          ],
+  
+        ),
     );
   }
 

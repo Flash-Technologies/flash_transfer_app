@@ -186,7 +186,12 @@ class _TransactionScreenState extends ConsumerState<TransactionScreen>
                   ),
 
                   // Transactions List (starts immediately after filter)
-                  Expanded(child: _buildTransactionsList()),
+                  Expanded(
+                    child: SafeArea(
+                      top: false,
+                      child: _buildTransactionsList(),
+                    ),
+                  ),
                 ],
               ),
             ),

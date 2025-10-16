@@ -61,14 +61,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       body: SafeArea(
-        bottom: true, // Ensure bottom safe area is respected
+        top: false,
         child: SingleChildScrollView(
           physics: const ClampingScrollPhysics(),
             padding: EdgeInsets.only(
               left: MediaQuery.of(context).size.width * 0.04,
               right: MediaQuery.of(context).size.width * 0.04,
               top: 16,
-              bottom: 16 + MediaQuery.of(context).padding.bottom, // Add extra bottom padding for navigation bar
+              bottom: 16,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

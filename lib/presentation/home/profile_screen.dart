@@ -204,9 +204,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                   children: [
                     _buildHeader(context),
                     Expanded(
-                      child: SingleChildScrollView(
-                        physics: const ClampingScrollPhysics(),
-                        child: Column(
+                      child: SafeArea(
+                        top: false,
+                        child: SingleChildScrollView(
+                          physics: const ClampingScrollPhysics(),
+                          child: Column(
                           children: [
                             _buildProfileHeader(context, user),
                             const SizedBox(height: AppSizes.spacingSmall),
@@ -216,6 +218,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
                         ),
                       ),
                     ),
+                      ),
                   ],
                 ),
         ),

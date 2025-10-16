@@ -337,7 +337,12 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
         const SizedBox(height: 20),
 
         // Recipients List
-        Expanded(child: _buildRecipientsList()),
+        Expanded(
+          child: SafeArea(
+            top: false,
+            child: _buildRecipientsList(),
+          ),
+        ),
       ],
     );
   }
