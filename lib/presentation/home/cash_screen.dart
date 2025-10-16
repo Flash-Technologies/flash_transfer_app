@@ -778,12 +778,14 @@ class _CashScreenState extends ConsumerState<CashScreen> {
             children: [
               Opacity(
                 opacity: isEnabled ? 1.0 : 0.4,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    const SizedBox(width: 8),
+                    // Icon on the left
                     Container(
-                      height: 75,
-                      width: 75,
+                      height: 45,
+                      width: 45,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: isActive
@@ -807,29 +809,35 @@ class _CashScreenState extends ConsumerState<CashScreen> {
                         ],
                       ),
                       child: Center(
-                        child: _getLottieAnimation(value, isActive, 55),
+                        child: _getLottieAnimation(value, isActive, 60),
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: Text(
-                        title,
-                        style: TextStyle(
-                          color: isActive
-                              ? const Color(0xFF2475FF)
-                              : const Color(0xFF424242),
-                          fontWeight:
-                              isActive ? FontWeight.w700 : FontWeight.w600,
-                          fontSize: 13,
-                          letterSpacing: 0.3,
-                          height: 1.2,
-                        ),
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
+                    const SizedBox(width: 12),
+                    // Text on the right
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title.replaceAll('\n', ' '),
+                            style: TextStyle(
+                              color: isActive
+                                  ? const Color(0xFF2475FF)
+                                  : const Color(0xFF424242),
+                              fontWeight:
+                                  isActive ? FontWeight.w700 : FontWeight.w600,
+                              fontSize: 15,
+                              letterSpacing: 0.3,
+                              height: 1.2,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
                       ),
                     ),
+                    const SizedBox(width: 8),
                   ],
                 ),
               ),
