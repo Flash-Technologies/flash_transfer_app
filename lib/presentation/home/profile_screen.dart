@@ -138,17 +138,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         title: tr('profileDropdown.menu.nft'),
         onTap: () => context.push('/nft'),
       ),
-      ProfileMenuItemData(
-        icon: Icons.share_outlined,
-        title: tr('profileDropdown.menu.referFriend'),
-        onTap: () => context.push('/invite'),
-      ),
+      // ProfileMenuItemData(
+      //   icon: Icons.share_outlined,
+      //   title: tr('profileDropdown.menu.referFriend'),
+      //   onTap: () => context.push('/invite'),
+      // ),
     ];
 
     final settingsMenuItems = [
       ProfileMenuItemData(
         icon: Icons.notifications_outlined,
-        title: tr('profileDropdown.menu.settings'), // Use generic settings or add notifications key
+        title: tr('profileDropdown.menu.notifications'), // Use generic settings or add notifications key
         onTap: () => context.push('/notification'),
       ),
       ProfileMenuItemData(

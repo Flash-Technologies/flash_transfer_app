@@ -17,7 +17,21 @@
     "transactionUnavailable": "Transaction unavailable at this time",
     "unavailable": "Unavailable",
     "live": "LIVE",
-    "notProvided": "Not provided"
+    "notProvided": "Not provided",
+    "feeBreakdown": "Fee Breakdown",
+    "platformCharges": "Platform Charges",
+    "networkFee": "Network Fee",
+    "loyaltyDiscount": "Loyalty Discount",
+    "nftDiscount": "NFT Holder Discount",
+    "totalSavings": "Total Savings",
+    "cashHandlingBreakdown": "Cash Handling Breakdown",
+    "beforeHandlingCharge": "Before Handling Charge",
+    "handlingCharge": "Handling Charge",
+    "actualCashToReceive": "Actual Cash to Receive",
+    "networkCongestion": "Network Congestion",
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High"
   },
   "transactionInfoCard": {
     "labelColor": "#6A6A6A",
@@ -85,7 +99,10 @@
       "missingCryptoAddress": "Please go back and confirm your crypto address first",
       "missingExchangeData": "Missing exchange form data. Please go back to the home screen.",
       "invalidAmount": "Invalid amount. Please check your exchange form.",
-      "transactionFailed": "Failed to create transaction"
+      "transactionFailed": "Failed to create transaction",
+      "missingEstimate": "Missing estimate data. Please go back and try again.",
+      "transactionUnavailable": "This transaction is currently unavailable. Please try again later.",
+      "missingUserInfo": "Missing sender or recipient information. Please go back and complete the form."
     }
   },
   "buttons": {

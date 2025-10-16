@@ -128,15 +128,34 @@ final reviewDetailsProvider =
       );
 
     case PaymentType.cash:
+      // For crypto-to-cash (cash pickup) flow
+      final cashSenderInfo = paymentState.cashSenderInfo;
+      final cashRecipientInfo = paymentState.cashRecipientInfo;
+
+      // Create receiver from cash recipient info if available
+      final cashReceiver = cashRecipientInfo != null
+          ? User(
+              id: 0,
+              email: '',
+              firstName: cashRecipientInfo['firstName'] ?? 'Recipient',
+              lastName: cashRecipientInfo['lastName'] ?? '',
+              phoneNumber: cashRecipientInfo['phoneNumber'],
+              countryName: cashRecipientInfo['cashPickupCountry'] ?? 'Unknown',
+              profileImage: 'assets/images/profile.png',
+              isKycVerified: false,
+            )
+          : receiver;
+
       return TransactionDetails(
         sender: sender,
-        receiver: receiver,
+        receiver: cashReceiver,
         paymentDetails: PaymentDetails(
-          methodName: 'Mobile Money',
+          methodName: 'Cash Pickup',
           methodIcon: 'assets/images/omoney.png',
-          fundSource: selectedBeneficiary?.sourceOfFunds ?? 'Cash',
-          purpose: selectedBeneficiary?.purpose ?? 'Family Support',
-          phoneNumber: phoneNumber,
+          fundSource: cashSenderInfo?['sourceOfFunds'] ?? 'SAVINGS',
+          purpose: cashSenderInfo?['purposeOfTransaction'] ?? 'EDUCATION',
+          phoneNumber: cashRecipientInfo?['phoneNumber'] ?? phoneNumber,
+          networkName: paymentState.selectedNetwork?.toUpperCase(),
         ),
         sendAmount: sendAmount,
         sendCurrency: sendCurrency,
@@ -145,7 +164,7 @@ final reviewDetailsProvider =
         fee: fee,
         feeCurrency: feeCurrency,
         totalAmount: totalAmount,
-        receiverCountry: receiver.countryName ?? 'Unknown',
+        receiverCountry: cashRecipientInfo?['cashPickupCountry'] ?? receiver.countryName ?? 'Unknown',
       );
 
     case PaymentType.crypto:

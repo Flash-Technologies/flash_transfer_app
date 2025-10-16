@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flash_transfer_app/providers/payment_provider.dart';
+import 'package:flash_transfer_app/providers/exchange_provider.dart';
 import '../../providers/language_provider.dart';
 
 class CashRecipientInfoScreen extends ConsumerStatefulWidget {
@@ -45,7 +46,7 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
     super.dispose();
   }
   
-  void _handleContinue() {
+  Future<void> _handleContinue() async {
     if (_formKey.currentState!.validate()) {
       // Store recipient information in provider
       ref.read(paymentProvider.notifier).setCashRecipientInfo({
@@ -54,9 +55,69 @@ class _CashRecipientInfoScreenState extends ConsumerState<CashRecipientInfoScree
         'phoneNumber': _phoneController.text,
         'cashPickupCountry': _selectedCountry,
       });
-      
-      // Navigate to review details screen for crypto to cash
-      context.push('/review-details/cash');
+
+      // Show loading
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+
+      try {
+        // Get data from providers
+        final paymentState = ref.read(paymentProvider);
+        final exchangeForm = ref.read(exchangeFormProvider);
+        final cashSenderInfo = paymentState.cashSenderInfo;
+
+        // Prepare sender info
+        final senderInfo = {
+          'sender_phone_number': cashSenderInfo?['phoneNumber'] ?? '',
+          'sender_first_name': cashSenderInfo?['firstName'] ?? '',
+          'sender_last_name': cashSenderInfo?['lastName'] ?? '',
+          'sender_country_code_piece': cashSenderInfo?['countryCode'] ?? 'CI',
+        };
+
+        // Prepare recipient info
+        final recipientInfo = {
+          'recipient_first_name': _firstNameController.text,
+          'recipient_last_name': _lastNameController.text,
+          'recipient_phone_number': _phoneController.text,
+          'recipient_country_code': _selectedCountry ?? 'SN',
+        };
+
+        // Fetch the estimate
+        await ref.read(paymentProvider.notifier).fetchCryptoToCashEstimate(
+          amount: double.parse(exchangeForm.sendAmount),
+          sourceCurrency: exchangeForm.fromCurrency?.code ?? 'ETH',
+          destinationCurrency: exchangeForm.toCurrency?.code ?? 'XOF',
+          blockchainNetwork: paymentState.selectedNetwork ?? 'ethereum',
+          countryCode: _selectedCountry ?? 'SN',
+          senderInfo: senderInfo,
+          recipientInfo: recipientInfo,
+        );
+
+        // Close loading
+        if (mounted) Navigator.of(context).pop();
+
+        // Navigate to review details screen for crypto to cash
+        if (mounted) context.push('/review-details/cash');
+
+      } catch (e) {
+        // Close loading
+        if (mounted) Navigator.of(context).pop();
+
+        // Show error
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error: ${e.toString()}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
     }
   }
   

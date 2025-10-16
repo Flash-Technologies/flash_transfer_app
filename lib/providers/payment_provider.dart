@@ -34,6 +34,7 @@ class PaymentState {
   final String? selectedWalletAddress;
   final TransactionEstimate? estimateData;
   final TransactionResponse? transactionData;
+  final Map<String, dynamic>? cryptoToCashEstimate; // For crypto-to-cash estimate
   final PaymentStatus estimateStatus;
   final PaymentStatus transactionStatus;
   final String? errorMessage;
@@ -50,6 +51,7 @@ class PaymentState {
     this.selectedWalletAddress,
     this.estimateData,
     this.transactionData,
+    this.cryptoToCashEstimate,
     this.estimateStatus = PaymentStatus.idle,
     this.transactionStatus = PaymentStatus.idle,
     this.errorMessage,
@@ -67,6 +69,7 @@ class PaymentState {
     String? selectedWalletAddress,
     TransactionEstimate? estimateData,
     TransactionResponse? transactionData,
+    Map<String, dynamic>? cryptoToCashEstimate,
     PaymentStatus? estimateStatus,
     PaymentStatus? transactionStatus,
     String? errorMessage,
@@ -85,6 +88,7 @@ class PaymentState {
           selectedWalletAddress ?? this.selectedWalletAddress,
       estimateData: estimateData ?? this.estimateData,
       transactionData: transactionData ?? this.transactionData,
+      cryptoToCashEstimate: cryptoToCashEstimate ?? this.cryptoToCashEstimate,
       estimateStatus: estimateStatus ?? this.estimateStatus,
       transactionStatus: transactionStatus ?? this.transactionStatus,
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
@@ -412,12 +416,106 @@ class PaymentNotifier extends StateNotifier<PaymentState> {
     }
   }
 
+  /// Fetch crypto-to-cash (cash pickup) estimate
+  Future<void> fetchCryptoToCashEstimate({
+    required double amount,
+    required String sourceCurrency,
+    required String destinationCurrency,
+    required String blockchainNetwork,
+    required String countryCode,
+    required Map<String, dynamic> senderInfo,
+    required Map<String, dynamic> recipientInfo,
+  }) async {
+    try {
+      state = state.copyWith(estimateStatus: PaymentStatus.loading);
+
+      final estimate = await _transactionService.getCryptoToCashPickupEstimate(
+        amount: amount,
+        sourceCurrency: sourceCurrency,
+        destinationCurrency: destinationCurrency,
+        blockchainNetwork: blockchainNetwork,
+        countryCode: countryCode,
+        walletAddress: null,
+        beneficiaryId: null,
+        senderInfo: senderInfo,
+        recipientInfo: recipientInfo,
+      );
+
+      state = state.copyWith(
+        cryptoToCashEstimate: estimate,
+        estimateStatus: PaymentStatus.success,
+      );
+    } catch (e) {
+      print('PaymentProvider: Error fetching crypto-to-cash estimate: $e');
+      state = state.copyWith(
+        estimateStatus: PaymentStatus.error,
+        errorMessage: e.toString(),
+      );
+    }
+  }
+
   void setCashSenderInfo(Map<String, dynamic> senderInfo) {
     state = state.copyWith(cashSenderInfo: senderInfo);
   }
 
   void setCashRecipientInfo(Map<String, dynamic> recipientInfo) {
     state = state.copyWith(cashRecipientInfo: recipientInfo);
+  }
+
+  /// Create crypto-to-cash (cash pickup) transaction
+  Future<bool> createCryptoToCashPickupTransaction({
+    required double amount,
+    required String sourceCurrency,
+    required String destinationCurrency,
+    required String blockchainNetwork,
+    required String countryCode,
+    required Map<String, dynamic> senderInfo,
+    required Map<String, dynamic> recipientInfo,
+  }) async {
+    try {
+      state = state.copyWith(transactionStatus: PaymentStatus.loading);
+
+      final transactionData = await _transactionService.createCryptoToCashPickupTransaction(
+        amount: amount,
+        sourceCurrency: sourceCurrency,
+        destinationCurrency: destinationCurrency,
+        blockchainNetwork: blockchainNetwork,
+        countryCode: countryCode,
+        walletAddress: null,
+        beneficiaryId: null,
+        senderInfo: senderInfo,
+        recipientInfo: recipientInfo,
+      );
+
+      print('PaymentProvider: Crypto-to-cash pickup transaction created successfully: $transactionData');
+
+      // Parse the transaction response using fromJson
+      final transaction = TransactionResponse.fromJson(transactionData);
+
+      state = state.copyWith(
+        transactionData: transaction,
+        transactionStatus: PaymentStatus.success,
+      );
+
+      return true;
+    } catch (e) {
+      print('PaymentProvider: Error creating crypto-to-cash pickup transaction: $e');
+
+      String errorMessage = e.toString();
+      if (errorMessage.contains('503')) {
+        errorMessage = 'Service temporarily unavailable. Please try again in a few minutes.';
+      } else if (errorMessage.contains('401')) {
+        errorMessage = 'Authentication failed. Please log in again.';
+      } else if (errorMessage.contains('400')) {
+        errorMessage = 'Invalid transaction data. Please check your inputs.';
+      }
+
+      state = state.copyWith(
+        transactionStatus: PaymentStatus.error,
+        errorMessage: errorMessage,
+      );
+      return false;
+    }
   }
 
   void clearError() {

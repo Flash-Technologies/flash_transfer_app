@@ -168,8 +168,10 @@ class ReviewDetailsScreen extends ConsumerWidget {
       case PaymentType.cryptoSendMobile:
         await _handleCryptoTransactionConfirm(context, ref);
         break;
-      case PaymentType.bank:
       case PaymentType.cash:
+        await _handleCashPickupTransactionConfirm(context, ref);
+        break;
+      case PaymentType.bank:
       case PaymentType.mobile:
       case PaymentType.wallet:
         context.push('/receipt');
@@ -299,6 +301,136 @@ class ReviewDetailsScreen extends ConsumerWidget {
           backgroundColor: Colors.red,
         ),
       );
+    }
+  }
+
+  Future<void> _handleCashPickupTransactionConfirm(
+      BuildContext context, WidgetRef ref) async {
+    final paymentState = ref.read(paymentProvider);
+    final exchangeForm = ref.read(exchangeFormProvider);
+    final tr = ref.read(translationHelperProvider);
+
+    // Verify we have the required estimate data
+    if (paymentState.cryptoToCashEstimate == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(tr('review.detailsScreen.errors.missingEstimate')),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    // Check if transaction is available
+    final isAvailable = paymentState.cryptoToCashEstimate?['transactionAvailable'] ?? false;
+    if (!isAvailable) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(tr('review.detailsScreen.errors.transactionUnavailable')),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return;
+    }
+
+    try {
+      // Validate form data
+      if (exchangeForm.fromCurrency == null ||
+          exchangeForm.toCurrency == null ||
+          exchangeForm.sendAmount.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(tr('review.detailsScreen.errors.missingExchangeData')),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      final double? amount = double.tryParse(exchangeForm.sendAmount);
+      if (amount == null || amount <= 0) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(tr('review.detailsScreen.errors.invalidAmount')),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      // Get sender and recipient info
+      final cashSenderInfo = paymentState.cashSenderInfo;
+      final cashRecipientInfo = paymentState.cashRecipientInfo;
+
+      if (cashSenderInfo == null || cashRecipientInfo == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(tr('review.detailsScreen.errors.missingUserInfo')),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      // Prepare sender info for API
+      final senderInfo = {
+        'sender_phone_number': cashSenderInfo['phoneNumber'] ?? '',
+        'sender_first_name': cashSenderInfo['firstName'] ?? '',
+        'sender_last_name': cashSenderInfo['lastName'] ?? '',
+        'sender_country_code_piece': cashSenderInfo['countryCode'] ?? 'CI',
+      };
+
+      // Prepare recipient info for API
+      final recipientInfo = {
+        'recipient_first_name': cashRecipientInfo['firstName'] ?? '',
+        'recipient_last_name': cashRecipientInfo['lastName'] ?? '',
+        'recipient_phone_number': cashRecipientInfo['phoneNumber'] ?? '',
+        'recipient_country_code': cashRecipientInfo['cashPickupCountry'] ?? 'SN',
+      };
+
+      // Create the transaction
+      final success = await ref
+          .read(paymentProvider.notifier)
+          .createCryptoToCashPickupTransaction(
+            amount: amount,
+            sourceCurrency: exchangeForm.fromCurrency!.code,
+            destinationCurrency: exchangeForm.toCurrency!.code,
+            blockchainNetwork: paymentState.selectedNetwork ?? 'ethereum',
+            countryCode: cashRecipientInfo['cashPickupCountry'] ?? 'SN',
+            senderInfo: senderInfo,
+            recipientInfo: recipientInfo,
+          );
+
+      if (success) {
+        // Get the transaction ID
+        final transactionId = ref.read(paymentProvider).transactionData?.id;
+
+        // Navigate to payment completion screen with transaction ID
+        if (context.mounted) {
+          context.push('/payment-done?status=pending&transactionId=$transactionId');
+        }
+      } else {
+        // Show error message
+        final errorMessage = ref.read(paymentProvider).errorMessage;
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(errorMessage ?? tr('review.detailsScreen.errors.transactionFailed')),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      // Show generic error
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(tr('review.detailsScreen.errors.transactionFailed')),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 }

@@ -350,26 +350,26 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
   Widget _buildSortOptions() {
     final translationService = TranslationService.instance;
     final sortOptions = [
-      {
-        'key': 'recent',
-        'label': translationService.translate(
-          'recipients.sorting.recentlyAdded',
-        ),
-      },
-      {
-        'key': 'alphabetical',
-        'label': translationService.translate(
-          'recipients.sorting.alphabetical',
-        ),
-      },
-      {
-        'key': 'mostUsed',
-        'label': translationService.translate('recipients.sorting.mostUsed'),
-      },
-      {
-        'key': 'favorites',
-        'label': translationService.translate('recipients.filters.favorites'),
-      },
+      // {
+      //   'key': 'recent',
+      //   'label': translationService.translate(
+      //     'recipients.sorting.recentlyAdded',
+      //   ),
+      // },
+      // {
+      //   'key': 'alphabetical',
+      //   'label': translationService.translate(
+      //     'recipients.sorting.alphabetical',
+      //   ),
+      // },
+      // {
+      //   'key': 'mostUsed',
+      //   'label': translationService.translate('recipients.sorting.mostUsed'),
+      // },
+      // {
+      //   'key': 'favorites',
+      //   'label': translationService.translate('recipients.filters.favorites'),
+      // },
     ];
 
     return SingleChildScrollView(

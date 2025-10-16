@@ -456,4 +456,106 @@ class TransactionService {
       throw Exception('Unable to fetch transaction. Please try again later.');
     }
   }
+
+  /// Get crypto-to-cash (cash pickup) transaction estimate
+  Future<Map<String, dynamic>> getCryptoToCashPickupEstimate({
+    required double amount,
+    required String sourceCurrency,
+    required String destinationCurrency,
+    required String blockchainNetwork,
+    required String countryCode,
+    String? walletAddress,
+    int? beneficiaryId,
+    required Map<String, dynamic> senderInfo,
+    required Map<String, dynamic> recipientInfo,
+  }) async {
+    try {
+      final payload = {
+        'amount': amount,
+        'sourceCurrency': sourceCurrency,
+        'destinationCurrency': destinationCurrency,
+        'blockchainNetwork': blockchainNetwork.toLowerCase(),
+        'withdrawalMethod': 'cash_pickup',
+        'countryCode': countryCode,
+        'walletAddress': walletAddress,
+        'beneficiaryId': beneficiaryId,
+        'senderInfo': senderInfo,
+        'recipientInfo': recipientInfo,
+      };
+
+      print('🚀 TransactionService: Getting crypto-to-cash estimate with payload: $payload');
+
+      final response = await _apiClient.post(
+        Endpoints.cryptoToCashEstimate,
+        data: payload,
+      );
+
+      print('📞 TransactionService: Crypto-to-cash estimate response: ${response.statusCode}');
+      print('📦 TransactionService: Response data: ${response.data}');
+
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        return response.data['data'];
+      } else {
+        throw Exception(
+            response.data['message'] ?? 'Failed to get crypto-to-cash estimate');
+      }
+    } catch (e) {
+      print('❌ TransactionService: Error getting crypto-to-cash estimate: $e');
+      if (e is Exception) {
+        rethrow;
+      }
+      throw Exception('Failed to get crypto-to-cash estimate: ${e.toString()}');
+    }
+  }
+
+  /// Create crypto-to-cash (cash pickup) transaction
+  Future<Map<String, dynamic>> createCryptoToCashPickupTransaction({
+    required double amount,
+    required String sourceCurrency,
+    required String destinationCurrency,
+    required String blockchainNetwork,
+    required String countryCode,
+    String? walletAddress,
+    int? beneficiaryId,
+    required Map<String, dynamic> senderInfo,
+    required Map<String, dynamic> recipientInfo,
+  }) async {
+    try {
+      final payload = {
+        'amount': amount,
+        'sourceCurrency': sourceCurrency,
+        'destinationCurrency': destinationCurrency,
+        'blockchainNetwork': blockchainNetwork.toLowerCase(),
+        'withdrawalMethod': 'cash_pickup',
+        'countryCode': countryCode,
+        'walletAddress': walletAddress,
+        'beneficiaryId': beneficiaryId,
+        'senderInfo': senderInfo,
+        'recipientInfo': recipientInfo,
+      };
+
+      print('🚀 TransactionService: Creating crypto-to-cash transaction with payload: $payload');
+
+      final response = await _apiClient.post(
+        Endpoints.createCryptoToCashTransaction,
+        data: payload,
+      );
+
+      print('📞 TransactionService: Crypto-to-cash transaction response: ${response.statusCode}');
+      print('📦 TransactionService: Response data: ${response.data}');
+
+      if (response.statusCode == 200 && response.data['success'] == true) {
+        return response.data['data'];
+      } else {
+        throw Exception(
+            response.data['message'] ?? 'Failed to create crypto-to-cash transaction');
+      }
+    } catch (e) {
+      print('❌ TransactionService: Error creating crypto-to-cash transaction: $e');
+      if (e is Exception) {
+        rethrow;
+      }
+      throw Exception('Failed to create crypto-to-cash transaction: ${e.toString()}');
+    }
+  }
 }

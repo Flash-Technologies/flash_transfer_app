@@ -327,30 +327,31 @@ class _CashScreenState extends ConsumerState<CashScreen> {
 
         const SizedBox(height: 20),
 
-        // Simplified 2-option payment grid
+        // Simplified 2-option payment grid - Only show enabled options
         SizedBox(
-          height: MediaQuery.of(context).size.height * 0.22,
+          height: MediaQuery.of(context).size.height * 0.26,
           child: Row(
             children: [
-              // Crypto Wallet
-              Expanded(
-                child: _buildPaymentOption(
-                  title: ref.watch(translationHelperProvider)('payment-method.selection.cryptoWallet'),
-                  value: 'wallet',
-                  isEnabled: isSendingCrypto,
-                  isCenter: true,
+              // Crypto Wallet - Only show if enabled
+              if (isSendingCrypto)
+                Expanded(
+                  child: _buildPaymentOption(
+                    title: ref.watch(translationHelperProvider)('payment-method.selection.cryptoWallet'),
+                    value: 'wallet',
+                    isEnabled: true,
+                    isCenter: true,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 16),
-              // Mobile Money
-              Expanded(
-                child: _buildPaymentOption(
-                  title: ref.watch(translationHelperProvider)('payment-method.selection.mobileMoney'),
-                  value: 'mobile',
-                  isEnabled: !isSendingCrypto,
-                  isCenter: true,
+              // Mobile Money - Only show if enabled
+              if (!isSendingCrypto)
+                Expanded(
+                  child: _buildPaymentOption(
+                    title: ref.watch(translationHelperProvider)('payment-method.selection.mobileMoney'),
+                    value: 'mobile',
+                    isEnabled: true,
+                    isCenter: true,
+                  ),
                 ),
-              ),
             ],
           ),
         ),
@@ -457,13 +458,14 @@ class _CashScreenState extends ConsumerState<CashScreen> {
 
   Widget _buildCenterContent(
       String title, String value, bool isActive, BoxConstraints constraints) {
-    return Column(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
+        // Icon on the left
         Container(
-          height: constraints.maxHeight * 0.4,
-          width: constraints.maxHeight * 0.4,
-          constraints: const BoxConstraints(maxWidth: 80, maxHeight: 80),
+          height: constraints.maxHeight * 0.6,
+          width: constraints.maxHeight * 0.6,
+          constraints: const BoxConstraints(maxWidth: 140, maxHeight: 140),
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: isActive
@@ -473,23 +475,40 @@ class _CashScreenState extends ConsumerState<CashScreen> {
               end: Alignment.bottomRight,
             ),
             shape: BoxShape.circle,
+            boxShadow: [
+              BoxShadow(
+                color: isActive
+                    ? const Color(0xFF2475FF).withOpacity(0.3)
+                    : Colors.black.withOpacity(0.1),
+                blurRadius: isActive ? 20 : 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
           child: Center(
-            child: _getLottieAnimation(value, isActive, 60),
+            child: _getLottieAnimation(value, isActive, 100),
           ),
         ),
-        const SizedBox(height: 12),
-        FittedBox(
-          fit: BoxFit.scaleDown,
-          child: Text(
-            title,
-            style: TextStyle(
-              color:
-                  isActive ? const Color(0xFF2475FF) : const Color(0xFF424242),
-              fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
-              fontSize: 16,
-            ),
-            textAlign: TextAlign.center,
+        const SizedBox(width: 20),
+        // Text on the right
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  color: isActive
+                      ? const Color(0xFF2475FF)
+                      : const Color(0xFF424242),
+                  fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
+                  fontSize: 20,
+                  letterSpacing: 0.5,
+                  height: 1.2,
+                ),
+              ),
+            ],
           ),
         ),
       ],
@@ -663,37 +682,42 @@ class _CashScreenState extends ConsumerState<CashScreen> {
         ],
         const SizedBox(height: 20),
         
-        // Always show all 3 options with appropriate enabled/disabled states
+        // Only show enabled receiver options
         SizedBox(
-          height: MediaQuery.of(context).size.height * 0.15,
+          height: MediaQuery.of(context).size.height * 0.18,
           child: Row(
             children: [
-              // Crypto Wallet
-              Expanded(
-                child: _buildCompactReceiverOption(
-                  title: ref.watch(translationHelperProvider)('payment-method.selection.cryptoWallet').replaceAll(' ', '\n'),
-                  value: 'wallet',
-                  isEnabled: cryptoEnabled,
+              // Crypto Wallet - Only show if enabled
+              if (cryptoEnabled) ...[
+                Expanded(
+                  child: _buildCompactReceiverOption(
+                    title: ref.watch(translationHelperProvider)('payment-method.selection.cryptoWallet').replaceAll(' ', '\n'),
+                    value: 'wallet',
+                    isEnabled: true,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              // Mobile Money
-              Expanded(
-                child: _buildCompactReceiverOption(
-                  title: 'Mobile\nMoney',
-                  value: 'mobile',
-                  isEnabled: mobileEnabled,
+                const SizedBox(width: 12),
+              ],
+              // Mobile Money - Only show if enabled
+              if (mobileEnabled) ...[
+                Expanded(
+                  child: _buildCompactReceiverOption(
+                    title: 'Mobile\nMoney',
+                    value: 'mobile',
+                    isEnabled: true,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              // Cash Money
-              Expanded(
-                child: _buildCompactReceiverOption(
-                  title: ref.watch(translationHelperProvider)('payment-method.selection.cashMoney').replaceAll(' ', '\n'),
-                  value: 'cash',
-                  isEnabled: cashEnabled,
+                if (cashEnabled) const SizedBox(width: 12),
+              ],
+              // Cash Money - Only show if enabled
+              if (cashEnabled)
+                Expanded(
+                  child: _buildCompactReceiverOption(
+                    title: ref.watch(translationHelperProvider)('payment-method.selection.cashMoney').replaceAll(' ', '\n'),
+                    value: 'cash',
+                    isEnabled: true,
+                  ),
                 ),
-              ),
             ],
           ),
         ),
@@ -717,36 +741,36 @@ class _CashScreenState extends ConsumerState<CashScreen> {
                 setState(() => activeReceive = value);
               }
             : null,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeOutCubic,
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
           decoration: BoxDecoration(
             color: isEnabled
                 ? (isActive ? Colors.white : const Color(0xFFFAFAFA))
                 : Colors.grey.shade100,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(20),
             border: Border.all(
               color: isActive
                   ? const Color(0xFF2475FF)
                   : isEnabled
                       ? Colors.grey.shade200
                       : Colors.transparent,
-              width: isActive ? 2 : 1,
+              width: isActive ? 2.5 : 1,
             ),
             boxShadow: [
               if (isActive)
                 BoxShadow(
-                  color: const Color(0xFF2475FF).withOpacity(0.2),
-                  blurRadius: 12,
-                  offset: const Offset(0, 3),
+                  color: const Color(0xFF2475FF).withOpacity(0.25),
+                  blurRadius: 16,
+                  offset: const Offset(0, 4),
                 )
               else if (isEnabled)
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 6,
-                  offset: const Offset(0, 2),
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
                 ),
             ],
           ),
@@ -758,8 +782,8 @@ class _CashScreenState extends ConsumerState<CashScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      height: 45,
-                      width: 45,
+                      height: 75,
+                      width: 75,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: isActive
@@ -772,50 +796,66 @@ class _CashScreenState extends ConsumerState<CashScreen> {
                           end: Alignment.bottomRight,
                         ),
                         shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: isActive
+                                ? const Color(0xFF2475FF).withOpacity(0.2)
+                                : Colors.black.withOpacity(0.05),
+                            blurRadius: isActive ? 12 : 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
                       child: Center(
-                        child: _getLottieAnimation(value, isActive, 32),
+                        child: _getLottieAnimation(value, isActive, 55),
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      title,
-                      style: TextStyle(
-                        color: isActive
-                            ? const Color(0xFF2475FF)
-                            : const Color(0xFF424242),
-                        fontWeight:
-                            isActive ? FontWeight.w700 : FontWeight.w500,
-                        fontSize: 12,
+                    const SizedBox(height: 12),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: Text(
+                        title,
+                        style: TextStyle(
+                          color: isActive
+                              ? const Color(0xFF2475FF)
+                              : const Color(0xFF424242),
+                          fontWeight:
+                              isActive ? FontWeight.w700 : FontWeight.w600,
+                          fontSize: 13,
+                          letterSpacing: 0.3,
+                          height: 1.2,
+                        ),
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
               ),
               if (!isEnabled)
                 Positioned(
-                  top: 6,
-                  right: 6,
+                  top: 8,
+                  right: 8,
                   child: Icon(
                     Icons.lock_rounded,
-                    size: 14,
+                    size: 18,
                     color: Colors.grey.shade500,
                   ),
                 ),
               if (isActive)
                 Positioned(
-                  top: 6,
-                  right: 6,
+                  top: 8,
+                  right: 8,
                   child: Container(
-                    width: 18,
-                    height: 18,
+                    width: 22,
+                    height: 22,
                     decoration: const BoxDecoration(
                       color: Color(0xFF2475FF),
                       shape: BoxShape.circle,
                     ),
                     child:
-                        const Icon(Icons.check, color: Colors.white, size: 10),
+                        const Icon(Icons.check, color: Colors.white, size: 14),
                   ),
                 ),
             ],

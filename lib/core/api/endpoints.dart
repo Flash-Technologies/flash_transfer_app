@@ -33,9 +33,9 @@ class Endpoints {
   static const String createCashToCryptoTransaction =
       '$baseUrl/api/transaction/cash-to-crypto-mobile-money';
   static const String cryptoToCashEstimate =
-      '$baseUrl/api/transaction/estimate-crypto-to-fiat';
+      '$baseUrl/api/transaction/estimate-crypto-to-cash';
   static const String createCryptoToCashTransaction =
-      '$baseUrl/api/transaction/crypto-to-fiat';
+      '$baseUrl/api/transaction/crypto-to-cash';
 
   // wallet endpoints
   static const String walletBalance = '/api/webhooks/walletBalance';
