@@ -93,7 +93,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Text(tr('confirmation.success').replaceAll('{languageName}', language.name)),
+                  child: Text(tr('language.confirmation.success').replaceAll('{languageName}', language.name)),
                 ),
               ],
             ),
@@ -126,7 +126,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Text(tr('confirmation.error')),
+                  child: Text(tr('language.confirmation.error')),
                 ),
               ],
             ),
@@ -191,7 +191,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            tr('screen.back'),
+                            tr('language.screen.back'),
                             style: TextStyle(
                               color: Colors.grey[700],
                               fontSize: 14,
@@ -211,7 +211,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                   // Title
                   Expanded(
                     child: Text(
-                      tr('screen.title'),
+                      tr('language.screen.title'),
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: const Color(0xFF181F30),
@@ -236,7 +236,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                   children: [
                     // Search bar
                     LanguageSearchBar(
-                      hintText: tr('screen.searchPlaceholder'),
+                      hintText: tr('language.screen.searchPlaceholder'),
                       onChanged: (query) {
                         ref.read(languageProvider.notifier).searchLanguages(query);
                       },
@@ -269,7 +269,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                                   children: [
                                     const CircularProgressIndicator(),
                                     const SizedBox(height: 16),
-                                    Text(tr('confirmation.loading')),
+                                    Text(tr('language.confirmation.loading')),
                                   ],
                                 ),
                               )
@@ -285,7 +285,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                                         ),
                                         const SizedBox(height: 16),
                                         Text(
-                                          tr('errors.loadFailed'),
+                                          tr('language.errors.loadFailed'),
                                           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                             fontWeight: FontWeight.w600,
                                           ),
@@ -303,7 +303,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                                           onPressed: () {
                                             ref.read(languageProvider.notifier).clearError();
                                           },
-                                          child: Text(tr('errors.retry')),
+                                          child: Text(tr('language.errors.retry')),
                                         ),
                                       ],
                                     ),
@@ -320,7 +320,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                                             ),
                                             const SizedBox(height: 16),
                                             Text(
-                                              tr('errors.noLanguagesFound'),
+                                              tr('language.errors.noLanguagesFound'),
                                               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                                 fontWeight: FontWeight.w600,
                                                 color: Colors.grey[600],
@@ -328,7 +328,7 @@ class _LanguageScreenState extends ConsumerState<LanguageScreen>
                                             ),
                                             const SizedBox(height: 8),
                                             Text(
-                                              tr('errors.tryAdjustingSearch'),
+                                              tr('language.errors.tryAdjustingSearch'),
                                               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                                 color: Colors.grey[500],
                                               ),

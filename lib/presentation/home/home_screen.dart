@@ -53,6 +53,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
     final exchangeForm = ref.watch(exchangeFormProvider);
     final unreadCount = ref.watch(unreadNotificationCountProvider);
     // Intentionally not reading translation helper here to avoid unused local; sub-widgets watch it directly
@@ -61,7 +62,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F9FA),
       body: SafeArea(
-        top: false,
+        top: true,
         child: SingleChildScrollView(
           physics: const ClampingScrollPhysics(),
             padding: EdgeInsets.only(
@@ -74,34 +75,34 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildHeader(context, ref, unreadCount)
-                    .animate()
+                    .animate(target: isKeyboardOpen ? 1 : null)
                     .fadeIn(duration: 600.ms)
                     .slideY(begin: -0.2, end: 0, curve: Curves.easeOutCubic),
                 const SizedBox(height: 24),
                 _buildExchangeForm(context, ref, exchangeForm)
-                    .animate()
+                    .animate(target: isKeyboardOpen ? 1 : null)
                     .fadeIn(duration: 800.ms, delay: 200.ms)
                     .scale(
                         begin: const Offset(0.95, 0.95),
                         end: const Offset(1, 1)),
                 if (exchangeForm.error != null)
                   _buildErrorMessage(context, exchangeForm.error!)
-                      .animate()
+                      .animate(target: isKeyboardOpen ? 1 : null)
                       .fadeIn(duration: 300.ms)
                       .shake(duration: 500.ms, hz: 3),
                 const SizedBox(height: 16),
                 _buildContinueButton(context, ref)
-                    .animate()
+                    .animate(target: isKeyboardOpen ? 1 : null)
                     .fadeIn(duration: 600.ms, delay: 400.ms)
                     .slideY(begin: 0.2, end: 0),
                 const SizedBox(height: 24),
                 _buildExchangeInfo(context, ref, exchangeForm)
-                    .animate()
+                    .animate(target: isKeyboardOpen ? 1 : null)
                     .fadeIn(duration: 600.ms, delay: 600.ms)
                     .slideX(begin: -0.1, end: 0),
                 const SizedBox(height: 32),
                 _buildRecentTransactions(context, ref)
-                    .animate()
+                    .animate(target: isKeyboardOpen ? 1 : null)
                     .fadeIn(duration: 600.ms, delay: 800.ms),
               ],
             ),
