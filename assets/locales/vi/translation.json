@@ -24,6 +24,9 @@
       "low": "Thấp",
       "medium": "Trung bình",
       "high": "Cao"
+    },
+    "errors": {
+      "xofMinimumAmount": "Số tiền XOF phải lớn hơn 100"
     }
   },
   "currencySelector": {

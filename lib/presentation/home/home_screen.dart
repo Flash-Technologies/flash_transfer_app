@@ -56,7 +56,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
     final exchangeForm = ref.watch(exchangeFormProvider);
     final unreadCount = ref.watch(unreadNotificationCountProvider);
-    // Intentionally not reading translation helper here to avoid unused local; sub-widgets watch it directly
+    final tr = ref.watch(translationHelperProvider);
 
 
     return Scaffold(
@@ -90,6 +90,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       .animate(target: isKeyboardOpen ? 1 : null)
                       .fadeIn(duration: 300.ms)
                       .shake(duration: 500.ms, hz: 3),
+                // Show XOF minimum amount error only when user enters amount > 0 but < 100
+                if (exchangeForm.fromCurrency != null &&
+                    exchangeForm.fromCurrency!.code == 'XOF' &&
+                    exchangeForm.fromCurrency!.type.toLowerCase() == 'fiat' &&
+                    exchangeForm.sendAmount.isNotEmpty) ...[
+                  Builder(
+                    builder: (context) {
+                      final amount = double.tryParse(exchangeForm.sendAmount) ?? 0;
+                      if (amount > 0 && amount < 100) {
+                        return _buildErrorMessage(context, tr('landing.errors.xofMinimumAmount'))
+                            .animate(target: isKeyboardOpen ? 1 : null)
+                            .fadeIn(duration: 300.ms)
+                            .shake(duration: 500.ms, hz: 3);
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  ),
+                ],
                 const SizedBox(height: 16),
                 _buildContinueButton(context, ref)
                     .animate(target: isKeyboardOpen ? 1 : null)
@@ -1051,14 +1069,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     // Check if continue button should be enabled
     final sendAmount = double.tryParse(exchangeForm.sendAmount) ?? 0;
     final receiveAmount = double.tryParse(exchangeForm.receiveAmount) ?? 0;
-    
+
+    // Check XOF minimum amount validation
+    bool meetsMinimumAmount = true;
+    if (exchangeForm.fromCurrency != null &&
+        exchangeForm.fromCurrency!.code == 'XOF' &&
+        exchangeForm.fromCurrency!.type.toLowerCase() == 'fiat') {
+      meetsMinimumAmount = sendAmount >= 100;
+    }
+
     final bool isEnabled = exchangeForm.fromCurrency != null &&
         exchangeForm.toCurrency != null &&
         sendAmount > 0 &&
         receiveAmount > 0 &&
         exchangeForm.sendAmount.isNotEmpty &&
         !exchangeForm.isLoading &&
-        exchangeForm.error == null;
+        exchangeForm.error == null &&
+        meetsMinimumAmount;
 
     return Container(
       width: double.infinity,

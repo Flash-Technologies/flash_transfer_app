@@ -24,6 +24,9 @@
       "low": "Laag",
       "medium": "Gemiddeld",
       "high": "Hoog"
+    },
+    "errors": {
+      "xofMinimumAmount": "XOF-bedrag moet groter zijn dan 100"
     }
   },
   "currencySelector": {

@@ -24,6 +24,9 @@
       "low": "Baixo",
       "medium": "Médio",
       "high": "Alto"
+    },
+    "errors": {
+      "xofMinimumAmount": "O valor XOF deve ser maior que 100"
     }
   },
   "currencySelector": {

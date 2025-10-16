@@ -24,6 +24,9 @@
       "low": "कम",
       "medium": "मध्यम",
       "high": "उच्च"
+    },
+    "errors": {
+      "xofMinimumAmount": "XOF राशि 100 से अधिक होनी चाहिए"
     }
   },
   "currencySelector": {
