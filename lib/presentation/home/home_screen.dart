@@ -630,13 +630,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             color: Color(0xFFF8F9FA),
             borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
-          child: StatefulBuilder(
-            builder: (context, setState) {
-              final currenciesAsync = ref.watch(currenciesProvider);
-              final exchangeForm = ref.watch(exchangeFormProvider);
-              String searchQuery = '';
+          child: Consumer(
+            builder: (context, consumerRef, child) {
+              return StatefulBuilder(
+                builder: (context, setState) {
+                  final currenciesAsync = consumerRef.watch(currenciesProvider);
+                  final exchangeForm = consumerRef.watch(exchangeFormProvider);
+                  String searchQuery = '';
 
-              return Column(
+                  return Column(
                 children: [
                   // Handle bar
                   Container(
@@ -959,6 +961,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                   ),
                 ],
+              );
+                },
               );
             },
           ),
