@@ -42,6 +42,7 @@ class Endpoints {
   // wallet endpoints
   static const String walletBalance = '/api/webhooks/walletBalance';
   static const String walletValidation = '/api/wallet-validation/validate';
+  static const String walletConnect = '/api/wallet/connect';
 
   // NFT endpoints
   static const String userNFTs = '/api/nft/user-nfts';

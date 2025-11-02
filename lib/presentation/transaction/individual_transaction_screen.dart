@@ -368,16 +368,21 @@ class _IndividualTransactionScreenState
         return SingleChildScrollView(
           controller: _scrollController,
           physics: const ClampingScrollPhysics(),
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.only(
+            left: 16,
+            right: 16,
+            top: 16,
+            bottom: MediaQuery.of(context).padding.bottom + 140, // Add bottom padding to avoid overlap with action buttons
+          ),
           child: Column(
             children: [
               // Status Card
               _buildStatusCard(transaction),
               const SizedBox(height: 16),
-              
+
               // Payment Action Card for Pending Transactions
-              if (transaction.status.toLowerCase() == 'pending' && 
-                  (transaction.type == 'CRYPTO_TO_CASH' || 
+              if (transaction.status.toLowerCase() == 'pending' &&
+                  (transaction.type == 'CRYPTO_TO_CASH' ||
                    transaction.type == 'CRYPTO_TO_FIAT')) ...
                 [
                   _buildPaymentActionCard(transaction),

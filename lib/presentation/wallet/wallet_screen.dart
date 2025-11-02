@@ -7,6 +7,8 @@ import 'package:flash_transfer_app/providers/user_provider.dart' as user_prov;
 import 'package:flash_transfer_app/providers/auth_provider.dart';
 import 'package:flash_transfer_app/presentation/common/app_button.dart';
 import 'package:flash_transfer_app/core/api/endpoints.dart';
+import 'package:flash_transfer_app/core/services/reown_service.dart';
+import 'package:flash_transfer_app/core/services/phantom_service.dart';
 
 class WalletScreen extends ConsumerStatefulWidget {
   const WalletScreen({super.key});
@@ -28,6 +30,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen>
   Map<String, dynamic>? balanceData;
   String? walletAddress;
   bool isEVM = true;
+  bool _isConnecting = false;
 
   final Map<String, List<String>> networkTokens = {
     'ethereum': ['ETH', 'USDT', 'USDC'],
@@ -732,6 +735,160 @@ class _WalletScreenState extends ConsumerState<WalletScreen>
     );
   }
 
+  Future<void> _handleConnectWallet() async {
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    setState(() {
+      _isConnecting = true;
+    });
+
+    try {
+      // Initialize Reown if not already done
+      if (!ReownService.instance.isInitialized) {
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(content: Text('Initializing wallet connection...')),
+        );
+        await ReownService.instance.initialize(context);
+      }
+
+      // Connect wallet and get address
+      scaffoldMessenger.showSnackBar(
+        const SnackBar(content: Text('Opening wallet selection...')),
+      );
+
+      String? newWalletAddress = await ReownService.instance.connectForAuth(context: mounted ? context : null);
+
+      // If initial connection returns null, check if Phantom connected via deep link
+      if (newWalletAddress == null || newWalletAddress.isEmpty) {
+        debugPrint('Initial connection returned null, checking for Phantom connection...');
+        await Future.delayed(const Duration(seconds: 2));
+
+        // Check if wallet connected via deep link (Phantom)
+        if (ReownService.instance.isConnected) {
+          newWalletAddress = ReownService.instance.walletAddress;
+          debugPrint('Found wallet connected via deep link: $newWalletAddress');
+        }
+      }
+
+      if (newWalletAddress == null || newWalletAddress.isEmpty) {
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(
+            content: Text('Wallet connection cancelled or failed'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        setState(() {
+          _isConnecting = false;
+        });
+        return;
+      }
+
+      // Show connected address
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text('Connected: ${newWalletAddress.substring(0, 6)}...${newWalletAddress.substring(newWalletAddress.length - 4)}'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      // Update wallet address in backend
+      scaffoldMessenger.showSnackBar(
+        const SnackBar(content: Text('Updating wallet address...')),
+      );
+
+      // Detect wallet type based on connection method
+      String walletType = 'METAMASK'; // Default
+      if (PhantomService.instance.isConnected) {
+        walletType = 'PHANTOM';
+      } else if (ReownService.instance.isConnected) {
+        // Try to detect from Reown session
+        final connectedWallet = ReownService.instance.appKitModal.selectedWallet?.listing.name ?? '';
+        if (connectedWallet.toLowerCase().contains('phantom')) {
+          walletType = 'PHANTOM';
+        } else if (connectedWallet.toLowerCase().contains('metamask')) {
+          walletType = 'METAMASK';
+        } else if (connectedWallet.toLowerCase().contains('trust')) {
+          walletType = 'TRUST_WALLET';
+        } else if (connectedWallet.toLowerCase().contains('coinbase')) {
+          walletType = 'COINBASE';
+        } else {
+          walletType = 'OTHER';
+        }
+      }
+
+      debugPrint('Detected wallet type: $walletType');
+
+      // Connect wallet to existing user profile
+      final authService = ref.read(user_prov.authServiceProvider);
+      final response = await authService.connectWallet(newWalletAddress, walletType);
+
+      if (response.success && response.data != null) {
+        // Save updated user data
+        await authService.saveUserData(response.data!);
+
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(
+            content: Text('Wallet connected successfully!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+
+        // Refresh user data to get updated wallet address
+        await ref.read(user_prov.userProvider.notifier).fetchUserProfile();
+
+        // Update local state
+        setState(() {
+          walletAddress = newWalletAddress;
+          _detectWalletType();
+        });
+
+        // Fetch balance
+        _fetchBalance();
+      } else {
+        final errorMessage = response.message ?? 'Failed to connect wallet';
+
+        // Check for specific error messages
+        final isAlreadyConnected = errorMessage.toLowerCase().contains('already connected');
+
+        scaffoldMessenger.showSnackBar(
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: isAlreadyConnected ? Colors.orange : Colors.red,
+            duration: Duration(seconds: isAlreadyConnected ? 5 : 3),
+          ),
+        );
+
+        // Disconnect wallet on failure
+        await ReownService.instance.disconnect();
+      }
+    } catch (e) {
+      debugPrint('Wallet connection error: $e');
+
+      String errorMessage = 'Wallet connection error';
+      if (e.toString().contains('Context error')) {
+        errorMessage = 'Please restart the app and try again';
+      } else if (e.toString().contains('No context was found')) {
+        errorMessage = 'App needs to restart. Please close and reopen the app.';
+      } else {
+        errorMessage = 'Wallet connection failed. Please try again.';
+      }
+
+      scaffoldMessenger.showSnackBar(
+        SnackBar(
+          content: Text(errorMessage),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 4),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isConnecting = false;
+        });
+      }
+    }
+  }
+
   Widget _buildNoWalletContent(BuildContext context) {
     return Center(
       child: Padding(
@@ -761,7 +918,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen>
             ),
             const SizedBox(height: AppSizes.spacingMedium),
             Text(
-              'You haven\'t connected a wallet to your account yet. Connect a wallet to view your balances.',
+              'Connect your wallet to view balances and manage your NFTs for exclusive benefits.',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
@@ -769,15 +926,10 @@ class _WalletScreenState extends ConsumerState<WalletScreen>
             ),
             const SizedBox(height: AppSizes.spacingXLarge),
             AppButton(
-              text: 'Connect Wallet',
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Wallet connection feature coming soon'),
-                  ),
-                );
-              },
-              icon: Icons.add_circle_outline,
+              text: _isConnecting ? 'Connecting...' : 'Connect Wallet',
+              onPressed: () => _handleConnectWallet(),
+              isDisabled: _isConnecting,
+              icon: _isConnecting ? null : Icons.add_circle_outline,
             ),
           ],
         ),

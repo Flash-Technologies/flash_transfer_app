@@ -175,6 +175,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
         onTap: () => context.push('/edit-profile'),
       ),
       ProfileMenuItemData(
+        icon: Icons.account_balance_wallet_outlined,
+        title: 'My Wallet',
+        onTap: () => context.push('/wallet'),
+      ),
+      ProfileMenuItemData(
         icon: Icons.receipt_long_outlined,
         title: tr('profileDropdown.menu.myTransaction'),
         onTap: () => context.push('/transaction'),

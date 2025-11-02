@@ -434,6 +434,46 @@ class AuthService {
     }
   }
 
+  // Connect wallet address to existing user
+  Future<ApiResponse<User>> connectWallet(String walletAddress, String walletType) async {
+    try {
+      print('🔗 [AUTH_SERVICE] Connecting wallet: $walletAddress, type: $walletType');
+      final response = await _apiClient.post(
+        Endpoints.walletConnect,
+        data: {
+          'walletAddress': walletAddress,
+          'walletType': walletType,
+        },
+      );
+      print('✅ [AUTH_SERVICE] Wallet connection response: ${response.data}');
+
+      return ApiResponse<User>.fromJson(
+        response.data,
+        (json) => User.fromJson(json),
+      );
+    } on DioException catch (e) {
+      print('❌ [AUTH_SERVICE] DioException during wallet connection: ${e.type}');
+      print('❌ [AUTH_SERVICE] DioException message: ${e.message}');
+      print('❌ [AUTH_SERVICE] DioException response: ${e.response?.data}');
+
+      if (e.response?.data is Map<String, dynamic>) {
+        final responseData = e.response!.data as Map<String, dynamic>;
+        if (responseData.containsKey('success')) {
+          // Return the error response from API (e.g., "wallet already connected")
+          return ApiResponse<User>(
+            success: responseData['success'] ?? false,
+            message: responseData['message'] ?? 'Failed to connect wallet',
+            data: null,
+          );
+        }
+      }
+      return ApiResponse<User>(success: false, message: e.toString());
+    } catch (e) {
+      print('❌ [AUTH_SERVICE] General exception during wallet connection: $e');
+      return ApiResponse<User>(success: false, message: e.toString());
+    }
+  }
+
   // Check if user is logged in
   Future<bool> isLoggedIn() async {
     print("🔑 [AUTH_SERVICE] Checking if user is logged in");

@@ -419,10 +419,10 @@ class _NFTScreenState extends ConsumerState<NFTScreen> with TickerProviderStateM
           ),
           const SizedBox(height: 24),
           ElevatedButton.icon(
-            onPressed: isNoWalletError 
+            onPressed: isNoWalletError
                 ? () {
-                    // Navigate to wallet connection or show wallet connection modal
-                    context.push('/profile'); // Assuming profile has wallet connection
+                    // Navigate to wallet screen for wallet connection
+                    context.push('/wallet');
                   }
                 : _loadNFTs,
             icon: Icon(

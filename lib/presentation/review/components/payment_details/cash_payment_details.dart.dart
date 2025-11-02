@@ -31,13 +31,16 @@ class CashPaymentDetails extends ConsumerWidget {
         // Sender Details Section
         _buildSenderSection(senderInfo, exchangeForm, tr),
         const SizedBox(height: 16),
-        
+
         // Receiver Details Section
         _buildReceiverSection(recipientInfo, exchangeForm, tr, estimateData),
         const SizedBox(height: 16),
-        
+
         // Transaction Details Section
         _buildTransactionSection(tr, estimateData),
+
+        // Add bottom padding to prevent overlap with navigation buttons
+        SizedBox(height: MediaQuery.of(context).padding.bottom + 100),
       ],
     );
   }

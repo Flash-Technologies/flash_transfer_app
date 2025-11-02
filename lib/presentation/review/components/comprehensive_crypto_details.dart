@@ -35,26 +35,29 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
       children: [
         // Sender Details Section
         _buildSenderDetailsSection(userState.user, mobileMoneyDetails, tr),
-        
+
         const SizedBox(height: 16),
-        
+
         // Mobile Money Provider Details
         _buildMobileProviderSection(mobileMoneyDetails, tr),
-        
+
         const SizedBox(height: 16),
-        
-        // Receiver Details Section  
+
+        // Receiver Details Section
         _buildReceiverDetailsSection(paymentState, tr),
-        
+
         const SizedBox(height: 16),
-        
+
         // Fee Breakdown Section
         _buildFeeBreakdownSection(estimateData, exchangeForm, tr),
-        
+
         const SizedBox(height: 16),
-        
+
         // Amount Summary Section
         _buildAmountSummarySection(estimateData, exchangeForm, tr),
+
+        // Add bottom padding to prevent overlap with navigation buttons
+        SizedBox(height: MediaQuery.of(context).padding.bottom + 100),
       ],
     );
   }

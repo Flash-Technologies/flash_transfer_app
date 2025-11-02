@@ -648,26 +648,27 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             color: Color(0xFFF8F9FA),
             borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
           ),
-          child: Consumer(
-            builder: (context, consumerRef, child) {
-              return StatefulBuilder(
-                builder: (context, setState) {
-                  final currenciesAsync = consumerRef.watch(currenciesProvider);
-                  final exchangeForm = consumerRef.watch(exchangeFormProvider);
-                  String searchQuery = '';
+          child: SafeArea(
+            child: Consumer(
+              builder: (context, consumerRef, child) {
+                return StatefulBuilder(
+                  builder: (context, setState) {
+                    final currenciesAsync = consumerRef.watch(currenciesProvider);
+                    final exchangeForm = consumerRef.watch(exchangeFormProvider);
+                    String searchQuery = '';
 
-                  return Column(
-                children: [
-                  // Handle bar
-                  Container(
-                    margin: const EdgeInsets.only(top: 12),
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(2),
+                    return Column(
+                  children: [
+                    // Handle bar
+                    Container(
+                      margin: const EdgeInsets.only(top: 12),
+                      width: 40,
+                      height: 4,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(2),
+                      ),
                     ),
-                  ),
 
                   Padding(
                     padding: const EdgeInsets.all(20.0),
@@ -807,7 +808,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         }).toList();
 
                         return ListView.builder(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          padding: EdgeInsets.only(
+                            left: 20,
+                            right: 20,
+                            bottom: MediaQuery.of(context).padding.bottom + 80, // Add bottom padding to prevent overlap
+                          ),
                           physics: const ClampingScrollPhysics(),
                           itemCount: filteredCurrencies.length,
                           itemBuilder: (context, index) {
@@ -980,9 +985,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 ],
               );
-                },
-              );
-            },
+                  },
+                );
+              },
+            ),
           ),
         );
       },
