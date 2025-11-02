@@ -25,6 +25,9 @@ import '../presentation/auth/sign_up_screen.dart';
 import '../presentation/auth/set_identity_screen.dart';
 import '../presentation/auth/verification_screen.dart';
 import '../presentation/auth/success_screen.dart';
+import '../presentation/auth/forgot_password_screen.dart';
+import '../presentation/auth/forgot_password_otp_screen.dart';
+import '../presentation/auth/reset_password_screen.dart';
 import '../presentation/home/home_screen.dart';
 import '../providers/auth_provider.dart';
 import 'package:flash_transfer_app/presentation/home/profile_screen.dart';
@@ -116,6 +119,29 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/sign-up',
         builder: (context, state) => const SignUpScreen(),
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) => const ForgotPasswordScreen(),
+      ),
+      GoRoute(
+        path: '/forgot-password-otp',
+        builder: (context, state) {
+          final params = state.extra as Map<String, dynamic>?;
+          return ForgotPasswordOTPScreen(
+            email: params?['email'] ?? '',
+          );
+        },
+      ),
+      GoRoute(
+        path: '/reset-password',
+        builder: (context, state) {
+          final params = state.extra as Map<String, dynamic>?;
+          return ResetPasswordScreen(
+            email: params?['email'] ?? '',
+            otp: params?['otp'] ?? '',
+          );
+        },
       ),
       GoRoute(
         path: '/set-identity',

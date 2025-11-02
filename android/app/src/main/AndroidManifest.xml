@@ -12,7 +12,8 @@
         android:label="Flash Transfer"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:enableOnBackInvokedCallback="true">
+        android:enableOnBackInvokedCallback="true"
+        android:usesCleartextTraffic="true">
         
         <!-- Facebook login config -->
         <meta-data
@@ -149,6 +150,8 @@
         <package android:name="com.facebook.orca" />
         
         <!-- Wallet packages for enhanced detection -->
+        <package android:name="com.flashwallet.production" />
+        <package android:name="com.lfwallet.app" />
         <package android:name="io.metamask" />
         <package android:name="com.wallet.crypto.trustapp" />
         <package android:name="app.phantom" />
@@ -168,6 +171,10 @@
         <package android:name="com.exodus" />
         
         <!-- URL scheme queries for wallet detection -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="flashwallet" />
+        </intent>
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <data android:scheme="metamask" />
@@ -203,6 +210,10 @@
             <action android:name="android.intent.action.VIEW" />
             <category android:name="android.intent.category.BROWSABLE" />
             <data android:scheme="http" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="flashwallet" />
         </intent>
         <intent>
             <action android:name="android.intent.action.VIEW" />

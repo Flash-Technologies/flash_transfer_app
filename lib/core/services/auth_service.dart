@@ -89,6 +89,66 @@ class AuthService {
     }
   }
 
+  // Forgot password - Request OTP
+  Future<ApiResponse<dynamic>> forgotPassword(String email) async {
+    try {
+      print('🔑 [AUTH_SERVICE] Requesting password reset OTP for: $email');
+      final response = await _apiClient.post(
+        Endpoints.forgotPassword,
+        data: {'email': email},
+      );
+      print('✅ [AUTH_SERVICE] Forgot password response: ${response.data}');
+
+      return ApiResponse<dynamic>.fromJson(response.data, (json) => json);
+    } on DioException catch (e) {
+      print('❌ [AUTH_SERVICE] Forgot password error: ${e.response?.data}');
+      if (e.response?.data is Map<String, dynamic>) {
+        return ApiResponse<dynamic>.fromJson(
+          e.response!.data as Map<String, dynamic>,
+          (json) => json,
+        );
+      }
+      return ApiResponse<dynamic>(success: false, message: e.toString());
+    } catch (e) {
+      print('❌ [AUTH_SERVICE] Forgot password exception: $e');
+      return ApiResponse<dynamic>(success: false, message: e.toString());
+    }
+  }
+
+  // Reset password with OTP
+  Future<ApiResponse<dynamic>> resetPassword({
+    required String email,
+    required String resetToken,
+    required String newPassword,
+  }) async {
+    try {
+      print('🔑 [AUTH_SERVICE] Resetting password for: $email');
+      final response = await _apiClient.post(
+        Endpoints.resetPassword,
+        data: {
+          'email': email,
+          'resetToken': resetToken,
+          'newPassword': newPassword,
+        },
+      );
+      print('✅ [AUTH_SERVICE] Reset password response: ${response.data}');
+
+      return ApiResponse<dynamic>.fromJson(response.data, (json) => json);
+    } on DioException catch (e) {
+      print('❌ [AUTH_SERVICE] Reset password error: ${e.response?.data}');
+      if (e.response?.data is Map<String, dynamic>) {
+        return ApiResponse<dynamic>.fromJson(
+          e.response!.data as Map<String, dynamic>,
+          (json) => json,
+        );
+      }
+      return ApiResponse<dynamic>(success: false, message: e.toString());
+    } catch (e) {
+      print('❌ [AUTH_SERVICE] Reset password exception: $e');
+      return ApiResponse<dynamic>(success: false, message: e.toString());
+    }
+  }
+
   // Authenticate with Google
   Future<ApiResponse<User>> authenticateWithGoogle(
     SocialAuthRequest request,

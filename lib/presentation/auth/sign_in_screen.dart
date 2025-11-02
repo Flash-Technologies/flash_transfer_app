@@ -26,6 +26,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   final _passwordController = TextEditingController();
   final _googleSignIn = googleSignIn;
   bool _isLoading = false;
+  bool _obscurePassword = true;
   String? _userCountry;
 
   @override
@@ -378,6 +379,10 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           AppleIDAuthorizationScopes.email,
           AppleIDAuthorizationScopes.fullName,
         ],
+        webAuthenticationOptions: WebAuthenticationOptions(
+          clientId: 'com.flashTransfer.new.auth',
+          redirectUri: Uri.parse('https://flash.closedsource.in/signin'),
+        ),
       );
 
       // Get the ID token from the credential
@@ -469,41 +474,8 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   }
 
   void _handleForgotPassword() {
-    if (_emailController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter your email address first')),
-      );
-      return;
-    }
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Forgot Password'),
-        content: const Text(
-          'We will send a password reset link to your email address.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-
-              // In a real app, you would call an API to send a reset link
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Reset link sent to your email'),
-                ),
-              );
-            },
-            child: const Text('Send Reset Link'),
-          ),
-        ],
-      ),
-    );
+    // Navigate to forgot password screen
+    context.push('/forgot-password');
   }
 
   @override
@@ -604,7 +576,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     const SizedBox(height: 8),
                     TextField(
                       controller: _passwordController,
-                      obscureText: true,
+                      obscureText: _obscurePassword,
                       decoration: InputDecoration(
                         hintText: tr('auth.signIn.password'),
                         hintStyle: const TextStyle(
@@ -625,6 +597,19 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                           ),
                         ),
                         contentPadding: const EdgeInsets.all(16),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: const Color(0xFF6E757D),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                        ),
                       ),
                     ),
                   ],

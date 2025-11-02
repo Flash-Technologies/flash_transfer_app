@@ -43,7 +43,7 @@ class SocialLoginButtons extends ConsumerWidget {
           children: [
             _buildSocialButton(
               icon: Image.asset(
-                'assets/images/google.png',
+                'assets/icons/googleLogin.png',
                 width: 24,
                 height: 24,
                 errorBuilder: (_, __, ___) => const Icon(
@@ -73,7 +73,7 @@ class SocialLoginButtons extends ConsumerWidget {
             ),
             _buildSocialButton(
               icon: Image.asset(
-                'assets/images/apple.png',
+                'assets/icons/appleLogin.png',
                 width: 24,
                 height: 24,
                 errorBuilder: (_, __, ___) =>

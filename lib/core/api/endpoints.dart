@@ -12,6 +12,8 @@ class Endpoints {
   static const String facebookAuth = '/api/user/authenticate-facebook';
   static const String appleAuth = '/api/user/authenticate-apple';
   static const String walletAuth = '/api/user/authenticate-wallet';
+  static const String forgotPassword = '/api/user/forgot-password';
+  static const String resetPassword = '/api/user/reset-password';
 
   // currency endpoints
   static const String exchangeRates = '$baseUrl/api/exchange/rates';

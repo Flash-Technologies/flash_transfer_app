@@ -117,129 +117,9 @@ class _NFTScreenState extends ConsumerState<NFTScreen> with TickerProviderStateM
       });
     }
   }
-  
-  // Sample NFT data for fallback
-  List<NFTModel> get _sampleNFTs => [
-    const NFTModel(
-      tokenId: "0x001",
-      contractAddress: "0xb858041a2f4e5ff2772cd55774d784fdcddae88a",
-      blockchain: Blockchain.polygon,
-      name: "Flash Bronze Pass",
-      description:
-          "Entry-level membership providing basic transaction fee discounts for Flash Transfer users.",
-      imageUrl:
-          "https://via.placeholder.com/300x400/9CA3AF/FFFFFF?text=Bronze+Pass",
-      rarity: NFTRarity.common,
-      discountRate: 2.5,
-      rankBoost: 10,
-      isEligible: true,
-      attributes: [
-        NFTAttribute(traitType: "Tier", value: "Bronze"),
-        NFTAttribute(traitType: "Discount", value: "2.5%"),
-        NFTAttribute(traitType: "Rank Boost", value: 10),
-      ],
-    ),
-    const NFTModel(
-      tokenId: "0x002",
-      contractAddress: "0xb858041a2f4e5ff2772cd55774d784fdcddae88a",
-      blockchain: Blockchain.ethereum,
-      name: "Flash Silver Membership",
-      description:
-          "Premium membership offering enhanced benefits and priority support for dedicated users.",
-      imageUrl:
-          "https://via.placeholder.com/300x450/6B7280/FFFFFF?text=Silver+Member",
-      rarity: NFTRarity.uncommon,
-      discountRate: 5.0,
-      rankBoost: 25,
-      isEligible: true,
-      attributes: [
-        NFTAttribute(traitType: "Tier", value: "Silver"),
-        NFTAttribute(traitType: "Discount", value: "5.0%"),
-        NFTAttribute(traitType: "Rank Boost", value: 25),
-      ],
-    ),
-    const NFTModel(
-      tokenId: "0x003",
-      contractAddress: "0xb858041a2f4e5ff2772cd55774d784fdcddae88a",
-      blockchain: Blockchain.ethereum,
-      name: "Flash Gold Elite",
-      description:
-          "Elite tier membership with substantial discounts and exclusive access to new features.",
-      imageUrl:
-          "https://via.placeholder.com/300x380/F59E0B/FFFFFF?text=Gold+Elite",
-      rarity: NFTRarity.rare,
-      discountRate: 10.0,
-      rankBoost: 50,
-      isEligible: true,
-      attributes: [
-        NFTAttribute(traitType: "Tier", value: "Gold"),
-        NFTAttribute(traitType: "Discount", value: "10.0%"),
-        NFTAttribute(traitType: "Rank Boost", value: 50),
-      ],
-    ),
-    const NFTModel(
-      tokenId: "0x004",
-      contractAddress: "0xb858041a2f4e5ff2772cd55774d784fdcddae88a",
-      blockchain: Blockchain.arbitrum,
-      name: "Flash Diamond VIP",
-      description:
-          "Ultimate VIP experience with maximum benefits and personalized service.",
-      imageUrl:
-          "https://via.placeholder.com/300x420/8B5CF6/FFFFFF?text=Diamond+VIP",
-      rarity: NFTRarity.epic,
-      discountRate: 15.0,
-      rankBoost: 100,
-      isEligible: true,
-      attributes: [
-        NFTAttribute(traitType: "Tier", value: "Diamond"),
-        NFTAttribute(traitType: "Discount", value: "15.0%"),
-        NFTAttribute(traitType: "Rank Boost", value: 100),
-      ],
-    ),
-    const NFTModel(
-      tokenId: "0x005",
-      contractAddress: "0xb858041a2f4e5ff2772cd55774d784fdcddae88a",
-      blockchain: Blockchain.ethereum,
-      name: "Flash Founding Member",
-      description:
-          "Exclusive founding member NFT with legendary status and unmatched privileges.",
-      imageUrl:
-          "https://via.placeholder.com/300x500/EF4444/FFFFFF?text=Founding+Member",
-      rarity: NFTRarity.legendary,
-      discountRate: 25.0,
-      rankBoost: 250,
-      isEligible: true,
-      attributes: [
-        NFTAttribute(traitType: "Tier", value: "Founder"),
-        NFTAttribute(traitType: "Discount", value: "25.0%"),
-        NFTAttribute(traitType: "Rank Boost", value: 250),
-        NFTAttribute(traitType: "Limited Edition", value: "Yes"),
-      ],
-    ),
-    const NFTModel(
-      tokenId: "0x006",
-      contractAddress: "0xb858041a2f4e5ff2772cd55774d784fdcddae88a",
-      blockchain: Blockchain.polygon,
-      name: "Flash Community Badge",
-      description:
-          "Community recognition badge for active participants in the Flash ecosystem.",
-      imageUrl:
-          "https://via.placeholder.com/300x350/10B981/FFFFFF?text=Community+Badge",
-      rarity: NFTRarity.common,
-      discountRate: 1.0,
-      rankBoost: 5,
-      isEligible: false,
-      attributes: [
-        NFTAttribute(traitType: "Type", value: "Community"),
-        NFTAttribute(traitType: "Discount", value: "1.0%"),
-        NFTAttribute(traitType: "Participation", value: "Active"),
-      ],
-    ),
-  ];
 
   List<NFTModel> get _filteredNFTs {
-    final nfts = _allNFTs.isEmpty ? _sampleNFTs : _allNFTs;
-    return nfts.where((nft) {
+    return _allNFTs.where((nft) {
       if (_selectedRarity != null && nft.rarity != _selectedRarity) {
         return false;
       }
@@ -380,12 +260,11 @@ class _NFTScreenState extends ConsumerState<NFTScreen> with TickerProviderStateM
 
   Widget _buildCollectionStats() {
     double totalDiscount = 0;
-    
+
     if (_discountSummary != null) {
       totalDiscount = _discountSummary!.currentStackedDiscount;
     } else {
-      final nfts = _allNFTs.isEmpty ? _sampleNFTs : _allNFTs;
-      totalDiscount = nfts
+      totalDiscount = _allNFTs
           .where((nft) => nft.isEligible)
           .map((nft) => nft.discountRate)
           .fold<double>(0, (sum, rate) => sum + rate);

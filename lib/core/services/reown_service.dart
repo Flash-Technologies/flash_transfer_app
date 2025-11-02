@@ -9,6 +9,11 @@ class ReownService {
   
   // Project ID from Reown Dashboard
   static const String projectId = '7494d2d07a2996f0956dfb33e43ff98a';
+
+  // Flash Wallet ID from WalletConnect Explorer
+  // Official Flash Wallet: https://flash-wallet.com/
+  // Package: com.flashwallet.production (official) or com.lfwallet.app (legacy)
+  static const String flashWalletId = 'c18e114130f221c8960e75bfa4b86478e70e27465e2d6b22ac8945c08a031a7e';
   
   ReownService._();
   
@@ -72,18 +77,11 @@ class ReownService {
         ),
         siweConfig: null,
         enableAnalytics: true,
-        featuredWalletIds: {
-          'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // MetaMask
-          '4622a2b2d6af1c9844944291e5e7351a6aa24cd7b23099efac1b2fd875da31a0', // Trust Wallet
-          'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase Wallet
-        },
-        includedWalletIds: {
-          'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // MetaMask
-          '4622a2b2d6af1c9844944291e5e7351a6aa24cd7b23099efac1b2fd875da31a0', // Trust Wallet
-          'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase Wallet
-          '1ae92b26df02f0abca6304df07debccd18262fdf5fe82daa81593582dac9a369', // Rainbow
-          // 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393', // Phantom - HIDDEN due to auth issues
-        },
+        // IMPORTANT: Not using featuredWalletIds because Flash Wallet (com.lfwallet.app)
+        // is not registered in WalletConnect Explorer. It will appear in "All Wallets"
+        // automatically since it's installed on the device.
+        // To make it appear at top, the wallet needs to be registered at:
+        // https://cloud.reown.com/explorer with package name com.lfwallet.app
       );
       
       await _appKitModal!.init();
@@ -123,32 +121,35 @@ class ReownService {
         // Configure supported chains
         siweConfig: null, // We'll add SIWE later if needed
         enableAnalytics: true,
-        featuredWalletIds: {
-          'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // MetaMask
-          '4622a2b2d6af1c9844944291e5e7351a6aa24cd7b23099efac1b2fd875da31a0', // Trust Wallet
-          'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase Wallet
-        },
-        includedWalletIds: {
-          'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // MetaMask
-          '4622a2b2d6af1c9844944291e5e7351a6aa24cd7b23099efac1b2fd875da31a0', // Trust Wallet
-          'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase Wallet
-          '1ae92b26df02f0abca6304df07debccd18262fdf5fe82daa81593582dac9a369', // Rainbow
-          // 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393', // Phantom - HIDDEN due to auth issues
-        },
+        // IMPORTANT: Not using featuredWalletIds because Flash Wallet (com.lfwallet.app)
+        // is not registered in WalletConnect Explorer. It will appear in "All Wallets"
+        // automatically since it's installed on the device.
+        // To make it appear at top, the wallet needs to be registered at:
+        // https://cloud.reown.com/explorer with package name com.lfwallet.app
       );
       
       await _appKitModal!.init();
-      
+
       // Setup listeners
       _setupEventListeners();
-      
+
       // Set preferred network if provided
       if (preferredChainId != null) {
         await setSelectedNetwork(preferredChainId);
       }
-      
+
       print('ReownAppKitModal initialized successfully');
       print('Is connected: ${_appKitModal!.isConnected}');
+      print('🔥 Featured Wallets Configuration:');
+      print('  Flash Wallet ID: $flashWalletId');
+      print('  Flash Wallet Name: Flash Wallet');
+      print('  Flash Wallet Package: com.flashwallet.production or com.lfwallet.app');
+      print('  Flash Wallet URL Scheme: flashwallet://');
+      print('');
+      print('📱 If Flash Wallet does NOT appear, check:');
+      print('  1. Is Flash Wallet installed on your device?');
+      print('  2. Does the wallet ID match your Flash Wallet version?');
+      print('  3. Check WalletConnect Explorer for the correct ID');
       
     } catch (e) {
       print('Error initializing ReownAppKitModal: $e');

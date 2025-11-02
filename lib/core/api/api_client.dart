@@ -9,8 +9,8 @@ class ApiClient {
 
   ApiClient({required this.baseUrl}) {
     _dio.options.baseUrl = baseUrl;
-    _dio.options.connectTimeout = const Duration(seconds: 15);
-    _dio.options.receiveTimeout = const Duration(seconds: 15);
+    _dio.options.connectTimeout = const Duration(seconds: 30);
+    _dio.options.receiveTimeout = const Duration(seconds: 30);
     _dio.options.responseType = ResponseType.json;
 
     // Add auth interceptor to handle token issues
