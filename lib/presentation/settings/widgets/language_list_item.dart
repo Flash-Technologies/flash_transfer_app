@@ -112,8 +112,11 @@ class _LanguageListItemState extends State<LanguageListItem>
                       borderRadius: BorderRadius.circular(4),
                       child: Image.asset(
                         widget.language.flagAsset,
+                        width: 32,
+                        height: 24,
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
+                          debugPrint('Failed to load flag: ${widget.language.flagAsset}, Error: $error');
                           return Container(
                             color: Colors.grey[300],
                             child: Icon(

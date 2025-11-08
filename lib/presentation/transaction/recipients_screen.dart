@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../core/services/translation_service.dart';
 import '../../core/models/beneficiary.dart';
 import '../../providers/beneficiary_provider.dart';
@@ -295,16 +296,16 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
     return Column(
       children: [
         // Promotional Banner
-        PromoBannerWidget(
-          onTap: () {
-            HapticFeedback.lightImpact();
-            // Navigate to referral program
-          },
-        ).animate().slideX(
-          begin: -1,
-          duration: const Duration(milliseconds: 800),
-          curve: Curves.easeOutBack,
-        ),
+        // PromoBannerWidget(
+        //   onTap: () {
+        //     HapticFeedback.lightImpact();
+        //     // Navigate to referral program
+        //   },
+        // ).animate().slideX(
+        //   begin: -1,
+        //   duration: const Duration(milliseconds: 800),
+        //   curve: Curves.easeOutBack,
+        // ),
 
         const SizedBox(height: 20),
 
@@ -679,25 +680,25 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
           ),
 
           // Send button
-          ElevatedButton(
-            onPressed: () => _onSendMoney(beneficiary),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF2475FF),
-              foregroundColor: Colors.white,
-              elevation: 0,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            child: const Text(
-              'Send',
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
+        ElevatedButton(
+          onPressed: () => _onSendMoney(beneficiary),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF2475FF),
+            foregroundColor: Colors.white,
+            elevation: 0,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
             ),
           ),
+          child: const Text(
+            'Send',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
         ],
       ),
     )
@@ -799,14 +800,50 @@ class _RecipientsScreenState extends ConsumerState<RecipientsScreen>
     );
   }
 
-  void _onSendMoney(Beneficiary beneficiary) {
+  void _onSendMoney(Beneficiary beneficiary) async {
     HapticFeedback.mediumImpact();
-    // Navigate to send money flow
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Send money to ${beneficiary.displayName}'),
-        backgroundColor: const Color(0xFF2475FF),
-      ),
-    );
+
+    try {
+      // Share the app with a personalized message
+      final shareMessage = '''
+🚀 Hey! I'm using Flash Transfer to send money to ${beneficiary.displayName} instantly!
+
+💸 Send crypto & fiat across borders with ease
+⚡ Lightning-fast transfers
+🔒 100% secure & trusted
+
+Join me on Flash Transfer:
+https://flash-transfer.com/
+
+Download the app and start sending money today!
+''';
+
+      await Share.share(
+        shareMessage,
+        subject: 'Check out Flash Transfer!',
+      );
+
+      // Show success feedback
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Share successful!'),
+            backgroundColor: Color(0xFF2475FF),
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (e) {
+      // Handle share error
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Could not share: ${e.toString()}'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
+    }
   }
 }

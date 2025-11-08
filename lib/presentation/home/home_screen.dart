@@ -759,39 +759,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         // Apply fiat/crypto validation
                         List<Currency> availableCurrencies = currencies;
 
-                        if (!isFromCurrency) {
+                        // Only filter the "to" currency (second selector) based on "from" currency type
+                        // The "from" currency (first selector) should always show all currencies
+                        if (!isFromCurrency && exchangeForm.fromCurrency != null) {
                           // If selecting "to" currency, filter based on "from" currency type
-                          if (exchangeForm.fromCurrency != null) {
-                            final fromCurrencyType =
-                                exchangeForm.fromCurrency!.type.toLowerCase();
-                            availableCurrencies = currencies.where((currency) {
-                              final currencyType = currency.type.toLowerCase();
-                              // If from is fiat, to must be crypto and vice versa
-                              if (fromCurrencyType == 'fiat') {
-                                return currencyType == 'crypto';
-                              } else if (fromCurrencyType == 'crypto') {
-                                return currencyType == 'fiat';
-                              }
-                              return true;
-                            }).toList();
-                          }
-                        } else {
-                          // If selecting "from" currency, filter based on "to" currency type
-                          if (exchangeForm.toCurrency != null) {
-                            final toCurrencyType =
-                                exchangeForm.toCurrency!.type.toLowerCase();
-                            availableCurrencies = currencies.where((currency) {
-                              final currencyType = currency.type.toLowerCase();
-                              // If to is fiat, from must be crypto and vice versa
-                              if (toCurrencyType == 'fiat') {
-                                return currencyType == 'crypto';
-                              } else if (toCurrencyType == 'crypto') {
-                                return currencyType == 'fiat';
-                              }
-                              return true;
-                            }).toList();
-                          }
+                          final fromCurrencyType =
+                              exchangeForm.fromCurrency!.type.toLowerCase();
+                          availableCurrencies = currencies.where((currency) {
+                            final currencyType = currency.type.toLowerCase();
+                            // If from is fiat, to must be crypto and vice versa
+                            if (fromCurrencyType == 'fiat') {
+                              return currencyType == 'crypto';
+                            } else if (fromCurrencyType == 'crypto') {
+                              return currencyType == 'fiat';
+                            }
+                            return true;
+                          }).toList();
                         }
+                        // For "from" currency (isFromCurrency == true), show all currencies
 
                         final filteredCurrencies =
                             availableCurrencies.where((currency) {

@@ -36,22 +36,22 @@ class _ComprehensiveCryptoDetailsState extends ConsumerState<ComprehensiveCrypto
         // Sender Details Section
         _buildSenderDetailsSection(userState.user, mobileMoneyDetails, tr),
 
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
 
         // Mobile Money Provider Details
         _buildMobileProviderSection(mobileMoneyDetails, tr),
 
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
 
         // Receiver Details Section
         _buildReceiverDetailsSection(paymentState, tr),
 
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
 
         // Fee Breakdown Section
         _buildFeeBreakdownSection(estimateData, exchangeForm, tr),
 
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
 
         // Amount Summary Section
         _buildAmountSummarySection(estimateData, exchangeForm, tr),

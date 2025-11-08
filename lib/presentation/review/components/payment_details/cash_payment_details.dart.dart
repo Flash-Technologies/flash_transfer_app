@@ -30,11 +30,11 @@ class CashPaymentDetails extends ConsumerWidget {
       children: [
         // Sender Details Section
         _buildSenderSection(senderInfo, exchangeForm, tr),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
 
         // Receiver Details Section
         _buildReceiverSection(recipientInfo, exchangeForm, tr, estimateData),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
 
         // Transaction Details Section
         _buildTransactionSection(tr, estimateData),

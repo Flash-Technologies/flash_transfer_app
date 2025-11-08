@@ -230,8 +230,11 @@ class _LanguageConfirmationDialogState extends State<LanguageConfirmationDialog>
                                       borderRadius: BorderRadius.circular(4),
                                       child: Image.asset(
                                         widget.language.flagAsset,
+                                        width: 32,
+                                        height: 24,
                                         fit: BoxFit.cover,
                                         errorBuilder: (context, error, stackTrace) {
+                                          debugPrint('Failed to load flag: ${widget.language.flagAsset}, Error: $error');
                                           return Icon(
                                             Icons.flag_outlined,
                                             size: 16,

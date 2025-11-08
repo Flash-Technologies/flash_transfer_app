@@ -227,6 +227,7 @@
       "amountToSend": "Amount to send",
       "transferFee": "Transfer Fee",
       "totalCost": "Total Cost",
+      "totalToPay": "Total to pay",
       "totalToRecipient": "Total to recipient",
       "exchangeRate": "Exchange Rate",
       "networkCongestion": "Network Congestion",

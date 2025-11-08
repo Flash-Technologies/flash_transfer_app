@@ -419,7 +419,12 @@ class _TransactionDetailsScreenState
           // Content
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
+              // padding: EdgeInsets.only(
+              //   left: 20,
+              //   right: 20,
+              //   top: 20,
+              //   bottom: MediaQuery.of(context).padding.bottom + 100,
+              // ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [

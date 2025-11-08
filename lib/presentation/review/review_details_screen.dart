@@ -50,7 +50,7 @@ class ReviewDetailsScreen extends ConsumerWidget {
               child: SingleChildScrollView(
                 physics: const ClampingScrollPhysics(),
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -60,7 +60,7 @@ class ReviewDetailsScreen extends ConsumerWidget {
                           .fadeIn(duration: 400.ms)
                           .slideY(begin: 0.1, end: 0),
 
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12),
 
                       // Payment Method Details (factory pattern)
                       PaymentDetailsFactory.create(
@@ -114,7 +114,7 @@ class ReviewDetailsScreen extends ConsumerWidget {
     final tr = ref.watch(translationHelperProvider);
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: const BoxDecoration(
         color: Colors.white,
         boxShadow: [
@@ -145,7 +145,7 @@ class ReviewDetailsScreen extends ConsumerWidget {
                 end: const Offset(1.03, 1.03),
                 delay: 200.ms,
               ),
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
           AppButton(
             text: tr('review.detailsScreen.buttons.cancel'),
             onPressed: () => context.pop(),

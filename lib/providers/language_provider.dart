@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/material.dart';
 import '../core/models/language_model.dart';
 import '../core/services/translation_service.dart';
 
@@ -60,65 +59,56 @@ class LanguageNotifier extends StateNotifier<LanguageState> {
       code: 'ar',
       name: 'Arabic',
       nativeName: 'العربية',
-      flagAsset:
-          'assets/images/completeCountry.png',  
+      flagAsset: 'assets/images/flags/flag_ae.png',
       isRTL: true,
     ),
     const LanguageModel(
       code: 'de',
       name: 'German',
       nativeName: 'Deutsch',
-      flagAsset:
-          'assets/images/completeCountry.png',  
+      flagAsset: 'assets/images/flags/flag_de.png',
     ),
     const LanguageModel(
       code: 'en',
       name: 'English',
       nativeName: 'English',
-      flagAsset:
-          'assets/images/completeCountry.png',  
+      flagAsset: 'assets/images/flags/flag_us.png',
     ),
     const LanguageModel(
       code: 'es',
       name: 'Spanish',
       nativeName: 'Español',
-      flagAsset:
-          'assets/images/completeCountry.png',  
+      flagAsset: 'assets/images/flags/flag_es.png',
     ),
     const LanguageModel(
       code: 'fr',
       name: 'French',
       nativeName: 'Français',
-      flagAsset:
-          'assets/images/completeCountry.png',  
+      flagAsset: 'assets/images/flags/flag_fr.png',
     ),
     const LanguageModel(
       code: 'hi',
       name: 'Hindi',
       nativeName: 'हिन्दी',
-      flagAsset:
-          'assets/images/completeCountry.png',  
+      flagAsset: 'assets/images/flags/flag_in.png',
     ),
     const LanguageModel(
       code: 'nl',
       name: 'Dutch',
       nativeName: 'Nederlands',
-      flagAsset:
-          'assets/images/completeCountry.png',  
+      flagAsset: 'assets/images/flags/flag_nl.png',
     ),
     const LanguageModel(
       code: 'pt',
       name: 'Portuguese',
       nativeName: 'Português',
-      flagAsset:
-          'assets/images/completeCountry.png',  
+      flagAsset: 'assets/images/flags/flag_pt.png',
     ),
     const LanguageModel(
       code: 'vi',
       name: 'Vietnamese',
       nativeName: 'Tiếng Việt',
-      flagAsset:
-          'assets/images/completeCountry.png',  
+      flagAsset: 'assets/images/flags/flag_vn.png',
     ),
   ];
 

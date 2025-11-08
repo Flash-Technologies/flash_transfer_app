@@ -195,46 +195,28 @@ class TransactionService {
         }
       }
 
-      // Convert provider to correct format for API
-      String apiPaymentMethod;
-      switch (paymentMethod.toLowerCase()) {
-        case 'orange':
-          apiPaymentMethod = 'ORANGE';
-          break;
-        case 'wave':
-          apiPaymentMethod = 'WAVE';
-          break;
-        case 'mtn':
-          apiPaymentMethod = 'MTN';
-          break;
-        case 'moov':
-          apiPaymentMethod = 'MOOV';
-          break;
-        default:
-          apiPaymentMethod = paymentMethod.toUpperCase();
-      }
-
       // Prepare the request payload matching the new API format
       final payload = {
         'amount': amount,
         'sourceCurrency': sourceCurrency,
         'destinationCurrency': destinationCurrency,
-        'blockchainNetwork': blockchainNetwork,
-        'withdrawalMethod': 'mobile_money',
-        'countryCode': actualCountryCode,
-        'customerInfo': {
-          'firstName': firstName ?? 'Test',
-          'lastName': lastName ?? 'User',
-          'email': email ?? 'test@example.com',
-          'phoneNumber': phoneNumber ?? '33749928528',
-        },
-        'mobileMoneyProvider': apiPaymentMethod,
-        'mobileMoneyDetails': {
-          'phoneNumber': phoneNumber ?? '33749928528',
-          'provider': apiPaymentMethod,
-        },
+        'blockchainNetwork': blockchainNetwork.toLowerCase(),
+        'withdrawalMethod': 'cash_pickup', // Changed from mobile_money to cash_pickup as TouchCash only supports cash_pickup
+        'countryCode': actualCountryCode.toUpperCase(),
+        'walletAddress': null,
         'beneficiaryId': 18,
-        'webhookUrl': 'https://webhook.site/your-test-webhook-id',
+        'senderInfo': {
+          'sender_phone_number': phoneNumber ?? '33749928528',
+          'sender_first_name': firstName ?? 'Test',
+          'sender_last_name': lastName ?? 'User',
+          'sender_country_code_piece': actualCountryCode.toUpperCase(),
+        },
+        'recipientInfo': {
+          'recipient_first_name': firstName ?? 'Test',
+          'recipient_last_name': lastName ?? 'User',
+          'recipient_phone_number': phoneNumber ?? '33749928528',
+          'recipient_country_code': actualCountryCode.toUpperCase(),
+        },
       };
 
       print(
@@ -296,45 +278,27 @@ class TransactionService {
         }
       }
 
-      // Convert provider to correct format
-      String apiPaymentMethod;
-      switch (paymentMethod.toLowerCase()) {
-        case 'orange':
-          apiPaymentMethod = 'ORANGE';
-          break;
-        case 'wave':
-          apiPaymentMethod = 'WAVE';
-          break;
-        case 'mtn':
-          apiPaymentMethod = 'MTN';
-          break;
-        case 'moov':
-          apiPaymentMethod = 'MOOV';
-          break;
-        default:
-          apiPaymentMethod = paymentMethod.toUpperCase();
-      }
-
       final payload = {
         'amount': amount,
         'sourceCurrency': sourceCurrency,
         'destinationCurrency': destinationCurrency,
-        'blockchainNetwork': blockchainNetwork,
-        'withdrawalMethod': 'mobile_money',
-        'countryCode': actualCountryCode,
-        'customerInfo': {
-          'firstName': firstName ?? 'Test',
-          'lastName': lastName ?? 'User',
-          'email': email ?? 'test@example.com',
-          'phoneNumber': phoneNumber ?? '33749928528',
-        },
-        'mobileMoneyProvider': apiPaymentMethod,
-        'mobileMoneyDetails': {
-          'phoneNumber': phoneNumber ?? '33749928528',
-          'provider': apiPaymentMethod,
-        },
+        'blockchainNetwork': blockchainNetwork.toLowerCase(),
+        'withdrawalMethod': 'cash_pickup', // Changed from mobile_money to cash_pickup as TouchCash only supports cash_pickup
+        'countryCode': actualCountryCode.toUpperCase(),
+        'walletAddress': null,
         'beneficiaryId': 18,
-        'webhookUrl': 'https://webhook.site/your-test-webhook-id',
+        'senderInfo': {
+          'sender_phone_number': phoneNumber ?? '33749928528',
+          'sender_first_name': firstName ?? 'Test',
+          'sender_last_name': lastName ?? 'User',
+          'sender_country_code_piece': actualCountryCode.toUpperCase(),
+        },
+        'recipientInfo': {
+          'recipient_first_name': firstName ?? 'Test',
+          'recipient_last_name': lastName ?? 'User',
+          'recipient_phone_number': phoneNumber ?? '33749928528',
+          'recipient_country_code': actualCountryCode.toUpperCase(),
+        },
       };
 
       print(

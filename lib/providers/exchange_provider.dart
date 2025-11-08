@@ -118,11 +118,43 @@ class ExchangeFormNotifier extends StateNotifier<ExchangeFormState> {
     // Don't fetch exchange rate on initial load - only when user enters amount > 0
   }
   
-  void setFromCurrency(Currency currency) {
+  void setFromCurrency(Currency currency) async {
+    // Check if toCurrency needs to be updated (if same type as new fromCurrency)
+    Currency? newToCurrency = state.toCurrency;
+
+    if (state.toCurrency != null) {
+      final newFromType = currency.type.toLowerCase();
+      final currentToType = state.toCurrency!.type.toLowerCase();
+
+      // If both are same type (fiat-fiat or crypto-crypto), auto-switch toCurrency
+      if (newFromType == currentToType) {
+        // Get all currencies to find a compatible one
+        try {
+          final currenciesAsync = await _ref.read(currenciesProvider.future);
+
+          // Find first currency of opposite type
+          final targetType = newFromType == 'fiat' ? 'crypto' : 'fiat';
+          newToCurrency = currenciesAsync.firstWhere(
+            (c) => c.type.toLowerCase() == targetType,
+            orElse: () => state.toCurrency!, // Fallback to current if none found
+          );
+        } catch (e) {
+          // If error, use defaults
+          if (newFromType == 'fiat') {
+            newToCurrency = Currency(code: 'ETH', name: 'Ethereum', type: 'CRYPTO');
+          } else {
+            newToCurrency = Currency(code: 'XOF', name: 'West African CFA Franc', type: 'FIAT');
+          }
+        }
+      }
+    }
+
     state = state.copyWith(
       fromCurrency: currency,
+      toCurrency: newToCurrency,
       clearError: true,
     );
+
     // Only fetch rate if user has entered an amount > 0
     final amount = double.tryParse(state.sendAmount) ?? 0;
     if (amount > 0) {
