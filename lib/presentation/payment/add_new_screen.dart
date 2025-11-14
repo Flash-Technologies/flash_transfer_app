@@ -1,11 +1,8 @@
 import 'package:flash_transfer_app/config/ui_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flash_transfer_app/config/theme.dart' as AppTheme;
 import 'package:flash_transfer_app/presentation/common/app_button.dart';
 import 'package:flash_transfer_app/presentation/common/app_text_field.dart';
 import 'package:flash_transfer_app/presentation/common/country_picker.dart';
@@ -46,9 +43,20 @@ class _AddNewScreenState extends ConsumerState<AddNewScreen> {
   bool _isNotificationModalVisible = false;
 
   late AuthService _authService;
-  late Future<List<CountryModel>> _countriesFuture;
-  
-  bool get _isFromRecipientsScreen => 
+
+  // Hardcoded XOF countries list to avoid API dependency
+  final List<CountryModel> _xofCountries = [
+    CountryModel(name: 'Benin', code: 'bj', flagUrl: '🇧🇯'),
+    CountryModel(name: 'Burkina Faso', code: 'bf', flagUrl: '🇧🇫'),
+    CountryModel(name: "Cote d'Ivoire", code: 'ci', flagUrl: '🇨🇮'),
+    CountryModel(name: 'Guinea-Bissau', code: 'gw', flagUrl: '🇬🇼'),
+    CountryModel(name: 'Mali', code: 'ml', flagUrl: '🇲🇱'),
+    CountryModel(name: 'Niger', code: 'ne', flagUrl: '🇳🇪'),
+    CountryModel(name: 'Senegal', code: 'sn', flagUrl: '🇸🇳'),
+    CountryModel(name: 'Togo', code: 'tg', flagUrl: '🇹🇬'),
+  ];
+
+  bool get _isFromRecipientsScreen =>
       widget.navigationParams?['returnToRecipients'] == true;
 
   final List<String> _purposeOptions = [
@@ -73,18 +81,7 @@ class _AddNewScreenState extends ConsumerState<AddNewScreen> {
     final apiClient = ApiClient(baseUrl: Endpoints.baseUrl);
     _authService = AuthService(apiClient);
 
-    // Convert from auth's CountryModel to our CountryModel
-    _countriesFuture = _authService.fetchCountries().then((authCountries) {
-      return authCountries
-          .map(
-            (country) => CountryModel(
-              name: country.name,
-              code: country.name.substring(0, 2).toLowerCase(),
-              flagUrl: country.flag,
-            ),
-          )
-          .toList();
-    });
+    // Using hardcoded XOF countries - no API call needed
 
     // Add staggered animations when screen loads
     Future.delayed(const Duration(milliseconds: 100), () {
@@ -418,26 +415,13 @@ class _AddNewScreenState extends ConsumerState<AddNewScreen> {
               style: AppTextStyles.bodyMedium
                   .copyWith(fontWeight: FontWeight.w600)),
           const SizedBox(height: 8),
-          FutureBuilder<List<CountryModel>>(
-            future: _countriesFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return _buildCountryPickerSkeleton();
-              } else if (snapshot.hasError) {
-                return _buildCountryPickerError(snapshot.error.toString());
-              } else if (snapshot.hasData) {
-                return CountryPicker(
-                  countries: snapshot.data!,
-                  selectedCountry: _selectedCountry,
-                  onSelect: (country) {
-                    setState(() {
-                      _selectedCountry = country;
-                    });
-                  },
-                );
-              } else {
-                return _buildCountryPickerError('No data available');
-              }
+          CountryPicker(
+            countries: _xofCountries,
+            selectedCountry: _selectedCountry,
+            onSelect: (country) {
+              setState(() {
+                _selectedCountry = country;
+              });
             },
           ),
         ],
@@ -448,42 +432,6 @@ class _AddNewScreenState extends ConsumerState<AddNewScreen> {
         .moveY(begin: 20, end: 0, duration: 300.ms);
   }
 
-  Widget _buildCountryPickerSkeleton() {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
-      child: Container(
-        height: 50,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCountryPickerError(String error) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.red[50],
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.red[300]!),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.error_outline, color: Colors.red[700]),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              'Failed to load countries: $error',
-              style: TextStyle(color: Colors.red[700]),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildDropdownField({
     required String label,
@@ -548,6 +496,9 @@ class _AddNewScreenState extends ConsumerState<AddNewScreen> {
           // Set the newly created beneficiary as selected
           ref.read(selectedBeneficiaryProvider.notifier).state = newBeneficiary;
 
+          // Check if widget is still mounted before using context
+          if (!mounted) return;
+
           // Show success message
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -568,14 +519,20 @@ class _AddNewScreenState extends ConsumerState<AddNewScreen> {
           }
         } else {
           // Show error message
-          _showErrorSnackBar();
+          if (mounted) {
+            _showErrorSnackBar();
+          }
         }
       } catch (e) {
         // Show error message
-        _showErrorSnackBar('Failed to create contact: $e');
+        if (mounted) {
+          _showErrorSnackBar('Failed to create contact: $e');
+        }
       }
 
-      setState(() => _isLoading = false);
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     } else {
       // Show error shake animation for invalid form
       _formKey.currentState?.save();
@@ -649,7 +606,7 @@ Widget _buildIconButton({required IconData icon, required VoidCallback onTap}) {
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withValues(alpha: 0.05),
               blurRadius: 4,
               offset: const Offset(0, 2),
             ),
