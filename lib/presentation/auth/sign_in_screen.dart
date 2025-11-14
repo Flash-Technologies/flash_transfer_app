@@ -369,11 +369,14 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     final scaffoldMessenger = ScaffoldMessenger.of(context);
 
     try {
+      print("🍎 [SIGN_IN_SCREEN] Starting Apple Sign In flow");
+
       setState(() {
         _isLoading = true;
       });
 
       // Request Apple sign in with the correct credentials
+      print("🍎 [SIGN_IN_SCREEN] Requesting Apple ID credential...");
       final credential = await SignInWithApple.getAppleIDCredential(
         scopes: [
           AppleIDAuthorizationScopes.email,
@@ -385,10 +388,17 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         ),
       );
 
+      print("✅ [SIGN_IN_SCREEN] Apple credential received");
+      print("🍎 [SIGN_IN_SCREEN] User ID: ${credential.userIdentifier}");
+      print("🍎 [SIGN_IN_SCREEN] Email: ${credential.email ?? 'null'}");
+      print("🍎 [SIGN_IN_SCREEN] Full Name: ${credential.givenName ?? ''} ${credential.familyName ?? ''}");
+      print("🍎 [SIGN_IN_SCREEN] Authorization Code: ${credential.authorizationCode.substring(0, 20)}...");
+
       // Get the ID token from the credential
       final idToken = credential.identityToken;
 
       if (idToken == null) {
+        print("❌ [SIGN_IN_SCREEN] Apple ID token is null!");
         setState(() {
           _isLoading = false;
         });
@@ -399,25 +409,142 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         return;
       }
 
+      print("🎯 [SIGN_IN_SCREEN] ==========================================");
+      print("🎯 [SIGN_IN_SCREEN] COMPLETE APPLE ID TOKEN");
+      print("🎯 [SIGN_IN_SCREEN] ==========================================");
+      debugPrint(idToken);
+      print("🎯 [SIGN_IN_SCREEN] ==========================================");
+      print("🎯 [SIGN_IN_SCREEN] END OF TOKEN");
+      print("🎯 [SIGN_IN_SCREEN] ==========================================");
+
+      // Decode and print token payload
+      try {
+        final parts = idToken.split('.');
+        if (parts.length == 3) {
+          String payload = parts[1];
+          switch (payload.length % 4) {
+            case 2:
+              payload += '==';
+              break;
+            case 3:
+              payload += '=';
+              break;
+          }
+
+          final bytes = base64Url.decode(payload);
+          final decodedPayload = utf8.decode(bytes);
+          final payloadJson = json.decode(decodedPayload);
+
+          print("📋 [SIGN_IN_SCREEN] ===== DECODED APPLE TOKEN PAYLOAD =====");
+          print("📧 [SIGN_IN_SCREEN] Email: ${payloadJson['email']}");
+          print("🆔 [SIGN_IN_SCREEN] Subject (Apple ID): ${payloadJson['sub']}");
+          print("⏰ [SIGN_IN_SCREEN] Issued at: ${payloadJson['iat']}");
+          print("⏰ [SIGN_IN_SCREEN] Expires at: ${payloadJson['exp']}");
+          print("📄 [SIGN_IN_SCREEN] Full payload JSON:");
+          print(decodedPayload);
+          print("📋 [SIGN_IN_SCREEN] ===== END DECODED PAYLOAD =====");
+        }
+      } catch (e) {
+        print("❌ [SIGN_IN_SCREEN] Error decoding Apple token: $e");
+      }
+
       if (_userCountry == null) {
         await _fetchUserCountry();
       }
+
+      print("🌍 [SIGN_IN_SCREEN] User country: ${_userCountry ?? 'Unknown'}");
 
       // Show loading indicator
       scaffoldMessenger.showSnackBar(
         const SnackBar(content: Text('Signing in with Apple...')),
       );
 
+      // Extract email from decoded token
+      String? emailFromToken;
+      try {
+        final parts = idToken.split('.');
+        if (parts.length == 3) {
+          String payload = parts[1];
+          switch (payload.length % 4) {
+            case 2:
+              payload += '==';
+              break;
+            case 3:
+              payload += '=';
+              break;
+          }
+          final bytes = base64Url.decode(payload);
+          final decodedPayload = utf8.decode(bytes);
+          final payloadJson = json.decode(decodedPayload);
+          emailFromToken = payloadJson['email'];
+        }
+      } catch (e) {
+        print("❌ [SIGN_IN_SCREEN] Error extracting email from token: $e");
+      }
+
+      print("🧪 [SIGN_IN_SCREEN] =======================================");
+      print("🧪 [SIGN_IN_SCREEN] CALLING BACKEND API");
+      print("🧪 [SIGN_IN_SCREEN] =======================================");
+      print("🌐 [SIGN_IN_SCREEN] Method: loginWithApple");
+      print("📦 [SIGN_IN_SCREEN] Parameters:");
+      print("   - idToken: ${idToken.substring(0, 50)}...");
+      print("   - authorizationCode: ${credential.authorizationCode.substring(0, 20)}...");
+      print("   - sub: ${credential.userIdentifier}");
+      print("   - email: ${emailFromToken ?? credential.email ?? 'null'}");
+      print("   - firstName: ${credential.givenName ?? 'null'}");
+      print("   - lastName: ${credential.familyName ?? 'null'}");
+      print("   - country: ${_userCountry ?? 'Unknown'}");
+
+      // Validate required fields
+      final authCode = credential.authorizationCode ?? '';
+      final sub = credential.userIdentifier ?? '';
+
+      if (authCode.isEmpty) {
+        print("❌ [SIGN_IN_SCREEN] Missing authorization code");
+        setState(() {
+          _isLoading = false;
+        });
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(content: Text('Failed to get Apple authorization code')),
+        );
+        return;
+      }
+
+      if (sub.isEmpty) {
+        print("❌ [SIGN_IN_SCREEN] Missing user identifier");
+        setState(() {
+          _isLoading = false;
+        });
+        scaffoldMessenger.showSnackBar(
+          const SnackBar(content: Text('Failed to get Apple user identifier')),
+        );
+        return;
+      }
+
       // Call the auth provider to authenticate with the backend
       final success = await ref
           .read(authProvider.notifier)
-          .loginWithApple(idToken, _userCountry ?? 'Unknown');
+          .loginWithApple(
+            idToken: idToken,
+            authorizationCode: authCode,
+            sub: sub,
+            countryName: _userCountry ?? 'Unknown',
+            email: emailFromToken ?? credential.email,
+            firstName: credential.givenName,
+            lastName: credential.familyName,
+          );
+
+      print("🧪 [SIGN_IN_SCREEN] =======================================");
+      print("🧪 [SIGN_IN_SCREEN] BACKEND API RESPONSE");
+      print("🧪 [SIGN_IN_SCREEN] =======================================");
+      print("📊 [SIGN_IN_SCREEN] Success: $success");
 
       setState(() {
         _isLoading = false;
       });
 
       if (success) {
+        print("✅ [SIGN_IN_SCREEN] Apple login successful!");
 
         if (mounted) {
           scaffoldMessenger.showSnackBar(
@@ -431,6 +558,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           await Future.delayed(const Duration(milliseconds: 1000));
 
           if (mounted) {
+            print("🏠 [SIGN_IN_SCREEN] Navigating to /home");
             context.go('/home');
           }
         }
@@ -438,6 +566,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         if (mounted) {
           final errorMessage =
               ref.read(authProvider).message ?? 'Apple login failed';
+          print("❌ [SIGN_IN_SCREEN] Apple login failed: $errorMessage");
           scaffoldMessenger.showSnackBar(
             SnackBar(
               content: Text(errorMessage),
@@ -448,6 +577,11 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         }
       }
     } catch (e) {
+      print("💥 [SIGN_IN_SCREEN] ===== APPLE SIGN IN ERROR =====");
+      print("❌ [SIGN_IN_SCREEN] Error: ${e.toString()}");
+      print("📍 [SIGN_IN_SCREEN] Error type: ${e.runtimeType}");
+      print("💥 [SIGN_IN_SCREEN] ===== END ERROR INFORMATION =====");
+
       setState(() {
         _isLoading = false;
       });

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -228,10 +229,52 @@ class _SignUpScreenState extends ConsumerState<SignUpScreen> {
         return;
       }
 
+      // Extract email from token
+      String? emailFromToken;
+      try {
+        final parts = idToken.split('.');
+        if (parts.length == 3) {
+          String payload = parts[1];
+          switch (payload.length % 4) {
+            case 2:
+              payload += '==';
+              break;
+            case 3:
+              payload += '=';
+              break;
+          }
+          final bytes = base64Url.decode(payload);
+          final decodedPayload = utf8.decode(bytes);
+          final payloadJson = json.decode(decodedPayload);
+          emailFromToken = payloadJson['email'];
+        }
+      } catch (e) {
+        print("Error extracting email from token: $e");
+      }
+
+      final authCode = credential.authorizationCode ?? '';
+      final sub = credential.userIdentifier ?? '';
+
+      if (authCode.isEmpty || sub.isEmpty) {
+        _safeSetState(() {
+          _isLoading = false;
+        });
+        _showAnimatedSnackBar('Failed to get Apple credentials', false);
+        return;
+      }
+
       // Call auth provider with the country from selection
       final success = await ref
           .read(authProvider.notifier)
-          .loginWithApple(idToken, _selectedCountry!.name);
+          .loginWithApple(
+            idToken: idToken,
+            authorizationCode: authCode,
+            sub: sub,
+            countryName: _selectedCountry!.name,
+            email: emailFromToken ?? credential.email,
+            firstName: credential.givenName,
+            lastName: credential.familyName,
+          );
 
       // Check if still mounted
       if (!mounted) return;

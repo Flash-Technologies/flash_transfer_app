@@ -125,3 +125,56 @@ class WalletAuthRequest {
 
   Map<String, dynamic> toJson() => {'walletAddress': walletAddress, 'countryName': countryName};
 }
+
+class AppleAuthRequest {
+  final String idToken;
+  final String authorizationCode;
+  final String countryName;
+  final String sub;
+  final String? email;
+  final String? firstName;
+  final String? lastName;
+
+  AppleAuthRequest({
+    required this.idToken,
+    required this.authorizationCode,
+    required this.countryName,
+    required this.sub,
+    this.email,
+    this.firstName,
+    this.lastName,
+  });
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> json = {
+      'idToken': idToken,
+      'authorizationCode': authorizationCode,
+      'countryName': countryName,
+      'sub': sub,
+    };
+
+    if (email != null) {
+      json['email'] = email!;
+    }
+    if (firstName != null) {
+      json['firstName'] = firstName!;
+    }
+    if (lastName != null) {
+      json['lastName'] = lastName!;
+    }
+
+    // Add user object if we have name data
+    if (email != null && firstName != null && lastName != null) {
+      json['user'] = {
+        'sub': sub,
+        'email': email!,
+        'name': {
+          'firstName': firstName!,
+          'lastName': lastName!,
+        }
+      };
+    }
+
+    return json;
+  }
+}

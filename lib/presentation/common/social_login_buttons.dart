@@ -340,10 +340,51 @@ class SocialLoginButtons extends ConsumerWidget {
         debugPrint('Failed to fetch user country: $e');
       }
 
+      // Extract email from token
+      String? emailFromToken;
+      try {
+        final parts = idToken.split('.');
+        if (parts.length == 3) {
+          String payload = parts[1];
+          switch (payload.length % 4) {
+            case 2:
+              payload += '==';
+              break;
+            case 3:
+              payload += '=';
+              break;
+          }
+          final bytes = base64Url.decode(payload);
+          final decodedPayload = utf8.decode(bytes);
+          final payloadJson = json.decode(decodedPayload);
+          emailFromToken = payloadJson['email'];
+        }
+      } catch (e) {
+        debugPrint('Error extracting email from token: $e');
+      }
+
+      final authCode = credential.authorizationCode ?? '';
+      final sub = credential.userIdentifier ?? '';
+
+      if (authCode.isEmpty || sub.isEmpty) {
+        scaffoldMessenger.showSnackBar(
+          SnackBar(content: Text('Failed to get Apple credentials')),
+        );
+        return;
+      }
+
       // Call the auth provider to authenticate with the backend
       final success = await ref
           .read(authProvider.notifier)
-          .loginWithApple(idToken, countryName);
+          .loginWithApple(
+            idToken: idToken,
+            authorizationCode: authCode,
+            sub: sub,
+            countryName: countryName,
+            email: emailFromToken ?? credential.email,
+            firstName: credential.givenName,
+            lastName: credential.familyName,
+          );
 
       if (success) {
 

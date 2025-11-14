@@ -485,12 +485,36 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  Future<bool> loginWithApple(String idToken, String countryName) async {
+  Future<bool> loginWithApple({
+    required String idToken,
+    required String authorizationCode,
+    required String sub,
+    required String countryName,
+    String? email,
+    String? firstName,
+    String? lastName,
+  }) async {
     _updateState(state.copyWith(isLoading: true));
     try {
-      final response = await _authService.authenticateWithApple(
-        SocialAuthRequest(token: idToken, countryName: countryName),
+      print("🍎 [AUTH_PROVIDER] Apple login - countryName: '$countryName'");
+
+      final request = AppleAuthRequest(
+        idToken: idToken,
+        authorizationCode: authorizationCode,
+        sub: sub,
+        countryName: countryName,
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
       );
+      print("🍎 [AUTH_PROVIDER] Request JSON: ${request.toJson()}");
+
+      final response = await _authService.authenticateWithApple(request);
+
+      print("🔑 [AUTH_PROVIDER] Apple login response received");
+      print("✅ [AUTH_PROVIDER] Success: ${response.success}");
+      print("📊 [AUTH_PROVIDER] Data: ${response.data != null ? 'User data present' : 'null'}");
+      print("💬 [AUTH_PROVIDER] Message: ${response.message}");
 
       if (response.success && response.data != null) {
         await _authService.saveUserData(response.data!);

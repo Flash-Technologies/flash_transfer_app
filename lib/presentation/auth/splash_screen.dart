@@ -40,7 +40,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Future<void> _initializeSplash() async {
     print("💫 [SPLASH] Starting splash initialization");
     // Wait for minimum splash duration (for UX)
-    final splashDuration = Future.delayed(const Duration(milliseconds: 2500));
+    final splashDuration = Future.delayed(const Duration(milliseconds: 1000));
     
     // Wait for auth initialization to complete
     while (mounted) {

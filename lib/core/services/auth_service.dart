@@ -240,19 +240,24 @@ class AuthService {
 
   // Authenticate with Apple
   Future<ApiResponse<User>> authenticateWithApple(
-    SocialAuthRequest request,
+    AppleAuthRequest request,
   ) async {
     try {
+      print("🔥 [AUTH_SERVICE] Apple Auth - Request data: ${request.toJson()}");
+
       final response = await _apiClient.post(
         Endpoints.appleAuth,
         data: request.toJson(),
       );
+
+      print("🔥 [AUTH_SERVICE] Apple Auth - Response: ${response.data}");
 
       return ApiResponse<User>.fromJson(
         response.data,
         (json) => User.fromJson(json),
       );
     } catch (e) {
+      print("❌ [AUTH_SERVICE] Apple Auth error: $e");
       return ApiResponse<User>(success: false, message: e.toString());
     }
   }
