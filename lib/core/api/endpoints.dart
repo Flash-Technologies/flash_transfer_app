@@ -14,6 +14,7 @@ class Endpoints {
   static const String walletAuth = '/api/user/authenticate-wallet';
   static const String forgotPassword = '/api/user/forgot-password';
   static const String resetPassword = '/api/user/reset-password';
+  static const String deleteAccount = '/api/user/account';
 
   // currency endpoints
   static const String exchangeRates = '$baseUrl/api/exchange/rates';

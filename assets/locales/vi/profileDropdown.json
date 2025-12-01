@@ -17,6 +17,18 @@
     "language": "Ngôn ngữ",
     "privacyPolicy": "Chính sách Bảo mật",
     "contactUs": "Liên hệ Chúng tôi",
-    "logout": "Đăng xuất"
+    "logout": "Đăng xuất",
+    "deleteAccount": "Xóa Tài Khoản"
+  },
+  "deleteAccount": {
+    "title": "Xóa Tài Khoản",
+    "warning": "Xóa tài khoản của bạn là vĩnh viễn và không thể hoàn tác. Tất cả dữ liệu của bạn, bao gồm thông tin hồ sơ, lịch sử giao dịch và các tùy chọn đã lưu sẽ bị xóa vĩnh viễn.",
+    "securityVerification": "Xác minh bảo mật",
+    "confirmPassword": "Vui lòng nhập mật khẩu của bạn để xác nhận",
+    "delete": "Xóa Tài Khoản",
+    "cancel": "Hủy bỏ",
+    "deleting": "Đang xóa...",
+    "success": "Tài khoản đã được xóa thành công",
+    "error": "Không thể xóa tài khoản"
   }
 }

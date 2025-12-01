@@ -17,6 +17,18 @@
     "language": "Sprache",
     "privacyPolicy": "Datenschutzrichtlinie",
     "contactUs": "Kontakt",
-    "logout": "Abmelden"
+    "logout": "Abmelden",
+    "deleteAccount": "Konto löschen"
+  },
+  "deleteAccount": {
+    "title": "Konto löschen",
+    "warning": "Das Löschen Ihres Kontos ist endgültig und kann nicht rückgängig gemacht werden. Alle Ihre Daten, einschließlich Profilinformationen, Transaktionsverlauf und gespeicherte Einstellungen, werden dauerhaft entfernt.",
+    "securityVerification": "Sicherheitsüberprüfung",
+    "confirmPassword": "Bitte geben Sie Ihr Passwort zur Bestätigung ein",
+    "delete": "Konto löschen",
+    "cancel": "Abbrechen",
+    "deleting": "Wird gelöscht...",
+    "success": "Konto erfolgreich gelöscht",
+    "error": "Konto konnte nicht gelöscht werden"
   }
 }

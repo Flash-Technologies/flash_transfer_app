@@ -341,12 +341,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
 
-      // Scan card with camera
-      GoRoute(
-        path: '/card/scan',
-        name: 'scanCard',
-        builder: (context, state) => const ScanCardScreen(),
-      ),
+      // Scan card with camera - DISABLED FOR APP STORE SUBMISSION
+      // GoRoute(
+      //   path: '/card/scan',
+      //   name: 'scanCard',
+      //   builder: (context, state) => const ScanCardScreen(),
+      // ),
 
       // Confirm card details before saving
       GoRoute(

@@ -362,45 +362,48 @@ class _EnterCardScreenState extends ConsumerState<EnterCardScreen>
   }
 
   Widget _buildScanCardButton(BuildContext context, CardState cardState) {
-    final theme = Theme.of(context);
+    // DISABLED FOR APP STORE SUBMISSION - Card scanning feature removed
+    return const SizedBox.shrink();
 
-    return Container(
-      width: double.infinity,
-      height: 56,
-      margin: const EdgeInsets.only(bottom: 16),
-      child: OutlinedButton.icon(
-        onPressed: cardState.isScanning ? null : _startCardScanning,
-        icon:
-            cardState.isScanning
-                ? SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    valueColor: AlwaysStoppedAnimation<Color>(
-                      theme.colorScheme.primary,
-                    ),
-                  ),
-                )
-                : const Icon(Icons.camera_alt_outlined),
-        label: Consumer(
-          builder: (context, ref, child) {
-            final tr = ref.watch(translationHelperProvider);
-            return Text(
-              cardState.isScanning ? tr('card.enter.scanning') : tr('card.enter.scanCard'),
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            );
-          },
-        ),
-        style: OutlinedButton.styleFrom(
-          foregroundColor: theme.colorScheme.primary,
-          side: BorderSide(color: theme.colorScheme.primary),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-      ),
-    );
+    // final theme = Theme.of(context);
+    //
+    // return Container(
+    //   width: double.infinity,
+    //   height: 56,
+    //   margin: const EdgeInsets.only(bottom: 16),
+    //   child: OutlinedButton.icon(
+    //     onPressed: cardState.isScanning ? null : _startCardScanning,
+    //     icon:
+    //         cardState.isScanning
+    //             ? SizedBox(
+    //               width: 20,
+    //               height: 20,
+    //               child: CircularProgressIndicator(
+    //                 strokeWidth: 2,
+    //                 valueColor: AlwaysStoppedAnimation<Color>(
+    //                   theme.colorScheme.primary,
+    //                 ),
+    //               ),
+    //             )
+    //             : const Icon(Icons.camera_alt_outlined),
+    //     label: Consumer(
+    //       builder: (context, ref, child) {
+    //         final tr = ref.watch(translationHelperProvider);
+    //         return Text(
+    //           cardState.isScanning ? tr('card.enter.scanning') : tr('card.enter.scanCard'),
+    //           style: const TextStyle(fontWeight: FontWeight.w600),
+    //         );
+    //       },
+    //     ),
+    //     style: OutlinedButton.styleFrom(
+    //       foregroundColor: theme.colorScheme.primary,
+    //       side: BorderSide(color: theme.colorScheme.primary),
+    //       shape: RoundedRectangleBorder(
+    //         borderRadius: BorderRadius.circular(12),
+    //       ),
+    //     ),
+    //   ),
+    // );
   }
 
   Widget _buildBottomActions(BuildContext context, CardState cardState) {

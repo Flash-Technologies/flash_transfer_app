@@ -17,6 +17,18 @@
     "language": "Idioma",
     "privacyPolicy": "Política de Privacidade",
     "contactUs": "Entre em Contato",
-    "logout": "Sair"
+    "logout": "Sair",
+    "deleteAccount": "Excluir Conta"
+  },
+  "deleteAccount": {
+    "title": "Excluir Conta",
+    "warning": "A exclusão de sua conta é permanente e não pode ser desfeita. Todos os seus dados, incluindo informações de perfil, histórico de transações e preferências salvas, serão removidos permanentemente.",
+    "securityVerification": "Verificação de segurança",
+    "confirmPassword": "Digite sua senha para confirmar",
+    "delete": "Excluir Conta",
+    "cancel": "Cancelar",
+    "deleting": "Excluindo...",
+    "success": "Conta excluída com sucesso",
+    "error": "Falha ao excluir a conta"
   }
 }

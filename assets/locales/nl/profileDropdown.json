@@ -17,6 +17,18 @@
     "language": "Taal",
     "privacyPolicy": "Privacybeleid",
     "contactUs": "Contact Opnemen",
-    "logout": "Uitloggen"
+    "logout": "Uitloggen",
+    "deleteAccount": "Account Verwijderen"
+  },
+  "deleteAccount": {
+    "title": "Account Verwijderen",
+    "warning": "Het verwijderen van uw account is permanent en kan niet ongedaan worden gemaakt. Al uw gegevens, inclusief profielinformatie, transactiegeschiedenis en opgeslagen voorkeuren, worden permanent verwijderd.",
+    "securityVerification": "Beveiligingsverificatie",
+    "confirmPassword": "Voer uw wachtwoord in ter bevestiging",
+    "delete": "Account Verwijderen",
+    "cancel": "Annuleren",
+    "deleting": "Verwijderen...",
+    "success": "Account succesvol verwijderd",
+    "error": "Kan account niet verwijderen"
   }
 }

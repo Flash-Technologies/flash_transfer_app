@@ -488,6 +488,41 @@ class AuthService {
     return result;
   }
 
+  // Delete account with API call and cleanup
+  Future<ApiResponse<dynamic>> deleteAccount() async {
+    try {
+      print("🗑️ [AUTH_SERVICE] Initiating account deletion...");
+
+      final response = await _apiClient.delete(Endpoints.deleteAccount);
+
+      print("🗑️ [AUTH_SERVICE] Account deletion response: ${response.data}");
+
+      // Clear all user data after successful deletion
+      await logout();
+
+      return ApiResponse<dynamic>.fromJson(
+        response.data,
+        (json) => json,
+      );
+    } on DioException catch (e) {
+      print("❌ [AUTH_SERVICE] DioException during account deletion: ${e.type}");
+      print("❌ [AUTH_SERVICE] DioException message: ${e.message}");
+      print("❌ [AUTH_SERVICE] DioException response: ${e.response?.data}");
+
+      if (e.response?.data is Map<String, dynamic>) {
+        final responseData = e.response!.data as Map<String, dynamic>;
+        return ApiResponse<dynamic>(
+          success: responseData['success'] ?? false,
+          message: responseData['message'] ?? 'Failed to delete account',
+        );
+      }
+      return ApiResponse<dynamic>(success: false, message: e.toString());
+    } catch (e) {
+      print("❌ [AUTH_SERVICE] Error during account deletion: $e");
+      return ApiResponse<dynamic>(success: false, message: e.toString());
+    }
+  }
+
   // Logout user with thorough cleanup
   Future<void> logout() async {
     try {
@@ -495,10 +530,10 @@ class AuthService {
       await prefs.remove('user');
       await prefs.remove('token');
       await prefs.remove('tokenTimestamp');
-      
+
       // Clear token from API client
       _apiClient.clearToken();
-      
+
       print("🔑 [AUTH_SERVICE] Logout completed - all data cleared");
     } catch (e) {
       print("❌ [AUTH_SERVICE] Error during logout: $e");

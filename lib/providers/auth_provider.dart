@@ -648,22 +648,67 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   Future<void> logout() async {
     await _authService.logout();
-    
+
     // CRITICAL FIX: Complete reset of all wallet connections on logout
     try {
       final reownService = ReownService.instance;
-      
+
       // Use the complete reset method that disposes everything
       await reownService.resetForLogout();
       print('🔌 [AUTH_PROVIDER] Complete wallet reset performed during logout');
-      
+
     } catch (e) {
       print('❌ [AUTH_PROVIDER] Error during complete wallet reset on logout: $e');
     }
-    
+
     _updateState(
       state.copyWith(status: AuthStatus.unauthenticated, user: null),
     );
+  }
+
+  // Delete account
+  Future<bool> deleteAccount() async {
+    _updateState(state.copyWith(isLoading: true));
+    try {
+      final response = await _authService.deleteAccount();
+
+      if (response.success) {
+        // Complete wallet reset on account deletion
+        try {
+          final reownService = ReownService.instance;
+          await reownService.resetForLogout();
+          print('🔌 [AUTH_PROVIDER] Complete wallet reset performed during account deletion');
+        } catch (e) {
+          print('❌ [AUTH_PROVIDER] Error during wallet reset on account deletion: $e');
+        }
+
+        _updateState(
+          state.copyWith(
+            status: AuthStatus.unauthenticated,
+            user: null,
+            isLoading: false,
+            message: response.message,
+          ),
+        );
+        return true;
+      } else {
+        _updateState(
+          state.copyWith(
+            isLoading: false,
+            message: response.message ?? 'Failed to delete account',
+          ),
+        );
+        return false;
+      }
+    } catch (e) {
+      _updateState(
+        state.copyWith(
+          isLoading: false,
+          message: 'Error: ${e.toString()}',
+        ),
+      );
+      return false;
+    }
   }
 
   // Handle automatic logout for expired tokens

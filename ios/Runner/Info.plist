@@ -29,7 +29,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.850808265877-916lji3l3vt73cc6r99d48hhtid53fb1</string>
+				<string>com.googleusercontent.apps.828995906505-rdncqbqec85aeifnqsies85qm6m2rk8a</string>
 			</array>
 		</dict>
 		<dict>
@@ -100,5 +100,9 @@
 	<array>
 		<string>applinks:flashtransfer.app</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Flash Transfer needs access to your camera to take profile pictures.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Flash Transfer needs access to your photo library to select profile pictures.</string>
 </dict>
 </plist>

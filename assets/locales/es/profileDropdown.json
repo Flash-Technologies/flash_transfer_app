@@ -4,19 +4,31 @@
     "defaultUserName": "User"
   },
   "menu": {
-    "myProfile": "My Profile",
-    "myTransaction": "My Transaction",
-    "myRecipients": "My Recipients",
-    "trackTransfer": "Track a Transfer",
+    "myProfile": "Mi Perfil",
+    "myTransaction": "Mis Transacciones",
+    "myRecipients": "Mis Destinatarios",
+    "trackTransfer": "Rastrear una Transferencia",
     "nft": "NFT",
-    "myRank": "My Rank",
-    "myCards": "My Cards",
-    "referFriend": "Refer a Friend",
-    "notifications": "Notifications",
-    "settings": "Setting",
+    "myRank": "Mi Rango",
+    "myCards": "Mis Tarjetas",
+    "referFriend": "Referir a un Amigo",
+    "notifications": "Notificaciones",
+    "settings": "Configuración",
     "language": "Idioma",
     "privacyPolicy": "Política de Privacidad",
     "contactUs": "Contáctanos",
-    "logout": "Log out"
+    "logout": "Cerrar Sesión",
+    "deleteAccount": "Eliminar Cuenta"
+  },
+  "deleteAccount": {
+    "title": "Eliminar Cuenta",
+    "warning": "Eliminar su cuenta es permanente y no se puede deshacer. Todos sus datos, incluida la información del perfil, el historial de transacciones y las preferencias guardadas, se eliminarán permanentemente.",
+    "securityVerification": "Verificación de seguridad",
+    "confirmPassword": "Por favor ingrese su contraseña para confirmar",
+    "delete": "Eliminar Cuenta",
+    "cancel": "Cancelar",
+    "deleting": "Eliminando...",
+    "success": "Cuenta eliminada correctamente",
+    "error": "No se pudo eliminar la cuenta"
   }
 }

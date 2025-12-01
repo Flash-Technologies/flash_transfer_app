@@ -17,6 +17,18 @@
     "language": "Langue",
     "privacyPolicy": "Politique de Confidentialité",
     "contactUs": "Nous Contacter",
-    "logout": "Déconnexion"
+    "logout": "Déconnexion",
+    "deleteAccount": "Supprimer le Compte"
+  },
+  "deleteAccount": {
+    "title": "Supprimer le Compte",
+    "warning": "La suppression de votre compte est permanente et irréversible. Toutes vos données, y compris les informations de profil, l'historique des transactions et les préférences enregistrées, seront supprimées définitivement.",
+    "securityVerification": "Vérification de sécurité",
+    "confirmPassword": "Veuillez entrer votre mot de passe pour confirmer",
+    "delete": "Supprimer le Compte",
+    "cancel": "Annuler",
+    "deleting": "Suppression en cours...",
+    "success": "Compte supprimé avec succès",
+    "error": "Impossible de supprimer le compte"
   }
 }

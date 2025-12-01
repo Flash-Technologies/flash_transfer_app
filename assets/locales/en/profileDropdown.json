@@ -17,6 +17,18 @@
     "language": "Language",
     "privacyPolicy": "Privacy Policy",
     "contactUs": "Contact Us",
-    "logout": "Log out"
+    "logout": "Log out",
+    "deleteAccount": "Delete Account"
+  },
+  "deleteAccount": {
+    "title": "Delete Account",
+    "warning": "Deleting your account is permanent and cannot be undone. All your data, including profile information, transaction history, and saved preferences will be permanently removed.",
+    "securityVerification": "Security verification",
+    "confirmPassword": "Please enter your password to confirm",
+    "delete": "Delete Account",
+    "cancel": "Cancel",
+    "deleting": "Deleting...",
+    "success": "Account deleted successfully",
+    "error": "Failed to delete account"
   }
 }

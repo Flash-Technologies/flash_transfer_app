@@ -8,6 +8,7 @@ import 'package:flash_transfer_app/providers/user_provider.dart';
 import 'package:flash_transfer_app/providers/auth_provider.dart';
 import 'package:flash_transfer_app/providers/language_provider.dart';
 import 'package:flash_transfer_app/presentation/home/components/profile_menu_item.dart';
+import 'package:flash_transfer_app/presentation/home/components/delete_account_dialog.dart';
 import 'package:flash_transfer_app/config/constants.dart';
 import 'package:flash_transfer_app/core/models/user.dart';
 
@@ -30,6 +31,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
   late Animation<double> _scaleAnimation;
 
   bool _isLoggingOut = false;
+  bool _isDeletingAccount = false;
 
   @override
   void initState() {
@@ -490,6 +492,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
               ),
               delay: 650,
             ),
+            const Divider(height: 1),
+            ProfileMenuItem(
+              data: ProfileMenuItemData(
+                icon: Icons.delete_forever_outlined,
+                title: tr('profileDropdown.menu.deleteAccount'),
+                isDestructive: true,
+                isLoading: _isDeletingAccount,
+                onTap: () => _handleDeleteAccount(context),
+              ),
+              delay: 700,
+            ),
           ],
         ),
       ),
@@ -599,5 +612,77 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen>
           ),
         ) ??
         false;
+  }
+
+  Future<void> _handleDeleteAccount(BuildContext context) async {
+    HapticFeedback.mediumImpact();
+    final tr = ref.read(translationHelperProvider);
+
+    if (!mounted) return;
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => DeleteAccountDialog(
+        title: tr('profileDropdown.deleteAccount.title'),
+        warning: tr('profileDropdown.deleteAccount.warning'),
+        securityVerification: tr('profileDropdown.deleteAccount.securityVerification'),
+        confirmButton: tr('profileDropdown.deleteAccount.delete'),
+        cancelButton: tr('profileDropdown.deleteAccount.cancel'),
+        deletingLabel: tr('profileDropdown.deleteAccount.deleting'),
+        onConfirm: () => Navigator.of(context).pop(true),
+        onCancel: () => Navigator.of(context).pop(false),
+        isLoading: _isDeletingAccount,
+      ),
+    ) ??
+        false;
+
+    if (!confirmed) return;
+
+    setState(() => _isDeletingAccount = true);
+
+    try {
+      final success = await ref.read(authProvider.notifier).deleteAccount();
+
+      if (!mounted) return;
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(tr('profileDropdown.deleteAccount.success')),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+
+        // Navigate to sign-in after account deletion
+        await Future.delayed(const Duration(milliseconds: 500));
+        if (mounted) {
+          context.go('/sign-in');
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(tr('profileDropdown.deleteAccount.error')),
+              backgroundColor: Theme.of(context).colorScheme.error,
+            ),
+          );
+        }
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${error.toString()}'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isDeletingAccount = false);
+      }
+    }
   }
 }
